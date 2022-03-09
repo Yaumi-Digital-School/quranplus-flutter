@@ -1,0 +1,9 @@
+import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
+import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final Provider<DioService> dioServiceProvider = Provider<DioService>((_) {
+  return DioService(
+    baseUrl: AppConstants.baseUrl,
+  );
+});
