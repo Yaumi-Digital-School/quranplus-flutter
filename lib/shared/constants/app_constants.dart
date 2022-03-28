@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 
 class AppConstants {
   static String baseUrl = '';
+  static const String jsonSurat = 'data/surat.json';
   static const String appName = 'Quran Tafsir';
 
   // Routing
