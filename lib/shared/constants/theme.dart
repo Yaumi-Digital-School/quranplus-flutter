@@ -43,6 +43,16 @@ FontWeight semiBold = FontWeight.w600;
 FontWeight bold = FontWeight.w700;
 
 // Typography
+TextStyle suratFontStyle = const TextStyle(
+  fontFamily: 'UthmanThaha',
+  fontSize: 24,
+);
+
+TextStyle ayatFontStyle = const TextStyle(
+  fontFamily: 'UthmanicHafs',
+  fontSize: 24
+);
+
 TextStyle headingBold1 = GoogleFonts.poppins(
   color: neutral900,
   fontSize: 24,
