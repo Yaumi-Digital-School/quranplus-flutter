@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/pages/login_page.dart';
 import 'package:qurantafsir_flutter/pages/sidebar_page.dart';
+import 'package:qurantafsir_flutter/pages/surat_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
@@ -141,17 +142,22 @@ class _ListSuratState extends State<ListSurat> {
         subtitle: Row(
           children: [
             Text(
-              surat.translation,
+              "${surat.translation} ",
               style: caption2,
             ),
             Text(
-              "( ayat)",
+              "(${surat.numberOfAyah} ayat)",
               style: caption2,
             )
           ],
         ),
         trailing:
             Text(surat.name, style: suratFontStyle, textAlign: TextAlign.right),
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context){
+            return const SuratPage();
+          }));
+        },
       ),
     );
   }
