@@ -14,29 +14,61 @@ class SuratPage extends StatelessWidget {
         preferredSize: const Size.fromHeight(54.0),
         child: AppBar(
           elevation: 2.5,
-          // centerTitle: false,
           foregroundColor: Colors.black,
           title: Text(surat.nameLatin),
           backgroundColor: backgroundColor,
         ),
       ),
-      body: const ListAyat(),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            _buildAyatRow(context: context, surat: surat),
+          ],
+        ),
+      )
+    );
+  }
+
+  Widget _buildAyatRow({required BuildContext context, required Surat surat}){
+    return Expanded(
+      child: ListView.builder(
+        itemCount: surat.ayats.text.length,
+        itemBuilder: (context, index){
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                surat.ayats.text[index],
+                style: ayatFontStyle,
+                textAlign: TextAlign.end,
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: Text(
+                  surat.translations.text[index],
+                  style: bodyRegular3,
+                  textAlign: TextAlign.start,
+                ),
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              const Divider(
+                height: 10,
+                color: Colors.black,
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+            ],
+          );
+        }
+      ),
     );
   }
 }
 
-class ListAyat extends StatefulWidget {
-  const ListAyat({ Key? key }) : super(key: key);
-
-  @override
-  State<ListAyat> createState() => _ListAyatState();
-}
-
-class _ListAyatState extends State<ListAyat> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      
-    );
-  }
-}
