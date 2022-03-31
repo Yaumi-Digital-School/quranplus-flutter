@@ -4,6 +4,7 @@ import 'package:qurantafsir_flutter/pages/sidebar_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/shared/core/models/quran.dart';
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
 
 class HomePage extends StatelessWidget {
@@ -19,7 +20,7 @@ class HomePage extends StatelessWidget {
           centerTitle: false,
           foregroundColor: primary500,
           title: Transform.translate(
-            offset: const Offset(-8, 0),
+            offset: const Offset(8, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -32,43 +33,43 @@ class HomePage extends StatelessWidget {
                     'images/logo.png',
                   ))),
                 ),
-                SizedBox(
-                  height: 24.0,
-                  width: 80.0,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(24.0),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Color.fromRGBO(0, 0, 0, 0.1),
-                              offset: Offset(1.0, 2.0),
-                              blurRadius: 5.0,
-                              spreadRadius: 1.0)
-                        ]),
-                    child: Stack(
-                      children: <Widget>[
-                        Center(
-                          child: Text("Sign in",
-                              style: buttonMedium2.copyWith(color: primary500)),
-                        ),
-                        SizedBox.expand(
-                          child: Material(
-                            type: MaterialType.transparency,
-                            child: InkWell(onTap: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return const LoginPage();
-                              }));
-                            }),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
+                // SizedBox(
+                //   height: 24.0,
+                //   width: 80.0,
+                //   child: Container(
+                //     decoration: const BoxDecoration(
+                //         color: Colors.white,
+                //         borderRadius: BorderRadius.all(
+                //           Radius.circular(24.0),
+                //         ),
+                //         boxShadow: [
+                //           BoxShadow(
+                //               color: Color.fromRGBO(0, 0, 0, 0.1),
+                //               offset: Offset(1.0, 2.0),
+                //               blurRadius: 5.0,
+                //               spreadRadius: 1.0)
+                //         ]),
+                //     child: Stack(
+                //       children: <Widget>[
+                //         Center(
+                //           child: Text("Sign in",
+                //               style: buttonMedium2.copyWith(color: primary500)),
+                //         ),
+                //         SizedBox.expand(
+                //           child: Material(
+                //             type: MaterialType.transparency,
+                //             child: InkWell(onTap: () {
+                //               Navigator.push(context,
+                //                   MaterialPageRoute(builder: (context) {
+                //                 return const LoginPage();
+                //               }));
+                //             }),
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // )
               ],
             ),
           ),
@@ -76,7 +77,7 @@ class HomePage extends StatelessWidget {
         ),
       ),
       body: const ListSurat(),
-      drawer: const SideBarPage(),
+      // drawer: const SideBarPage(),
     );
   }
 }
@@ -97,7 +98,7 @@ class _ListSuratState extends State<ListSurat> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final List<Surat> surats =
-                suratsFromJson(snapshot.requireData).surats;
+                quranFromJson(snapshot.requireData).surat;
             return ListView.builder(
               shrinkWrap: true,
               itemCount: surats.length,
@@ -106,7 +107,7 @@ class _ListSuratState extends State<ListSurat> {
               },
             );
           } else {
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           }
         });
   }
@@ -129,7 +130,8 @@ class _ListSuratState extends State<ListSurat> {
                     offset: Offset(1.0, 2.0),
                     blurRadius: 5.0,
                     spreadRadius: 1.0)
-              ], borderRadius: BorderRadius.all(Radius.circular(20))),
+              ],
+              borderRadius: BorderRadius.all(Radius.circular(20))),
           child: Text(
             surat.number,
             style: bodyMedium3,
@@ -142,7 +144,7 @@ class _ListSuratState extends State<ListSurat> {
         subtitle: Row(
           children: [
             Text(
-              "${surat.translation} ",
+              surat.suratNameTranslation,
               style: caption2,
             ),
             Text(
@@ -153,9 +155,9 @@ class _ListSuratState extends State<ListSurat> {
         ),
         trailing:
             Text(surat.name, style: suratFontStyle, textAlign: TextAlign.right),
-        onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context){
-            return const SuratPage();
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return SuratPage(surat: surat);
           }));
         },
       ),

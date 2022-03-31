@@ -1,21 +1,31 @@
 import 'dart:convert';
 
-class Surat {
-    String number;
-    String name;
-    String nameLatin;
-    String slug;
-    String numberOfAyah;
-    String translation;
+import 'package:qurantafsir_flutter/shared/core/models/ayat.dart';
+import 'package:qurantafsir_flutter/shared/core/models/tafsir.dart';
+import 'package:qurantafsir_flutter/shared/core/models/translation.dart';
 
+class Surat {
     Surat({
         required this.number,
         required this.name,
         required this.nameLatin,
         required this.slug,
         required this.numberOfAyah,
-        required this.translation
+        required this.suratNameTranslation,
+        required this.ayats,
+        required this.translations,
+        required this.tafsir,
     });
+
+    String number;
+    String name;
+    String nameLatin;
+    String slug;
+    String numberOfAyah;
+    String suratNameTranslation;
+    Ayat ayats;
+    Translation translations;
+    Tafsir tafsir;
 
     factory Surat.fromJson(Map<String, dynamic> json) => Surat(
         number: json["number"],
@@ -23,7 +33,10 @@ class Surat {
         nameLatin: json["name_latin"],
         slug: json["slug"],
         numberOfAyah: json["number_of_ayah"],
-        translation: json["translation"],
+        suratNameTranslation: json["surat_name_translation"],
+        ayats: Ayat.fromJson(json["ayats"]),
+        translations: Translation.fromJson(json["translations"]),
+        tafsir: Tafsir.fromJson(json["tafsir"]),
     );
 
     Map<String, dynamic> toJson() => {
@@ -32,29 +45,13 @@ class Surat {
         "name_latin": nameLatin,
         "slug": slug,
         "number_of_ayah": numberOfAyah,
-        "translation": translation,
+        "surat_name_translation": suratNameTranslation,
+        "ayats": ayats.toJson(),
+        "translations": translations.toJson(),
+        "tafsir": tafsir.toJson(),
     };
 }
 
-class Surats {
-    Surats({
-        required this.surats,
-    });
+Surat suratFromJson(String str) => Surat.fromJson(json.decode(str));
 
-    List<Surat> surats;
-
-    factory Surats.fromJson(Map<String, dynamic> json) => Surats(
-      surats: List<Surat>.from(
-        json['surat'].map((surat) => Surat.fromJson(surat))
-      )
-        // surat: Map.from(json["surat"]).map((k, v) => MapEntry<String, SuratValue>(k, SuratValue.fromJson(v))),
-    );
-
-    Map<String, dynamic> toJson() => {
-        "surat": List<dynamic>.from(surats.map((surat) => surat.toJson()))
-    };
-}
-
-Surats suratsFromJson(String str) => Surats.fromJson(json.decode(str));
-
-// String suratToJson(Surat data) => json.encode(data.toJson());
+String suratToJson(Surat data) => json.encode(data.toJson());

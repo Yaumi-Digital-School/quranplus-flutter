@@ -1,29 +1,13 @@
 import 'dart:convert';
 
 class Ayat {
-  List<Ayats> ayats;
-
-  Ayat({
-    required this.ayats,
-  });
-
-  factory Ayat.fromJson(Map<String, dynamic> json) => Ayat(
-        ayats: List<Ayats>.from(json["ayats"].map((x) => Ayats.fromJson(x))),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "ayats": List<dynamic>.from(ayats.map((x) => x.toJson())),
-      };
-}
-
-class Ayats {
   List<String> text;
 
-  Ayats({
+  Ayat({
     required this.text,
   });
 
-  factory Ayats.fromJson(Map<String, dynamic> json) => Ayats(
+  factory Ayat.fromJson(Map<String, dynamic> json) => Ayat(
         text: List<String>.from(json["text"].map((x) => x)),
       );
 

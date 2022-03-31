@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
 
 class SuratPage extends StatelessWidget {
-  const SuratPage({ Key? key }) : super(key: key);
+  final Surat surat;
+
+  const SuratPage({ Key? key, required this.surat }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Al-Fatihah"),
-        actions: const [
-          Icon(Icons.settings)
-        ],
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(54.0),
+        child: AppBar(
+          elevation: 2.5,
+          // centerTitle: false,
+          foregroundColor: Colors.black,
+          title: Text(surat.nameLatin),
+          backgroundColor: backgroundColor,
+        ),
       ),
       body: const ListAyat(),
     );
