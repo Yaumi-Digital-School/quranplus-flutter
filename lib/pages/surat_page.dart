@@ -58,8 +58,8 @@ class SuratPage extends StatelessWidget {
                                 height: 8.0,
                               ),
                               Center(
-                                child:
-                                    Text("${surat.nameLatin} : ${index + 1}"),
+                                child: Text(
+                                    "${surat.nameLatin} : ${index + 1}"),
                               ),
                               const SizedBox(
                                 height: 24.0,

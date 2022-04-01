@@ -127,7 +127,7 @@ TextStyle bodyLight1 = GoogleFonts.poppins(
 
 TextStyle bodyMedium2 = GoogleFonts.poppins(
   color: neutral900,
-  fontSize: 16,
+  fontSize: 14,
   fontWeight: medium
 );
 

@@ -10,6 +10,7 @@
 .svn/
 
 /lib/pages/test_page.dart
+/lib/pages/test_surat_page.dart
 
 # IntelliJ related
 *.iml

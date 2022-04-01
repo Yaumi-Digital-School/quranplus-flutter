@@ -136,21 +136,25 @@ class _ListSuratState extends State<ListSurat> {
           child: Text(
             surat.number,
             style: bodyMedium3,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
         title: Text(
           surat.nameLatin,
-          style: bodyMedium3,
+          style: bodyMedium2,
+          overflow: TextOverflow.ellipsis,
         ),
         subtitle: Row(
           children: [
             Text(
               surat.suratNameTranslation,
-              style: caption2,
+              style: caption1,
+              overflow: TextOverflow.ellipsis,
             ),
             Text(
               "(${surat.numberOfAyah} ayat)",
-              style: caption2,
+              style: caption1,
+              overflow: TextOverflow.ellipsis,
             )
           ],
         ),
