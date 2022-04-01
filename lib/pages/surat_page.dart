@@ -22,107 +22,120 @@ class SuratPage extends StatelessWidget {
           ),
         ),
         body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              _buildAyatRow(context: context, surat: surat),
-            ],
-          ),
-        ));
+          padding: const EdgeInsets.all(16.0),
+          child: _buildAyatRow(context: context, surat: surat),
+        )
+      );
   }
 
   Widget _buildAyatRow({required BuildContext context, required Surat surat}) {
     Timer _timer = Timer(const Duration(milliseconds: 200), () {});
 
-    return Expanded(
-      child: ListView.builder(
-          itemCount: surat.ayats.text.length,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onPanCancel: () => _timer.cancel(),
-              onPanDown: (_) => {
-                _timer = Timer(const Duration(milliseconds: 200), () {
-                  showModalBottomSheet(
-                      context: context,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(25.0),
-                        ),
-                      ),
-                      builder: (BuildContext context) {
-                        return SizedBox(
-                          height: 100,
-                          child: Column(
-                            children: [
-                              const SizedBox(
-                                height: 8.0,
-                              ),
-                              Center(
-                                child: Text(
-                                    "${surat.nameLatin} : ${index + 1}"),
-                              ),
-                              const SizedBox(
-                                height: 24.0,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 50),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 24,
-                                      height: 24,
-                                      decoration: const BoxDecoration(
-                                          image: DecorationImage(
-                                              image: AssetImage(
-                                        'images/icon_bookmark_outlined.png',
-                                      ))),
-                                    ),
-                                    const SizedBox(
-                                      width: 8.0,
-                                    ),
-                                    Text("Bookmark", style: bodyMedium2)
-                                  ],
-                                ),
-                              )
-                            ],
+    return ListView(
+      children: [
+        Container(
+          width: 162,
+          height: 85,
+          decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage(
+            'images/bismillah.png',
+          ))),
+        ),
+        const SizedBox(
+          height: 30,
+        ),
+        ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: surat.ayats.text.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onPanCancel: () => _timer.cancel(),
+                onPanDown: (_) => {
+                  _timer = Timer(const Duration(milliseconds: 200), () {
+                    showModalBottomSheet(
+                        context: context,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(25.0),
                           ),
-                        );
-                      });
-                })
-              },
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    surat.ayats.text[index],
-                    style: ayatFontStyle,
-                    textAlign: TextAlign.end,
-                  ),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: Text(
-                      surat.translations.text[index],
-                      style: bodyRegular3,
-                      textAlign: TextAlign.start,
+                        ),
+                        builder: (BuildContext context) {
+                          return SizedBox(
+                            height: 100,
+                            child: Column(
+                              children: [
+                                const SizedBox(
+                                  height: 8.0,
+                                ),
+                                Center(
+                                  child:
+                                      Text("${surat.nameLatin} : ${index + 1}"),
+                                ),
+                                const SizedBox(
+                                  height: 24.0,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 50),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 24,
+                                        height: 24,
+                                        decoration: const BoxDecoration(
+                                            image: DecorationImage(
+                                                image: AssetImage(
+                                          'images/icon_bookmark_outlined.png',
+                                        ))),
+                                      ),
+                                      const SizedBox(
+                                        width: 8.0,
+                                      ),
+                                      Text("Bookmark", style: bodyMedium2)
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          );
+                        });
+                  })
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      surat.ayats.text[index],
+                      style: ayatFontStyle,
+                      textDirection: TextDirection.rtl,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  const Divider(
-                    height: 10,
-                    color: Colors.black,
-                  ),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                ],
-              ),
-            );
-          }),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Text(
+                        surat.translations.text[index],
+                        style: bodyRegular3,
+                        textAlign: TextAlign.start,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    const Divider(
+                      height: 10,
+                      color: Colors.black,
+                    ),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                  ],
+                ),
+              );
+            }),
+      ],
     );
   }
 }
