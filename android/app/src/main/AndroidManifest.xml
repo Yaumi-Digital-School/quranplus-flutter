@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.qurantafsir_flutter">
    <application
-        android:label="qurantafsir_flutter"
+        android:label="quran tafsir"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
