@@ -1,13 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:qurantafsir_flutter/pages/bookmark_page.dart';
+import 'package:qurantafsir_flutter/pages/home_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/shared/core/database/dbhelper.dart';
+import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
 
 class SuratPage extends StatelessWidget {
+  DbHelper db = DbHelper();
   final Surat surat;
 
-  const SuratPage({Key? key, required this.surat}) : super(key: key);
+  SuratPage({Key? key, required this.surat}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -118,22 +123,35 @@ class SuratPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Visibility(
-                      visible: bookmarked,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 24,
-                            height: 24,
-                            decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage(
-                              'images/icon_bookmark.png',
-                            ))),
-                          ),
-                        ],
-                      ),
+                    // Visibility(
+                      // visible: bookmarked,
+                      // child: Row(
+                      //   mainAxisAlignment: MainAxisAlignment.start,
+                      //   children: [
+                      //     Container(
+                      //       width: 24,
+                      //       height: 24,
+                      //       decoration: const BoxDecoration(
+                      //           image: DecorationImage(
+                      //               image: AssetImage(
+                      //         'images/icon_bookmark.png',
+                      //       ))),
+                      //     ),
+                      //   ],
+                      // ),
+                    // ),
+                    TextButton(
+                        child: const Text(
+                          'Add Bookmark',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        onPressed: () {
+                          String ayatID = surat.ayats.text[index];
+                          insertBookmark(ayatID);
+                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            return ListBookmarkPage();
+                          }));
+                        }
                     ),
                     const SizedBox(
                       height: 16,
@@ -171,4 +189,13 @@ class SuratPage extends StatelessWidget {
       ],
     );
   }
+  Future<void> insertBookmark(ayatID) async {
+    await db.saveBookmark(Bookmarks(
+      suratid: surat.number,
+      ayatid: ayatID
+    ));
+    
+  }
+
 }
+
