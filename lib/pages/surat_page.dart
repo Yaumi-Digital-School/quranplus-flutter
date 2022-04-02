@@ -24,23 +24,26 @@ class SuratPage extends StatelessWidget {
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: _buildAyatRow(context: context, surat: surat),
-        )
-      );
+        ));
   }
 
   Widget _buildAyatRow({required BuildContext context, required Surat surat}) {
     Timer _timer = Timer(const Duration(milliseconds: 200), () {});
+    final suratTaubah = surat.number != "9";
 
     return ListView(
       children: [
-        Container(
-          width: 162,
-          height: 85,
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage(
-            'images/bismillah.png',
-          ))),
+        Visibility(
+          visible: suratTaubah,
+          child: Container(
+            width: 162,
+            height: 85,
+            decoration: const BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage(
+              'images/bismillah.png',
+            ))),
+          ),
         ),
         const SizedBox(
           height: 30,
