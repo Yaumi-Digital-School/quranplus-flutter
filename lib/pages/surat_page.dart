@@ -17,7 +17,7 @@ class SuratPage extends StatelessWidget {
           child: AppBar(
             elevation: 2.5,
             foregroundColor: Colors.black,
-            title: Text(surat.nameLatin),
+            title: Text("Surat ${surat.nameLatin}"),
             backgroundColor: backgroundColor,
           ),
         ),
@@ -30,6 +30,7 @@ class SuratPage extends StatelessWidget {
   Widget _buildAyatRow({required BuildContext context, required Surat surat}) {
     Timer _timer = Timer(const Duration(milliseconds: 200), () {});
     final suratTaubah = surat.number != "9";
+    var bookmarked = false;
 
     return ListView(
       children: [
@@ -65,49 +66,78 @@ class SuratPage extends StatelessWidget {
                           ),
                         ),
                         builder: (BuildContext context) {
-                          return SizedBox(
-                            height: 100,
-                            child: Column(
-                              children: [
-                                const SizedBox(
-                                  height: 8.0,
-                                ),
-                                Center(
-                                  child:
-                                      Text("${surat.nameLatin} : ${index + 1}"),
-                                ),
-                                const SizedBox(
-                                  height: 24.0,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 50),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        width: 24,
-                                        height: 24,
-                                        decoration: const BoxDecoration(
-                                            image: DecorationImage(
-                                                image: AssetImage(
-                                          'images/icon_bookmark_outlined.png',
-                                        ))),
-                                      ),
-                                      const SizedBox(
-                                        width: 8.0,
-                                      ),
-                                      Text("Bookmark", style: bodyMedium2)
-                                    ],
+                          return StatefulBuilder(builder: (context, setState) {
+                            return SizedBox(
+                              height: 100,
+                              child: Column(
+                                children: [
+                                  const SizedBox(
+                                    height: 8.0,
                                   ),
-                                )
-                              ],
-                            ),
-                          );
+                                  Center(
+                                    child: Text(
+                                        "${surat.nameLatin} : ${index + 1}"),
+                                  ),
+                                  const SizedBox(
+                                    height: 24.0,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 50),
+                                    child: InkWell(
+                                      onTap: (){
+                                        setState((){
+                                          bookmarked = !bookmarked;
+                                        });
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 24,
+                                            height: 24,
+                                            decoration: const BoxDecoration(
+                                                image: DecorationImage(
+                                                    image: AssetImage(
+                                              'images/icon_bookmark_outlined.png',
+                                            ))),
+                                          ),
+                                          const SizedBox(
+                                            width: 8.0,
+                                          ),
+                                          Text("Bookmark", style: bodyMedium2)
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
+                          });
                         });
                   })
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
+                    Visibility(
+                      visible: bookmarked,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 24,
+                            height: 24,
+                            decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(
+                              'images/icon_bookmark.png',
+                            ))),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
                     Text(
                       surat.ayats.text[index],
                       style: ayatFontStyle,
