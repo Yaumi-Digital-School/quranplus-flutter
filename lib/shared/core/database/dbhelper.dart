@@ -5,6 +5,8 @@
 //membuat database, membuat tabel, proses insert, read, update dan delete
 
 
+import 'dart:ffi';
+
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
@@ -68,12 +70,29 @@ class DbHelper {
   //update database
   Future<int?> updateBookmark(Bookmarks bookmark) async {
     var dbClient = await _db;
-    return await dbClient!.update(tableName, bookmark.toMap(), where: '$columnId = ?', whereArgs: [bookmark.id]);
+    return await dbClient!.update(tableName, bookmark.toMap(), where: '$columnAyatid = ?', whereArgs: [bookmark.ayatid]);
   }
 
   //hapus database
   Future<int?> deleteBookmark(int id) async {
     var dbClient = await _db;
     return await dbClient!.delete(tableName, where: '$columnId = ?', whereArgs: [id]);
+  }
+
+  //cek 1 data didatabase
+  Future<bool?> isBookmark(id) async {
+    var dbclient = await _db;
+    List<Map> maps = await dbclient!.query(tableName,
+        columns: [
+          columnId,
+          columnSuratid,
+          columnAyatid,
+        ],
+        where: '$columnAyatid = ?',
+        whereArgs: [id]);
+    if (maps.isNotEmpty) {
+      return true;
+    }
+    return false;
   }
 }

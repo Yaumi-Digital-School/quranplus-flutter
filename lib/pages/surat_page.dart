@@ -11,8 +11,10 @@ import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
 class SuratPage extends StatelessWidget {
   DbHelper db = DbHelper();
   final Surat surat;
+  Bookmarks? bookmark;
 
-  SuratPage({Key? key, required this.surat}) : super(key: key);
+
+  SuratPage({Key? key, required this.surat, this.bookmark}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +110,28 @@ class SuratPage extends StatelessWidget {
                                           const SizedBox(
                                             width: 8.0,
                                           ),
-                                          Text("Bookmark", style: bodyMedium2)
+                                          // Text("Bookmark", style: bodyMedium2)
+                                          TextButton(
+                                            child: (checkBookmark(surat.ayats.text[index]) == true) 
+                                            ? const Text(
+                                              'sudah Bookmark',
+                                              style: TextStyle(  color: neutral900,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500),
+                                            )
+                                            : const Text(
+                                              'Bookmark',
+                                              style: TextStyle(  color: neutral900,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500),
+                                            ),
+                                            onPressed: () {
+                                              insertBookmark(surat.ayats.text[index]);
+                                              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                                return BookmarkPage();
+                                              }));
+                                            }
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -123,35 +146,22 @@ class SuratPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    // Visibility(
-                      // visible: bookmarked,
-                      // child: Row(
-                      //   mainAxisAlignment: MainAxisAlignment.start,
-                      //   children: [
-                      //     Container(
-                      //       width: 24,
-                      //       height: 24,
-                      //       decoration: const BoxDecoration(
-                      //           image: DecorationImage(
-                      //               image: AssetImage(
-                      //         'images/icon_bookmark.png',
-                      //       ))),
-                      //     ),
-                      //   ],
-                      // ),
-                    // ),
-                    TextButton(
-                        child: const Text(
-                          'Add Bookmark',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        onPressed: () {
-                          String ayatID = surat.ayats.text[index];
-                          insertBookmark(ayatID);
-                          Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return ListBookmarkPage();
-                          }));
-                        }
+                    Visibility(
+                      visible: bookmarked,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 24,
+                            height: 24,
+                            decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(
+                              'images/icon_bookmark.png',
+                            ))),
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(
                       height: 16,
@@ -167,7 +177,7 @@ class SuratPage extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: Text(
-                        surat.translations.text[index],
+                        "${index + 1}. ${surat.translations.text[index]}",
                         style: bodyRegular3,
                         textAlign: TextAlign.start,
                       ),
@@ -189,12 +199,30 @@ class SuratPage extends StatelessWidget {
       ],
     );
   }
+
+  checkBookmark(ayatID) async {
+    var result = await db.isBookmark(ayatID);
+    if (result == false) {
+      return false;
+    }else{
+      return true;
+    }
+  }
+
+  Future<void> isBookmark(ayatID) async {
+  
+  }
+
   Future<void> insertBookmark(ayatID) async {
-    await db.saveBookmark(Bookmarks(
-      suratid: surat.number,
-      ayatid: ayatID
-    ));
-    
+    var result = await db.isBookmark(ayatID);
+
+    if (result == false) {
+      await db.saveBookmark(Bookmarks(
+        suratid: surat.number,
+        ayatid: ayatID
+      ));
+
+    }
   }
 
 }
