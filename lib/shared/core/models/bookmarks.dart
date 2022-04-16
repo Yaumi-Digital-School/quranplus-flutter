@@ -1,15 +1,18 @@
 // ignore_for_file: file_names, unnecessary_this, prefer_collection_literals
 
+import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
+
 class Bookmarks{
+  Bookmarks({
+    this.id, 
+    this.suratid, 
+    this.ayatid,
+  });
+
   int? id;
   String? suratid;
   String? ayatid;
 
-  Bookmarks({
-    this.id, 
-    this.suratid, 
-    this.ayatid
-  });
 
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();

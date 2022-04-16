@@ -112,21 +112,14 @@ class SuratPage extends StatelessWidget {
                                           ),
                                           // Text("Bookmark", style: bodyMedium2)
                                           TextButton(
-                                            child: (checkBookmark(surat.ayats.text[index]) == true) 
-                                            ? const Text(
-                                              'sudah Bookmark',
-                                              style: TextStyle(  color: neutral900,
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w500),
-                                            )
-                                            : const Text(
+                                            child: const Text(
                                               'Bookmark',
                                               style: TextStyle(  color: neutral900,
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w500),
                                             ),
                                             onPressed: () {
-                                              insertBookmark(surat.ayats.text[index]);
+                                              insertBookmark(surat.number, index+1);
                                               Navigator.push(context, MaterialPageRoute(builder: (context) {
                                                 return BookmarkPage();
                                               }));
@@ -146,22 +139,48 @@ class SuratPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Visibility(
-                      visible: bookmarked,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 24,
-                            height: 24,
-                            decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage(
-                              'images/icon_bookmark.png',
-                            ))),
-                          ),
-                        ],
-                      ),
+                    FutureBuilder<bool>(
+                      future: checkBookmark(surat.number, index+1),
+                      builder: (context, boolean) {
+                        if (boolean.hasData) {
+                          var newBool = boolean.data;
+                          return Visibility(
+                            visible: newBool!,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 24,
+                                  height: 24,
+                                  decoration: const BoxDecoration(
+                                      image: DecorationImage(
+                                          image: AssetImage(
+                                    'images/icon_bookmark.png',
+                                  ))),
+                                ),
+                              ],
+                            ),
+                          );
+                        }else {
+                          return Visibility(
+                            visible: false,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 24,
+                                  height: 24,
+                                  decoration: const BoxDecoration(
+                                      image: DecorationImage(
+                                          image: AssetImage(
+                                    'images/icon_bookmark.png',
+                                  ))),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      },
                     ),
                     const SizedBox(
                       height: 16,
@@ -200,8 +219,8 @@ class SuratPage extends StatelessWidget {
     );
   }
 
-  checkBookmark(ayatID) async {
-    var result = await db.isBookmark(ayatID);
+  Future<bool> checkBookmark(suratID, ayatID) async {
+    var result = await db.isBookmark(suratID, ayatID);
     if (result == false) {
       return false;
     }else{
@@ -209,17 +228,13 @@ class SuratPage extends StatelessWidget {
     }
   }
 
-  Future<void> isBookmark(ayatID) async {
-  
-  }
-
-  Future<void> insertBookmark(ayatID) async {
-    var result = await db.isBookmark(ayatID);
+  Future<void> insertBookmark(suratID, ayatID) async {
+    var result = await db.isBookmark(suratID, ayatID);
 
     if (result == false) {
       await db.saveBookmark(Bookmarks(
         suratid: surat.number,
-        ayatid: ayatID
+        ayatid: ayatID.toString()
       ));
 
     }

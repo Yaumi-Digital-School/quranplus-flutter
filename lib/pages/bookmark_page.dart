@@ -1,12 +1,19 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, avoid_function_literals_in_foreach_calls, non_constant_identifier_names, unused_element, unused_local_variable, sized_box_for_whitespace
 
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/pages/surat_page.dart';
 
 import 'package:qurantafsir_flutter/shared/core/database/dbhelper.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/shared/core/models/quran.dart';
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
+import 'package:qurantafsir_flutter/shared/core/provider/bookmark_provider.dart';
 
 class BookmarkPage extends StatefulWidget {
   const BookmarkPage({ Key? key }) : super(key: key);
@@ -16,7 +23,8 @@ class BookmarkPage extends StatefulWidget {
 }
 
 class _BookmarkPageState extends State<BookmarkPage> {
-  List<Bookmarks> listBookmark = [];
+  List<Surat> listBookmark = [];
+  List<dynamic> listayatID = [];
   DbHelper db = DbHelper();
   
   @override
@@ -28,6 +36,9 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
   @override
   Widget build(BuildContext context) {
+    // var allBoomark = context.watch<BookmarkProvider>().bookmarks;
+    // print(listBookmark);
+    // print(allBoomark);
     return Scaffold(
       
         appBar: PreferredSize(
@@ -42,40 +53,54 @@ class _BookmarkPageState extends State<BookmarkPage> {
         body: ListView.builder(
             itemCount: listBookmark.length,
             itemBuilder: (context, index) {
-              return _buildListBookmark(context, index, listBookmark[index]);
+              return _buildListBookmark(context, listayatID[index], index, listBookmark[index]);
             }),
     );
   }
 
-  Widget _buildListBookmark(BuildContext context, index, Bookmarks bookmark) {
+  Widget _buildListBookmark(BuildContext context, listayatID, index, Surat bookmark) {
     return Padding(
-      padding: const EdgeInsets.only(
-        top: 20
-      ),
+      padding: const EdgeInsets.symmetric( horizontal: 8.0 ),
       child: ListTile(
-        leading: Icon(
-          Icons.person, 
-          size: 50,
+        minLeadingWidth: 20,
+                leading: Container(
+          alignment: Alignment.center,
+          height: 34,
+          width: 30,
+          decoration: const BoxDecoration(
+              // shape: BoxShape.circle,
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                    color: Color.fromRGBO(0, 0, 0, 0.1),
+                    offset: Offset(1.0, 2.0),
+                    blurRadius: 5.0,
+                    spreadRadius: 1.0)
+              ],
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+          child: Text(
+            listayatID.toString(),
+            style: bodyMedium3,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
         title: Text(
-          '${bookmark.id}'
+          bookmark.nameLatin,
+          style: bodyMedium3,
+          overflow: TextOverflow.ellipsis,
         ),
-        subtitle: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        subtitle: Row(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 8, 
-              ),
-              child: Text("Surat Id: ${bookmark.suratid}"),
-            ), 
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 8,
-              ),
-              child: Text("Ayat Id: ${bookmark.ayatid}"),
-            )
+            Text(
+              bookmark.suratNameTranslation,
+              style: caption1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Text(
+              " ( ${bookmark.numberOfAyah} ayat )",
+              style: caption1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ],
         ),
         trailing: 
@@ -83,15 +108,6 @@ class _BookmarkPageState extends State<BookmarkPage> {
           fit: BoxFit.fill,
           child: Row(
             children: [
-              // button edit 
-              IconButton(
-                onPressed: () {
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  //   return SuratPage(surat: bookmark.suratid);
-                  // }));
-                },
-                icon: Icon(Icons.remove_red_eye)
-              ),
               // button hapus
               IconButton(
                 icon: Icon(Icons.delete),
@@ -104,7 +120,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                       child: Column(
                         children: [
                           Text(
-                            "Yakin ingin Menghapus Data ${bookmark.id}"
+                            "Yakin ingin Menghapus Data berikut ? \n Surat : ${bookmark.nameLatin} \n Ayat : $listayatID"
                           )
                         ],
                       ),
@@ -115,7 +131,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                     actions: [
                       TextButton(
                         onPressed: (){
-                          _deleteBookmark(bookmark, index);
+                          _deleteBookmark(bookmark.number, index);
                           Navigator.pop(context);
                         }, 
                         child: Text("Ya")
@@ -134,8 +150,17 @@ class _BookmarkPageState extends State<BookmarkPage> {
             ],
           ),
         ),
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return SuratPage(surat: bookmark);
+          }));
+        },
       ),
     );
+  }
+
+  Future<String> getJson() {
+    return rootBundle.loadString('data/quran.json');
   }
 
   //mengambil semua data Bookmarks
@@ -143,23 +168,33 @@ class _BookmarkPageState extends State<BookmarkPage> {
     //list menampung data dari database
     var list = await db.getAllBookmark();
 
+    List<Bookmarks> listbook = [];
+    Map<String, dynamic> map = await json.decode(await getJson());
+    List<dynamic> surat = map['surat'];
+
     //ada perubahanan state
     setState(() {
       //hapus data pada listBookmark
       listBookmark.clear();
 
-      //lakukan perulangan pada variabel list
       list!.forEach((bookmark) {
-        
-        //masukan data ke listBookmark
-        listBookmark.add(Bookmarks.fromMap(bookmark));
+        listbook.add(Bookmarks.fromMap(bookmark));
+      });
+
+      surat.forEach((surat) {
+        listbook.forEach((bookmark) {
+          if (surat['number'] == bookmark.suratid) {
+            listBookmark.add(Surat.fromJson(surat));
+            listayatID.add(bookmark.ayatid);
+          }
+        });
       });
     });
   }
 
   //menghapus data Bookmark
-  Future<void> _deleteBookmark(Bookmarks bookmark, int position) async {
-    await db.deleteBookmark(bookmark.id!);
+  Future<void> _deleteBookmark(bookmark, int position) async {
+    await db.deleteBookmark(bookmark);
     setState(() {
       listBookmark.removeAt(position);
     });
