@@ -111,19 +111,39 @@ class SuratPage extends StatelessWidget {
                                             width: 8.0,
                                           ),
                                           // Text("Bookmark", style: bodyMedium2)
-                                          TextButton(
-                                            child: const Text(
-                                              'Bookmark',
-                                              style: TextStyle(  color: neutral900,
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w500),
-                                            ),
-                                            onPressed: () {
-                                              insertBookmark(surat.number, index+1);
-                                              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                                return BookmarkPage();
-                                              }));
-                                            }
+                                          FutureBuilder(
+                                            future: checkBookmark(surat.number, index+1),
+                                            builder: (context, boolean) {
+                                              if (boolean.data == true) {
+                                                return TextButton(
+                                                  child: const Text(
+                                                  'Sudah Bookmark',
+                                                  style: TextStyle(  color: neutral900,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500),
+                                                  ),
+                                                  onPressed: () {
+                                                    deleteBookmark(surat.number, index+1);
+                                                    Navigator.pop(context);
+                                                  }
+                                                );
+                                              } else {
+                                                return TextButton(
+                                                  child: const Text(
+                                                  'Bookmark',
+                                                  style: TextStyle(  color: neutral900,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500),
+                                                  ),
+                                                  onPressed: () {
+                                                    insertBookmark(surat.number, index+1);
+                                                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                                      return BookmarkPage();
+                                                    }));
+                                                  }
+                                                );
+                                              }
+                                            },
                                           ),
                                         ],
                                       ),
@@ -238,6 +258,12 @@ class SuratPage extends StatelessWidget {
       ));
 
     }
+  }
+
+  //menghapus data Bookmark
+  Future<void> deleteBookmark(suratID, ayatID) async {
+    await db.deleteBookmark(suratID, ayatID);
+    
   }
 
 }

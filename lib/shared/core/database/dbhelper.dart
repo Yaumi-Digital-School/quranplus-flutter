@@ -74,9 +74,9 @@ class DbHelper {
   }
 
   //hapus database
-  Future<int?> deleteBookmark(id) async {
+  Future<int?> deleteBookmark(suratID, ayatID) async {
     var dbClient = await _db;
-    return await dbClient!.delete(tableName, where: '$columnSuratid = ?', whereArgs: [id]);
+    return await dbClient!.delete(tableName, where: '$columnSuratid = ? and $columnAyatid = ?', whereArgs: [suratID, ayatID]);
   }
 
   //cek 1 data didatabase

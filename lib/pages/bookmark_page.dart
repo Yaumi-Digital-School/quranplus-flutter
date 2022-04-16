@@ -2,8 +2,6 @@
 
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/pages/surat_page.dart';
@@ -11,9 +9,7 @@ import 'package:qurantafsir_flutter/pages/surat_page.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbhelper.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
-import 'package:qurantafsir_flutter/shared/core/models/quran.dart';
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
-import 'package:qurantafsir_flutter/shared/core/provider/bookmark_provider.dart';
 
 class BookmarkPage extends StatefulWidget {
   const BookmarkPage({ Key? key }) : super(key: key);
@@ -36,9 +32,6 @@ class _BookmarkPageState extends State<BookmarkPage> {
 
   @override
   Widget build(BuildContext context) {
-    // var allBoomark = context.watch<BookmarkProvider>().bookmarks;
-    // print(listBookmark);
-    // print(allBoomark);
     return Scaffold(
       
         appBar: PreferredSize(
@@ -131,7 +124,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                     actions: [
                       TextButton(
                         onPressed: (){
-                          _deleteBookmark(bookmark.number, index);
+                          _deleteBookmark(bookmark.number, listayatID, index);
                           Navigator.pop(context);
                         }, 
                         child: Text("Ya")
@@ -193,8 +186,8 @@ class _BookmarkPageState extends State<BookmarkPage> {
   }
 
   //menghapus data Bookmark
-  Future<void> _deleteBookmark(bookmark, int position) async {
-    await db.deleteBookmark(bookmark);
+  Future<void> _deleteBookmark(suratID, ayatID, int position) async {
+    await db.deleteBookmark(suratID, ayatID);
     setState(() {
       listBookmark.removeAt(position);
     });
