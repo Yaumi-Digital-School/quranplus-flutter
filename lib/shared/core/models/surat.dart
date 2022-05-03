@@ -5,29 +5,29 @@ import 'package:qurantafsir_flutter/shared/core/models/tafsir.dart';
 import 'package:qurantafsir_flutter/shared/core/models/translation.dart';
 
 class Surat {
-    Surat({
-        required this.number,
-        required this.name,
-        required this.nameLatin,
-        required this.slug,
-        required this.numberOfAyah,
-        required this.suratNameTranslation,
-        required this.ayats,
-        required this.translations,
-        required this.tafsir,
-    });
+  Surat({
+    required this.number,
+    required this.name,
+    required this.nameLatin,
+    required this.slug,
+    required this.numberOfAyah,
+    required this.suratNameTranslation,
+    required this.ayats,
+    required this.translations,
+    required this.tafsir,
+  });
 
-    String number;
-    String name;
-    String nameLatin;
-    String slug;
-    String numberOfAyah;
-    String suratNameTranslation;
-    Ayat ayats;
-    Translation translations;
-    Tafsir tafsir;
+  String number;
+  String name;
+  String nameLatin;
+  String slug;
+  String numberOfAyah;
+  String suratNameTranslation;
+  Ayat ayats;
+  Translation translations;
+  Tafsir tafsir;
 
-    factory Surat.fromJson(Map<String, dynamic> json) => Surat(
+  factory Surat.fromJson(Map<String, dynamic> json) => Surat(
         number: json["number"],
         name: json["name"],
         nameLatin: json["name_latin"],
@@ -37,9 +37,9 @@ class Surat {
         ayats: Ayat.fromJson(json["ayats"]),
         translations: Translation.fromJson(json["translations"]),
         tafsir: Tafsir.fromJson(json["tafsir"]),
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "number": number,
         "name": name,
         "name_latin": nameLatin,
@@ -49,7 +49,9 @@ class Surat {
         "ayats": ayats.toJson(),
         "translations": translations.toJson(),
         "tafsir": tafsir.toJson(),
-    };
+      };
+
+  int get numToInt => int.parse(number);
 }
 
 Surat suratFromJson(String str) => Surat.fromJson(json.decode(str));
