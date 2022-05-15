@@ -8,7 +8,6 @@ import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
 import 'package:qurantafsir_flutter/shared/ui/view_model_connector.dart';
-import 'package:qurantafsir_flutter/widgets/detail_surah_drawer.dart';
 
 class SuratPageV2 extends StatelessWidget {
   SuratPageV2({
