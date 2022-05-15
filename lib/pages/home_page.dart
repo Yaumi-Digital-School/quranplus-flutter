@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/pages/login_page.dart';
@@ -91,26 +93,95 @@ class ListSurat extends StatefulWidget {
 }
 
 class _ListSuratState extends State<ListSurat> {
+  List<Surat> foundSurat = [];
+  List<Surat> listSurat = [];
+  List<Surat> results = [];
+
+  @override
+  initState() {
+    _getAllSurat(results);
+    foundSurat = listSurat;
+    super.initState();
+  }
+
+  void _runFilter(String enteredKeyword) {
+    if (enteredKeyword.isEmpty) {
+      results = listSurat;
+    } else {
+      results = listSurat
+              .where((user) => 
+                user.nameLatin.toLowerCase().contains(enteredKeyword.toLowerCase())
+              ).toList();
+    }
+
+    // refresh UI
+    setState(() {
+      foundSurat = results;
+      // _getAllSurat(results);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-        future:
-            DefaultAssetBundle.of(context).loadString(AppConstants.jsonSurat),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final List<Surat> surats =
-                quranFromJson(snapshot.requireData).surat;
-            return ListView.builder(
-              shrinkWrap: true,
-              itemCount: surats.length,
-              itemBuilder: (context, index) {
-                return _buildListSurat(context, surats[index]);
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 20,
+          ),
+          TextField(
+            onChanged: (value) => _runFilter(value),
+            decoration: const InputDecoration(
+                labelText: 'Search', suffixIcon: Icon(Icons.search)),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Expanded(
+            child: foundSurat.isNotEmpty
+            ? ListView.builder(
+                shrinkWrap: true,
+                itemCount: foundSurat.length,
+                itemBuilder: (context, index) {
+                  return _buildListSurat(context, foundSurat[index]);
+                },
+            )
+            : FutureBuilder(
+              future: Future.delayed(const Duration(milliseconds: 2000)),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return const Text(
+                    'surat tidak ada',
+                    style: TextStyle(fontSize: 24),
+                  );
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
               },
-            );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        });
+            )
+          )
+        ],
+      ),
+    );
+    // return FutureBuilder<String>(
+    //   future:
+    //       DefaultAssetBundle.of(context).loadString(AppConstants.jsonSurat),
+    //   builder: (context, snapshot) {
+    //     if (snapshot.hasData) {
+    //       final List<Surat> surats =
+    //           listSurat;
+    //       return ListView.builder(
+    //         shrinkWrap: true,
+    //         itemCount: surats.length,
+    //         itemBuilder: (context, index) {
+    //           return _buildListSurat(context, surats[index]);
+    //         },
+    //       );
+    //     } else {
+    //       return const Center(child: CircularProgressIndicator());
+    //     }
+    //   });
   }
 
   Widget _buildListSurat(BuildContext context, Surat surat) {
@@ -167,5 +238,30 @@ class _ListSuratState extends State<ListSurat> {
         },
       ),
     );
+  }
+
+
+  Future<String> getJson() {
+    return rootBundle.loadString('data/quran.json');
+  }
+
+  //mengambil semua data Bookmarks
+  Future<void> _getAllSurat(results) async {
+    
+    Map<String, dynamic> map = await json.decode(await getJson());
+    List<dynamic> surat = map['surat'];
+
+    //ada perubahanan state
+    setState(() {
+      //hapus data pada listSurat
+      listSurat.clear();
+      if(results.isEmpty) {
+        for(var surat in surat) {
+          listSurat.add(Surat.fromJson(surat));
+        }
+      } else {
+        listSurat = results;
+      }
+    });
   }
 }
