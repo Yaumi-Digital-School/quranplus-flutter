@@ -90,6 +90,7 @@ class DbHelper {
         ],
         where: '$columnSuratid = ? and $columnAyatid = ?',
         whereArgs: [surat, ayat]);
+        
     if (maps.isNotEmpty) {
       return true;
     }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_page.dart';
+import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_v2.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v2/surat_page_view_model.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
@@ -149,7 +150,7 @@ class SuratPageV2 extends StatelessWidget {
                                             if (boolean.data == true) {
                                               return TextButton(
                                                   child: const Text(
-                                                    'Sudah Bookmark',
+                                                    'Hapus Bookmark',
                                                     style: TextStyle(
                                                         color: neutral900,
                                                         fontSize: 14,
@@ -175,15 +176,9 @@ class SuratPageV2 extends StatelessWidget {
                                                 onPressed: () async {
                                                   viewModel.insertBookmark(
                                                       surat.number, index + 1);
-                                                  await Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) {
-                                                      return const BookmarkPage();
-                                                    }),
-                                                  );
-
-                                                  Navigator.pop(context);
+                                                  await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const BookmarkPageV2())).then((value) {
+                                                    viewModel.onGoBack(context);
+                                                  });
                                                 },
                                               );
                                             }

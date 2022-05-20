@@ -22,6 +22,7 @@ class BookmarkPageViewModel extends BaseViewModel<BookmarkPageState> {
   @override
   initViewModel() {
     db = DbHelper();
+    getAllBookmark();
   }
 
   Future<String> getJson() {
@@ -59,6 +60,7 @@ class BookmarkPageViewModel extends BaseViewModel<BookmarkPageState> {
   //menghapus data Bookmark
   Future<void> deleteBookmark(suratID, ayatID, int position) async {
     await db.deleteBookmark(suratID, ayatID);
+    listBookmark.removeAt(position);
     state = state.copyWith();
   }
 }

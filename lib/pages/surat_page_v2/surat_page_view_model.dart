@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/surat_page.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v2/surat_page_v2.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbhelper.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
@@ -41,6 +44,8 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
   @override
   initViewModel() {
     db = DbHelper();
+    // state = state.copyWith();
+    
   }
 
   Future<bool> checkBookmark(suratID, ayatID) async {
@@ -71,5 +76,10 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
   Future<void> deleteBookmark(suratID, ayatID) async {
     await db.deleteBookmark(suratID, ayatID);
     state = state.copyWith();
+  }
+
+  onGoBack(context) {
+    state = state.copyWith();
+    Navigator.pop(context);
   }
 }
