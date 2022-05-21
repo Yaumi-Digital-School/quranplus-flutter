@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/home_page.dart';
 import 'package:qurantafsir_flutter/pages/splash_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
@@ -13,18 +14,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: AppConstants.appName,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        backgroundColor: backgroundColor
+    return ProviderScope(
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: AppConstants.appName,
+        theme: ThemeData(
+            primarySwatch: Colors.blue, backgroundColor: backgroundColor),
+        initialRoute: AppConstants.routeSplash,
+        routes: {
+          AppConstants.routeSplash: (context) => const SplashPage(),
+          AppConstants.routeHome: (context) => const HomePage()
+        },
       ),
-      initialRoute: AppConstants.routeSplash,
-      routes: {
-        AppConstants.routeSplash: (context) => const SplashPage(),
-        AppConstants.routeHome: (context) => const HomePage()
-      },
     );
   }
 }
