@@ -14,7 +14,7 @@ class _MainPageState extends State<MainPage> {
 
   int _selectedIndex = 0;
 
-  static const List<Widget> _widgetOptions = <Widget>[
+  static const List<Widget> _pages = <Widget>[
     HomePage(),
     BookmarkPage()
   ];
@@ -29,7 +29,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex)
+        child: _pages.elementAt(_selectedIndex)
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
