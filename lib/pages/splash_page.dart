@@ -18,7 +18,7 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   void navigationPage() {
-    Navigator.of(context).pushReplacementNamed(AppConstants.routeHome);
+    Navigator.of(context).pushReplacementNamed(AppConstants.routeMain);
   }
 
   @override
