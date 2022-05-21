@@ -50,6 +50,7 @@ class _MainPageState extends State<MainPage> {
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: primary500,
+        unselectedItemColor: neutral300,
         selectedFontSize: 12,
         onTap: _onItemTapped,
       ),
