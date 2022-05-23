@@ -98,7 +98,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                           );
                         }),
                         Container(
-                          child: Text('tes'),
+                          child: Text('Favorite'),
                         ),
                       ],
                     ),
