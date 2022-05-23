@@ -8,33 +8,20 @@ import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
 import 'package:qurantafsir_flutter/shared/ui/view_model_connector.dart';
 
 class BookmarkPageV2 extends StatefulWidget {
-  const BookmarkPageV2({
-    Key? key
-  }) : super(key: key);
+  const BookmarkPageV2({Key? key}) : super(key: key);
 
   @override
   _BookmarkPageV2State createState() => _BookmarkPageV2State();
 }
+
 class _BookmarkPageV2State extends State<BookmarkPageV2> {
-
-  // late BookmarkPageViewModel viewM;
-
-  // @override
-  // void initState() {
-  //   //menjalankan fungsi getallbookmark saat pertama kali dimuat
-  //   viewM.getAllBookmark();
-  //   super.initState();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return ViewModelConnector<BookmarkPageViewModel, BookmarkPageState>(
-      viewModelProvider: 
-      StateNotifierProvider<BookmarkPageViewModel, BookmarkPageState>(
+      viewModelProvider:
+          StateNotifierProvider<BookmarkPageViewModel, BookmarkPageState>(
         (ref) {
-          return BookmarkPageViewModel(
-
-          );
+          return BookmarkPageViewModel();
         },
       ),
       onViewModelReady: (viewModel) => viewModel.initViewModel(),
@@ -44,7 +31,9 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
         BookmarkPageViewModel viewModel,
         _,
       ) {
-        return Scaffold(    
+        return DefaultTabController(
+          length: 2,
+          child: Scaffold(
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(54.0),
               child: AppBar(
@@ -54,17 +43,70 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                 backgroundColor: backgroundColor,
               ),
             ),
-            body: ListView.builder(
-                itemCount: viewModel.listBookmark.length,
-                itemBuilder: (context, index) {
-                  return _buildListBookmark(
-                    context: context, 
-                    listayatID: viewModel.listayatID[index], 
-                    index: index, 
-                    bookmark: viewModel.listBookmark[index],
-                    viewModel: viewModel,
-                  );
-                }),
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 7,
+                  ),
+                  Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                        color: neutral200,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          const BoxShadow(
+                          color: neutral600,
+                          blurRadius: 7.0,
+                          spreadRadius: 0.1,
+
+                        )
+                        ]),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: TabBar(
+                        indicator: BoxDecoration(
+                            color: primary500,
+                            borderRadius: BorderRadius.circular(20)),
+                        tabs: <Widget>[
+                          Tab(
+                            text: 'Bookmark',
+                          ),
+                          Tab(
+                            text: 'Favorite',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 7,
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      children: <Widget>[
+                        ListView.builder(
+                        itemCount: viewModel.listBookmark.length,
+                        itemBuilder: (context, index) {
+                          return _buildListBookmark(
+                            context: context, 
+                            listayatID: viewModel.listayatID[index], 
+                            index: index, 
+                            bookmark: viewModel.listBookmark[index],
+                            viewModel: viewModel,
+                          );
+                        }),
+                        Container(
+                          child: Text('tes'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         );
       },
     );
@@ -78,10 +120,10 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
     required BookmarkPageViewModel viewModel,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric( horizontal: 8.0 ),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: ListTile(
         minLeadingWidth: 20,
-                leading: Container(
+        leading: Container(
           alignment: Alignment.center,
           height: 34,
           width: 30,
@@ -121,25 +163,23 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
             ),
           ],
         ),
-        trailing: 
-        FittedBox(
+        trailing: FittedBox(
           fit: BoxFit.fill,
           child: Row(
             children: [
               // button hapus
               IconButton(
                 icon: Icon(Icons.delete),
-                onPressed: (){
+                onPressed: () {
                   //membuat dialog konfirmasi hapus
                   AlertDialog hapus = AlertDialog(
                     title: Text("Information"),
                     content: Container(
-                      height: 100, 
+                      height: 100,
                       child: Column(
                         children: [
                           Text(
-                            "Yakin ingin Menghapus Data berikut ? \n Surat : ${bookmark.nameLatin} \n Ayat : $listayatID"
-                          )
+                              "Yakin ingin Menghapus Data berikut ? \n Surat : ${bookmark.nameLatin} \n Ayat : $listayatID")
                         ],
                       ),
                     ),
@@ -148,12 +188,12 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                     //jika tidak maka tutup dialog
                     actions: [
                       TextButton(
-                        onPressed: (){
-                          viewModel.deleteBookmark(bookmark.number, listayatID, index);
-                          Navigator.pop(context);
-                        }, 
-                        child: Text("Ya")
-                      ), 
+                          onPressed: () {
+                            viewModel.deleteBookmark(
+                                bookmark.number, listayatID, index);
+                            Navigator.pop(context);
+                          },
+                          child: Text("Ya")),
                       TextButton(
                         child: Text('Tidak'),
                         onPressed: () {
@@ -163,7 +203,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                     ],
                   );
                   showDialog(context: context, builder: (context) => hapus);
-                }, 
+                },
               )
             ],
           ),
