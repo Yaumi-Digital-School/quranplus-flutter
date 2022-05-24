@@ -1,0 +1,120 @@
+{
+  "juz": [
+    {
+      "number": "1",
+      "name": "Juz 1",
+      "surat": [
+        {
+          "number": "1",
+          "name": "الفَاتِحَة",
+          "name_latin": "Al-Fatihah",
+          "number_of_ayah": "7",
+          "surat_name_translation": "Pembukaan",
+          "start_ayat": "1"
+        },
+        {
+          "number": "2",
+          "name": "البَقَرَة",
+          "name_latin": "Al-Baqarah",
+          "number_of_ayah": "286",
+          "surat_name_translation": "Sapi",
+          "start_ayat": "1"
+        }
+      ]
+    },
+    {
+      "number": "2",
+      "name": "Juz 2",
+      "surat": [
+        {
+          "number": "2",
+          "name": "البَقَرَة",
+          "name_latin": "Al-Baqarah",
+          "number_of_ayah": "286",
+          "surat_name_translation": "Sapi",
+          "start_ayat": "142"
+        }
+      ]
+    },
+    {
+      "number": "3",
+      "name": "Juz 3",
+      "surat": [
+        {
+          "number": "2",
+          "name": "البَقَرَة",
+          "name_latin": "Al-Baqarah",
+          "number_of_ayah": "286",
+          "surat_name_translation": "Sapi",
+          "start_ayat": "253"
+        },
+        {
+          "number": "3",
+          "name": "آلِ عِمْرَان",
+          "name_latin": "Ali 'Imran",
+          "number_of_ayah": "200",
+          "surat_name_translation": "Keluarga Imran",
+          "start_ayat": "1"
+        }
+      ]
+    },
+    {
+      "number": "4",
+      "name": "Juz 4",
+      "surat": [
+        {
+          "number": "3",
+          "name": "آلِ عِمْرَان",
+          "name_latin": "Ali 'Imran",
+          "number_of_ayah": "200",
+          "surat_name_translation": "Keluarga Imran",
+          "start_ayat": "93"
+        },
+        {
+          "number": "4",
+          "name": "النِّسَاء",
+          "name_latin": "An-Nisa'",
+          "number_of_ayah": "176",
+          "surat_name_translation": "Wanita",
+          "start_ayat": "1"
+        }
+      ]
+    },
+    {
+      "number": "5",
+      "name": "Juz 5",
+      "surat": [
+        {
+          "number": "4",
+          "name": "النِّسَاء",
+          "name_latin": "An-Nisa'",
+          "number_of_ayah": "176",
+          "surat_name_translation": "Wanita",
+          "start_ayat": "24"
+        }
+      ]
+    },
+    {
+      "number": "6",
+      "name": "Juz 6",
+      "surat": [
+        {
+          "number": "4",
+          "name": "النِّسَاء",
+          "name_latin": "An-Nisa'",
+          "number_of_ayah": "176",
+          "surat_name_translation": "Wanita",
+          "start_ayat": "148"
+        },
+        {
+          "number": "5",
+          "name": "المَائِدَة",
+          "name_latin": "Al-Ma'idah",
+          "number_of_ayah": "120",
+          "surat_name_translation": "Hidangan",
+          "start_ayat": "1"
+        }
+      ]
+    }
+  ]
+}
