@@ -96,7 +96,7 @@ class SuratPageV3 extends StatelessWidget {
     var bookmarked = false;
 
     return ListView(
-      children: [
+      children: <Widget>[
         Visibility(
           visible: suratTaubah,
           child: Container(
@@ -168,7 +168,6 @@ class SuratPageV3 extends StatelessWidget {
                                         const SizedBox(
                                           width: 8.0,
                                         ),
-                                        // Text("Bookmark", style: bodyMedium2)
                                         FutureBuilder(
                                           future: viewModel.checkBookmark(
                                               surat.number, index + 1),

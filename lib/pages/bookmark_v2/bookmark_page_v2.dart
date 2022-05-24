@@ -128,7 +128,6 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
           height: 34,
           width: 30,
           decoration: const BoxDecoration(
-              // shape: BoxShape.circle,
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
@@ -150,7 +149,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Row(
-          children: [
+          children: <Widget>[
             Text(
               bookmark.suratNameTranslation,
               style: caption1,
@@ -166,12 +165,10 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
         trailing: FittedBox(
           fit: BoxFit.fill,
           child: Row(
-            children: [
-              // button hapus
+            children: <Widget>[
               IconButton(
                 icon: Icon(Icons.delete),
                 onPressed: () {
-                  //membuat dialog konfirmasi hapus
                   AlertDialog hapus = AlertDialog(
                     title: Text("Information"),
                     content: Container(

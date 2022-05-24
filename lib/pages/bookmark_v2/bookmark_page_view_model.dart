@@ -11,7 +11,6 @@ class BookmarkPageState {
     return BookmarkPageState();
   }
 }
-
 class BookmarkPageViewModel extends BaseViewModel<BookmarkPageState> {
   BookmarkPageViewModel() : super(BookmarkPageState());
 
@@ -29,24 +28,21 @@ class BookmarkPageViewModel extends BaseViewModel<BookmarkPageState> {
     return rootBundle.loadString('data/quran.json');
   }
 
-  //mengambil semua data Bookmarks
   Future<void> getAllBookmark() async {
-    //list menampung data dari database
-    var list = await db.getAllBookmark();
+    var bookmarkFromDb = await db.getAllBookmark();
 
-    List<Bookmarks> listbook = [];
+    List<Bookmarks> _bookmarkFromDb = [];
     Map<String, dynamic> map = await json.decode(await getJson());
     List<dynamic> surat = map['surat'];
 
-    //hapus data pada listBookmark
     listBookmark.clear();
 
-    list!.forEach((bookmark) {
-      listbook.add(Bookmarks.fromMap(bookmark));
+    bookmarkFromDb!.forEach((bookmark) {
+      _bookmarkFromDb.add(Bookmarks.fromMap(bookmark));
     });
 
     surat.forEach((surat) {
-      listbook.forEach((bookmark) {
+      _bookmarkFromDb.forEach((bookmark) {
         if (surat['number'] == bookmark.suratid) {
           listBookmark.add(Surat.fromJson(surat));
           listayatID.add(bookmark.ayatid);
@@ -57,7 +53,6 @@ class BookmarkPageViewModel extends BaseViewModel<BookmarkPageState> {
     state = state.copyWith();
   }
 
-  //menghapus data Bookmark
   Future<void> deleteBookmark(suratID, ayatID, int position) async {
     await db.deleteBookmark(suratID, ayatID);
     listBookmark.removeAt(position);
