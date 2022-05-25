@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_page.dart';
+import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_v2.dart';
 import 'package:qurantafsir_flutter/pages/home_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
@@ -16,7 +17,7 @@ class _MainPageState extends State<MainPage> {
 
   static const List<Widget> _pages = <Widget>[
     HomePage(),
-    BookmarkPage()
+    BookmarkPageV2()
   ];
 
   void _onItemTapped(int index) {

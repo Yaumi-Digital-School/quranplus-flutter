@@ -4,6 +4,7 @@ import 'package:qurantafsir_flutter/pages/login_page.dart';
 import 'package:qurantafsir_flutter/pages/sidebar_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v2/surat_page_v2.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran.dart';
@@ -163,7 +164,7 @@ class _ListSuratState extends State<ListSurat> {
             Text(surat.name, style: suratFontStyle, textAlign: TextAlign.right),
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return SuratPageV2(surat: surat);
+            return SuratPageV3(surat: surat);
           }));
         },
       ),
