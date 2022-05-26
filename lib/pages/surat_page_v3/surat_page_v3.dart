@@ -5,13 +5,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_page.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_v2.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v2/surat_page_view_model.dart';
+import 'package:qurantafsir_flutter/shared/constants/app_icons.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
 import 'package:qurantafsir_flutter/shared/ui/view_model_connector.dart';
 
-class SuratPageV2 extends StatelessWidget {
-  SuratPageV2({
+class SuratPageV3 extends StatelessWidget {
+  SuratPageV3({
     Key? key,
     required this.surat,
     this.bookmarks,
@@ -43,10 +44,35 @@ class SuratPageV2 extends StatelessWidget {
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(54.0),
             child: AppBar(
+              automaticallyImplyLeading: false,
               elevation: 2.5,
               foregroundColor: Colors.black,
               title: Text("Surat ${surat.nameLatin}"),
               backgroundColor: backgroundColor,
+              actions: <Widget>[
+                IconButton(
+                  icon: const Icon(Icons.bookmark_outline),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('This is a Bookmark')));
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(CustomIcons.book),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('This is a Full Page')));
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(CustomIcons.sliders),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('This is a Setting')));
+                  },
+                ),
+                
+              ],
             ),
           ),
           body: Padding(
@@ -70,7 +96,7 @@ class SuratPageV2 extends StatelessWidget {
     var bookmarked = false;
 
     return ListView(
-      children: [
+      children: <Widget>[
         Visibility(
           visible: suratTaubah,
           child: Container(
@@ -142,7 +168,6 @@ class SuratPageV2 extends StatelessWidget {
                                         const SizedBox(
                                           width: 8.0,
                                         ),
-                                        // Text("Bookmark", style: bodyMedium2)
                                         FutureBuilder(
                                           future: viewModel.checkBookmark(
                                               surat.number, index + 1),
@@ -176,9 +201,15 @@ class SuratPageV2 extends StatelessWidget {
                                                 onPressed: () async {
                                                   viewModel.insertBookmark(
                                                       surat.number, index + 1);
-                                                  await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const BookmarkPageV2())).then((value) {
-                                                    viewModel.onGoBack(context);
-                                                  });
+                                                  await Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) {
+                                                      return const BookmarkPageV2();
+                                                    }),
+                                                  );
+
+                                                  Navigator.pop(context);
                                                 },
                                               );
                                             }
