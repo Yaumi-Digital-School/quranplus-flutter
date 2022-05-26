@@ -52,6 +52,7 @@ class SuratByJuz {
         required this.numberOfAyah,
         required this.suratNameTranslation,
         required this.startAyat,
+        required this.startPage
     });
 
     String number;
@@ -60,6 +61,7 @@ class SuratByJuz {
     String numberOfAyah;
     String suratNameTranslation;
     String startAyat;
+    String startPage;
 
     factory SuratByJuz.fromJson(Map<String, dynamic> json) => SuratByJuz(
         number: json["number"],
@@ -68,6 +70,7 @@ class SuratByJuz {
         numberOfAyah: json["number_of_ayah"],
         suratNameTranslation: json["surat_name_translation"],
         startAyat: json["start_ayat"],
+        startPage: json["start_page"]
     );
 
     Map<String, dynamic> toJson() => {
@@ -77,5 +80,6 @@ class SuratByJuz {
         "number_of_ayah": numberOfAyah,
         "surat_name_translation": suratNameTranslation,
         "start_ayat": startAyat,
+        "start_page": startPage
     };
 }

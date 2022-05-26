@@ -10,7 +10,8 @@
           "name_latin": "Al-Fatihah",
           "number_of_ayah": "7",
           "surat_name_translation": "Pembukaan",
-          "start_ayat": "1"
+          "start_ayat": "1",
+          "start_page": "1"
         },
         {
           "number": "2",
@@ -18,7 +19,8 @@
           "name_latin": "Al-Baqarah",
           "number_of_ayah": "286",
           "surat_name_translation": "Sapi",
-          "start_ayat": "1"
+          "start_ayat": "1",
+          "start_page": "2"
         }
       ]
     },
@@ -32,7 +34,8 @@
           "name_latin": "Al-Baqarah",
           "number_of_ayah": "286",
           "surat_name_translation": "Sapi",
-          "start_ayat": "142"
+          "start_ayat": "142",
+          "start_page": "22"
         }
       ]
     },
@@ -46,7 +49,8 @@
           "name_latin": "Al-Baqarah",
           "number_of_ayah": "286",
           "surat_name_translation": "Sapi",
-          "start_ayat": "253"
+          "start_ayat": "253",
+          "start_page": "42"
         },
         {
           "number": "3",
@@ -54,7 +58,8 @@
           "name_latin": "Ali 'Imran",
           "number_of_ayah": "200",
           "surat_name_translation": "Keluarga Imran",
-          "start_ayat": "1"
+          "start_ayat": "1",
+          "start_page": "50"
         }
       ]
     },
@@ -68,7 +73,8 @@
           "name_latin": "Ali 'Imran",
           "number_of_ayah": "200",
           "surat_name_translation": "Keluarga Imran",
-          "start_ayat": "93"
+          "start_ayat": "93",
+          "start_page": "62"
         },
         {
           "number": "4",
@@ -76,7 +82,8 @@
           "name_latin": "An-Nisa'",
           "number_of_ayah": "176",
           "surat_name_translation": "Wanita",
-          "start_ayat": "1"
+          "start_ayat": "1",
+          "start_page": "77"
         }
       ]
     },
@@ -90,7 +97,8 @@
           "name_latin": "An-Nisa'",
           "number_of_ayah": "176",
           "surat_name_translation": "Wanita",
-          "start_ayat": "24"
+          "start_ayat": "24",
+          "start_page": "82"
         }
       ]
     },
@@ -104,7 +112,8 @@
           "name_latin": "An-Nisa'",
           "number_of_ayah": "176",
           "surat_name_translation": "Wanita",
-          "start_ayat": "148"
+          "start_ayat": "148",
+          "start_page": "102"
         },
         {
           "number": "5",
@@ -112,7 +121,1277 @@
           "name_latin": "Al-Ma'idah",
           "number_of_ayah": "120",
           "surat_name_translation": "Hidangan",
-          "start_ayat": "1"
+          "start_ayat": "1",
+          "start_page": "106"
+        }
+      ]
+    },
+    {
+      "number": "7",
+      "name": "Juz 7",
+      "surat": [
+        {
+          "number": "5",
+          "name": "المَائِدَة",
+          "name_latin": "Al-Ma'idah",
+          "number_of_ayah": "120",
+          "surat_name_translation": "Hidangan",
+          "start_ayat": "82",
+          "start_page": "121"
+        },
+        {
+          "number": "6",
+          "name": "الأَنْعَام",
+          "name_latin": "Al-An'am",
+          "number_of_ayah": "165",
+          "surat_name_translation": "Binatang Ternak",
+          "start_ayat": "1",
+          "start_page": "128"
+        }
+      ]
+    },
+    {
+      "number": "8",
+      "name": "Juz 8",
+      "surat": [
+        {
+          "number": "6",
+          "name": "الأَنْعَام",
+          "name_latin": "Al-An'am",
+          "number_of_ayah": "165",
+          "surat_name_translation": "Binatang Ternak",
+          "start_ayat": "111",
+          "start_page": "142"
+        },
+        {
+          "number": "7",
+          "name": "الأَعْرَاف",
+          "name_latin": "Al-A'raf",
+          "number_of_ayah": "206",
+          "surat_name_translation": "Tempat Tertinggi",
+          "start_ayat": "1",
+          "start_page": "151"
+        }
+      ]
+    },
+    {
+      "number": "9",
+      "name": "Juz 9",
+      "surat": [
+        {
+          "number": "7",
+          "name": "الأَعْرَاف",
+          "name_latin": "Al-A'raf",
+          "number_of_ayah": "206",
+          "surat_name_translation": "Tempat Tertinggi",
+          "start_ayat": "88",
+          "start_page": "162"
+        },
+        {
+          "number": "8",
+          "name": "الأَنْفَال",
+          "name_latin": "Al-Anfal",
+          "number_of_ayah": "75",
+          "surat_name_translation": "Rampasan Perang",
+          "start_ayat": "1",
+          "start_page": "177"
+        }
+      ]
+    },
+    {
+      "number": "10",
+      "name": "Juz 10",
+      "surat": [
+        {
+          "number": "8",
+          "name": "الأَنْفَال",
+          "name_latin": "Al-Anfal",
+          "number_of_ayah": "75",
+          "surat_name_translation": "Rampasan Perang",
+          "start_ayat": "41",
+          "start_page": "182"
+        },
+        {
+          "number": "9",
+          "name": "التَّوْبَة",
+          "name_latin": "At-Taubah",
+          "number_of_ayah": "129",
+          "surat_name_translation": "Pengampunan",
+          "start_ayat": "1",
+          "start_page": "187"
+        }
+      ]
+    },
+    {
+      "number": "11",
+      "name": "Juz 11",
+      "surat": [
+        {
+          "number": "9",
+          "name": "التَّوْبَة",
+          "name_latin": "At-Taubah",
+          "number_of_ayah": "129",
+          "surat_name_translation": "Pengampunan",
+          "start_ayat": "93",
+          "start_page": "201"
+        },
+        {
+          "number": "10",
+          "name": "يُونُس",
+          "name_latin": "Yunus",
+          "number_of_ayah": "109",
+          "surat_name_translation": "Yunus",
+          "start_ayat": "1",
+          "start_page": "208"
+        },
+        {
+          "number": "11",
+          "name": "هُود",
+          "name_latin": "Hud",
+          "number_of_ayah": "123",
+          "surat_name_translation": "Hud",
+          "start_ayat": "1",
+          "start_page": "221"
+        }
+      ]
+    },
+    {
+      "number": "12",
+      "name": "Juz 12",
+      "surat": [
+        {
+          "number": "11",
+          "name": "هُود",
+          "name_latin": "Hud",
+          "number_of_ayah": "123",
+          "surat_name_translation": "Hud",
+          "start_ayat": "6",
+          "start_page": "222"
+        },
+        {
+          "number": "12",
+          "name": "يُوسُف",
+          "name_latin": "Yusuf",
+          "number_of_ayah": "111",
+          "surat_name_translation": "Yusuf",
+          "start_ayat": "1",
+          "start_page": "235"
+        }
+      ]
+    },
+    {
+      "number": "13",
+      "name": "Juz 13",
+      "surat": [
+        {
+          "number": "12",
+          "name": "يُوسُف",
+          "name_latin": "Yusuf",
+          "number_of_ayah": "111",
+          "surat_name_translation": "Yusuf",
+          "start_ayat": "53",
+          "start_page": "242"
+        },
+        {
+          "number": "13",
+          "name": "الرَّعْد",
+          "name_latin": "Ar-Ra'd",
+          "number_of_ayah": "43",
+          "surat_name_translation": "Guruh",
+          "start_ayat": "1",
+          "start_page": "249"
+        },
+        {
+          "number": "14",
+          "name": "إِبْرَاهِيم",
+          "name_latin": "Ibrahim",
+          "number_of_ayah": "52",
+          "surat_name_translation": "Ibrahim",
+          "start_ayat": "1",
+          "start_page": "255"
+        }
+      ]
+    },
+    {
+      "number": "14",
+      "name": "Juz 14",
+      "surat": [
+        {
+          "number": "15",
+          "name": "الحِجْر",
+          "name_latin": "Al-Hijr",
+          "number_of_ayah": "99",
+          "surat_name_translation": "Hijr",
+          "start_ayat": "1",
+          "start_page": "262"
+        },
+        {
+          "number": "16",
+          "name": "النَّحْل",
+          "name_latin": "An-Nahl",
+          "number_of_ayah": "128",
+          "surat_name_translation": "Lebah",
+          "start_ayat": "1",
+          "start_page": "267"
+        }
+      ]
+    },
+    {
+      "number": "15",
+      "name": "Juz 15",
+      "surat": [
+        {
+          "number": "17",
+          "name": "الإِسْرَاء",
+          "name_latin": "Al-Isra'",
+          "number_of_ayah": "111",
+          "surat_name_translation": "Memperjalankan Malam Hari",
+          "start_ayat": "1",
+          "start_page": "282"
+        },
+        {
+          "number": "18",
+          "name": "الكَهْف",
+          "name_latin": "Al-Kahf",
+          "number_of_ayah": "110",
+          "surat_name_translation": "Goa",
+          "start_ayat": "1",
+          "start_page": "293"
+        }
+      ]
+    },
+    {
+      "number": "16",
+      "name": "Juz 16",
+      "surat": [
+        {
+          "number": "18",
+          "name": "الكَهْف",
+          "name_latin": "Al-Kahf",
+          "number_of_ayah": "110",
+          "surat_name_translation": "Goa",
+          "start_ayat": "75",
+          "start_page": "302"
+        },
+        {
+          "number": "19",
+          "name": "مَرْيَم",
+          "name_latin": "Maryam",
+          "number_of_ayah": "98",
+          "surat_name_translation": "Maryam",
+          "start_ayat": "1",
+          "start_page": "305"
+        },
+        {
+          "number": "20",
+          "name": "طٰهٰ",
+          "name_latin": "Taha",
+          "number_of_ayah": "135",
+          "surat_name_translation": "Taha",
+          "start_ayat": "1",
+          "start_page": "312"
+        }
+      ]
+    },
+    {
+      "number": "17",
+      "name": "Juz 17",
+      "surat": [
+        {
+          "number": "21",
+          "name": "الأَنْبِيَاء",
+          "name_latin": "Al-Anbiya'",
+          "number_of_ayah": "112",
+          "surat_name_translation": "Para Nabi",
+          "start_ayat": "1",
+          "start_page": "322"
+        },
+        {
+          "number": "22",
+          "name": "الحَجّ",
+          "name_latin": "Al-Hajj",
+          "number_of_ayah": "78",
+          "surat_name_translation": "Haji",
+          "start_ayat": "1",
+          "start_page": "332"
+        }
+      ]
+    },
+    {
+      "number": "18",
+      "name": "Juz 18",
+      "surat": [
+        {
+          "number": "23",
+          "name": "المُؤْمِنُون",
+          "name_latin": "Al-Mu'minun",
+          "number_of_ayah": "118",
+          "surat_name_translation": "Orang-Orang Mukmin",
+          "start_ayat": "1",
+          "start_page": "342"
+        },
+        {
+          "number": "24",
+          "name": "النُّور",
+          "name_latin": "An-Nur",
+          "number_of_ayah": "64",
+          "surat_name_translation": "Cahaya",
+          "start_ayat": "1",
+          "start_page": "350"
+        },
+        {
+          "number": "25",
+          "name": "الفُرْقَان",
+          "name_latin": "Al-Furqan",
+          "number_of_ayah": "77",
+          "surat_name_translation": "Pembeda",
+          "start_ayat": "1",
+          "start_page": "359"
+        }
+      ]
+    },
+    {
+      "number": "19",
+      "name": "Juz 19",
+      "surat": [
+        {
+          "number": "25",
+          "name": "الفُرْقَان",
+          "name_latin": "Al-Furqan",
+          "number_of_ayah": "77",
+          "surat_name_translation": "Pembeda",
+          "start_ayat": "21",
+          "start_page": "362"
+        },
+        {
+          "number": "26",
+          "name": "الشُّعَرَاء",
+          "name_latin": "Asy-Syu'ara'",
+          "number_of_ayah": "227",
+          "surat_name_translation": "Para Penyair",
+          "start_ayat": "1",
+          "start_page": "368"
+        },
+        {
+          "number": "27",
+          "name": "النَّمْل",
+          "name_latin": "An-Naml",
+          "number_of_ayah": "93",
+          "surat_name_translation": "Semut-semut",
+          "start_ayat": "1",
+          "start_page": "377"
+        }
+      ]
+    },
+    {
+      "number": "20",
+      "name": "Juz 20",
+      "surat": [
+        {
+          "number": "27",
+          "name": "النَّمْل",
+          "name_latin": "An-Naml",
+          "number_of_ayah": "93",
+          "surat_name_translation": "Semut-semut",
+          "start_ayat": "56",
+          "start_page": "382"
+        },
+        {
+          "number": "28",
+          "name": "القَصَص",
+          "name_latin": "Al-Qasas",
+          "number_of_ayah": "88",
+          "surat_name_translation": "Kisah-Kisah",
+          "start_ayat": "1",
+          "start_page": "385"
+        },
+        {
+          "number": "29",
+          "name": "العَنكبُوت",
+          "name_latin": "Al-'Ankabut",
+          "number_of_ayah": "69",
+          "surat_name_translation": "Laba-Laba",
+          "start_ayat": "1",
+          "start_page": "396"
+        }
+      ]
+    },
+    {
+      "number": "21",
+      "name": "Juz 21",
+      "surat": [
+        {
+          "number": "29",
+          "name": "العَنكبُوت",
+          "name_latin": "Al-'Ankabut",
+          "number_of_ayah": "69",
+          "surat_name_translation": "Laba-Laba",
+          "start_ayat": "46",
+          "start_page": "402"
+        },
+        {
+          "number": "30",
+          "name": "الرُّوم",
+          "name_latin": "Ar-Rum",
+          "number_of_ayah": "60",
+          "surat_name_translation": "Romawi",
+          "start_ayat": "1",
+          "start_page": "404"
+        },
+        {
+          "number": "31",
+          "name": "لُقْمان",
+          "name_latin": "Luqman",
+          "number_of_ayah": "34",
+          "surat_name_translation": "Luqman",
+          "start_ayat": "1",
+          "start_page": "411"
+        },
+        {
+          "number": "32",
+          "name": "السَّجْدَة",
+          "name_latin": "As-Sajdah",
+          "number_of_ayah": "30",
+          "surat_name_translation": "Sajdah",
+          "start_ayat": "1",
+          "start_page": "415"
+        },
+        {
+          "number": "33",
+          "name": "الأَحْزاب",
+          "name_latin": "Al-Ahzab",
+          "number_of_ayah": "73",
+          "surat_name_translation": "Golongan Yang Bersekutu",
+          "start_ayat": "1",
+          "start_page": "418"
+        }
+      ]
+    },
+    {
+      "number": "22",
+      "name": "Juz 22",
+      "surat": [
+        {
+          "number": "33",
+          "name": "الأَحْزاب",
+          "name_latin": "Al-Ahzab",
+          "number_of_ayah": "73",
+          "surat_name_translation": "Golongan Yang Bersekutu",
+          "start_ayat": "31",
+          "start_page": "422"
+        },
+        {
+          "number": "34",
+          "name": "سَبَأ",
+          "name_latin": "Saba'",
+          "number_of_ayah": "54",
+          "surat_name_translation": "Saba'",
+          "start_ayat": "1",
+          "start_page": "428"
+        },
+        {
+          "number": "35",
+          "name": "فَاطِر",
+          "name_latin": "Fatir",
+          "number_of_ayah": "45",
+          "surat_name_translation": "Maha Pencipta",
+          "start_ayat": "1",
+          "start_page": "434"
+        },
+        {
+          "number": "36",
+          "name": "يٰسۤ",
+          "name_latin": "Yasin",
+          "number_of_ayah": "83",
+          "surat_name_translation": "Yasin",
+          "start_ayat": "1",
+          "start_page": "440"
+        }
+      ]
+    },
+    {
+      "number": "23",
+      "name": "Juz 23",
+      "surat": [
+        {
+          "number": "36",
+          "name": "يٰسۤ",
+          "name_latin": "Yasin",
+          "number_of_ayah": "83",
+          "surat_name_translation": "Yasin",
+          "start_ayat": "28",
+          "start_page": "442"
+        },
+        {
+          "number": "37",
+          "name": "الصَّافَّات",
+          "name_latin": "As-Saffat",
+          "number_of_ayah": "182",
+          "surat_name_translation": "Barisan-Barisan",
+          "start_ayat": "1",
+          "start_page": "446"
+        },
+        {
+          "number": "38",
+          "name": "ص",
+          "name_latin": "Sad",
+          "number_of_ayah": "88",
+          "surat_name_translation": "Sad",
+          "start_ayat": "1",
+          "start_page": "453"
+        },
+        {
+          "number": "39",
+          "name": "الزُّمَر",
+          "name_latin": "Az-Zumar",
+          "number_of_ayah": "75",
+          "surat_name_translation": "Rombongan",
+          "start_ayat": "1",
+          "start_page": "458"
+        }
+      ]
+    },
+    {
+      "number": "24",
+      "name": "Juz 24",
+      "surat": [
+        {
+          "number": "39",
+          "name": "الزُّمَر",
+          "name_latin": "Az-Zumar",
+          "number_of_ayah": "75",
+          "surat_name_translation": "Rombongan",
+          "start_ayat": "32",
+          "start_page": "462"
+        },
+        {
+          "number": "40",
+          "name": "غَافِر",
+          "name_latin": "Gafir",
+          "number_of_ayah": "85",
+          "surat_name_translation": "Maha Pengampun",
+          "start_ayat": "1",
+          "start_page": "467"
+        },
+        {
+          "number": "41",
+          "name": "فُصِّلَت",
+          "name_latin": "Fussilat",
+          "number_of_ayah": "54",
+          "surat_name_translation": "Yang Dijelaskan",
+          "start_ayat": "1",
+          "start_page": "477"
+        }
+      ]
+    },
+    {
+      "number": "25",
+      "name": "Juz 25",
+      "surat": [
+        {
+          "number": "41",
+          "name": "فُصِّلَت",
+          "name_latin": "Fussilat",
+          "number_of_ayah": "54",
+          "surat_name_translation": "Yang Dijelaskan",
+          "start_ayat": "47",
+          "start_page": "482"
+        },
+        {
+          "number": "42",
+          "name": "الشُّورى",
+          "name_latin": "Asy-Syura",
+          "number_of_ayah": "53",
+          "surat_name_translation": "Musyawarah",
+          "start_ayat": "1",
+          "start_page": "483"
+        },
+        {
+          "number": "43",
+          "name": "الزُّخْرف",
+          "name_latin": "Az-Zukhruf",
+          "number_of_ayah": "89",
+          "surat_name_translation": "Perhiasan",
+          "start_ayat": "1",
+          "start_page": "489"
+        },
+        {
+          "number": "44",
+          "name": "الدُّخَان",
+          "name_latin": "Ad-Dukhan",
+          "number_of_ayah": "59",
+          "surat_name_translation": "Kabut",
+          "start_ayat": "1",
+          "start_page": "496"
+        },
+        {
+          "number": "45",
+          "name": "الجَاثِيَة",
+          "name_latin": "Al-Jasiyah",
+          "number_of_ayah": "37",
+          "surat_name_translation": "Berlutut",
+          "start_ayat": "1",
+          "start_page": "499"
+        }
+      ]
+    },
+    {
+      "number": "26",
+      "name": "Juz 26",
+      "surat": [
+        {
+          "number": "46",
+          "name": "الأَحْقَاف",
+          "name_latin": "Al-Ahqaf",
+          "number_of_ayah": "35",
+          "surat_name_translation": "Bukit Pasir",
+          "start_ayat": "1",
+          "start_page": "502"
+        },
+        {
+          "number": "47",
+          "name": "مُحَمَّد",
+          "name_latin": "Muhammad",
+          "number_of_ayah": "38",
+          "surat_name_translation": "Muhammad",
+          "start_ayat": "1",
+          "start_page": "507"
+        },
+        {
+          "number": "48",
+          "name": "الفَتْح",
+          "name_latin": "Al-Fath",
+          "number_of_ayah": "29",
+          "surat_name_translation": "Kemenangan",
+          "start_ayat": "1",
+          "start_page": "511"
+        },
+        {
+          "number": "49",
+          "name": "الحُجرَات",
+          "name_latin": "Al-Hujurat",
+          "number_of_ayah": "18",
+          "surat_name_translation": "Kamar-Kamar",
+          "start_ayat": "1",
+          "start_page": "515"
+        },
+        {
+          "number": "50",
+          "name": "ق",
+          "name_latin": "Qaf",
+          "number_of_ayah": "45",
+          "surat_name_translation": "Qaf",
+          "start_ayat": "1",
+          "start_page": "518"
+        },
+        {
+          "number": "51",
+          "name": "الذّارِيَات",
+          "name_latin": "Az-Zariyat",
+          "number_of_ayah": "60",
+          "surat_name_translation": "Angin yang Menerbangkan",
+          "start_ayat": "1",
+          "start_page": "520"
+        }
+      ]
+    },
+    {
+      "number": "27",
+      "name": "Juz 27",
+      "surat": [
+        {
+          "number": "51",
+          "name": "الذّارِيَات",
+          "name_latin": "Az-Zariyat",
+          "number_of_ayah": "60",
+          "surat_name_translation": "Angin yang Menerbangkan",
+          "start_ayat": "31",
+          "start_page": "522"
+        },
+        {
+          "number": "52",
+          "name": "الطُّور",
+          "name_latin": "At-Tur",
+          "number_of_ayah": "49",
+          "surat_name_translation": "Bukit Tursina",
+          "start_ayat": "1",
+          "start_page": "523"
+        },
+        {
+          "number": "53",
+          "name": "النَّجْم",
+          "name_latin": "An-Najm",
+          "number_of_ayah": "62",
+          "surat_name_translation": "Bintang",
+          "start_ayat": "1",
+          "start_page": "526"
+        },
+        {
+          "number": "54",
+          "name": "القَمَر",
+          "name_latin": "Al-Qamar",
+          "number_of_ayah": "55",
+          "surat_name_translation": "Bulan",
+          "start_ayat": "1",
+          "start_page": "528"
+        },
+        {
+          "number": "55",
+          "name": "الرَحْمَان",
+          "name_latin": "Ar-Rahman",
+          "number_of_ayah": "78",
+          "surat_name_translation": "Maha Pengasih",
+          "start_ayat": "1",
+          "start_page": "531"
+        },
+        {
+          "number": "56",
+          "name": "الوَاقِعَة",
+          "name_latin": "Al-Waqi'ah",
+          "number_of_ayah": "96",
+          "surat_name_translation": "Hari Kiamat",
+          "start_ayat": "1",
+          "start_page": "534"
+        },
+        {
+          "number": "57",
+          "name": "الحَدِيْد",
+          "name_latin": "Al-Hadid",
+          "number_of_ayah": "29",
+          "surat_name_translation": "Besi",
+          "start_ayat": "1",
+          "start_page": "537"
+        }
+      ]
+    },
+    {
+      "number": "28",
+      "name": "Juz 28",
+      "surat": [
+        {
+          "number": "58",
+          "name": "المُجَادلَة",
+          "name_latin": "Al-Mujadalah",
+          "number_of_ayah": "22",
+          "surat_name_translation": "Gugatan",
+          "start_ayat": "1",
+          "start_page": "542"
+        },
+        {
+          "number": "59",
+          "name": "الحَشْر",
+          "name_latin": "Al-Hasyr",
+          "number_of_ayah": "24",
+          "surat_name_translation": "Pengusiran",
+          "start_ayat": "1",
+          "start_page": "545"
+        },
+        {
+          "number": "60",
+          "name": "المُمْتَحَنَة",
+          "name_latin": "Al-Mumtahanah",
+          "number_of_ayah": "13",
+          "surat_name_translation": "Wanita Yang Diuji",
+          "start_ayat": "1",
+          "start_page": "549"
+        },
+        {
+          "number": "61",
+          "name": "الصَّفّ",
+          "name_latin": "As-Saff",
+          "number_of_ayah": "14",
+          "surat_name_translation": "Barisan",
+          "start_ayat": "1",
+          "start_page": "551"
+        },
+        {
+          "number": "62",
+          "name": "الجُمُعَة",
+          "name_latin": "Al-Jumu'ah",
+          "number_of_ayah": "11",
+          "surat_name_translation": "Jumat",
+          "start_ayat": "1",
+          "start_page": "553"
+        },
+        {
+          "number": "63",
+          "name": "المُنَافِقُون",
+          "name_latin": "Al-Munafiqun",
+          "number_of_ayah": "11",
+          "surat_name_translation": "Orang-Orang Munafik",
+          "start_ayat": "1",
+          "start_page": "554"
+        },
+        {
+          "number": "64",
+          "name": "التَّغَابُن",
+          "name_latin": "At-Tagabun",
+          "number_of_ayah": "18",
+          "surat_name_translation": "Pengungkapan Kesalahan",
+          "start_ayat": "1",
+          "start_page": "556"
+        },
+        {
+          "number": "65",
+          "name": "الطَّلَاق",
+          "name_latin": "At-Talaq",
+          "number_of_ayah": "12",
+          "surat_name_translation": "Talak",
+          "start_ayat": "1",
+          "start_page": "558"
+        },
+        {
+          "number": "66",
+          "name": "التَّحْرِيم",
+          "name_latin": "At-Tahrim",
+          "number_of_ayah": "12",
+          "surat_name_translation": "Pengharaman",
+          "start_ayat": "1",
+          "start_page": "560"
+        }
+      ]
+    },
+    {
+      "number": "29",
+      "name": "Juz 29",
+      "surat": [
+        {
+          "number": "67",
+          "name": "المُلْك",
+          "name_latin": "Al-Mulk",
+          "number_of_ayah": "30",
+          "surat_name_translation": "Kerajaan",
+          "start_ayat": "1",
+          "start_page": "562"
+        },
+        {
+          "number": "68",
+          "name": "القَلَم",
+          "name_latin": "Al-Qalam",
+          "number_of_ayah": "52",
+          "surat_name_translation": "Pena",
+          "start_ayat": "1",
+          "start_page": "564"
+        },
+        {
+          "number": "69",
+          "name": "الحاۤقّّة",
+          "name_latin": "Al-Haqqah",
+          "number_of_ayah": "52",
+          "surat_name_translation": "Hari Kiamat",
+          "start_ayat": "1",
+          "start_page": "566"
+        },
+        {
+          "number": "70",
+          "name": "المَعَارِج",
+          "name_latin": "Al-Ma'arij",
+          "number_of_ayah": "44",
+          "surat_name_translation": "Tempat Naik",
+          "start_ayat": "1",
+          "start_page": "568"
+        },
+        {
+          "number": "71",
+          "name": "نُوح",
+          "name_latin": "Nuh",
+          "number_of_ayah": "28",
+          "surat_name_translation": "Nuh",
+          "start_ayat": "1",
+          "start_page": "570"
+        },
+        {
+          "number": "72",
+          "name": "الجِنّ",
+          "name_latin": "Al-Jinn",
+          "number_of_ayah": "28",
+          "surat_name_translation": "Jin",
+          "start_ayat": "1",
+          "start_page": "572"
+        },
+        {
+          "number": "73",
+          "name": "المُزَّمِّل",
+          "name_latin": "Al-Muzzammil",
+          "number_of_ayah": "20",
+          "surat_name_translation": "Orang Yang Berselimut",
+          "start_ayat": "1",
+          "start_page": "574"
+        },
+        {
+          "number": "74",
+          "name": "المُدَّثِّر",
+          "name_latin": "Al-Muddassir",
+          "number_of_ayah": "56",
+          "surat_name_translation": "Orang Yang Berkemul",
+          "start_ayat": "1",
+          "start_page": "575"
+        },
+        {
+          "number": "75",
+          "name": "القِيَامَة",
+          "name_latin": "Al-Qiyamah",
+          "number_of_ayah": "40",
+          "surat_name_translation": "Hari Kiamat",
+          "start_ayat": "1",
+          "start_page": "577"
+        },
+        {
+          "number": "76",
+          "name": "الإِنْسَان",
+          "name_latin": "Al-Insan",
+          "number_of_ayah": "31",
+          "surat_name_translation": "Manusia",
+          "start_ayat": "1",
+          "start_page": "578"
+        },
+        {
+          "number": "77",
+          "name": "المُرْسَلَات",
+          "name_latin": "Al-Mursalat",
+          "number_of_ayah": "50",
+          "surat_name_translation": "Malaikat Yang Diutus",
+          "start_ayat": "1",
+          "start_page": "580"
+        }
+      ]
+    },
+    {
+      "number": "30",
+      "name": "Juz 30",
+      "surat": [
+        {
+          "number": "78",
+          "name": "النَّبَأ",
+          "name_latin": "An-Naba'",
+          "number_of_ayah": "40",
+          "surat_name_translation": "Berita Besar",
+          "start_ayat": "1",
+          "start_page": "582"
+        },
+        {
+          "number": "79",
+          "name": "النَّازِعَات",
+          "name_latin": "An-Nazi'at",
+          "number_of_ayah": "46",
+          "surat_name_translation": "Malaikat Yang Mencabut",
+          "start_ayat": "1",
+          "start_page": "583"
+        },
+        {
+          "number": "80",
+          "name": "عَبَسَ",
+          "name_latin": "'Abasa",
+          "number_of_ayah": "42",
+          "surat_name_translation": "Bermuka Masam",
+          "start_ayat": "1",
+          "start_page": "585"
+        },
+        {
+          "number": "81",
+          "name": "التَّكْوِيْر",
+          "name_latin": "At-Takwir",
+          "number_of_ayah": "29",
+          "surat_name_translation": "Penggulungan",
+          "start_ayat": "1",
+          "start_page": "586"
+        },
+        {
+          "number": "82",
+          "name": "الإِنْفِطَار",
+          "name_latin": "Al-Infitar",
+          "number_of_ayah": "19",
+          "surat_name_translation": "Terbelah",
+          "start_ayat": "1",
+          "start_page": "587"
+        },
+        {
+          "number": "83",
+          "name": "المُطَفِّفِين",
+          "name_latin": "Al-Mutaffifin",
+          "number_of_ayah": "36",
+          "surat_name_translation": "Orang-Orang Curang",
+          "start_ayat": "1",
+          "start_page": "587"
+        },
+        {
+          "number": "84",
+          "name": "الإِنْشِقَاق",
+          "name_latin": "Al-Insyiqaq",
+          "number_of_ayah": "25",
+          "surat_name_translation": "Terbelah",
+          "start_ayat": "1",
+          "start_page": "589"
+        },
+        {
+          "number": "85",
+          "name": "البُرُوج",
+          "name_latin": "Al-Buruj",
+          "number_of_ayah": "22",
+          "surat_name_translation": "Gugusan Bintang",
+          "start_ayat": "1",
+          "start_page": "590"
+        },
+        {
+          "number": "86",
+          "name": "الطَّارِق",
+          "name_latin": "At-Tariq",
+          "number_of_ayah": "17",
+          "surat_name_translation": "Yang Datang Di Malam Hari",
+          "start_ayat": "1",
+          "start_page": "591"
+        },
+        {
+          "number": "87",
+          "name": "الأَعْلَى",
+          "name_latin": "Al-A'la",
+          "number_of_ayah": "19",
+          "surat_name_translation": "Maha Tinggi",
+          "start_ayat": "1",
+          "start_page": "591"
+        },
+        {
+          "number": "88",
+          "name": "الغَاشِيَة",
+          "name_latin": "Al-Gasyiyah",
+          "number_of_ayah": "26",
+          "surat_name_translation": "Hari Kiamat",
+          "start_ayat": "1",
+          "start_page": "592"
+        },
+        {
+          "number": "89",
+          "name": "الفَجْر",
+          "name_latin": "Al-Fajr",
+          "number_of_ayah": "30",
+          "surat_name_translation": "Fajar",
+          "start_ayat": "1",
+          "start_page": "593"
+        },
+        {
+          "number": "90",
+          "name": "البَلَد",
+          "name_latin": "Al-Balad",
+          "number_of_ayah": "20",
+          "surat_name_translation": "Negeri",
+          "start_ayat": "1",
+          "start_page": "594"
+        },
+        {
+          "number": "91",
+          "name": "الشَّمْس",
+          "name_latin": "Asy-Syams",
+          "number_of_ayah": "15",
+          "surat_name_translation": "Matahari",
+          "start_ayat": "1",
+          "start_page": "595"
+        },
+        {
+          "number": "92",
+          "name": "اللّّيْل",
+          "name_latin": "Al-Lail",
+          "number_of_ayah": "21",
+          "surat_name_translation": "Malam",
+          "start_ayat": "1",
+          "start_page": "595"
+        },
+        {
+          "number": "93",
+          "name": "الضُّحَى",
+          "name_latin": "Ad-Duha",
+          "number_of_ayah": "11",
+          "surat_name_translation": "Duha",
+          "start_ayat": "1",
+          "start_page": "596"
+        },
+        {
+          "number": "94",
+          "name": "الشَّرْح",
+          "name_latin": "Asy-Syarh",
+          "number_of_ayah": "8",
+          "surat_name_translation": "Lapang",
+          "start_ayat": "1",
+          "start_page": "596"
+        },
+        {
+          "number": "95",
+          "name": "التِّيْن",
+          "name_latin": "At-Tin",
+          "number_of_ayah": "8",
+          "surat_name_translation": "Buah Tin",
+          "start_ayat": "1",
+          "start_page": "597"
+        },
+        {
+          "number": "96",
+          "name": "العَلَق",
+          "name_latin": "Al-'Alaq",
+          "number_of_ayah": "19",
+          "surat_name_translation": "Segumpal Darah",
+          "start_ayat": "1",
+          "start_page": "597"
+        },
+        {
+          "number": "97",
+          "name": "القَدْر",
+          "name_latin": "Al-Qadr",
+          "number_of_ayah": "5",
+          "surat_name_translation": "Kemuliaan",
+          "start_ayat": "1",
+          "start_page": "598"
+        },
+        {
+          "number": "98",
+          "name": "البّيِّنَة",
+          "name_latin": "Al-Bayyinah",
+          "number_of_ayah": "8",
+          "surat_name_translation": "Bukti Nyata",
+          "start_ayat": "1",
+          "start_page": "598"
+        },
+        {
+          "number": "99",
+          "name": "الزَّلْزَلَة",
+          "name_latin": "Az-Zalzalah",
+          "number_of_ayah": "8",
+          "surat_name_translation": "Guncangan",
+          "start_ayat": "1",
+          "start_page": "599"
+        },
+        {
+          "number": "100",
+          "name": "العَادِيَات",
+          "name_latin": "Al-'Adiyat",
+          "number_of_ayah": "11",
+          "surat_name_translation": "Kuda Yang Berlari Kencang",
+          "start_ayat": "1",
+          "start_page": "599"
+        },
+        {
+          "number": "101",
+          "name": "القَارِعَة",
+          "name_latin": "Al-Qari'ah",
+          "number_of_ayah": "11",
+          "surat_name_translation": "Hari Kiamat",
+          "start_ayat": "1",
+          "start_page": "600"
+        },
+        {
+          "number": "102",
+          "name": "التَّكَاثُر",
+          "name_latin": "At-Takasur",
+          "number_of_ayah": "8",
+          "surat_name_translation": "Bermegah-Megahan",
+          "start_ayat": "1",
+          "start_page": "600"
+        },
+        {
+          "number": "103",
+          "name": "العَصْر",
+          "name_latin": "Al-'Asr",
+          "number_of_ayah": "3",
+          "surat_name_translation": "Asar",
+          "start_ayat": "1",
+          "start_page": "601"
+        },
+        {
+          "number": "104",
+          "name": "الهُمَزَة",
+          "name_latin": "Al-Humazah",
+          "number_of_ayah": "9",
+          "surat_name_translation": "Pengumpat",
+          "start_ayat": "1",
+          "start_page": "601"
+        },
+        {
+          "number": "105",
+          "name": "الفِيْل",
+          "name_latin": "Al-Fil",
+          "number_of_ayah": "5",
+          "surat_name_translation": "Gajah",
+          "start_ayat": "1",
+          "start_page": "601"
+        },
+        {
+          "number": "106",
+          "name": "قُرَيْش",
+          "name_latin": "Quraisy",
+          "number_of_ayah": "4",
+          "surat_name_translation": "Quraisy",
+          "start_ayat": "1",
+          "start_page": "602"
+        },
+        {
+          "number": "107",
+          "name": "المَاعُون",
+          "name_latin": "Al-Ma'un",
+          "number_of_ayah": "7",
+          "surat_name_translation": "Barang Yang Berguna",
+          "start_ayat": "1",
+          "start_page": "602"
+        },
+        {
+          "number": "108",
+          "name": "الكَوْثَر",
+          "name_latin": "Al-Kausar",
+          "number_of_ayah": "3",
+          "surat_name_translation": "Pemberian Yang Banyak",
+          "start_ayat": "1",
+          "start_page": "602"
+        },
+        {
+          "number": "109",
+          "name": "الكَافِرُون",
+          "name_latin": "Al-Kafirun",
+          "number_of_ayah": "6",
+          "surat_name_translation": "Orang-Orang kafir",
+          "start_ayat": "1",
+          "start_page": "603"
+        },
+        {
+          "number": "110",
+          "name": "النَّصْر",
+          "name_latin": "An-Nasr",
+          "number_of_ayah": "3",
+          "surat_name_translation": "Pertolongan",
+          "start_ayat": "1",
+          "start_page": "603"
+        },
+        {
+          "number": "111",
+          "name": "اللَّهَب",
+          "name_latin": "Al-Lahab",
+          "number_of_ayah": "5",
+          "surat_name_translation": "Api Yang Bergejolak",
+          "start_ayat": "1",
+          "start_page": "603"
+        },
+        {
+          "number": "112",
+          "name": "الإِخْلَاص",
+          "name_latin": "Al-Ikhlas",
+          "number_of_ayah": "4",
+          "surat_name_translation": "Ikhlas",
+          "start_ayat": "1",
+          "start_page": "604"
+        },
+        {
+          "number": "113",
+          "name": "الفَلَق",
+          "name_latin": "Al-Falaq",
+          "number_of_ayah": "5",
+          "surat_name_translation": "Subuh",
+          "start_ayat": "1",
+          "start_page": "604"
+        },
+        {
+          "number": "114",
+          "name": "النَّاس",
+          "name_latin": "An-Nas",
+          "number_of_ayah": "6",
+          "surat_name_translation": "Manusia",
+          "start_ayat": "1",
+          "start_page": "604"
         }
       ]
     }

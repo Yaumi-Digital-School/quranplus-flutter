@@ -19,7 +19,7 @@ class HomePageV2 extends StatelessWidget {
             offset: const Offset(8, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              children:  <Widget>[
                 Container(
                   width: 65,
                   height: 24,
@@ -61,14 +61,14 @@ class _ListSuratByJuzState extends State<ListSuratByJuz> {
             itemCount: juzs.length,
             itemBuilder: (context, index){
               return Column(
-                children: [
+                children:  <Widget>[
                   Container(
                     height: 42,
                     alignment: Alignment.centerLeft,
                     decoration: const BoxDecoration(
                       color: neutral200
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Text(
                       juzs[index].name, 
                       textAlign: TextAlign.start,
