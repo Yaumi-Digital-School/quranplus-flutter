@@ -163,9 +163,9 @@ class _ListSuratState extends State<ListSurat> {
         trailing:
             Text(surat.name, style: suratFontStyle, textAlign: TextAlign.right),
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return SuratPageV3(surat: surat);
-          }));
+          // Navigator.push(context, MaterialPageRoute(builder: (context) {
+          //   return SuratPageV3(surat: surat);
+          // }));
         },
       ),
     );

@@ -1,78 +1,119 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/surat_page.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbhelper.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
+import 'package:qurantafsir_flutter/shared/core/models/quran.dart';
+import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
 import 'package:qurantafsir_flutter/shared/core/view_models/base_view_model.dart';
 import 'package:qurantafsir_flutter/shared/ui/view_model_connector.dart';
 
 class SuratPageState {
   SuratPageState({
-    required this.surat,
     this.bookmarks,
+    this.pages,
+    this.pageController,
   });
 
-  Surat surat;
   Bookmarks? bookmarks;
+  List<QuranPage>? pages;
+  PageController? pageController;
 
   SuratPageState copyWith({
     Bookmarks? bookmarks,
+    List<QuranPage>? pages,
+    PageController? pageController,
   }) {
     return SuratPageState(
-      surat: surat,
       bookmarks: bookmarks ?? this.bookmarks,
+      pages: pages ?? this.pages,
+      pageController: pageController ?? this.pageController,
     );
   }
+
+  double get currentPage => pageController!.page!;
 }
 
 class SuratPageViewModel extends BaseViewModel<SuratPageState> {
   SuratPageViewModel({
-    required this.surat,
+    required this.startPage,
     this.bookmarks,
   }) : super(SuratPageState(
-          surat: surat,
           bookmarks: bookmarks,
+          pageController: PageController(
+            initialPage: startPage,
+          ),
         ));
 
-  Surat surat;
   Bookmarks? bookmarks;
+  int startPage;
   late DbHelper db;
+  late List<QuranPage> allPages;
 
   @override
-  initViewModel() {
+  Future<void> initViewModel() async {
     db = DbHelper();
+    allPages = await getPages();
+    state = state.copyWith(pages: allPages);
   }
 
-  Future<bool> checkBookmark(suratID, ayatID) async {
-    var result = await db.isBookmark(suratID, ayatID);
-    if (result == false) {
-      return false;
-    } else {
-      return true;
+  Future<List<QuranPage>> getPages() async {
+    const int quranPages = 604;
+    List<QuranPage> pages = <QuranPage>[];
+
+    for (int page = 1; page <= quranPages; page++) {
+      QuranPage p = await getPage(page);
+
+      pages.add(p);
     }
+
+    return pages;
   }
 
-  Future<void> insertBookmark(suratID, ayatID) async {
-    var result = await db.isBookmark(suratID, ayatID);
+  Future<QuranPage> getPage(int page) async {
+    List<dynamic> map = await json.decode(
+      await rootBundle.loadString('data/quran_pages/page$page.json'),
+    );
 
-    if (result == false) {
-      await db.saveBookmark(
-        Bookmarks(
-          suratid: surat.number,
-          ayatid: ayatID.toString(),
-        ),
-      );
+    QuranPage qPage = QuranPage.fromArray(map);
 
-      state = state.copyWith();
-    }
+    return qPage;
   }
+
+  // Future<bool> checkBookmark(suratID, ayatID) async {
+  //   var result = await db.isBookmark(suratID, ayatID);
+  //   if (result == false) {
+  //     return false;
+  //   } else {
+  //     return true;
+  //   }
+  // }
+
+  // Future<void> insertBookmark(suratID, ayatID) async {
+  //   var result = await db.isBookmark(suratID, ayatID);
+
+  //   if (result == false) {
+  //     await db.saveBookmark(
+  //       Bookmarks(
+  //         suratid: surat.number,
+  //         ayatid: ayatID.toString(),
+  //       ),
+  //     );
+
+  //     state = state.copyWith();
+  //   }
+  // }
 
   //menghapus data Bookmark
-  Future<void> deleteBookmark(suratID, ayatID) async {
-    await db.deleteBookmark(suratID, ayatID);
-    state = state.copyWith();
-  }
+  // Future<void> deleteBookmark(suratID, ayatID) async {
+  //   await db.deleteBookmark(suratID, ayatID);
+  //   state = state.copyWith();
+  // }
 
   onGoBack(context) {
     state = state.copyWith();

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 
 class HomePageV2 extends StatelessWidget {
-  const HomePageV2({ Key? key }) : super(key: key);
+  const HomePageV2({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class HomePageV2 extends StatelessWidget {
             offset: const Offset(8, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children:  <Widget>[
+              children: <Widget>[
                 Container(
                   width: 65,
                   height: 24,
@@ -36,13 +37,12 @@ class HomePageV2 extends StatelessWidget {
         ),
       ),
       body: const ListSuratByJuz(),
-      
     );
   }
 }
 
 class ListSuratByJuz extends StatefulWidget {
-  const ListSuratByJuz({ Key? key }) : super(key: key);
+  const ListSuratByJuz({Key? key}) : super(key: key);
 
   @override
   State<ListSuratByJuz> createState() => _ListSuratByJuzState();
@@ -52,43 +52,39 @@ class _ListSuratByJuzState extends State<ListSuratByJuz> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<String>(
-      future: DefaultAssetBundle.of(context).loadString(AppConstants.jsonJuz),
-      builder: (context, snapshot){
-        if(snapshot.hasData){
-          final List<JuzElement> juzs =  juzFromJson(snapshot.requireData).juz;
-          return ListView.builder(
-            shrinkWrap: true,
-            itemCount: juzs.length,
-            itemBuilder: (context, index){
-              return Column(
-                children:  <Widget>[
-                  Container(
-                    height: 42,
-                    alignment: Alignment.centerLeft,
-                    decoration: const BoxDecoration(
-                      color: neutral200
+        future: DefaultAssetBundle.of(context).loadString(AppConstants.jsonJuz),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final List<JuzElement> juzs = juzFromJson(snapshot.requireData).juz;
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount: juzs.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: <Widget>[
+                    Container(
+                      height: 42,
+                      alignment: Alignment.centerLeft,
+                      decoration: const BoxDecoration(color: neutral200),
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Text(
+                        juzs[index].name,
+                        textAlign: TextAlign.start,
+                        style: bodyRegular1,
+                      ),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Text(
-                      juzs[index].name, 
-                      textAlign: TextAlign.start,
-                      style: bodyRegular1,
-                    ),
-                  ),
-                  _buildListSuratByJuz(context, juzs[index])
-                ],
-              );
-            },
-          );
-        } else {
-          return const Center(child: CircularProgressIndicator()); 
-        }
-      }
-    );
+                    _buildListSuratByJuz(context, juzs[index])
+                  ],
+                );
+              },
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        });
   }
 
-  Widget _buildListSuratByJuz(BuildContext context, JuzElement juz){
-
+  Widget _buildListSuratByJuz(BuildContext context, JuzElement juz) {
     final List<SuratByJuz> surats = juz.surat;
 
     return Padding(
@@ -97,7 +93,7 @@ class _ListSuratByJuzState extends State<ListSuratByJuz> {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: surats.length,
-        itemBuilder: (context, index){
+        itemBuilder: (context, index) {
           return ListTile(
             minLeadingWidth: 20,
             leading: Container(
@@ -105,16 +101,15 @@ class _ListSuratByJuzState extends State<ListSuratByJuz> {
               height: 34,
               width: 30,
               decoration: const BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Color.fromRGBO(0, 0, 0, 0.1),
-                    offset: Offset(1.0, 2.0),
-                    blurRadius: 5.0,
-                    spreadRadius: 1.0)
-                ],
-                borderRadius: BorderRadius.all(Radius.circular(20))
-              ),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Color.fromRGBO(0, 0, 0, 0.1),
+                        offset: Offset(1.0, 2.0),
+                        blurRadius: 5.0,
+                        spreadRadius: 1.0)
+                  ],
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
               child: Text(
                 surats[index].number,
                 style: bodyMedium3,
@@ -145,11 +140,20 @@ class _ListSuratByJuzState extends State<ListSuratByJuz> {
               style: suratFontStyle,
               textAlign: TextAlign.right,
             ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    int page = surats[index].startPageToInt;
+                    return SuratPageV3(startPage: page);
+                  },
+                ),
+              );
+            },
           );
-        }
+        },
       ),
     );
   }
-
-
 }

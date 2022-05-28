@@ -8,18 +8,36 @@ import 'package:qurantafsir_flutter/pages/surat_page_v2/surat_page_view_model.da
 import 'package:qurantafsir_flutter/shared/constants/app_icons.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
+import 'package:qurantafsir_flutter/shared/core/models/quran.dart';
+import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
 import 'package:qurantafsir_flutter/shared/ui/view_model_connector.dart';
 
+enum AyahFontSize {
+  big,
+  regular,
+}
+
+extension AyahFontSizeExt on AyahFontSize {
+  double get value {
+    switch (this) {
+      case AyahFontSize.big:
+        return 54;
+      case AyahFontSize.regular:
+        return 26;
+    }
+  }
+}
+
 class SuratPageV3 extends StatelessWidget {
-  SuratPageV3({
+  const SuratPageV3({
     Key? key,
-    required this.surat,
+    required this.startPage,
     this.bookmarks,
   }) : super(key: key);
 
-  Surat surat;
-  Bookmarks? bookmarks;
+  final int startPage;
+  final Bookmarks? bookmarks;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +46,7 @@ class SuratPageV3 extends StatelessWidget {
           StateNotifierProvider<SuratPageViewModel, SuratPageState>(
         (ref) {
           return SuratPageViewModel(
-            surat: surat,
+            startPage: startPage,
             bookmarks: bookmarks,
           );
         },
@@ -40,278 +58,153 @@ class SuratPageV3 extends StatelessWidget {
         SuratPageViewModel viewModel,
         _,
       ) {
+        if (state.pages == null || state.pages!.length < 604) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(54.0),
             child: AppBar(
+              leading: IconButton(
+                icon: const Icon(
+                  Icons.chevron_left,
+                  color: Colors.black,
+                  size: 30,
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
               automaticallyImplyLeading: false,
               elevation: 2.5,
               foregroundColor: Colors.black,
-              title: Text("Surat ${surat.nameLatin}"),
+              title: const Text("Surat"),
               backgroundColor: backgroundColor,
               actions: <Widget>[
                 IconButton(
                   icon: const Icon(Icons.bookmark_outline),
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('This is a Bookmark')));
+                        const SnackBar(content: Text('This is a Bookmark')));
                   },
                 ),
                 IconButton(
                   icon: const Icon(CustomIcons.book),
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('This is a Full Page')));
+                        const SnackBar(content: Text('This is a Full Page')));
                   },
                 ),
                 IconButton(
                   icon: const Icon(CustomIcons.sliders),
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('This is a Setting')));
+                        const SnackBar(content: Text('This is a Setting')));
                   },
                 ),
-                
               ],
             ),
           ),
           body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: _buildAyatRow(
-              context: context,
-              viewModel: viewModel,
-            ),
+            padding: const EdgeInsets.all(8.0),
+            child: _buildPages(state: state),
           ),
         );
       },
     );
   }
 
-  Widget _buildAyatRow({
-    required BuildContext context,
-    required SuratPageViewModel viewModel,
+  Widget _buildPages({
+    required SuratPageState state,
   }) {
-    Timer _timer = Timer(const Duration(milliseconds: 200), () {});
-    final suratTaubah = surat.number != "9";
-    var bookmarked = false;
+    List<Widget> allPages = <Widget>[];
 
-    return ListView(
+    for (int pageValue = 0; pageValue < state.pages!.length; pageValue++) {
+      Widget page = _buildPage(
+        page: state.pages![pageValue],
+      );
+
+      allPages.add(page);
+    }
+
+    return PageView(
+      controller: state.pageController,
+      children: allPages,
+    );
+  }
+
+  Widget _buildPage({
+    required QuranPage page,
+  }) {
+    List<Widget> ayahs = <Widget>[];
+
+    for (int i = 0; i < page.verses.length; i++) {
+      bool useDivider = i != page.verses.length - 1;
+      int pageValue = i + 1;
+      Widget w = _buildAyah(
+        verse: page.verses[i],
+        useDivider: useDivider,
+        fontSize: AyahFontSize.regular,
+        page: pageValue,
+      );
+
+      ayahs.add(w);
+    }
+
+    return SingleChildScrollView(
+      child: Column(
+        children: ayahs,
+      ),
+    );
+  }
+
+  Widget _buildAyah({
+    required Verse verse,
+    required bool useDivider,
+    required AyahFontSize fontSize,
+    required int page,
+  }) {
+    List<InlineSpan> allVerses = <TextSpan>[];
+    String fontFamilyPage = 'Page$page';
+
+    for (Word word in verse.words) {
+      TextSpan wordInText = TextSpan(
+        text: word.code,
+        style: TextStyle(
+          fontFamily: fontFamilyPage,
+          fontSize: fontSize.value,
+          height: 1.6,
+        ),
+      );
+
+      allVerses.add(wordInText);
+    }
+
+    return Column(
       children: <Widget>[
-        Visibility(
-          visible: suratTaubah,
-          child: Container(
-            width: 162,
-            height: 85,
-            decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(
-              'images/bismillah.png',
-            ))),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Text.rich(
+              TextSpan(
+                children: allVerses,
+              ),
+              textAlign: TextAlign.right,
+            ),
           ),
         ),
-        const SizedBox(
-          height: 30,
-        ),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: surat.ayats.text.length,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onPanCancel: () => _timer.cancel(),
-              onPanDown: (_) => {
-                _timer = Timer(
-                  const Duration(milliseconds: 200),
-                  () {
-                    showModalBottomSheet(
-                      context: context,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(25.0),
-                        ),
-                      ),
-                      builder: (BuildContext context) {
-                        return StatefulBuilder(builder: (context, setState) {
-                          return SizedBox(
-                            height: 100,
-                            child: Column(
-                              children: [
-                                const SizedBox(
-                                  height: 8.0,
-                                ),
-                                Center(
-                                  child:
-                                      Text("${surat.nameLatin} : ${index + 1}"),
-                                ),
-                                const SizedBox(
-                                  height: 24.0,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 50),
-                                  child: InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        bookmarked = !bookmarked;
-                                      });
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          width: 24,
-                                          height: 24,
-                                          decoration: const BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: AssetImage(
-                                            'images/icon_bookmark_outlined.png',
-                                          ))),
-                                        ),
-                                        const SizedBox(
-                                          width: 8.0,
-                                        ),
-                                        FutureBuilder(
-                                          future: viewModel.checkBookmark(
-                                              surat.number, index + 1),
-                                          builder: (context, boolean) {
-                                            if (boolean.data == true) {
-                                              return TextButton(
-                                                  child: const Text(
-                                                    'Sudah Bookmark',
-                                                    style: TextStyle(
-                                                        color: neutral900,
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                  ),
-                                                  onPressed: () {
-                                                    viewModel.deleteBookmark(
-                                                        surat.number,
-                                                        index + 1);
-                                                    Navigator.pop(context);
-                                                  });
-                                            } else {
-                                              return TextButton(
-                                                child: const Text(
-                                                  'Bookmark',
-                                                  style: TextStyle(
-                                                      color: neutral900,
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                                onPressed: () async {
-                                                  viewModel.insertBookmark(
-                                                      surat.number, index + 1);
-                                                  await Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) {
-                                                      return const BookmarkPageV2();
-                                                    }),
-                                                  );
-
-                                                  Navigator.pop(context);
-                                                },
-                                              );
-                                            }
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          );
-                        });
-                      },
-                    );
-                  },
-                )
-              },
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  FutureBuilder<bool>(
-                    future: viewModel.checkBookmark(surat.number, index + 1),
-                    builder: (context, boolean) {
-                      if (boolean.hasData) {
-                        var newBool = boolean.data;
-                        return Visibility(
-                          visible: newBool!,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: 24,
-                                height: 24,
-                                decoration: const BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                      'images/icon_bookmark.png',
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      } else {
-                        return Visibility(
-                          visible: false,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: 24,
-                                height: 24,
-                                decoration: const BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                      'images/icon_bookmark.png',
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  Text(
-                    surat.ayats.text[index],
-                    style: ayatFontStyle,
-                    textDirection: TextDirection.rtl,
-                  ),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: Text(
-                      "${index + 1}. ${surat.translations.text[index]}",
-                      style: bodyRegular3,
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  const Divider(
-                    height: 10,
-                    color: Colors.black,
-                  ),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
+        if (useDivider)
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Divider(
+              height: 10,
+              color: Colors.black,
+            ),
+          ),
       ],
     );
   }
