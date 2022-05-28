@@ -146,7 +146,8 @@ class _ListSuratByJuzState extends State<ListSuratByJuz> {
                 MaterialPageRoute(
                   builder: (context) {
                     int page = surats[index].startPageToInt;
-                    return SuratPageV3(startPage: page);
+                    int startPageInIndexValue = page - 1;
+                    return SuratPageV3(startPage: startPageInIndexValue);
                   },
                 ),
               );
