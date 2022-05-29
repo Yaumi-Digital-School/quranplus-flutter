@@ -1,6 +1,99 @@
 [
     {
         "hizb_number": 18,
+        "id": 1169,
+        "juz_number": 9,
+        "verse_key": "8:9",
+        "verse_number": 9,
+        "words": [
+            {
+                "chapter_number": 0,
+                "code_v1": "ﭑ",
+                "id": 9940,
+                "line_number": 1,
+                "position": 1
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﭒ",
+                "id": 9941,
+                "line_number": 1,
+                "position": 2
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﭓ",
+                "id": 9942,
+                "line_number": 1,
+                "position": 3
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﭔ",
+                "id": 9943,
+                "line_number": 1,
+                "position": 4
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﭕ",
+                "id": 9944,
+                "line_number": 1,
+                "position": 5
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﭖ",
+                "id": 9945,
+                "line_number": 1,
+                "position": 6
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﭗ",
+                "id": 9946,
+                "line_number": 1,
+                "position": 7
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﭘ",
+                "id": 9947,
+                "line_number": 1,
+                "position": 8
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﭙ",
+                "id": 9948,
+                "line_number": 2,
+                "position": 9
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﭚ",
+                "id": 9949,
+                "line_number": 2,
+                "position": 10
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﭛ",
+                "id": 9950,
+                "line_number": 2,
+                "position": 11
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﭜ",
+                "id": 9951,
+                "line_number": 2,
+                "position": 12
+            }
+        ]
+    },
+    {
+        "hizb_number": 18,
         "id": 1170,
         "juz_number": 9,
         "verse_key": "8:10",
@@ -934,99 +1027,6 @@
                 "id": 18334,
                 "line_number": 15,
                 "position": 22
-            }
-        ]
-    },
-    {
-        "hizb_number": 18,
-        "id": 1169,
-        "juz_number": 9,
-        "verse_key": "8:9",
-        "verse_number": 9,
-        "words": [
-            {
-                "chapter_number": 0,
-                "code_v1": "ﭑ",
-                "id": 9940,
-                "line_number": 1,
-                "position": 1
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﭒ",
-                "id": 9941,
-                "line_number": 1,
-                "position": 2
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﭓ",
-                "id": 9942,
-                "line_number": 1,
-                "position": 3
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﭔ",
-                "id": 9943,
-                "line_number": 1,
-                "position": 4
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﭕ",
-                "id": 9944,
-                "line_number": 1,
-                "position": 5
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﭖ",
-                "id": 9945,
-                "line_number": 1,
-                "position": 6
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﭗ",
-                "id": 9946,
-                "line_number": 1,
-                "position": 7
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﭘ",
-                "id": 9947,
-                "line_number": 1,
-                "position": 8
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﭙ",
-                "id": 9948,
-                "line_number": 2,
-                "position": 9
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﭚ",
-                "id": 9949,
-                "line_number": 2,
-                "position": 10
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﭛ",
-                "id": 9950,
-                "line_number": 2,
-                "position": 11
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﭜ",
-                "id": 9951,
-                "line_number": 2,
-                "position": 12
             }
         ]
     }

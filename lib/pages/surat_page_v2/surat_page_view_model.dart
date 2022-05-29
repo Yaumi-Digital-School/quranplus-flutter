@@ -85,36 +85,6 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
     return qPage;
   }
 
-  // Future<bool> checkBookmark(suratID, ayatID) async {
-  //   var result = await db.isBookmark(suratID, ayatID);
-  //   if (result == false) {
-  //     return false;
-  //   } else {
-  //     return true;
-  //   }
-  // }
-
-  // Future<void> insertBookmark(suratID, ayatID) async {
-  //   var result = await db.isBookmark(suratID, ayatID);
-
-  //   if (result == false) {
-  //     await db.saveBookmark(
-  //       Bookmarks(
-  //         suratid: surat.number,
-  //         ayatid: ayatID.toString(),
-  //       ),
-  //     );
-
-  //     state = state.copyWith();
-  //   }
-  // }
-
-  //menghapus data Bookmark
-  // Future<void> deleteBookmark(suratID, ayatID) async {
-  //   await db.deleteBookmark(suratID, ayatID);
-  //   state = state.copyWith();
-  // }
-
   onGoBack(context) {
     state = state.copyWith();
     Navigator.pop(context);
