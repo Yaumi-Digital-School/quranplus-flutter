@@ -180,7 +180,7 @@ class SuratPageV3 extends StatelessWidget {
     String fontFamilyPage = 'Page$page';
 
     for (Word word in verse.words) {
-      allVerses += word.code;
+      allVerses += word.code + ' ';
     }
 
     return Column(
