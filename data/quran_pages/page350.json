@@ -80,85 +80,6 @@
     },
     {
         "hizb_number": 35,
-        "id": 2801,
-        "juz_number": 18,
-        "verse_key": "24:10",
-        "verse_number": 10,
-        "words": [
-            {
-                "chapter_number": 0,
-                "code_v1": "ﰂ",
-                "id": 11575,
-                "line_number": 15,
-                "position": 1
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﰃ",
-                "id": 11576,
-                "line_number": 15,
-                "position": 2
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﰄ",
-                "id": 11577,
-                "line_number": 15,
-                "position": 3
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﰅ",
-                "id": 11578,
-                "line_number": 15,
-                "position": 4
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﰆ",
-                "id": 11579,
-                "line_number": 15,
-                "position": 5
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﰇ",
-                "id": 11580,
-                "line_number": 15,
-                "position": 6
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﰈ",
-                "id": 11581,
-                "line_number": 15,
-                "position": 7
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﰉ",
-                "id": 11582,
-                "line_number": 15,
-                "position": 8
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﰊ",
-                "id": 11583,
-                "line_number": 15,
-                "position": 9
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﰋ",
-                "id": 11584,
-                "line_number": 15,
-                "position": 10
-            }
-        ]
-    },
-    {
-        "hizb_number": 35,
         "id": 2793,
         "juz_number": 18,
         "verse_key": "24:2",
@@ -1163,6 +1084,85 @@
                 "code_v1": "ﰁ",
                 "id": 10396,
                 "line_number": 14,
+                "position": 10
+            }
+        ]
+    },
+    {
+        "hizb_number": 35,
+        "id": 2801,
+        "juz_number": 18,
+        "verse_key": "24:10",
+        "verse_number": 10,
+        "words": [
+            {
+                "chapter_number": 0,
+                "code_v1": "ﰂ",
+                "id": 11575,
+                "line_number": 15,
+                "position": 1
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﰃ",
+                "id": 11576,
+                "line_number": 15,
+                "position": 2
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﰄ",
+                "id": 11577,
+                "line_number": 15,
+                "position": 3
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﰅ",
+                "id": 11578,
+                "line_number": 15,
+                "position": 4
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﰆ",
+                "id": 11579,
+                "line_number": 15,
+                "position": 5
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﰇ",
+                "id": 11580,
+                "line_number": 15,
+                "position": 6
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﰈ",
+                "id": 11581,
+                "line_number": 15,
+                "position": 7
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﰉ",
+                "id": 11582,
+                "line_number": 15,
+                "position": 8
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﰊ",
+                "id": 11583,
+                "line_number": 15,
+                "position": 9
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﰋ",
+                "id": 11584,
+                "line_number": 15,
                 "position": 10
             }
         ]

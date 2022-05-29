@@ -24,255 +24,6 @@
     },
     {
         "hizb_number": 48,
-        "id": 4228,
-        "juz_number": 24,
-        "verse_key": "41:10",
-        "verse_number": 10,
-        "words": [
-            {
-                "chapter_number": 0,
-                "code_v1": "ﮰ",
-                "id": 10870,
-                "line_number": 13,
-                "position": 1
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﮱ",
-                "id": 10871,
-                "line_number": 13,
-                "position": 2
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯓ",
-                "id": 10872,
-                "line_number": 13,
-                "position": 3
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯔ",
-                "id": 10873,
-                "line_number": 13,
-                "position": 4
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯕ",
-                "id": 10874,
-                "line_number": 13,
-                "position": 5
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯖ",
-                "id": 10875,
-                "line_number": 13,
-                "position": 6
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯗ",
-                "id": 10876,
-                "line_number": 13,
-                "position": 7
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯘ",
-                "id": 10877,
-                "line_number": 13,
-                "position": 8
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯙ",
-                "id": 10878,
-                "line_number": 13,
-                "position": 9
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯚ",
-                "id": 10879,
-                "line_number": 13,
-                "position": 10
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯛ",
-                "id": 10880,
-                "line_number": 13,
-                "position": 11
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯜ",
-                "id": 10881,
-                "line_number": 14,
-                "position": 12
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯝ",
-                "id": 10882,
-                "line_number": 14,
-                "position": 13
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯞ",
-                "id": 10883,
-                "line_number": 14,
-                "position": 14
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯟ",
-                "id": 10884,
-                "line_number": 14,
-                "position": 15
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯠ",
-                "id": 10885,
-                "line_number": 14,
-                "position": 16
-            }
-        ]
-    },
-    {
-        "hizb_number": 48,
-        "id": 4229,
-        "juz_number": 24,
-        "verse_key": "41:11",
-        "verse_number": 11,
-        "words": [
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯡ",
-                "id": 12187,
-                "line_number": 14,
-                "position": 1
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯢ",
-                "id": 12188,
-                "line_number": 14,
-                "position": 2
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯣ",
-                "id": 12189,
-                "line_number": 14,
-                "position": 3
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯤ",
-                "id": 12190,
-                "line_number": 14,
-                "position": 4
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯥ",
-                "id": 12191,
-                "line_number": 14,
-                "position": 5
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯦ",
-                "id": 12192,
-                "line_number": 14,
-                "position": 6
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯧ",
-                "id": 12193,
-                "line_number": 15,
-                "position": 7
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯨ",
-                "id": 12194,
-                "line_number": 15,
-                "position": 8
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯩ",
-                "id": 12195,
-                "line_number": 15,
-                "position": 9
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯪ",
-                "id": 12196,
-                "line_number": 15,
-                "position": 10
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯫ",
-                "id": 12197,
-                "line_number": 15,
-                "position": 11
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯬ",
-                "id": 12198,
-                "line_number": 15,
-                "position": 12
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯭ",
-                "id": 12199,
-                "line_number": 15,
-                "position": 13
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯮ",
-                "id": 12200,
-                "line_number": 15,
-                "position": 14
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯯ",
-                "id": 12201,
-                "line_number": 15,
-                "position": 15
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯰ",
-                "id": 12202,
-                "line_number": 15,
-                "position": 16
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﯱ",
-                "id": 12203,
-                "line_number": 15,
-                "position": 17
-            }
-        ]
-    },
-    {
-        "hizb_number": 48,
         "id": 4220,
         "juz_number": 24,
         "verse_key": "41:2",
@@ -990,6 +741,255 @@
                 "code_v1": "ﮯ",
                 "id": 9752,
                 "line_number": 12,
+                "position": 17
+            }
+        ]
+    },
+    {
+        "hizb_number": 48,
+        "id": 4228,
+        "juz_number": 24,
+        "verse_key": "41:10",
+        "verse_number": 10,
+        "words": [
+            {
+                "chapter_number": 0,
+                "code_v1": "ﮰ",
+                "id": 10870,
+                "line_number": 13,
+                "position": 1
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﮱ",
+                "id": 10871,
+                "line_number": 13,
+                "position": 2
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯓ",
+                "id": 10872,
+                "line_number": 13,
+                "position": 3
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯔ",
+                "id": 10873,
+                "line_number": 13,
+                "position": 4
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯕ",
+                "id": 10874,
+                "line_number": 13,
+                "position": 5
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯖ",
+                "id": 10875,
+                "line_number": 13,
+                "position": 6
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯗ",
+                "id": 10876,
+                "line_number": 13,
+                "position": 7
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯘ",
+                "id": 10877,
+                "line_number": 13,
+                "position": 8
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯙ",
+                "id": 10878,
+                "line_number": 13,
+                "position": 9
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯚ",
+                "id": 10879,
+                "line_number": 13,
+                "position": 10
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯛ",
+                "id": 10880,
+                "line_number": 13,
+                "position": 11
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯜ",
+                "id": 10881,
+                "line_number": 14,
+                "position": 12
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯝ",
+                "id": 10882,
+                "line_number": 14,
+                "position": 13
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯞ",
+                "id": 10883,
+                "line_number": 14,
+                "position": 14
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯟ",
+                "id": 10884,
+                "line_number": 14,
+                "position": 15
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯠ",
+                "id": 10885,
+                "line_number": 14,
+                "position": 16
+            }
+        ]
+    },
+    {
+        "hizb_number": 48,
+        "id": 4229,
+        "juz_number": 24,
+        "verse_key": "41:11",
+        "verse_number": 11,
+        "words": [
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯡ",
+                "id": 12187,
+                "line_number": 14,
+                "position": 1
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯢ",
+                "id": 12188,
+                "line_number": 14,
+                "position": 2
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯣ",
+                "id": 12189,
+                "line_number": 14,
+                "position": 3
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯤ",
+                "id": 12190,
+                "line_number": 14,
+                "position": 4
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯥ",
+                "id": 12191,
+                "line_number": 14,
+                "position": 5
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯦ",
+                "id": 12192,
+                "line_number": 14,
+                "position": 6
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯧ",
+                "id": 12193,
+                "line_number": 15,
+                "position": 7
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯨ",
+                "id": 12194,
+                "line_number": 15,
+                "position": 8
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯩ",
+                "id": 12195,
+                "line_number": 15,
+                "position": 9
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯪ",
+                "id": 12196,
+                "line_number": 15,
+                "position": 10
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯫ",
+                "id": 12197,
+                "line_number": 15,
+                "position": 11
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯬ",
+                "id": 12198,
+                "line_number": 15,
+                "position": 12
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯭ",
+                "id": 12199,
+                "line_number": 15,
+                "position": 13
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯮ",
+                "id": 12200,
+                "line_number": 15,
+                "position": 14
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯯ",
+                "id": 12201,
+                "line_number": 15,
+                "position": 15
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯰ",
+                "id": 12202,
+                "line_number": 15,
+                "position": 16
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﯱ",
+                "id": 12203,
+                "line_number": 15,
                 "position": 17
             }
         ]

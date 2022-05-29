@@ -22,7 +22,7 @@ extension AyahFontSizeExt on AyahFontSize {
   double get value {
     switch (this) {
       case AyahFontSize.big:
-        return 54;
+        return 35;
       case AyahFontSize.regular:
         return 26;
     }
@@ -144,15 +144,18 @@ class SuratPageV3 extends StatelessWidget {
     required pageNumber,
   }) {
     List<Widget> ayahs = <Widget>[];
-
     for (int i = 0; i < quranPageObject.verses.length; i++) {
       bool useDivider = i != quranPageObject.verses.length - 1;
+      Verse verse = quranPageObject.verses[i];
 
       Widget w = _buildAyah(
-        verse: quranPageObject.verses[i],
+        verse: verse,
         useDivider: useDivider,
-        fontSize: AyahFontSize.regular,
+        fontSize: pageNumber == 1 || pageNumber == 2
+            ? AyahFontSize.big
+            : AyahFontSize.regular,
         page: pageNumber,
+        useBasmalahBeforeAyah: verse.verseNumber == 1,
       );
 
       ayahs.add(w);
@@ -171,6 +174,7 @@ class SuratPageV3 extends StatelessWidget {
     required bool useDivider,
     required AyahFontSize fontSize,
     required int page,
+    required bool useBasmalahBeforeAyah,
   }) {
     List<InlineSpan> allVerses = <TextSpan>[];
     String fontFamilyPage = 'Page$page';
@@ -190,6 +194,7 @@ class SuratPageV3 extends StatelessWidget {
 
     return Column(
       children: <Widget>[
+        if (useBasmalahBeforeAyah) _buildBasmalah(),
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Align(
@@ -211,6 +216,20 @@ class SuratPageV3 extends StatelessWidget {
             ),
           ),
       ],
+    );
+  }
+
+  Widget _buildBasmalah() {
+    return Container(
+      width: 165,
+      height: 80,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(
+            'images/bismillah.png',
+          ),
+        ),
+      ),
     );
   }
 }

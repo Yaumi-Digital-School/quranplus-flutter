@@ -119,80 +119,6 @@
     },
     {
         "hizb_number": 60,
-        "id": 6167,
-        "juz_number": 30,
-        "verse_key": "101:10",
-        "verse_number": 10,
-        "words": [
-            {
-                "chapter_number": 0,
-                "code_v1": "ﮃ",
-                "id": 10824,
-                "line_number": 9,
-                "position": 1
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﮄ",
-                "id": 10825,
-                "line_number": 9,
-                "position": 2
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﮅ",
-                "id": 10826,
-                "line_number": 9,
-                "position": 3
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﮆ",
-                "id": 10827,
-                "line_number": 9,
-                "position": 4
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﮇ",
-                "id": 10828,
-                "line_number": 9,
-                "position": 5
-            }
-        ]
-    },
-    {
-        "hizb_number": 60,
-        "id": 6168,
-        "juz_number": 30,
-        "verse_key": "101:11",
-        "verse_number": 11,
-        "words": [
-            {
-                "chapter_number": 0,
-                "code_v1": "ﮈ",
-                "id": 12437,
-                "line_number": 9,
-                "position": 1
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﮉ",
-                "id": 12438,
-                "line_number": 9,
-                "position": 2
-            },
-            {
-                "chapter_number": 0,
-                "code_v1": "ﮊ",
-                "id": 12439,
-                "line_number": 9,
-                "position": 3
-            }
-        ]
-    },
-    {
-        "hizb_number": 60,
         "id": 6159,
         "juz_number": 30,
         "verse_key": "101:2",
@@ -517,6 +443,80 @@
                 "chapter_number": 0,
                 "code_v1": "ﮂ",
                 "id": 9784,
+                "line_number": 9,
+                "position": 3
+            }
+        ]
+    },
+    {
+        "hizb_number": 60,
+        "id": 6167,
+        "juz_number": 30,
+        "verse_key": "101:10",
+        "verse_number": 10,
+        "words": [
+            {
+                "chapter_number": 0,
+                "code_v1": "ﮃ",
+                "id": 10824,
+                "line_number": 9,
+                "position": 1
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﮄ",
+                "id": 10825,
+                "line_number": 9,
+                "position": 2
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﮅ",
+                "id": 10826,
+                "line_number": 9,
+                "position": 3
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﮆ",
+                "id": 10827,
+                "line_number": 9,
+                "position": 4
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﮇ",
+                "id": 10828,
+                "line_number": 9,
+                "position": 5
+            }
+        ]
+    },
+    {
+        "hizb_number": 60,
+        "id": 6168,
+        "juz_number": 30,
+        "verse_key": "101:11",
+        "verse_number": 11,
+        "words": [
+            {
+                "chapter_number": 0,
+                "code_v1": "ﮈ",
+                "id": 12437,
+                "line_number": 9,
+                "position": 1
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﮉ",
+                "id": 12438,
+                "line_number": 9,
+                "position": 2
+            },
+            {
+                "chapter_number": 0,
+                "code_v1": "ﮊ",
+                "id": 12439,
                 "line_number": 9,
                 "position": 3
             }
