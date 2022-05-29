@@ -180,31 +180,7 @@ class SuratPageV3 extends StatelessWidget {
     String fontFamilyPage = 'Page$page';
 
     for (Word word in verse.words) {
-      Widget wordInText = Text(
-        word.code,
-        style: TextStyle(
-          fontFamily: fontFamilyPage,
-          fontSize: fontSize.value,
-          height: 1.6,
-        ),
-      );
-
-      allVerses += word.code + ' ';
-
-      // List<InlineSpan> allVerses = <TextSpan>[];
-      // String fontFamilyPage = 'Page$page';
-
-      // for (Word word in verse.words) {
-      //   TextSpan wordInText = TextSpan(
-      //     text: word.code,
-      //     style: TextStyle(
-      //       fontFamily: fontFamilyPage,
-      //       fontSize: fontSize.value,
-      //       height: 1.6,
-      //     ),
-      //   );
-
-      //   allVerses.add(wordInText);
+      allVerses += word.code;
     }
 
     return Column(
