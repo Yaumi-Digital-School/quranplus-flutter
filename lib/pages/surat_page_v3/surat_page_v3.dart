@@ -159,6 +159,7 @@ class SuratPageV3 extends StatelessWidget {
     }
 
     return SingleChildScrollView(
+      key: PageStorageKey("page$pageNumber"),
       child: Column(
         children: ayahs,
       ),
