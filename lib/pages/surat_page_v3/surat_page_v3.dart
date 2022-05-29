@@ -51,7 +51,7 @@ class SuratPageV3 extends StatelessWidget {
           );
         },
       ),
-      onViewModelReady: (viewModel) => viewModel.initViewModel(),
+      onViewModelReady: (viewModel) async => await viewModel.initViewModel(),
       builder: (
         BuildContext context,
         SuratPageState state,
@@ -122,9 +122,12 @@ class SuratPageV3 extends StatelessWidget {
   }) {
     List<Widget> allPages = <Widget>[];
 
-    for (int pageValue = 0; pageValue < state.pages!.length; pageValue++) {
+    for (int idx = 0; idx < state.pages!.length; idx++) {
+      int pageNumberInQuran = idx + 1;
+
       Widget page = _buildPage(
-        page: state.pages![pageValue],
+        quranPageObject: state.pages![idx],
+        pageNumber: pageNumberInQuran,
       );
 
       allPages.add(page);
@@ -137,24 +140,26 @@ class SuratPageV3 extends StatelessWidget {
   }
 
   Widget _buildPage({
-    required QuranPage page,
+    required QuranPage quranPageObject,
+    required pageNumber,
   }) {
     List<Widget> ayahs = <Widget>[];
 
-    for (int i = 0; i < page.verses.length; i++) {
-      bool useDivider = i != page.verses.length - 1;
-      int pageValue = i + 1;
+    for (int i = 0; i < quranPageObject.verses.length; i++) {
+      bool useDivider = i != quranPageObject.verses.length - 1;
+
       Widget w = _buildAyah(
-        verse: page.verses[i],
+        verse: quranPageObject.verses[i],
         useDivider: useDivider,
         fontSize: AyahFontSize.regular,
-        page: pageValue,
+        page: pageNumber,
       );
 
       ayahs.add(w);
     }
 
     return SingleChildScrollView(
+      key: PageStorageKey("page$pageNumber"),
       child: Column(
         children: ayahs,
       ),
