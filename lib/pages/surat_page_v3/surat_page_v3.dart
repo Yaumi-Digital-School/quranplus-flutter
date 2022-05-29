@@ -176,12 +176,12 @@ class SuratPageV3 extends StatelessWidget {
     required int page,
     required bool useBasmalahBeforeAyah,
   }) {
-    List<InlineSpan> allVerses = <TextSpan>[];
+    String allVerses = '';
     String fontFamilyPage = 'Page$page';
 
     for (Word word in verse.words) {
-      TextSpan wordInText = TextSpan(
-        text: word.code,
+      Widget wordInText = Text(
+        word.code,
         style: TextStyle(
           fontFamily: fontFamilyPage,
           fontSize: fontSize.value,
@@ -189,7 +189,22 @@ class SuratPageV3 extends StatelessWidget {
         ),
       );
 
-      allVerses.add(wordInText);
+      allVerses += word.code + ' ';
+
+      // List<InlineSpan> allVerses = <TextSpan>[];
+      // String fontFamilyPage = 'Page$page';
+
+      // for (Word word in verse.words) {
+      //   TextSpan wordInText = TextSpan(
+      //     text: word.code,
+      //     style: TextStyle(
+      //       fontFamily: fontFamilyPage,
+      //       fontSize: fontSize.value,
+      //       height: 1.6,
+      //     ),
+      //   );
+
+      //   allVerses.add(wordInText);
     }
 
     return Column(
@@ -199,9 +214,13 @@ class SuratPageV3 extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Align(
             alignment: Alignment.centerRight,
-            child: Text.rich(
-              TextSpan(
-                children: allVerses,
+            child: Text(
+              allVerses,
+              style: TextStyle(
+                fontFamily: fontFamilyPage,
+                fontSize: fontSize.value,
+                height: 1.6,
+                wordSpacing: 2,
               ),
               textAlign: TextAlign.right,
             ),
