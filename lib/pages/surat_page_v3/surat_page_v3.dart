@@ -154,7 +154,7 @@ class SuratPageV3 extends StatelessWidget {
 
   Widget _buildPage({
     required QuranPage quranPageObject,
-    required pageNumber,
+    required int pageNumber,
     required SuratPageState state,
   }) {
     List<Widget> ayahs = <Widget>[];
@@ -169,10 +169,7 @@ class SuratPageV3 extends StatelessWidget {
             ? AyahFontSize.big
             : AyahFontSize.regular,
         page: pageNumber,
-        useBasmalahBeforeAyah: verse.verseNumber == 1,
-        translation: state.translations![verse.surahNumber - 1]
-            [verse.verseNumber - 1],
-        isWithTranslations: state.isWithTranslations,
+        state: state,
       );
 
       ayahs.add(w);
@@ -191,12 +188,14 @@ class SuratPageV3 extends StatelessWidget {
     required bool useDivider,
     required AyahFontSize fontSize,
     required int page,
-    required bool useBasmalahBeforeAyah,
-    required String translation,
-    required bool isWithTranslations,
+    required SuratPageState state,
   }) {
     String allVerses = '';
     String fontFamilyPage = 'Page$page';
+    bool useBasmalahBeforeAyah = verse.verseNumber == 1;
+    String translation =
+        state.translations![verse.surahNumber - 1][verse.verseNumber - 1];
+    bool isWithTranslations = state.isWithTranslations;
 
     for (Word word in verse.words) {
       allVerses += word.code + ' ';
