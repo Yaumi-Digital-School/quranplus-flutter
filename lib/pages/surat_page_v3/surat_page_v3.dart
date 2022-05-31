@@ -227,7 +227,9 @@ class SuratPageV3 extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 translation,
-                style: bodyRegular3,
+                style: bodyRegular3.merge(
+                  const TextStyle(height: 1.5),
+                ),
               ),
             ),
           ),
