@@ -10,6 +10,7 @@ import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
+import 'package:qurantafsir_flutter/shared/core/services/surat_data_service.dart';
 import 'package:qurantafsir_flutter/shared/core/view_models/base_view_model.dart';
 import 'package:qurantafsir_flutter/shared/ui/view_model_connector.dart';
 
@@ -54,8 +55,10 @@ class SuratPageState {
 class SuratPageViewModel extends BaseViewModel<SuratPageState> {
   SuratPageViewModel({
     required this.startPage,
+    required SuratDataService suratDataService,
     this.bookmarks,
-  }) : super(
+  })  : _suratDataService = suratDataService,
+        super(
           SuratPageState(
             bookmarks: bookmarks,
             pageController: PageController(
@@ -65,6 +68,7 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
         );
 
   Bookmarks? bookmarks;
+  final SuratDataService _suratDataService;
   int startPage;
   late DbHelper db;
   late List<QuranPage> allPages;
@@ -81,19 +85,25 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
   }
 
   Future<void> _generateTranslations() async {
-    List<dynamic> map = await json.decode(
-      await rootBundle.loadString('data/quran_translations/indonesia.json'),
-    );
+    if (_suratDataService.translations.isEmpty) {
+      List<dynamic> map = await json.decode(
+        await rootBundle.loadString('data/quran_translations/indonesia.json'),
+      );
 
-    translations = map
-        .map(
-          (e) => (e as List)
-              .map(
-                (e) => (e as String),
-              )
-              .toList(),
-        )
-        .toList();
+      translations = map
+          .map(
+            (e) => (e as List)
+                .map(
+                  (e) => (e as String),
+                )
+                .toList(),
+          )
+          .toList();
+
+      _suratDataService.setTranslations(translations ?? []);
+    } else {
+      translations = _suratDataService.translations;
+    }
 
     state = state.copyWith(translations: translations);
   }

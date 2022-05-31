@@ -12,6 +12,7 @@ import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
+import 'package:qurantafsir_flutter/shared/core/provider/surat_data_provider.dart';
 import 'package:qurantafsir_flutter/shared/ui/view_model_connector.dart';
 
 enum AyahFontSize {
@@ -51,6 +52,7 @@ class SuratPageV3 extends StatelessWidget {
           return SuratPageViewModel(
             startPage: startPage,
             bookmarks: bookmarks,
+            suratDataService: ref.watch(suratDataServiceProvider),
           );
         },
       ),
