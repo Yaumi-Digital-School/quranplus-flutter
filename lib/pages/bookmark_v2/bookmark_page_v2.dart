@@ -147,7 +147,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
               overflow: TextOverflow.ellipsis,
             ),
             Text(
-              bookmark.juz.toString(),
+              "Juz ${bookmark.juz.toString()}",
               style: caption1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -160,9 +160,9 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return SuratPageV3(
-              startPage: bookmark.startPageToInt - 1,
+              startPage: bookmark.page! - 1,
               namaSurat: bookmark.namaSurat.toString(),
-              juz: bookmark.juz.toString(),
+              juz: bookmark.juz!,
             );
           }));
         },

@@ -74,7 +74,7 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
   final SuratDataService _suratDataService;
   int startPage;
   String namaSurat;
-  String juz;
+  int juz;
   late DbBookmarks db;
   late List<QuranPage> allPages;
   List<List<String>>? translations;
@@ -148,7 +148,7 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
     await db.saveBookmark(Bookmarks(
       namaSurat: namaSurat,
       juz: juz,
-      page: page.toString()
+      page: page
     ));
   }
 

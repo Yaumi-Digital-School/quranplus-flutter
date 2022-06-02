@@ -5,17 +5,15 @@ import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
 class Bookmarks{
   Bookmarks({
     this.id, 
-    this.namaSurat, 
+    required this.namaSurat, 
     this.juz,
     this.page,
   });
 
   int? id;
   String? namaSurat;
-  String? juz;
-  String? page;
-
-  int get startPageToInt => int.parse(page.toString());
+  int? juz;
+  int? page;
 
 
   Map<String, dynamic> toMap() {

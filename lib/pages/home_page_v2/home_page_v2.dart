@@ -150,7 +150,7 @@ class _ListSuratByJuzState extends State<ListSuratByJuz> {
                     return SuratPageV3(
                       startPage: startPageInIndexValue, 
                       namaSurat: surats[index].nameLatin,
-                      juz: juz.name,
+                      juz: int.parse(juz.number),
                     );
                   },
                 ),

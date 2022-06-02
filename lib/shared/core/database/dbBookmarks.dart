@@ -45,7 +45,7 @@ class DbBookmarks {
 
   //membuat tabel dan field-fieldnya
   Future<void> _onCreate(Database db, int version) async {
-     var sql = "CREATE TABLE $tableName($columnId INTEGER PRIMARY KEY, $columnNamaSurat TEXT, $columnJuz TEXT, $columnPage TEXT)";
+     var sql = "CREATE TABLE $tableName($columnId INTEGER PRIMARY KEY, $columnNamaSurat TEXT, $columnJuz INTEGER, $columnPage INTEGER)";
      await db.execute(sql);
   }
 

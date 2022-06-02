@@ -42,7 +42,7 @@ class SuratPageV3 extends StatelessWidget {
 
   final int startPage;
   final String namaSurat;
-  final String juz;
+  final int juz;
   final Bookmarks? bookmarks;
 
   @override
@@ -54,9 +54,9 @@ class SuratPageV3 extends StatelessWidget {
           StateNotifierProvider<SuratPageViewModel, SuratPageState>(
         (ref) {
           return SuratPageViewModel(
-            startPage: startPage,
             namaSurat: namaSurat,
             juz: juz,
+            startPage: startPage,
             bookmarks: bookmarks,
             suratDataService: ref.watch(suratDataServiceProvider),
           );
