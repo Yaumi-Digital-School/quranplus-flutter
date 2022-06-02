@@ -5,12 +5,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_page.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_v2.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v2/surat_page_view_model.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_settings_drawer.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_icons.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
+import 'package:qurantafsir_flutter/shared/core/provider/surat_data_provider.dart';
 import 'package:qurantafsir_flutter/shared/ui/view_model_connector.dart';
 
 enum AyahFontSize {
@@ -45,6 +47,8 @@ class SuratPageV3 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _scaffoldKey = GlobalKey<ScaffoldState>();
+
     return ViewModelConnector<SuratPageViewModel, SuratPageState>(
       viewModelProvider:
           StateNotifierProvider<SuratPageViewModel, SuratPageState>(
@@ -54,6 +58,7 @@ class SuratPageV3 extends StatelessWidget {
             namaSurat: namaSurat,
             juz: juz,
             bookmarks: bookmarks,
+            suratDataService: ref.watch(suratDataServiceProvider),
           );
         },
       ),
@@ -64,7 +69,7 @@ class SuratPageV3 extends StatelessWidget {
         SuratPageViewModel viewModel,
         _,
       ) {
-        if (state.pages == null || state.pages!.length < 604) {
+        if (viewModel.busy) {
           return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
@@ -73,6 +78,7 @@ class SuratPageV3 extends StatelessWidget {
         }
 
         return Scaffold(
+          key: _scaffoldKey,
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(54.0),
             child: AppBar(
@@ -87,7 +93,7 @@ class SuratPageV3 extends StatelessWidget {
               automaticallyImplyLeading: false,
               elevation: 2.5,
               foregroundColor: Colors.black,
-              title: const Text("Surat"),
+              title: const Text('Surat'),
               backgroundColor: backgroundColor,
               actions: <Widget>[
                 IconButton(
@@ -110,8 +116,7 @@ class SuratPageV3 extends StatelessWidget {
                 IconButton(
                   icon: const Icon(CustomIcons.sliders),
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('This is a Setting')));
+                    _scaffoldKey.currentState?.openEndDrawer();
                   },
                 ),
               ],
@@ -120,6 +125,12 @@ class SuratPageV3 extends StatelessWidget {
           body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: _buildPages(state: state),
+          ),
+          endDrawer: SuratPageSettingsDrawer(
+            isWithTranslation: state.isWithTranslations,
+            isWithTafsir: state.isWithTafsirs,
+            onTapTranslation: (value) => viewModel.setIsWithTranslations(value),
+            onTapTafsir: (value) => viewModel.setIsWithTafsirs(value),
           ),
         );
       },
@@ -137,12 +148,14 @@ class SuratPageV3 extends StatelessWidget {
       Widget page = _buildPage(
         quranPageObject: state.pages![idx],
         pageNumber: pageNumberInQuran,
+        state: state,
       );
 
       allPages.add(page);
     }
 
     return PageView(
+      reverse: true,
       controller: state.pageController,
       children: allPages,
     );
@@ -150,7 +163,8 @@ class SuratPageV3 extends StatelessWidget {
 
   Widget _buildPage({
     required QuranPage quranPageObject,
-    required pageNumber,
+    required int pageNumber,
+    required SuratPageState state,
   }) {
     List<Widget> ayahs = <Widget>[];
     for (int i = 0; i < quranPageObject.verses.length; i++) {
@@ -164,14 +178,14 @@ class SuratPageV3 extends StatelessWidget {
             ? AyahFontSize.big
             : AyahFontSize.regular,
         page: pageNumber,
-        useBasmalahBeforeAyah: verse.verseNumber == 1,
+        state: state,
       );
 
       ayahs.add(w);
     }
 
     return SingleChildScrollView(
-      key: PageStorageKey("page$pageNumber"),
+      key: PageStorageKey('page$pageNumber'),
       child: Column(
         children: ayahs,
       ),
@@ -183,10 +197,14 @@ class SuratPageV3 extends StatelessWidget {
     required bool useDivider,
     required AyahFontSize fontSize,
     required int page,
-    required bool useBasmalahBeforeAyah,
+    required SuratPageState state,
   }) {
     String allVerses = '';
     String fontFamilyPage = 'Page$page';
+    bool useBasmalahBeforeAyah = verse.verseNumber == 1;
+    String translation =
+        state.translations![verse.surahNumber - 1][verse.verseNumber - 1];
+    bool isWithTranslations = state.isWithTranslations;
 
     for (Word word in verse.words) {
       allVerses += word.code + ' ';
@@ -211,12 +229,25 @@ class SuratPageV3 extends StatelessWidget {
             ),
           ),
         ),
+        if (isWithTranslations)
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                translation,
+                style: bodyRegular3.merge(
+                  const TextStyle(height: 1.5),
+                ),
+              ),
+            ),
+          ),
         if (useDivider)
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: Divider(
               height: 10,
-              color: Colors.black,
+              color: neutral400,
             ),
           ),
       ],
