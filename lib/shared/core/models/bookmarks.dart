@@ -7,13 +7,13 @@ class Bookmarks{
     this.id, 
     required this.namaSurat, 
     this.juz,
-    this.page,
+    required this.page,
   });
 
   int? id;
   String? namaSurat;
   int? juz;
-  int? page;
+  late int page;
 
 
   Map<String, dynamic> toMap() {
