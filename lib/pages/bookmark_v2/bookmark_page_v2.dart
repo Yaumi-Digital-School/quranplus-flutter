@@ -57,11 +57,10 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           const BoxShadow(
-                          color: neutral600,
-                          blurRadius: 7.0,
-                          spreadRadius: 0.1,
-
-                        )
+                            color: neutral600,
+                            blurRadius: 7.0,
+                            spreadRadius: 0.1,
+                          )
                         ]),
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
@@ -87,16 +86,16 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                     child: TabBarView(
                       children: <Widget>[
                         ListView.builder(
-                        itemCount: viewModel.listBookmark.length,
-                        itemBuilder: (context, index) {
-                          return _buildListBookmark(
-                            context: context, 
-                            listayatID: viewModel.listayatID[index], 
-                            index: index, 
-                            bookmark: viewModel.listBookmark[index],
-                            viewModel: viewModel,
-                          );
-                        }),
+                            itemCount: viewModel.listBookmark.length,
+                            itemBuilder: (context, index) {
+                              return _buildListBookmark(
+                                context: context,
+                                listayatID: viewModel.listayatID[index],
+                                index: index,
+                                bookmark: viewModel.listBookmark[index],
+                                viewModel: viewModel,
+                              );
+                            }),
                         Container(
                           child: Text('Favorite'),
                         ),
@@ -206,9 +205,9 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
           ),
         ),
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return SuratPageV2(surat: bookmark);
-          }));
+          // Navigator.push(context, MaterialPageRoute(builder: (context) {
+          //   return SuratPageV2(surat: bookmark);
+          // }));
         },
       ),
     );

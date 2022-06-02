@@ -1,77 +1,142 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/surat_page.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbhelper.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
+import 'package:qurantafsir_flutter/shared/core/models/quran.dart';
+import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
+import 'package:qurantafsir_flutter/shared/core/services/surat_data_service.dart';
 import 'package:qurantafsir_flutter/shared/core/view_models/base_view_model.dart';
 import 'package:qurantafsir_flutter/shared/ui/view_model_connector.dart';
 
 class SuratPageState {
   SuratPageState({
-    required this.surat,
     this.bookmarks,
+    this.pages,
+    this.pageController,
+    this.translations,
+    this.isWithTafsirs = false,
+    this.isWithTranslations = true,
   });
 
-  Surat surat;
   Bookmarks? bookmarks;
+  List<QuranPage>? pages;
+  List<List<String>>? translations;
+  PageController? pageController;
+  bool isWithTranslations;
+  bool isWithTafsirs;
 
   SuratPageState copyWith({
     Bookmarks? bookmarks,
+    List<QuranPage>? pages,
+    PageController? pageController,
+    List<List<String>>? translations,
+    bool? isWithTranslations,
+    bool? isWithTafsirs,
   }) {
     return SuratPageState(
-      surat: surat,
       bookmarks: bookmarks ?? this.bookmarks,
+      pages: pages ?? this.pages,
+      pageController: pageController ?? this.pageController,
+      translations: translations ?? this.translations,
+      isWithTafsirs: isWithTafsirs ?? this.isWithTafsirs,
+      isWithTranslations: isWithTranslations ?? this.isWithTranslations,
     );
   }
+
+  double get currentPage => pageController!.page!;
 }
 
 class SuratPageViewModel extends BaseViewModel<SuratPageState> {
   SuratPageViewModel({
-    required this.surat,
+    required this.startPage,
+    required SuratDataService suratDataService,
     this.bookmarks,
-  }) : super(SuratPageState(
-          surat: surat,
-          bookmarks: bookmarks,
-        ));
+  })  : _suratDataService = suratDataService,
+        super(
+          SuratPageState(
+            bookmarks: bookmarks,
+            pageController: PageController(
+              initialPage: startPage,
+            ),
+          ),
+        );
 
-  Surat surat;
   Bookmarks? bookmarks;
+  final SuratDataService _suratDataService;
+  int startPage;
   late DbHelper db;
+  late List<QuranPage> allPages;
+  List<List<String>>? translations;
 
   @override
-  initViewModel() {
+  Future<void> initViewModel() async {
+    setBusy(true);
     db = DbHelper();
+    allPages = await getPages();
+    state = state.copyWith(pages: allPages);
+    await _generateTranslations();
+    setBusy(false);
   }
 
-  Future<bool> checkBookmark(suratID, ayatID) async {
-    var result = await db.isBookmark(suratID, ayatID);
-    if (result == false) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  Future<void> insertBookmark(suratID, ayatID) async {
-    var result = await db.isBookmark(suratID, ayatID);
-
-    if (result == false) {
-      await db.saveBookmark(
-        Bookmarks(
-          suratid: surat.number,
-          ayatid: ayatID.toString(),
-        ),
+  Future<void> _generateTranslations() async {
+    if (_suratDataService.translations.isEmpty) {
+      List<dynamic> map = await json.decode(
+        await rootBundle.loadString('data/quran_translations/indonesia.json'),
       );
 
-      state = state.copyWith();
+      translations = map
+          .map(
+            (e) => (e as List)
+                .map(
+                  (e) => (e as String),
+                )
+                .toList(),
+          )
+          .toList();
+
+      _suratDataService.setTranslations(translations ?? []);
+    } else {
+      translations = _suratDataService.translations;
     }
+
+    state = state.copyWith(translations: translations);
   }
 
-  //menghapus data Bookmark
-  Future<void> deleteBookmark(suratID, ayatID) async {
-    await db.deleteBookmark(suratID, ayatID);
-    state = state.copyWith();
+  Future<List<QuranPage>> getPages() async {
+    const int quranPages = 604;
+    List<QuranPage> pages = <QuranPage>[];
+
+    for (int page = 1; page <= quranPages; page++) {
+      QuranPage p = await _getPage(page);
+
+      pages.add(p);
+    }
+
+    return pages;
+  }
+
+  Future<QuranPage> _getPage(int page) async {
+    List<dynamic> map = await json.decode(
+      await rootBundle.loadString('data/quran_pages/page$page.json'),
+    );
+
+    QuranPage qPage = QuranPage.fromArray(map);
+
+    return qPage;
+  }
+
+  void setIsWithTranslations(bool value) {
+    state = state.copyWith(isWithTranslations: value);
+  }
+
+  void setIsWithTafsirs(bool value) {
+    state = state.copyWith(isWithTafsirs: value);
   }
 
   onGoBack(context) {

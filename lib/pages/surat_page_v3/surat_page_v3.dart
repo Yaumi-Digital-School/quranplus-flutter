@@ -5,314 +5,257 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_page.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_v2.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v2/surat_page_view_model.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_settings_drawer.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_icons.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
+import 'package:qurantafsir_flutter/shared/core/models/quran.dart';
+import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
+import 'package:qurantafsir_flutter/shared/core/provider/surat_data_provider.dart';
 import 'package:qurantafsir_flutter/shared/ui/view_model_connector.dart';
 
+enum AyahFontSize {
+  big,
+  regular,
+}
+
+extension AyahFontSizeExt on AyahFontSize {
+  double get value {
+    switch (this) {
+      case AyahFontSize.big:
+        return 35;
+      case AyahFontSize.regular:
+        return 26;
+    }
+  }
+}
+
 class SuratPageV3 extends StatelessWidget {
-  SuratPageV3({
+  const SuratPageV3({
     Key? key,
-    required this.surat,
+    required this.startPage,
     this.bookmarks,
   }) : super(key: key);
 
-  Surat surat;
-  Bookmarks? bookmarks;
+  final int startPage;
+  final Bookmarks? bookmarks;
 
   @override
   Widget build(BuildContext context) {
+    final _scaffoldKey = GlobalKey<ScaffoldState>();
+
     return ViewModelConnector<SuratPageViewModel, SuratPageState>(
       viewModelProvider:
           StateNotifierProvider<SuratPageViewModel, SuratPageState>(
         (ref) {
           return SuratPageViewModel(
-            surat: surat,
+            startPage: startPage,
             bookmarks: bookmarks,
+            suratDataService: ref.watch(suratDataServiceProvider),
           );
         },
       ),
-      onViewModelReady: (viewModel) => viewModel.initViewModel(),
+      onViewModelReady: (viewModel) async => await viewModel.initViewModel(),
       builder: (
         BuildContext context,
         SuratPageState state,
         SuratPageViewModel viewModel,
         _,
       ) {
+        if (viewModel.busy) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
         return Scaffold(
+          key: _scaffoldKey,
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(54.0),
             child: AppBar(
+              leading: IconButton(
+                icon: const Icon(
+                  Icons.chevron_left,
+                  color: Colors.black,
+                  size: 30,
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
               automaticallyImplyLeading: false,
               elevation: 2.5,
               foregroundColor: Colors.black,
-              title: Text("Surat ${surat.nameLatin}"),
+              title: const Text('Surat'),
               backgroundColor: backgroundColor,
               actions: <Widget>[
                 IconButton(
                   icon: const Icon(Icons.bookmark_outline),
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('This is a Bookmark')));
+                        const SnackBar(content: Text('This is a Bookmark')));
                   },
                 ),
                 IconButton(
                   icon: const Icon(CustomIcons.book),
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('This is a Full Page')));
+                        const SnackBar(content: Text('This is a Full Page')));
                   },
                 ),
                 IconButton(
                   icon: const Icon(CustomIcons.sliders),
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('This is a Setting')));
+                    _scaffoldKey.currentState?.openEndDrawer();
                   },
                 ),
-                
               ],
             ),
           ),
           body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: _buildAyatRow(
-              context: context,
-              viewModel: viewModel,
-            ),
+            padding: const EdgeInsets.all(8.0),
+            child: _buildPages(state: state),
+          ),
+          endDrawer: SuratPageSettingsDrawer(
+            isWithTranslation: state.isWithTranslations,
+            isWithTafsir: state.isWithTafsirs,
+            onTapTranslation: (value) => viewModel.setIsWithTranslations(value),
+            onTapTafsir: (value) => viewModel.setIsWithTafsirs(value),
           ),
         );
       },
     );
   }
 
-  Widget _buildAyatRow({
-    required BuildContext context,
-    required SuratPageViewModel viewModel,
+  Widget _buildPages({
+    required SuratPageState state,
   }) {
-    Timer _timer = Timer(const Duration(milliseconds: 200), () {});
-    final suratTaubah = surat.number != "9";
-    var bookmarked = false;
+    List<Widget> allPages = <Widget>[];
 
-    return ListView(
+    for (int idx = 0; idx < state.pages!.length; idx++) {
+      int pageNumberInQuran = idx + 1;
+
+      Widget page = _buildPage(
+        quranPageObject: state.pages![idx],
+        pageNumber: pageNumberInQuran,
+        state: state,
+      );
+
+      allPages.add(page);
+    }
+
+    return PageView(
+      reverse: true,
+      controller: state.pageController,
+      children: allPages,
+    );
+  }
+
+  Widget _buildPage({
+    required QuranPage quranPageObject,
+    required int pageNumber,
+    required SuratPageState state,
+  }) {
+    List<Widget> ayahs = <Widget>[];
+    for (int i = 0; i < quranPageObject.verses.length; i++) {
+      bool useDivider = i != quranPageObject.verses.length - 1;
+      Verse verse = quranPageObject.verses[i];
+
+      Widget w = _buildAyah(
+        verse: verse,
+        useDivider: useDivider,
+        fontSize: pageNumber == 1 || pageNumber == 2
+            ? AyahFontSize.big
+            : AyahFontSize.regular,
+        page: pageNumber,
+        state: state,
+      );
+
+      ayahs.add(w);
+    }
+
+    return SingleChildScrollView(
+      key: PageStorageKey('page$pageNumber'),
+      child: Column(
+        children: ayahs,
+      ),
+    );
+  }
+
+  Widget _buildAyah({
+    required Verse verse,
+    required bool useDivider,
+    required AyahFontSize fontSize,
+    required int page,
+    required SuratPageState state,
+  }) {
+    String allVerses = '';
+    String fontFamilyPage = 'Page$page';
+    bool useBasmalahBeforeAyah = verse.verseNumber == 1;
+    String translation =
+        state.translations![verse.surahNumber - 1][verse.verseNumber - 1];
+    bool isWithTranslations = state.isWithTranslations;
+
+    for (Word word in verse.words) {
+      allVerses += word.code + ' ';
+    }
+
+    return Column(
       children: <Widget>[
-        Visibility(
-          visible: suratTaubah,
-          child: Container(
-            width: 162,
-            height: 85,
-            decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(
-              'images/bismillah.png',
-            ))),
+        if (useBasmalahBeforeAyah) _buildBasmalah(),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              allVerses,
+              style: TextStyle(
+                fontFamily: fontFamilyPage,
+                fontSize: fontSize.value,
+                height: 1.6,
+                wordSpacing: 2,
+              ),
+              textAlign: TextAlign.right,
+            ),
           ),
         ),
-        const SizedBox(
-          height: 30,
-        ),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: surat.ayats.text.length,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onPanCancel: () => _timer.cancel(),
-              onPanDown: (_) => {
-                _timer = Timer(
-                  const Duration(milliseconds: 200),
-                  () {
-                    showModalBottomSheet(
-                      context: context,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(25.0),
-                        ),
-                      ),
-                      builder: (BuildContext context) {
-                        return StatefulBuilder(builder: (context, setState) {
-                          return SizedBox(
-                            height: 100,
-                            child: Column(
-                              children: [
-                                const SizedBox(
-                                  height: 8.0,
-                                ),
-                                Center(
-                                  child:
-                                      Text("${surat.nameLatin} : ${index + 1}"),
-                                ),
-                                const SizedBox(
-                                  height: 24.0,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 50),
-                                  child: InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        bookmarked = !bookmarked;
-                                      });
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          width: 24,
-                                          height: 24,
-                                          decoration: const BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: AssetImage(
-                                            'images/icon_bookmark_outlined.png',
-                                          ))),
-                                        ),
-                                        const SizedBox(
-                                          width: 8.0,
-                                        ),
-                                        FutureBuilder(
-                                          future: viewModel.checkBookmark(
-                                              surat.number, index + 1),
-                                          builder: (context, boolean) {
-                                            if (boolean.data == true) {
-                                              return TextButton(
-                                                  child: const Text(
-                                                    'Sudah Bookmark',
-                                                    style: TextStyle(
-                                                        color: neutral900,
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                  ),
-                                                  onPressed: () {
-                                                    viewModel.deleteBookmark(
-                                                        surat.number,
-                                                        index + 1);
-                                                    Navigator.pop(context);
-                                                  });
-                                            } else {
-                                              return TextButton(
-                                                child: const Text(
-                                                  'Bookmark',
-                                                  style: TextStyle(
-                                                      color: neutral900,
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                                onPressed: () async {
-                                                  viewModel.insertBookmark(
-                                                      surat.number, index + 1);
-                                                  await Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) {
-                                                      return const BookmarkPageV2();
-                                                    }),
-                                                  );
-
-                                                  Navigator.pop(context);
-                                                },
-                                              );
-                                            }
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          );
-                        });
-                      },
-                    );
-                  },
-                )
-              },
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  FutureBuilder<bool>(
-                    future: viewModel.checkBookmark(surat.number, index + 1),
-                    builder: (context, boolean) {
-                      if (boolean.hasData) {
-                        var newBool = boolean.data;
-                        return Visibility(
-                          visible: newBool!,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: 24,
-                                height: 24,
-                                decoration: const BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                      'images/icon_bookmark.png',
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      } else {
-                        return Visibility(
-                          visible: false,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: 24,
-                                height: 24,
-                                decoration: const BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                      'images/icon_bookmark.png',
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  Text(
-                    surat.ayats.text[index],
-                    style: ayatFontStyle,
-                    textDirection: TextDirection.rtl,
-                  ),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: Text(
-                      "${index + 1}. ${surat.translations.text[index]}",
-                      style: bodyRegular3,
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  const Divider(
-                    height: 10,
-                    color: Colors.black,
-                  ),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                ],
+        if (isWithTranslations)
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                translation,
+                style: bodyRegular3.merge(
+                  const TextStyle(height: 1.5),
+                ),
               ),
-            );
-          },
-        ),
+            ),
+          ),
+        if (useDivider)
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Divider(
+              height: 10,
+              color: neutral400,
+            ),
+          ),
       ],
+    );
+  }
+
+  Widget _buildBasmalah() {
+    return Container(
+      width: 165,
+      height: 80,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(
+            'images/bismillah.png',
+          ),
+        ),
+      ),
     );
   }
 }
