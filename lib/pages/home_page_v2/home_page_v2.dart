@@ -147,7 +147,11 @@ class _ListSuratByJuzState extends State<ListSuratByJuz> {
                   builder: (context) {
                     int page = surats[index].startPageToInt;
                     int startPageInIndexValue = page - 1;
-                    return SuratPageV3(startPage: startPageInIndexValue);
+                    return SuratPageV3(
+                      startPage: startPageInIndexValue, 
+                      namaSurat: surats[index].nameLatin,
+                      juz: juz.name,
+                    );
                   },
                 ),
               );

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_view_model.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v2/surat_page_v2.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
 import 'package:qurantafsir_flutter/shared/ui/view_model_connector.dart';
 
@@ -90,8 +92,6 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                             itemBuilder: (context, index) {
                               return _buildListBookmark(
                                 context: context,
-                                listayatID: viewModel.listayatID[index],
-                                index: index,
                                 bookmark: viewModel.listBookmark[index],
                                 viewModel: viewModel,
                               );
@@ -113,101 +113,58 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
 
   Widget _buildListBookmark({
     required BuildContext context,
-    required listayatID,
-    index,
-    required Surat bookmark,
+    required Bookmarks bookmark,
     required BookmarkPageViewModel viewModel,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: ListTile(
         minLeadingWidth: 20,
-        leading: Container(
-          alignment: Alignment.center,
-          height: 34,
-          width: 30,
-          decoration: const BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                    color: Color.fromRGBO(0, 0, 0, 0.1),
-                    offset: Offset(1.0, 2.0),
-                    blurRadius: 5.0,
-                    spreadRadius: 1.0)
-              ],
-              borderRadius: BorderRadius.all(Radius.circular(20))),
-          child: Text(
-            listayatID.toString(),
-            style: bodyMedium3,
-            overflow: TextOverflow.ellipsis,
-          ),
+        leading: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: 24,
+              height: 24,
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage(
+                'images/icon_bookmark.png',
+              ))),
+            ),
+          ],
         ),
         title: Text(
-          bookmark.nameLatin,
+          "Surat ${bookmark.namaSurat.toString()}",
           style: bodyMedium3,
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Row(
           children: <Widget>[
             Text(
-              bookmark.suratNameTranslation,
+              "Page ${bookmark.page.toString()}, ",
               style: caption1,
               overflow: TextOverflow.ellipsis,
             ),
             Text(
-              " ( ${bookmark.numberOfAyah} ayat )",
+              bookmark.juz.toString(),
               style: caption1,
               overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
-        trailing: FittedBox(
-          fit: BoxFit.fill,
-          child: Row(
-            children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: () {
-                  AlertDialog hapus = AlertDialog(
-                    title: Text("Information"),
-                    content: Container(
-                      height: 100,
-                      child: Column(
-                        children: [
-                          Text(
-                              "Yakin ingin Menghapus Data berikut ? \n Surat : ${bookmark.nameLatin} \n Ayat : $listayatID")
-                        ],
-                      ),
-                    ),
-                    //terdapat 2 button.
-                    //jika ya maka jalankan _deleteBookmark() dan tutup dialog
-                    //jika tidak maka tutup dialog
-                    actions: [
-                      TextButton(
-                          onPressed: () {
-                            viewModel.deleteBookmark(
-                                bookmark.number, listayatID, index);
-                            Navigator.pop(context);
-                          },
-                          child: Text("Ya")),
-                      TextButton(
-                        child: Text('Tidak'),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ],
-                  );
-                  showDialog(context: context, builder: (context) => hapus);
-                },
-              )
-            ],
-          ),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[Text(bookmark.page.toString())],
         ),
         onTap: () {
-          // Navigator.push(context, MaterialPageRoute(builder: (context) {
-          //   return SuratPageV2(surat: bookmark);
-          // }));
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return SuratPageV3(
+              startPage: bookmark.startPageToInt - 1,
+              namaSurat: bookmark.namaSurat.toString(),
+              juz: bookmark.juz.toString(),
+            );
+          }));
         },
       ),
     );

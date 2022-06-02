@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/surat_page.dart';
+import 'package:qurantafsir_flutter/shared/core/database/dbBookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbhelper.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran.dart';
@@ -42,6 +43,8 @@ class SuratPageState {
 class SuratPageViewModel extends BaseViewModel<SuratPageState> {
   SuratPageViewModel({
     required this.startPage,
+    required this.namaSurat,
+    required this.juz,
     this.bookmarks,
   }) : super(SuratPageState(
           bookmarks: bookmarks,
@@ -52,12 +55,14 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
 
   Bookmarks? bookmarks;
   int startPage;
-  late DbHelper db;
+  String namaSurat;
+  String juz;
+  late DbBookmarks db;
   late List<QuranPage> allPages;
 
   @override
   Future<void> initViewModel() async {
-    db = DbHelper();
+    db = DbBookmarks();
     allPages = await getPages();
     state = state.copyWith(pages: allPages);
   }
@@ -83,6 +88,14 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
     QuranPage qPage = QuranPage.fromArray(map);
 
     return qPage;
+  }
+
+  Future<void> insertBookmark(namaSurat, juz, page) async {
+      await db.saveBookmark(Bookmarks(
+        namaSurat: namaSurat,
+        juz: juz,
+        page: page.toString()
+      ));
   }
 
   onGoBack(context) {
