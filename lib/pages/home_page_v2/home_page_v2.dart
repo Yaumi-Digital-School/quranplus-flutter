@@ -121,19 +121,11 @@ class _ListSuratByJuzState extends State<ListSuratByJuz> {
               style: bodyMedium2,
               overflow: TextOverflow.ellipsis,
             ),
-            subtitle: Row(
-              children: [
-                Text(
-                  surats[index].suratNameTranslation,
-                  style: caption1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  " (${surats[index].numberOfAyah} ayat)",
-                  style: caption1,
-                  overflow: TextOverflow.ellipsis,
-                )
-              ],
+            subtitle: Text(
+              "${surats[index].suratNameTranslation} (${surats[index].numberOfAyah} ayat)",
+              style: caption1,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
             trailing: Text(
               surats[index].name,
