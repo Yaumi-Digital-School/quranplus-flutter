@@ -136,7 +136,7 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
           )
           .toList();
 
-      _suratDataService.setTranslations(_tafsirs ?? []);
+      _suratDataService.setTafsirs(_tafsirs ?? []);
     } else {
       _tafsirs = _suratDataService.tafsirs;
     }

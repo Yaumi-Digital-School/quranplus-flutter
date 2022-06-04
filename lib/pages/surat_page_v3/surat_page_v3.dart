@@ -101,7 +101,9 @@ class _SuratPageV3State extends State<SuratPageV3> {
         SuratPageViewModel viewModel,
         _,
       ) {
-        if (state.pages == null || state.translations == null) {
+        if (state.pages == null ||
+            state.translations == null ||
+            state.tafsirs == null) {
           return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
@@ -246,7 +248,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     String translation =
         state.translations![verse.surahNumberInIndex][verse.verseNumberInIndex];
     String tafsir =
-        state.translations![verse.surahNumberInIndex][verse.verseNumberInIndex];
+        state.tafsirs![verse.surahNumberInIndex][verse.verseNumberInIndex];
     bool isWithTranslations = state.isWithTranslations;
     bool isWithTafsirs = state.isWithTafsirs;
 
