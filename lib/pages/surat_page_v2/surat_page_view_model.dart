@@ -21,6 +21,7 @@ class SuratPageState {
     this.pages,
     this.pageController,
     this.translations,
+    this.tafsirs,
     this.isWithTafsirs = false,
     this.isWithTranslations = true,
   });
@@ -28,6 +29,7 @@ class SuratPageState {
   Bookmarks? bookmarks;
   List<QuranPage>? pages;
   List<List<String>>? translations;
+  List<List<String>>? tafsirs;
   PageController? pageController;
   bool isWithTranslations;
   bool isWithTafsirs;
@@ -37,6 +39,7 @@ class SuratPageState {
     List<QuranPage>? pages,
     PageController? pageController,
     List<List<String>>? translations,
+    List<List<String>>? tafsirs,
     bool? isWithTranslations,
     bool? isWithTafsirs,
   }) {
@@ -45,6 +48,7 @@ class SuratPageState {
       pages: pages ?? this.pages,
       pageController: pageController ?? this.pageController,
       translations: translations ?? this.translations,
+      tafsirs: tafsirs ?? this.tafsirs,
       isWithTafsirs: isWithTafsirs ?? this.isWithTafsirs,
       isWithTranslations: isWithTranslations ?? this.isWithTranslations,
     );
@@ -79,16 +83,16 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
   int juz;
   late DbBookmarks db;
   late List<QuranPage> allPages;
-  List<List<String>>? translations;
+  List<List<String>>? _translations;
+  List<List<String>>? _tafsirs;
 
   @override
   Future<void> initViewModel() async {
-    setBusy(true);
     db = DbBookmarks();
     allPages = await getPages();
     state = state.copyWith(pages: allPages);
     await _generateTranslations();
-    setBusy(false);
+    await _generateBaseTafsirs();
   }
 
   Future<void> _generateTranslations() async {
@@ -97,7 +101,7 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
         await rootBundle.loadString('data/quran_translations/indonesia.json'),
       );
 
-      translations = map
+      _translations = map
           .map(
             (e) => (e as List)
                 .map(
@@ -107,12 +111,37 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
           )
           .toList();
 
-      _suratDataService.setTranslations(translations ?? []);
+      _suratDataService.setTranslations(_translations ?? []);
     } else {
-      translations = _suratDataService.translations;
+      _translations = _suratDataService.translations;
     }
 
-    state = state.copyWith(translations: translations);
+    state = state.copyWith(translations: _translations);
+  }
+
+  Future<void> _generateBaseTafsirs() async {
+    if (_suratDataService.tafsirs.isEmpty) {
+      List<dynamic> map = await json.decode(
+        await rootBundle
+            .loadString('data/quran_tafsirs/indonesia_kemenag.json'),
+      );
+
+      _tafsirs = map
+          .map(
+            (e) => (e as List)
+                .map(
+                  (e) => (e as String),
+                )
+                .toList(),
+          )
+          .toList();
+
+      _suratDataService.setTranslations(_tafsirs ?? []);
+    } else {
+      _tafsirs = _suratDataService.tafsirs;
+    }
+
+    state = state.copyWith(tafsirs: _tafsirs);
   }
 
   Future<List<QuranPage>> getPages() async {

@@ -2,19 +2,18 @@
 
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
 
-class Bookmarks{
+class Bookmarks {
   Bookmarks({
-    this.id, 
-    required this.namaSurat, 
+    this.id,
+    required this.namaSurat,
     this.juz,
     required this.page,
   });
 
   int? id;
-  String? namaSurat;
+  late String namaSurat;
   int? juz;
   late int page;
-
 
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
@@ -22,10 +21,10 @@ class Bookmarks{
     if (id != null) {
       map['id'] = id;
     }
-    map['namaSurat'] = namaSurat; 
-    map['juz'] = juz; 
+    map['namaSurat'] = namaSurat;
+    map['juz'] = juz;
     map['page'] = page;
-    
+
     return map;
   }
 

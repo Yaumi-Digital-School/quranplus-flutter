@@ -36,7 +36,7 @@ class SuratPageV3 extends StatefulWidget {
   const SuratPageV3({
     Key? key,
     required this.startPageInIndex,
-    required this.firstPagePointerIndex,
+    this.firstPagePointerIndex = 0,
     required this.namaSurat,
     required this.juz,
     this.bookmarks,
@@ -245,7 +245,10 @@ class _SuratPageV3State extends State<SuratPageV3> {
     bool useBasmalahBeforeAyah = verse.verseNumber == 1;
     String translation =
         state.translations![verse.surahNumberInIndex][verse.verseNumberInIndex];
+    String tafsir =
+        state.translations![verse.surahNumberInIndex][verse.verseNumberInIndex];
     bool isWithTranslations = state.isWithTranslations;
+    bool isWithTafsirs = state.isWithTafsirs;
 
     for (Word word in verse.words) {
       allVerses += word.code + ' ';
@@ -283,6 +286,22 @@ class _SuratPageV3State extends State<SuratPageV3> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   translation,
+                  style: bodyRegular3.merge(
+                    const TextStyle(height: 1.5),
+                  ),
+                ),
+              ),
+            ),
+          if (isWithTafsirs)
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Tafsir Kemenag\n$tafsir',
                   style: bodyRegular3.merge(
                     const TextStyle(height: 1.5),
                   ),
