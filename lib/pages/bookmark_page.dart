@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/pages/surat_page.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
+import 'package:qurantafsir_flutter/shared/core/database/dbBookmarks.dart';
 
 import 'package:qurantafsir_flutter/shared/core/database/dbhelper.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
@@ -19,9 +21,9 @@ class BookmarkPage extends StatefulWidget {
 }
 
 class _BookmarkPageState extends State<BookmarkPage> {
-  List<Surat> listBookmark = [];
+  List<Bookmarks> listBookmark = [];
   List<dynamic> listayatID = [];
-  DbHelper db = DbHelper();
+  DbBookmarks db = DbBookmarks();
   
   @override
   void initState() {
@@ -46,12 +48,12 @@ class _BookmarkPageState extends State<BookmarkPage> {
         body: ListView.builder(
             itemCount: listBookmark.length,
             itemBuilder: (context, index) {
-              return _buildListBookmark(context, listayatID[index], index, listBookmark[index]);
+              return _buildListBookmark(context, listBookmark[index]);
             }),
     );
   }
 
-  Widget _buildListBookmark(BuildContext context, listayatID, index, Surat bookmark) {
+  Widget _buildListBookmark(BuildContext context, Bookmarks bookmark) {
     return Padding(
       padding: const EdgeInsets.symmetric( horizontal: 8.0 ),
       child: ListTile(
@@ -78,19 +80,19 @@ class _BookmarkPageState extends State<BookmarkPage> {
           ),
         ),
         title: Text(
-          bookmark.nameLatin,
+          bookmark.page.toString(),
           style: bodyMedium3,
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Row(
           children: [
             Text(
-              bookmark.suratNameTranslation,
+              'bookmark.',
               style: caption1,
               overflow: TextOverflow.ellipsis,
             ),
             Text(
-              " ( ${bookmark.numberOfAyah} ayat )",
+              " ( ayat )",
               style: caption1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -113,7 +115,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                       child: Column(
                         children: [
                           Text(
-                            "Yakin ingin Menghapus Data berikut ? \n Surat : ${bookmark.nameLatin} \n Ayat : $listayatID"
+                            "Yakin ingin Menghapus Data berikut ? \n Surat : "
                           )
                         ],
                       ),
@@ -124,8 +126,8 @@ class _BookmarkPageState extends State<BookmarkPage> {
                     actions: [
                       TextButton(
                         onPressed: (){
-                          _deleteBookmark(bookmark.number, listayatID, index);
-                          Navigator.pop(context);
+                          // _deleteBookmark(bookmark.number, listayatID, index);
+                          // Navigator.pop(context);
                         }, 
                         child: Text("Ya")
                       ), 
@@ -144,9 +146,15 @@ class _BookmarkPageState extends State<BookmarkPage> {
           ),
         ),
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return SuratPage(surat: bookmark);
-          }));
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) {
+              //       int startPageInIndexValue = bookmark.startPageToInt;
+              //       return SuratPageV3(startPage: startPageInIndexValue);
+              //     },
+              //   ),
+              // );
         },
       ),
     );
@@ -161,9 +169,9 @@ class _BookmarkPageState extends State<BookmarkPage> {
     //list menampung data dari database
     var list = await db.getAllBookmark();
 
-    List<Bookmarks> listbook = [];
-    Map<String, dynamic> map = await json.decode(await getJson());
-    List<dynamic> surat = map['surat'];
+    // List<BookmarksV2> listbook = [];
+    // Map<String, dynamic> map = await json.decode(await getJson());
+    // List<dynamic> surat = map['surat'];
 
     //ada perubahanan state
     setState(() {
@@ -171,23 +179,23 @@ class _BookmarkPageState extends State<BookmarkPage> {
       listBookmark.clear();
 
       list!.forEach((bookmark) {
-        listbook.add(Bookmarks.fromMap(bookmark));
+        listBookmark.add(Bookmarks.fromMap(bookmark));
       });
 
-      surat.forEach((surat) {
-        listbook.forEach((bookmark) {
-          if (surat['number'] == bookmark.suratid) {
-            listBookmark.add(Surat.fromJson(surat));
-            listayatID.add(bookmark.ayatid);
-          }
-        });
-      });
+      // surat.forEach((surat) {
+      //   listbook.forEach((bookmark) {
+      //     if (surat['number'] == bookmark.suratid) {
+      //       listBookmark.add(Surat.fromJson(surat));
+      //       listayatID.add(bookmark.ayatid);
+      //     }
+      //   });
+      // });
     });
   }
 
   //menghapus data Bookmark
-  Future<void> _deleteBookmark(suratID, ayatID, int position) async {
-    await db.deleteBookmark(suratID, ayatID);
+  Future<void> _deleteBookmark(startPage, int position) async {
+    await db.deleteBookmark(startPage);
     setState(() {
       listBookmark.removeAt(position);
     });
