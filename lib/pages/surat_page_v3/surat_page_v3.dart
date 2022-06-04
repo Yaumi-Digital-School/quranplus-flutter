@@ -37,12 +37,16 @@ class SuratPageV3 extends StatefulWidget {
     Key? key,
     required this.startPageInIndex,
     required this.firstPagePointerIndex,
+    required this.namaSurat,
+    required this.juz,
     this.bookmarks,
   }) : super(key: key);
 
+  final String namaSurat;
+  final int juz;
+  final Bookmarks? bookmarks;
   final int startPageInIndex;
   final int firstPagePointerIndex;
-  final Bookmarks? bookmarks;
 
   @override
   State<StatefulWidget> createState() {
@@ -83,6 +87,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
         (ref) {
           return SuratPageViewModel(
             startPageInIndex: widget.startPageInIndex,
+            namaSurat: widget.namaSurat,
+            juz: widget.juz,
             bookmarks: widget.bookmarks,
             suratDataService: ref.watch(suratDataServiceProvider),
           );
@@ -125,8 +131,15 @@ class _SuratPageV3State extends State<SuratPageV3> {
                 IconButton(
                   icon: const Icon(Icons.bookmark_outline),
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('This is a Bookmark')));
+                    viewModel.insertBookmark(
+                      widget.namaSurat,
+                      widget.juz,
+                      widget.startPageInIndex + 1,
+                    );
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return const BookmarkPageV2();
+                    }));
                   },
                 ),
                 IconButton(

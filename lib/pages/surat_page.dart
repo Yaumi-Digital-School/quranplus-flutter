@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_page.dart';
 import 'package:qurantafsir_flutter/pages/home_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/shared/core/database/dbBookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbhelper.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
 
 class SuratPage extends StatelessWidget {
-  DbHelper db = DbHelper();
+  DbBookmarks db = DbBookmarks();
   final Surat surat;
   Bookmarks? bookmark;
 
@@ -110,50 +111,50 @@ class SuratPage extends StatelessWidget {
                                             width: 8.0,
                                           ),
                                           // Text("Bookmark", style: bodyMedium2)
-                                          FutureBuilder(
-                                            future: checkBookmark(
-                                                surat.number, index + 1),
-                                            builder: (context, boolean) {
-                                              if (boolean.data == true) {
-                                                return TextButton(
-                                                    child: const Text(
-                                                      'Sudah Bookmark',
-                                                      style: TextStyle(
-                                                          color: neutral900,
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w500),
-                                                    ),
-                                                    onPressed: () {
-                                                      deleteBookmark(
-                                                          surat.number,
-                                                          index + 1);
-                                                      Navigator.pop(context);
-                                                    });
-                                              } else {
-                                                return TextButton(
-                                                    child: const Text(
-                                                      'Bookmark',
-                                                      style: TextStyle(
-                                                          color: neutral900,
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w500),
-                                                    ),
-                                                    onPressed: () {
-                                                      insertBookmark(
-                                                          surat.number,
-                                                          index + 1);
-                                                      Navigator.push(context,
-                                                          MaterialPageRoute(
-                                                              builder:
-                                                                  (context) {
-                                                        return BookmarkPage();
-                                                      }));
-                                                    });
-                                              }
-                                            },
-                                          ),
+                                          // FutureBuilder(
+                                          //   future: checkBookmark(
+                                          //       surat.number, index + 1),
+                                          //   builder: (context, boolean) {
+                                          //     if (boolean.data == true) {
+                                          //       return TextButton(
+                                          //           child: const Text(
+                                          //             'Sudah Bookmark',
+                                          //             style: TextStyle(
+                                          //                 color: neutral900,
+                                          //                 fontSize: 14,
+                                          //                 fontWeight:
+                                          //                     FontWeight.w500),
+                                          //           ),
+                                          //           onPressed: () {
+                                          //             // deleteBookmark(
+                                          //             //     surat.number,
+                                          //             //     index + 1);
+                                          //             Navigator.pop(context);
+                                          //           });
+                                          //     } else {
+                                          //       return TextButton(
+                                          //           child: const Text(
+                                          //             'Bookmark',
+                                          //             style: TextStyle(
+                                          //                 color: neutral900,
+                                          //                 fontSize: 14,
+                                          //                 fontWeight:
+                                          //                     FontWeight.w500),
+                                          //           ),
+                                          //           onPressed: () {
+                                          //             // insertBookmark(
+                                          //             //     surat.number,
+                                          //             //     index + 1);
+                                          //             Navigator.push(context,
+                                          //                 MaterialPageRoute(
+                                          //                     builder:
+                                          //                         (context) {
+                                          //               return BookmarkPage();
+                                          //             }));
+                                          //           });
+                                          //     }
+                                          //   },
+                                          // ),
                                         ],
                                       ),
                                     ),
@@ -168,49 +169,49 @@ class SuratPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    FutureBuilder<bool>(
-                      future: checkBookmark(surat.number, index + 1),
-                      builder: (context, boolean) {
-                        if (boolean.hasData) {
-                          var newBool = boolean.data;
-                          return Visibility(
-                            visible: newBool!,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 24,
-                                  height: 24,
-                                  decoration: const BoxDecoration(
-                                      image: DecorationImage(
-                                          image: AssetImage(
-                                    'images/icon_bookmark.png',
-                                  ))),
-                                ),
-                              ],
-                            ),
-                          );
-                        } else {
-                          return Visibility(
-                            visible: false,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 24,
-                                  height: 24,
-                                  decoration: const BoxDecoration(
-                                      image: DecorationImage(
-                                          image: AssetImage(
-                                    'images/icon_bookmark.png',
-                                  ))),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                      },
-                    ),
+                    // FutureBuilder<bool>(
+                    //   future: checkBookmark(surat.number, index + 1),
+                    //   builder: (context, boolean) {
+                    //     if (boolean.hasData) {
+                    //       var newBool = boolean.data;
+                    //       return Visibility(
+                    //         visible: newBool!,
+                    //         child: Row(
+                    //           mainAxisAlignment: MainAxisAlignment.start,
+                    //           children: [
+                    //             Container(
+                    //               width: 24,
+                    //               height: 24,
+                    //               decoration: const BoxDecoration(
+                    //                   image: DecorationImage(
+                    //                       image: AssetImage(
+                    //                 'images/icon_bookmark.png',
+                    //               ))),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       );
+                    //     } else {
+                    //       return Visibility(
+                    //         visible: false,
+                    //         child: Row(
+                    //           mainAxisAlignment: MainAxisAlignment.start,
+                    //           children: [
+                    //             Container(
+                    //               width: 24,
+                    //               height: 24,
+                    //               decoration: const BoxDecoration(
+                    //                   image: DecorationImage(
+                    //                       image: AssetImage(
+                    //                 'images/icon_bookmark.png',
+                    //               ))),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       );
+                    //     }
+                    //   },
+                    // ),
                     const SizedBox(
                       height: 16,
                     ),
@@ -248,28 +249,28 @@ class SuratPage extends StatelessWidget {
     );
   }
 
-  Future<bool> checkBookmark(suratID, ayatID) async {
-    var result = await db.isBookmark(suratID, ayatID);
-    if (result == false) {
-      return false;
-    } else {
-      return true;
-    }
-  }
+  // Future<bool> checkBookmark(suratID, ayatID) async {
+  //   var result = await db.isBookmark(suratID, ayatID);
+  //   if (result == false) {
+  //     return false;
+  //   } else {
+  //     return true;
+  //   }
+  // }
 
-  Future<void> insertBookmark(suratID, ayatID) async {
-    var result = await db.isBookmark(suratID, ayatID);
+  // Future<void> insertBookmark(suratID, ayatID) async {
+  //   var result = await db.isBookmark(suratID, ayatID);
 
-    if (result == false) {
-      await db.saveBookmark(Bookmarks(
-        suratid: surat.number,
-        ayatid: ayatID.toString(),
-      ));
-    }
-  }
+  //   // if (result == false) {
+  //   //   await db.saveBookmark(Bookmarks(
+  //   //     suratid: surat.number,
+  //   //     ayatid: ayatID.toString(),
+  //   //   ));
+  //   // }
+  // }
 
   //menghapus data Bookmark
-  Future<void> deleteBookmark(suratID, ayatID) async {
-    await db.deleteBookmark(suratID, ayatID);
-  }
+  // Future<void> deleteBookmark(suratID, ayatID) async {
+  //   await db.deleteBookmark(suratID, ayatID);
+  // }
 }

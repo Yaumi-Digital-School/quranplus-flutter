@@ -5,13 +5,15 @@ import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
 class Bookmarks{
   Bookmarks({
     this.id, 
-    this.suratid, 
-    this.ayatid,
+    required this.namaSurat, 
+    this.juz,
+    required this.page,
   });
 
   int? id;
-  String? suratid;
-  String? ayatid;
+  String? namaSurat;
+  int? juz;
+  late int page;
 
 
   Map<String, dynamic> toMap() {
@@ -20,15 +22,17 @@ class Bookmarks{
     if (id != null) {
       map['id'] = id;
     }
-    map['suratid'] = suratid; 
-    map['ayatid'] = ayatid;
+    map['namaSurat'] = namaSurat; 
+    map['juz'] = juz; 
+    map['page'] = page;
     
     return map;
   }
 
   Bookmarks.fromMap(Map<String, dynamic> map) {
     this.id = map['id'];
-    this.suratid = map['suratid'];
-    this.ayatid = map['ayatid'];
+    this.namaSurat = map['namaSurat'];
+    this.juz = map['juz'];
+    this.page = map['page'];
   }
 }
