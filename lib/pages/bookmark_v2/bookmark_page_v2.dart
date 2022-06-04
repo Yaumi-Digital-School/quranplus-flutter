@@ -67,6 +67,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: TabBar(
+                        unselectedLabelColor: primary500,
                         indicator: BoxDecoration(
                             color: primary500,
                             borderRadius: BorderRadius.circular(20)),
@@ -96,9 +97,16 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                                 viewModel: viewModel,
                               );
                             }),
-                        Container(
-                          child: Text('Favorite'),
-                        ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Coming Soon',
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        )
                       ],
                     ),
                   ),
