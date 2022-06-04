@@ -65,6 +65,10 @@ class SuratByJuz {
   String startPage;
 
   int get startPageToInt => int.parse(startPage);
+  int get startAyatToInt => int.parse(startAyat);
+  int get numberToInt => int.parse(number);
+
+  int get firstPagePointerIndex => startAyatToInt + (numberToInt * 20);
 
   factory SuratByJuz.fromJson(Map<String, dynamic> json) => SuratByJuz(
       number: json["number"],

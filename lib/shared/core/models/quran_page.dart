@@ -47,6 +47,10 @@ class Verse {
   List<Word> words;
 
   int get surahNumber => int.parse(verseKey.split(":")[0]);
+  int get surahNumberInIndex => surahNumber - 1;
+  int get verseNumberInIndex => verseNumber - 1;
+
+  int get uniqueVerseIndex => verseNumber + (surahNumber * 20);
 
   factory Verse.fromJson(Map<String, dynamic> json) => _$VerseFromJson(json);
 }

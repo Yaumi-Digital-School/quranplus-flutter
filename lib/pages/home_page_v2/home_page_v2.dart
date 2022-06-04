@@ -139,8 +139,12 @@ class _ListSuratByJuzState extends State<ListSuratByJuz> {
                   builder: (context) {
                     int page = surats[index].startPageToInt;
                     int startPageInIndexValue = page - 1;
+                    int firstPagePointerIndex =
+                        surats[index].firstPagePointerIndex;
+
                     return SuratPageV3(
-                      startPage: startPageInIndexValue, 
+                      startPageInIndex: startPageInIndexValue,
+                      firstPagePointerIndex: firstPagePointerIndex,
                       namaSurat: surats[index].nameLatin,
                       juz: int.parse(juz.number),
                     );

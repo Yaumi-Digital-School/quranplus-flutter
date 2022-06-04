@@ -14,6 +14,7 @@ import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
 import 'package:qurantafsir_flutter/shared/core/provider/surat_data_provider.dart';
 import 'package:qurantafsir_flutter/shared/ui/view_model_connector.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 enum AyahFontSize {
   big,
@@ -31,19 +32,50 @@ extension AyahFontSizeExt on AyahFontSize {
   }
 }
 
-class SuratPageV3 extends StatelessWidget {
+class SuratPageV3 extends StatefulWidget {
   const SuratPageV3({
     Key? key,
-    required this.startPage,
+    required this.startPageInIndex,
+    required this.firstPagePointerIndex,
     required this.namaSurat,
     required this.juz,
     this.bookmarks,
   }) : super(key: key);
 
-  final int startPage;
   final String namaSurat;
   final int juz;
   final Bookmarks? bookmarks;
+  final int startPageInIndex;
+  final int firstPagePointerIndex;
+
+  @override
+  State<StatefulWidget> createState() {
+    return _SuratPageV3State();
+  }
+}
+
+class _SuratPageV3State extends State<SuratPageV3> {
+  late AutoScrollController firstPageScrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    firstPageScrollController = AutoScrollController();
+    WidgetsBinding.instance?.addPostFrameCallback(
+      (_) {
+        Future.delayed(
+          const Duration(milliseconds: 600),
+          () {
+            firstPageScrollController.scrollToIndex(
+              widget.firstPagePointerIndex,
+              preferPosition: AutoScrollPosition.begin,
+              duration: const Duration(seconds: 1),
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,10 +86,10 @@ class SuratPageV3 extends StatelessWidget {
           StateNotifierProvider<SuratPageViewModel, SuratPageState>(
         (ref) {
           return SuratPageViewModel(
-            namaSurat: namaSurat,
-            juz: juz,
-            startPage: startPage,
-            bookmarks: bookmarks,
+            startPageInIndex: widget.startPageInIndex,
+            namaSurat: widget.namaSurat,
+            juz: widget.juz,
+            bookmarks: widget.bookmarks,
             suratDataService: ref.watch(suratDataServiceProvider),
           );
         },
@@ -69,7 +101,7 @@ class SuratPageV3 extends StatelessWidget {
         SuratPageViewModel viewModel,
         _,
       ) {
-        if (viewModel.busy) {
+        if (state.pages == null || state.translations == null) {
           return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
@@ -99,7 +131,11 @@ class SuratPageV3 extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.bookmark_outline),
                   onPressed: () {
-                    viewModel.insertBookmark(namaSurat, juz, startPage+1);
+                    viewModel.insertBookmark(
+                      widget.namaSurat,
+                      widget.juz,
+                      widget.startPageInIndex + 1,
+                    );
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
                       return const BookmarkPageV2();
@@ -147,7 +183,7 @@ class SuratPageV3 extends StatelessWidget {
 
       Widget page = _buildPage(
         quranPageObject: state.pages![idx],
-        pageNumber: pageNumberInQuran,
+        pageNumberInQuran: pageNumberInQuran,
         state: state,
       );
 
@@ -163,9 +199,11 @@ class SuratPageV3 extends StatelessWidget {
 
   Widget _buildPage({
     required QuranPage quranPageObject,
-    required int pageNumber,
+    required int pageNumberInQuran,
     required SuratPageState state,
   }) {
+    final int pageNumberInQuranInIndex = pageNumberInQuran - 1;
+
     List<Widget> ayahs = <Widget>[];
     for (int i = 0; i < quranPageObject.verses.length; i++) {
       bool useDivider = i != quranPageObject.verses.length - 1;
@@ -174,10 +212,10 @@ class SuratPageV3 extends StatelessWidget {
       Widget w = _buildAyah(
         verse: verse,
         useDivider: useDivider,
-        fontSize: pageNumber == 1 || pageNumber == 2
+        fontSize: pageNumberInQuran == 1 || pageNumberInQuran == 2
             ? AyahFontSize.big
             : AyahFontSize.regular,
-        page: pageNumber,
+        pageNumberInQuran: pageNumberInQuran,
         state: state,
       );
 
@@ -185,7 +223,10 @@ class SuratPageV3 extends StatelessWidget {
     }
 
     return SingleChildScrollView(
-      key: PageStorageKey('page$pageNumber'),
+      controller: pageNumberInQuranInIndex == widget.startPageInIndex
+          ? firstPageScrollController
+          : null,
+      key: PageStorageKey('page$pageNumberInQuran'),
       child: Column(
         children: ayahs,
       ),
@@ -196,61 +237,68 @@ class SuratPageV3 extends StatelessWidget {
     required Verse verse,
     required bool useDivider,
     required AyahFontSize fontSize,
-    required int page,
+    required int pageNumberInQuran,
     required SuratPageState state,
   }) {
     String allVerses = '';
-    String fontFamilyPage = 'Page$page';
+    String fontFamilyPage = 'Page$pageNumberInQuran';
     bool useBasmalahBeforeAyah = verse.verseNumber == 1;
     String translation =
-        state.translations![verse.surahNumber - 1][verse.verseNumber - 1];
+        state.translations![verse.surahNumberInIndex][verse.verseNumberInIndex];
     bool isWithTranslations = state.isWithTranslations;
 
     for (Word word in verse.words) {
       allVerses += word.code + ' ';
     }
 
-    return Column(
-      children: <Widget>[
-        if (useBasmalahBeforeAyah) _buildBasmalah(),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              allVerses,
-              style: TextStyle(
-                fontFamily: fontFamilyPage,
-                fontSize: fontSize.value,
-                height: 1.6,
-                wordSpacing: 2,
+    return AutoScrollTag(
+      key: ValueKey(verse.uniqueVerseIndex),
+      controller: pageNumberInQuran - 1 == widget.startPageInIndex
+          ? firstPageScrollController
+          : AutoScrollController(),
+      index: verse.uniqueVerseIndex,
+      child: Column(
+        children: <Widget>[
+          if (useBasmalahBeforeAyah) _buildBasmalah(),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                allVerses,
+                style: TextStyle(
+                  fontFamily: fontFamilyPage,
+                  fontSize: fontSize.value,
+                  height: 1.6,
+                  wordSpacing: 2,
+                ),
+                textAlign: TextAlign.right,
               ),
-              textAlign: TextAlign.right,
             ),
           ),
-        ),
-        if (isWithTranslations)
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                translation,
-                style: bodyRegular3.merge(
-                  const TextStyle(height: 1.5),
+          if (isWithTranslations)
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  translation,
+                  style: bodyRegular3.merge(
+                    const TextStyle(height: 1.5),
+                  ),
                 ),
               ),
             ),
-          ),
-        if (useDivider)
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            child: Divider(
-              height: 10,
-              color: neutral400,
+          if (useDivider)
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Divider(
+                height: 10,
+                color: neutral400,
+              ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 

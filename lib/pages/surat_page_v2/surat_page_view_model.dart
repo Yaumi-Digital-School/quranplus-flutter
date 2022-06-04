@@ -55,7 +55,7 @@ class SuratPageState {
 
 class SuratPageViewModel extends BaseViewModel<SuratPageState> {
   SuratPageViewModel({
-    required this.startPage,
+    required this.startPageInIndex,
     required this.namaSurat,
     required this.juz,
     required SuratDataService suratDataService,
@@ -65,14 +65,16 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
           SuratPageState(
             bookmarks: bookmarks,
             pageController: PageController(
-              initialPage: startPage,
+              initialPage: startPageInIndex,
             ),
           ),
         );
 
   Bookmarks? bookmarks;
   final SuratDataService _suratDataService;
-  int startPage;
+  final List<int> _firstPageSurahPointer = <int>[];
+  List<int> get firstPageKeys => _firstPageSurahPointer;
+  int startPageInIndex;
   String namaSurat;
   int juz;
   late DbBookmarks db;
@@ -145,15 +147,16 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
   }
 
   Future<void> insertBookmark(namaSurat, juz, page) async {
-    await db.saveBookmark(Bookmarks(
-      namaSurat: namaSurat,
-      juz: juz,
-      page: page
-    ));
+    await db
+        .saveBookmark(Bookmarks(namaSurat: namaSurat, juz: juz, page: page));
   }
 
   onGoBack(context) {
     state = state.copyWith();
     Navigator.pop(context);
+  }
+
+  void addFirstPagePointer(int value) {
+    _firstPageSurahPointer.add(value);
   }
 }
