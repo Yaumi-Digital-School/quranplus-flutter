@@ -169,8 +169,6 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return SuratPageV3(
               startPageInIndex: bookmark.page - 1,
-              namaSurat: bookmark.namaSurat.toString(),
-              juz: bookmark.juz!,
             );
           }));
         },

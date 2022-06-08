@@ -47,14 +47,15 @@ class JuzElement {
 }
 
 class SuratByJuz {
-  SuratByJuz(
-      {required this.number,
-      required this.name,
-      required this.nameLatin,
-      required this.numberOfAyah,
-      required this.suratNameTranslation,
-      required this.startAyat,
-      required this.startPage});
+  SuratByJuz({
+    required this.number,
+    required this.name,
+    required this.nameLatin,
+    required this.numberOfAyah,
+    required this.suratNameTranslation,
+    required this.startAyat,
+    required this.startPage,
+  });
 
   String number;
   String name;
@@ -68,7 +69,9 @@ class SuratByJuz {
   int get startAyatToInt => int.parse(startAyat);
   int get numberToInt => int.parse(number);
 
-  int get firstPagePointerIndex => startAyatToInt + (numberToInt * 20);
+  String get nameAndAyatKey => '$nameLatin:$startAyat';
+
+  int get hashKey => nameAndAyatKey.hashCode;
 
   factory SuratByJuz.fromJson(Map<String, dynamic> json) => SuratByJuz(
       number: json["number"],

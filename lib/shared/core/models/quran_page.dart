@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 
 part 'quran_page.g.dart';
 
@@ -50,7 +51,10 @@ class Verse {
   int get surahNumberInIndex => surahNumber - 1;
   int get verseNumberInIndex => verseNumber - 1;
 
-  int get uniqueVerseIndex => verseNumber + (surahNumber * 20);
+  String get surahNameAndAyatKey =>
+      '${surahNumberToSurahNameMap[surahNumber]!}:$verseNumber';
+
+  int get hashKey => surahNameAndAyatKey.hashCode;
 
   factory Verse.fromJson(Map<String, dynamic> json) => _$VerseFromJson(json);
 }

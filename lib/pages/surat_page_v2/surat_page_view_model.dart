@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/surat_page.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbBookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbhelper.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
@@ -60,17 +61,12 @@ class SuratPageState {
 class SuratPageViewModel extends BaseViewModel<SuratPageState> {
   SuratPageViewModel({
     required this.startPageInIndex,
-    required this.namaSurat,
-    required this.juz,
     required SuratDataService suratDataService,
     this.bookmarks,
   })  : _suratDataService = suratDataService,
         super(
           SuratPageState(
             bookmarks: bookmarks,
-            pageController: PageController(
-              initialPage: startPageInIndex,
-            ),
           ),
         );
 
@@ -78,21 +74,50 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
   final SuratDataService _suratDataService;
   final List<int> _firstPageSurahPointer = <int>[];
   List<int> get firstPageKeys => _firstPageSurahPointer;
+  late PageController pageController;
   int startPageInIndex;
-  String namaSurat;
-  int juz;
   late DbBookmarks db;
   late List<QuranPage> allPages;
   List<List<String>>? _translations;
   List<List<String>>? _tafsirs;
+  late ValueNotifier<int> currentPage;
+  late ValueNotifier<String> visibleSuratName;
+  late ValueNotifier<int> visibleJuzNumber;
+  List<int> currentVisibleSurahNumber = <int>[];
+  late int temp;
 
   @override
   Future<void> initViewModel() async {
     db = DbBookmarks();
     allPages = await getPages();
-    state = state.copyWith(pages: allPages);
+    pageController = PageController(
+      initialPage: startPageInIndex,
+    );
+    state = state.copyWith(
+      pages: allPages,
+      pageController: pageController,
+    );
+    Verse firstVerseInDirectedPage = allPages[startPageInIndex].verses[0];
+    temp = firstVerseInDirectedPage.surahNumber;
+    currentPage = ValueNotifier(startPageInIndex + 1);
+    visibleSuratName = ValueNotifier(
+        surahNumberToSurahNameMap[firstVerseInDirectedPage.surahNumber]!);
+    visibleJuzNumber = ValueNotifier(firstVerseInDirectedPage.juzNumber);
     await _generateTranslations();
     await _generateBaseTafsirs();
+  }
+
+  int getJuzAtStartOfPage({
+    required int pageInIdx,
+  }) {
+    return allPages[pageInIdx].verses[0].juzNumber;
+  }
+
+  String getSuratNameAtStartOfPage({
+    required int pageInIdx,
+  }) {
+    return surahNumberToSurahNameMap[
+        allPages[pageInIdx].verses[0].surahNumber]!;
   }
 
   Future<void> _generateTranslations() async {
