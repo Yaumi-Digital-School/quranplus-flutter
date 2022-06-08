@@ -6,6 +6,7 @@ import 'package:qurantafsir_flutter/pages/bookmark_page.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_v2.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v2/surat_page_view_model.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_settings_drawer.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_icons.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
@@ -15,6 +16,7 @@ import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
 import 'package:qurantafsir_flutter/shared/core/provider/surat_data_provider.dart';
 import 'package:qurantafsir_flutter/shared/ui/view_model_connector.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 enum AyahFontSize {
   big,
@@ -37,13 +39,9 @@ class SuratPageV3 extends StatefulWidget {
     Key? key,
     required this.startPageInIndex,
     this.firstPagePointerIndex = 0,
-    required this.namaSurat,
-    required this.juz,
     this.bookmarks,
   }) : super(key: key);
 
-  final String namaSurat;
-  final int juz;
   final Bookmarks? bookmarks;
   final int startPageInIndex;
   final int firstPagePointerIndex;
@@ -61,6 +59,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
   void initState() {
     super.initState();
     firstPageScrollController = AutoScrollController();
+    VisibilityDetectorController.instance.updateInterval =
+        const Duration(milliseconds: 300);
     WidgetsBinding.instance?.addPostFrameCallback(
       (_) {
         Future.delayed(
@@ -69,7 +69,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
             firstPageScrollController.scrollToIndex(
               widget.firstPagePointerIndex,
               preferPosition: AutoScrollPosition.begin,
-              duration: const Duration(seconds: 1),
+              duration: const Duration(milliseconds: 200),
             );
           },
         );
@@ -87,8 +87,6 @@ class _SuratPageV3State extends State<SuratPageV3> {
         (ref) {
           return SuratPageViewModel(
             startPageInIndex: widget.startPageInIndex,
-            namaSurat: widget.namaSurat,
-            juz: widget.juz,
             bookmarks: widget.bookmarks,
             suratDataService: ref.watch(suratDataServiceProvider),
           );
@@ -127,15 +125,59 @@ class _SuratPageV3State extends State<SuratPageV3> {
               automaticallyImplyLeading: false,
               elevation: 2.5,
               foregroundColor: Colors.black,
-              title: const Text('Surat'),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  ValueListenableBuilder(
+                    valueListenable: viewModel.visibleSuratName,
+                    builder: (context, value, __) {
+                      return Text(
+                        '$value',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      );
+                    },
+                  ),
+                  Row(
+                    children: <Widget>[
+                      ValueListenableBuilder(
+                        valueListenable: viewModel.currentPage,
+                        builder: (context, value, __) {
+                          return Text(
+                            'Page $value',
+                            style: const TextStyle(
+                              fontSize: 10,
+                            ),
+                          );
+                        },
+                      ),
+                      ValueListenableBuilder(
+                        valueListenable: viewModel.visibleJuzNumber,
+                        builder: (context, value, __) {
+                          return Text(
+                            ', Juz $value',
+                            style: const TextStyle(
+                              fontSize: 10,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
               backgroundColor: backgroundColor,
               actions: <Widget>[
                 IconButton(
                   icon: const Icon(Icons.bookmark_outline),
                   onPressed: () {
+                    // TODO(mylian): replace string kosong dengan value nama surat
+                    // TODO(mylian): replace int 0 dengan value juz
                     viewModel.insertBookmark(
-                      widget.namaSurat,
-                      widget.juz,
+                      '',
+                      0,
                       widget.startPageInIndex + 1,
                     );
                     Navigator.push(context,
@@ -162,7 +204,10 @@ class _SuratPageV3State extends State<SuratPageV3> {
           ),
           body: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: _buildPages(state: state),
+            child: _buildPages(
+              state: state,
+              viewModel: viewModel,
+            ),
           ),
           endDrawer: SuratPageSettingsDrawer(
             isWithTranslation: state.isWithTranslations,
@@ -177,6 +222,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
 
   Widget _buildPages({
     required SuratPageState state,
+    required SuratPageViewModel viewModel,
   }) {
     List<Widget> allPages = <Widget>[];
 
@@ -187,6 +233,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
         quranPageObject: state.pages![idx],
         pageNumberInQuran: pageNumberInQuran,
         state: state,
+        viewModel: viewModel,
       );
 
       allPages.add(page);
@@ -195,6 +242,10 @@ class _SuratPageV3State extends State<SuratPageV3> {
     return PageView(
       reverse: true,
       controller: state.pageController,
+      onPageChanged: (pageIndex) {
+        int pageValue = pageIndex + 1;
+        viewModel.currentPage.value = pageValue;
+      },
       children: allPages,
     );
   }
@@ -203,6 +254,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     required QuranPage quranPageObject,
     required int pageNumberInQuran,
     required SuratPageState state,
+    required SuratPageViewModel viewModel,
   }) {
     final int pageNumberInQuranInIndex = pageNumberInQuran - 1;
 
@@ -219,6 +271,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
             : AyahFontSize.regular,
         pageNumberInQuran: pageNumberInQuran,
         state: state,
+        viewModel: viewModel,
       );
 
       ayahs.add(w);
@@ -241,6 +294,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     required AyahFontSize fontSize,
     required int pageNumberInQuran,
     required SuratPageState state,
+    required SuratPageViewModel viewModel,
   }) {
     String allVerses = '';
     String fontFamilyPage = 'Page$pageNumberInQuran';
@@ -251,74 +305,92 @@ class _SuratPageV3State extends State<SuratPageV3> {
         state.tafsirs![verse.surahNumberInIndex][verse.verseNumberInIndex];
     bool isWithTranslations = state.isWithTranslations;
     bool isWithTafsirs = state.isWithTafsirs;
+    ValueKey key = ValueKey(verse.surahNameAndAyatKey);
 
     for (Word word in verse.words) {
       allVerses += word.code + ' ';
     }
 
     return AutoScrollTag(
-      key: ValueKey(verse.uniqueVerseIndex),
+      key: key,
       controller: pageNumberInQuran - 1 == widget.startPageInIndex
           ? firstPageScrollController
           : AutoScrollController(),
-      index: verse.uniqueVerseIndex,
-      child: Column(
-        children: <Widget>[
-          if (useBasmalahBeforeAyah) _buildBasmalah(),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                allVerses,
-                style: TextStyle(
-                  fontFamily: fontFamilyPage,
-                  fontSize: fontSize.value,
-                  height: 1.6,
-                  wordSpacing: 2,
+      index: verse.hashKey,
+      child: VisibilityDetector(
+        onVisibilityChanged: (info) {
+          if (info.visibleFraction == 1) {
+            if (viewModel.visibleSuratName.value !=
+                surahNumberToSurahNameMap[verse.surahNumber]!) {
+              viewModel.visibleSuratName.value =
+                  surahNumberToSurahNameMap[verse.surahNumber]!;
+              viewModel.temp = verse.surahNumber;
+            }
+
+            if (viewModel.visibleJuzNumber.value != verse.juzNumber) {
+              viewModel.visibleJuzNumber.value = verse.juzNumber;
+            }
+          }
+        },
+        key: key,
+        child: Column(
+          children: <Widget>[
+            if (useBasmalahBeforeAyah) _buildBasmalah(),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  allVerses,
+                  style: TextStyle(
+                    fontFamily: fontFamilyPage,
+                    fontSize: fontSize.value,
+                    height: 1.6,
+                    wordSpacing: 2,
+                  ),
+                  textAlign: TextAlign.right,
                 ),
-                textAlign: TextAlign.right,
               ),
             ),
-          ),
-          if (isWithTranslations)
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  translation,
-                  style: bodyRegular3.merge(
-                    const TextStyle(height: 1.5),
+            if (isWithTranslations)
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    translation,
+                    style: bodyRegular3.merge(
+                      const TextStyle(height: 1.5),
+                    ),
                   ),
                 ),
               ),
-            ),
-          if (isWithTafsirs)
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 8,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Tafsir Kemenag\n$tafsir',
-                  style: bodyRegular3.merge(
-                    const TextStyle(height: 1.5),
+            if (isWithTafsirs)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Tafsir Kemenag\n$tafsir',
+                    style: bodyRegular3.merge(
+                      const TextStyle(height: 1.5),
+                    ),
                   ),
                 ),
               ),
-            ),
-          if (useDivider)
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Divider(
-                height: 10,
-                color: neutral400,
+            if (useDivider)
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Divider(
+                  height: 10,
+                  color: neutral400,
+                ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
