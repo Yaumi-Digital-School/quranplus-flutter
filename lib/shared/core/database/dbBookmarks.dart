@@ -79,21 +79,4 @@ class DbBookmarks {
     var dbClient = await _db;
     return await dbClient!.delete(tableName, where: '$columnPage = ?', whereArgs: [startPage]);
   }
-
-  //cek 1 data didatabase
-  // Future<bool?> isBookmark(surat, ayat) async {
-  //   var dbclient = await _db;
-  //   List<Map> maps = await dbclient!.query(tableName,
-  //       columns: [
-  //         columnId,
-  //         columnSuratid,
-  //         columnAyatid,
-  //       ],
-  //       where: '$columnSuratid = ? and $columnAyatid = ?',
-  //       whereArgs: [surat, ayat]);
-  //   if (maps.isNotEmpty) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
 }

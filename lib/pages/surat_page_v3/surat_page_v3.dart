@@ -186,13 +186,13 @@ class _SuratPageV3State extends State<SuratPageV3> {
                     }));
                   },
                 ),
-                IconButton(
-                  icon: const Icon(CustomIcons.book),
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('This is a Full Page')));
-                  },
-                ),
+                // IconButton(
+                //   icon: const Icon(CustomIcons.book),
+                //   onPressed: () {
+                //     ScaffoldMessenger.of(context).showSnackBar(
+                //         const SnackBar(content: Text('This is a Full Page')));
+                //   },
+                // ),
                 IconButton(
                   icon: const Icon(CustomIcons.sliders),
                   onPressed: () {
