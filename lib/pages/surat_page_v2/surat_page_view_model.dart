@@ -83,6 +83,7 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
   late ValueNotifier<int> currentPage;
   late ValueNotifier<String> visibleSuratName;
   late ValueNotifier<int> visibleJuzNumber;
+  late ValueNotifier<bool> visibleIconBookmark;
   List<int> currentVisibleSurahNumber = <int>[];
   late int temp;
 
@@ -103,6 +104,8 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
     visibleSuratName = ValueNotifier(
         surahNumberToSurahNameMap[firstVerseInDirectedPage.surahNumber]!);
     visibleJuzNumber = ValueNotifier(firstVerseInDirectedPage.juzNumber);
+    visibleIconBookmark = ValueNotifier(false);
+    checkOneBookmark(startPageInIndex + 1);
     await _generateTranslations();
     await _generateBaseTafsirs();
   }
@@ -203,6 +206,21 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
   Future<void> insertBookmark(namaSurat, juz, page) async {
     await db
         .saveBookmark(Bookmarks(namaSurat: namaSurat, juz: juz, page: page));
+    visibleIconBookmark.value = true;
+  }
+
+  Future<bool> checkOneBookmark(startPage) async {
+    var result = await db.oneBookmark(startPage);
+    if (result == false) {
+      return visibleIconBookmark.value = false;
+    } else {
+      return visibleIconBookmark.value = true;
+    }
+  }
+
+  Future<void> deleteBookmark(startPage) async {
+    await db.deleteBookmark(startPage);
+    visibleIconBookmark.value = false;
   }
 
   onGoBack(context) {
