@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_view_model.dart';
+import 'package:qurantafsir_flutter/pages/home_page_v2/home_page_v2.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v2/surat_page_v2.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
@@ -19,6 +21,8 @@ class BookmarkPageV2 extends StatefulWidget {
 class _BookmarkPageV2State extends State<BookmarkPageV2> {
   @override
   Widget build(BuildContext context) {
+    double deviceWidth = MediaQuery.of(context).size.width;
+    double deviceHeight = MediaQuery.of(context).size.height;
     return ViewModelConnector<BookmarkPageViewModel, BookmarkPageState>(
       viewModelProvider:
           StateNotifierProvider<BookmarkPageViewModel, BookmarkPageState>(
@@ -88,25 +92,123 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                   Expanded(
                     child: TabBarView(
                       children: <Widget>[
-                        ListView.builder(
-                            itemCount: viewModel.listBookmark.length,
-                            itemBuilder: (context, index) {
-                              return _buildListBookmark(
-                                context: context,
-                                bookmark: viewModel.listBookmark[index],
-                                viewModel: viewModel,
-                              );
-                            }),
-                        Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Coming Soon',
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                            textAlign: TextAlign.center,
+                        if (viewModel.listBookmark.isNotEmpty)
+                          ListView.builder(
+                              itemCount: viewModel.listBookmark.length,
+                              itemBuilder: (context, index) {
+                                return _buildListBookmark(
+                                  context: context,
+                                  bookmark: viewModel.listBookmark[index],
+                                  viewModel: viewModel,
+                                );
+                              }),
+                        if (viewModel.listBookmark.isEmpty)
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                alignment: Alignment.center,
+                                width: 200,
+                                height: 200,
+                                decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                  'images/empty_state.png',
+                                ))),
+                              ),
+                              const SizedBox(
+                                height: 50,
+                              ),
+                              Text(
+                                'Ayah not found',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: semiBold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                'There is no bookmark ayah yet',
+                                style: TextStyle(
+                                  fontWeight: regular,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Container(
+                                height: 40,
+                                width: deviceWidth * 0.8,
+                                decoration: const BoxDecoration(
+                                  color: neutral100,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: neutral300,
+                                      spreadRadius: 3,
+                                      blurRadius: 7,
+                                      offset: Offset(0, 1),
+                                    )
+                                  ],
+                                ),
+                                child: TextButton(
+                                  child: const Text(
+                                    'Start Reading',
+                                    style: TextStyle(
+                                        color: primary500, fontSize: 17),
+                                  ),
+                                  onPressed: () => Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return HomePageV2();
+                                  })),
+                                ),
+                              ),
+                            ],
                           ),
-                        )
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              alignment: Alignment.center,
+                              width: 200,
+                              height: 200,
+                              decoration: const BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                'images/coming_soon.png',
+                              ))),
+                            ),
+                            const SizedBox(
+                              height: 50,
+                            ),
+                            Text(
+                              'Coming Soon!',
+                              style: TextStyle(
+                                color: neutral700,
+                                fontSize: 20,
+                                fontWeight: semiBold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              'This feature is still under development',
+                              style: TextStyle(
+                                fontWeight: regular,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
