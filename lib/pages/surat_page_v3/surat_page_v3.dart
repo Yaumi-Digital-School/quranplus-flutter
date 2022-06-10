@@ -109,121 +109,129 @@ class _SuratPageV3State extends State<SuratPageV3> {
           );
         }
 
-        return Scaffold(
-          key: _scaffoldKey,
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(54.0),
-            child: AppBar(
-              leading: IconButton(
-                icon: const Icon(
-                  Icons.chevron_left,
-                  color: Colors.black,
-                  size: 30,
+        return WillPopScope(
+          onWillPop: () async {
+            Navigator.pop(context, viewModel.isBookmarkChanged);
+            return true;
+          },
+          child: Scaffold(
+            key: _scaffoldKey,
+            appBar: PreferredSize(
+              preferredSize: const Size.fromHeight(54.0),
+              child: AppBar(
+                leading: IconButton(
+                  icon: const Icon(
+                    Icons.chevron_left,
+                    color: Colors.black,
+                    size: 30,
+                  ),
+                  onPressed: () => Navigator.of(context).pop(
+                    viewModel.isBookmarkChanged,
+                  ),
                 ),
-                onPressed: () => Navigator.of(context).pop(
-                  viewModel.isBookmarkChanged,
-                ),
-              ),
-              automaticallyImplyLeading: false,
-              elevation: 2.5,
-              foregroundColor: Colors.black,
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  ValueListenableBuilder(
-                    valueListenable: viewModel.visibleSuratName,
-                    builder: (context, value, __) {
-                      return Text(
-                        '$value',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
+                automaticallyImplyLeading: false,
+                elevation: 2.5,
+                foregroundColor: Colors.black,
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    ValueListenableBuilder(
+                      valueListenable: viewModel.visibleSuratName,
+                      builder: (context, value, __) {
+                        return Text(
+                          '$value',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        );
+                      },
+                    ),
+                    Row(
+                      children: <Widget>[
+                        ValueListenableBuilder(
+                          valueListenable: viewModel.currentPage,
+                          builder: (context, value, __) {
+                            return Text(
+                              'Page $value',
+                              style: const TextStyle(
+                                fontSize: 10,
+                              ),
+                            );
+                          },
                         ),
-                      );
+                        ValueListenableBuilder(
+                          valueListenable: viewModel.visibleJuzNumber,
+                          builder: (context, value, __) {
+                            return Text(
+                              ', Juz $value',
+                              style: const TextStyle(
+                                fontSize: 10,
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                backgroundColor: backgroundColor,
+                actions: <Widget>[
+                  ValueListenableBuilder(
+                    valueListenable: viewModel.visibleIconBookmark,
+                    builder: (context, value, __) {
+                      if (viewModel.visibleIconBookmark.value == true) {
+                        return IconButton(
+                          icon: const Icon(Icons.bookmark_outlined),
+                          onPressed: () {
+                            viewModel
+                                .deleteBookmark(viewModel.currentPage.value);
+                          },
+                        );
+                      } else {
+                        return IconButton(
+                          icon: const Icon(Icons.bookmark_outline),
+                          onPressed: () {
+                            viewModel.insertBookmark(
+                              viewModel.visibleSuratName.value,
+                              viewModel.visibleJuzNumber.value,
+                              viewModel.currentPage.value,
+                            );
+                          },
+                        );
+                      }
                     },
                   ),
-                  Row(
-                    children: <Widget>[
-                      ValueListenableBuilder(
-                        valueListenable: viewModel.currentPage,
-                        builder: (context, value, __) {
-                          return Text(
-                            'Page $value',
-                            style: const TextStyle(
-                              fontSize: 10,
-                            ),
-                          );
-                        },
-                      ),
-                      ValueListenableBuilder(
-                        valueListenable: viewModel.visibleJuzNumber,
-                        builder: (context, value, __) {
-                          return Text(
-                            ', Juz $value',
-                            style: const TextStyle(
-                              fontSize: 10,
-                            ),
-                          );
-                        },
-                      ),
-                    ],
+                  // IconButton(
+                  //   icon: const Icon(CustomIcons.book),
+                  //   onPressed: () {
+                  //     ScaffoldMessenger.of(context).showSnackBar(
+                  //         const SnackBar(content: Text('This is a Full Page')));
+                  //   },
+                  // ),
+                  IconButton(
+                    icon: const Icon(CustomIcons.sliders),
+                    onPressed: () {
+                      _scaffoldKey.currentState?.openEndDrawer();
+                    },
                   ),
                 ],
               ),
-              backgroundColor: backgroundColor,
-              actions: <Widget>[
-                ValueListenableBuilder(
-                  valueListenable: viewModel.visibleIconBookmark,
-                  builder: (context, value, __) {
-                    if (viewModel.visibleIconBookmark.value == true) {
-                      return IconButton(
-                        icon: const Icon(Icons.bookmark_outlined),
-                        onPressed: () {
-                          viewModel.deleteBookmark(viewModel.currentPage.value);
-                        },
-                      );
-                    } else {
-                      return IconButton(
-                        icon: const Icon(Icons.bookmark_outline),
-                        onPressed: () {
-                          viewModel.insertBookmark(
-                            viewModel.visibleSuratName.value,
-                            viewModel.visibleJuzNumber.value,
-                            viewModel.currentPage.value,
-                          );
-                        },
-                      );
-                    }
-                  },
-                ),
-                // IconButton(
-                //   icon: const Icon(CustomIcons.book),
-                //   onPressed: () {
-                //     ScaffoldMessenger.of(context).showSnackBar(
-                //         const SnackBar(content: Text('This is a Full Page')));
-                //   },
-                // ),
-                IconButton(
-                  icon: const Icon(CustomIcons.sliders),
-                  onPressed: () {
-                    _scaffoldKey.currentState?.openEndDrawer();
-                  },
-                ),
-              ],
             ),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: _buildPages(
-              state: state,
-              viewModel: viewModel,
+            body: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _buildPages(
+                state: state,
+                viewModel: viewModel,
+              ),
             ),
-          ),
-          endDrawer: SuratPageSettingsDrawer(
-            isWithTranslation: state.isWithTranslations,
-            isWithTafsir: state.isWithTafsirs,
-            onTapTranslation: (value) => viewModel.setIsWithTranslations(value),
-            onTapTafsir: (value) => viewModel.setIsWithTafsirs(value),
+            endDrawer: SuratPageSettingsDrawer(
+              isWithTranslation: state.isWithTranslations,
+              isWithTafsir: state.isWithTafsirs,
+              onTapTranslation: (value) =>
+                  viewModel.setIsWithTranslations(value),
+              onTapTafsir: (value) => viewModel.setIsWithTafsirs(value),
+            ),
           ),
         );
       },
