@@ -39,10 +39,8 @@ class SuratPageV3 extends StatefulWidget {
     Key? key,
     required this.startPageInIndex,
     this.firstPagePointerIndex = 0,
-    this.bookmarks,
   }) : super(key: key);
 
-  final Bookmarks? bookmarks;
   final int startPageInIndex;
   final int firstPagePointerIndex;
 
@@ -61,20 +59,23 @@ class _SuratPageV3State extends State<SuratPageV3> {
     firstPageScrollController = AutoScrollController();
     VisibilityDetectorController.instance.updateInterval =
         const Duration(milliseconds: 300);
-    WidgetsBinding.instance?.addPostFrameCallback(
-      (_) {
-        Future.delayed(
-          const Duration(milliseconds: 600),
-          () {
-            firstPageScrollController.scrollToIndex(
-              widget.firstPagePointerIndex,
-              preferPosition: AutoScrollPosition.begin,
-              duration: const Duration(milliseconds: 200),
-            );
-          },
-        );
-      },
-    );
+
+    if (widget.firstPagePointerIndex != 0) {
+      WidgetsBinding.instance?.addPostFrameCallback(
+        (_) {
+          Future.delayed(
+            const Duration(milliseconds: 600),
+            () {
+              firstPageScrollController.scrollToIndex(
+                widget.firstPagePointerIndex,
+                preferPosition: AutoScrollPosition.begin,
+                duration: const Duration(milliseconds: 200),
+              );
+            },
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -87,7 +88,6 @@ class _SuratPageV3State extends State<SuratPageV3> {
         (ref) {
           return SuratPageViewModel(
             startPageInIndex: widget.startPageInIndex,
-            bookmarks: widget.bookmarks,
             suratDataService: ref.watch(suratDataServiceProvider),
           );
         },
@@ -120,7 +120,9 @@ class _SuratPageV3State extends State<SuratPageV3> {
                   color: Colors.black,
                   size: 30,
                 ),
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () => Navigator.of(context).pop(
+                  viewModel.isBookmarkChanged,
+                ),
               ),
               automaticallyImplyLeading: false,
               elevation: 2.5,
@@ -185,9 +187,10 @@ class _SuratPageV3State extends State<SuratPageV3> {
                         icon: const Icon(Icons.bookmark_outline),
                         onPressed: () {
                           viewModel.insertBookmark(
-                              viewModel.visibleSuratName.value,
-                              viewModel.visibleJuzNumber.value,
-                              viewModel.currentPage.value);
+                            viewModel.visibleSuratName.value,
+                            viewModel.visibleJuzNumber.value,
+                            viewModel.currentPage.value,
+                          );
                         },
                       );
                     }

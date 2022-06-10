@@ -267,12 +267,21 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[Text(bookmark.page.toString())],
         ),
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return SuratPageV3(
-              startPageInIndex: bookmark.page - 1,
-            );
-          }));
+        onTap: () async {
+          var isBookmarkChanged = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return SuratPageV3(
+                  startPageInIndex: bookmark.page - 1,
+                );
+              },
+            ),
+          );
+
+          if (isBookmarkChanged is bool && isBookmarkChanged) {
+            viewModel.initViewModel();
+          }
         },
       ),
     );
