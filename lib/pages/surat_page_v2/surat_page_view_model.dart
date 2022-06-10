@@ -245,4 +245,9 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
   void addFirstPagePointer(int value) {
     _firstPageSurahPointer.add(value);
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 }
