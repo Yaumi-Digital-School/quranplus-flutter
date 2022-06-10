@@ -30,13 +30,18 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
           return BookmarkPageViewModel();
         },
       ),
-      onViewModelReady: (viewModel) => viewModel.initViewModel(),
+      onViewModelReady: (viewModel) async => await viewModel.initViewModel(),
       builder: (
         BuildContext context,
         BookmarkPageState state,
         BookmarkPageViewModel viewModel,
         _,
       ) {
+        if (state.listBookmarks == null) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
         return DefaultTabController(
           length: 2,
           child: Scaffold(
@@ -92,85 +97,86 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                   Expanded(
                     child: TabBarView(
                       children: <Widget>[
-                        if (viewModel.listBookmark.isNotEmpty)
-                          ListView.builder(
-                              itemCount: viewModel.listBookmark.length,
-                              itemBuilder: (context, index) {
-                                return _buildListBookmark(
-                                  context: context,
-                                  bookmark: viewModel.listBookmark[index],
-                                  viewModel: viewModel,
-                                );
-                              }),
-                        if (viewModel.listBookmark.isEmpty)
+                        if (state.listBookmarks!.isNotEmpty) ... [
+                            ListView.builder(
+                                itemCount: state.listBookmarks!.length,
+                                itemBuilder: (context, index) {
+                                  return _buildListBookmark(
+                                    context: context,
+                                    bookmark: state.listBookmarks![index],
+                                    viewModel: viewModel,
+                                  );
+                                }),
+                        ] else ... [
                           Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
-                                alignment: Alignment.center,
-                                width: 200,
-                                height: 200,
-                                decoration: const BoxDecoration(
-                                    image: DecorationImage(
-                                        image: AssetImage(
-                                  'images/empty_state.png',
-                                ))),
-                              ),
-                              const SizedBox(
-                                height: 50,
-                              ),
-                              Text(
-                                'Ayah not found',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: semiBold,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                'There is no bookmark ayah yet',
-                                style: TextStyle(
-                                  fontWeight: regular,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Container(
-                                height: 40,
-                                width: deviceWidth * 0.8,
-                                decoration: const BoxDecoration(
-                                  color: neutral100,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: neutral300,
-                                      spreadRadius: 3,
-                                      blurRadius: 7,
-                                      offset: Offset(0, 1),
-                                    )
-                                  ],
-                                ),
-                                child: TextButton(
-                                  child: const Text(
-                                    'Start Reading',
-                                    style: TextStyle(
-                                        color: primary500, fontSize: 17),
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    alignment: Alignment.center,
+                                    width: 200,
+                                    height: 200,
+                                    decoration: const BoxDecoration(
+                                        image: DecorationImage(
+                                            image: AssetImage(
+                                      'images/empty_state.png',
+                                    ))),
                                   ),
-                                  onPressed: () => Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
-                                    return HomePageV2();
-                                  })),
-                                ),
-                              ),
-                            ],
-                          ),
+                                  const SizedBox(
+                                    height: 50,
+                                  ),
+                                  Text(
+                                    'Ayah not found',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: semiBold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    'There is no bookmark ayah yet',
+                                    style: TextStyle(
+                                      fontWeight: regular,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Container(
+                                    height: 40,
+                                    width: deviceWidth * 0.8,
+                                    decoration: const BoxDecoration(
+                                      color: neutral100,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: neutral300,
+                                          spreadRadius: 3,
+                                          blurRadius: 7,
+                                          offset: Offset(0, 1),
+                                        )
+                                      ],
+                                    ),
+                                    child: TextButton(
+                                      child: const Text(
+                                        'Start Reading',
+                                        style: TextStyle(
+                                            color: primary500, fontSize: 17),
+                                      ),
+                                      onPressed: () => Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) {
+                                        return HomePageV2();
+                                      })),
+                                    ),
+                                  ),
+                                ],
+                              )
+                        ],
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
