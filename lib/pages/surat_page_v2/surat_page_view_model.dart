@@ -86,6 +86,7 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
   late ValueNotifier<bool> visibleIconBookmark;
   List<int> currentVisibleSurahNumber = <int>[];
   late int temp;
+  bool? _isBookmarkChanged;
 
   @override
   Future<void> initViewModel() async {
@@ -109,6 +110,8 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
     await _generateTranslations();
     await _generateBaseTafsirs();
   }
+
+  bool get isBookmarkChanged => _isBookmarkChanged ?? false;
 
   int getJuzAtStartOfPage({
     required int pageInIdx,
@@ -207,6 +210,7 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
     await db
         .saveBookmark(Bookmarks(namaSurat: namaSurat, juz: juz, page: page));
     visibleIconBookmark.value = true;
+    _setIsBookmarkChanged();
   }
 
   Future<bool> checkOneBookmark(startPage) async {
@@ -221,11 +225,11 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
   Future<void> deleteBookmark(startPage) async {
     await db.deleteBookmark(startPage);
     visibleIconBookmark.value = false;
+    _setIsBookmarkChanged();
   }
 
-  onGoBack(context) {
-    state = state.copyWith();
-    Navigator.pop(context);
+  void _setIsBookmarkChanged() {
+    _isBookmarkChanged = true;
   }
 
   void addFirstPagePointer(int value) {
