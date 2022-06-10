@@ -170,20 +170,27 @@ class _SuratPageV3State extends State<SuratPageV3> {
               ),
               backgroundColor: backgroundColor,
               actions: <Widget>[
-                IconButton(
-                  icon: const Icon(Icons.bookmark_outline),
-                  onPressed: () {
-                    // TODO(mylian): replace string kosong dengan value nama surat
-                    // TODO(mylian): replace int 0 dengan value juz
-                    viewModel.insertBookmark(
-                      '',
-                      0,
-                      widget.startPageInIndex + 1,
-                    );
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return const BookmarkPageV2();
-                    }));
+                ValueListenableBuilder(
+                  valueListenable: viewModel.visibleIconBookmark,
+                  builder: (context, value, __) {
+                    if (viewModel.visibleIconBookmark.value == true) {
+                      return IconButton(
+                        icon: const Icon(Icons.bookmark_outlined),
+                        onPressed: () {
+                          viewModel.deleteBookmark(viewModel.currentPage.value);
+                        },
+                      );
+                    } else {
+                      return IconButton(
+                        icon: const Icon(Icons.bookmark_outline),
+                        onPressed: () {
+                          viewModel.insertBookmark(
+                              viewModel.visibleSuratName.value,
+                              viewModel.visibleJuzNumber.value,
+                              viewModel.currentPage.value);
+                        },
+                      );
+                    }
                   },
                 ),
                 // IconButton(
@@ -245,6 +252,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
       onPageChanged: (pageIndex) {
         int pageValue = pageIndex + 1;
         viewModel.currentPage.value = pageValue;
+        viewModel.checkOneBookmark(pageValue);
       },
       children: allPages,
     );

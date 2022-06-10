@@ -79,4 +79,21 @@ class DbBookmarks {
     var dbClient = await _db;
     return await dbClient!.delete(tableName, where: '$columnPage = ?', whereArgs: [startPage]);
   }
+
+  Future<bool?> oneBookmark(startPage) async {
+    var dbclient = await _db;
+    List<Map> maps = await dbclient!.query(tableName,
+        columns: [
+          columnId,
+          columnNamaSurat,
+          columnJuz,
+          columnPage
+        ],
+        where: '$columnPage = ?',
+        whereArgs: [startPage]);
+    if (maps.isNotEmpty) {
+      return true;
+    }
+    return false;
+  }
 }
