@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
@@ -133,18 +134,17 @@ class _ListSuratByJuzState extends State<ListSuratByJuz> {
               textAlign: TextAlign.right,
             ),
             onTap: () {
+              int page = surats[index].startPageToInt;
+              int startPageInIndexValue = page - 1;
+
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    int page = surats[index].startPageToInt;
-                    int startPageInIndexValue = page - 1;
-
-                    return SuratPageV3(
-                      startPageInIndex: startPageInIndexValue,
-                      firstPagePointerIndex: surats[index].hashKey,
-                    );
-                  },
+                PageTransition(
+                  type: PageTransitionType.fade,
+                  child: SuratPageV3(
+                    startPageInIndex: startPageInIndexValue,
+                    firstPagePointerIndex: surats[index].hashKey,
+                  ),
                 ),
               );
             },

@@ -144,7 +144,12 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
 
       _suratDataService.setTranslations(_translations ?? []);
     } else {
-      _translations = _suratDataService.translations;
+      await Future.delayed(
+        const Duration(milliseconds: 150),
+        () {
+          _translations = _suratDataService.translations;
+        },
+      );
     }
 
     state = state.copyWith(translations: _translations);
@@ -169,7 +174,12 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
 
       _suratDataService.setTafsirs(_tafsirs ?? []);
     } else {
-      _tafsirs = _suratDataService.tafsirs;
+      await Future.delayed(
+        const Duration(milliseconds: 150),
+        () {
+          _tafsirs = _suratDataService.tafsirs;
+        },
+      );
     }
 
     state = state.copyWith(tafsirs: _tafsirs);
