@@ -113,7 +113,7 @@ class _ListSuratByJuzState extends State<ListSuratByJuz> {
                   borderRadius: BorderRadius.all(Radius.circular(20))),
               child: Text(
                 surats[index].number,
-                style: bodyMedium3,
+                style: numberStyle,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -124,7 +124,7 @@ class _ListSuratByJuzState extends State<ListSuratByJuz> {
             ),
             subtitle: Text(
               "${surats[index].suratNameTranslation} (${surats[index].numberOfAyah} ayat)",
-              style: caption1,
+              style: bodyLight3,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),

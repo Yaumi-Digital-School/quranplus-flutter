@@ -39,6 +39,7 @@ const Color backgroundColor = Color(0xFFF8F7F3);
 const Color darkGreen = Color(0xFF728363);
 const Color secondaryGreen = Color(0xFF0E2009);
 
+FontWeight extraLight = FontWeight.w200;
 FontWeight light = FontWeight.w300;
 FontWeight regular = FontWeight.w400;
 FontWeight medium = FontWeight.w500;
@@ -55,79 +56,91 @@ TextStyle ayatFontStyle =
     const TextStyle(fontFamily: 'UthmanicHafs', fontSize: 24);
 
 TextStyle headingBold1 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 24, fontWeight: bold);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 24, fontWeight: bold);
 
 TextStyle headingMedium1 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 24, fontWeight: medium);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 24, fontWeight: medium);
 
 TextStyle headingRegular1 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 24, fontWeight: regular);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 24, fontWeight: regular);
 
 TextStyle subHeadingSemiBold1 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 20, fontWeight: semiBold);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 20, fontWeight: semiBold);
 
 TextStyle subHeadingMedium1 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 20, fontWeight: medium);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 20, fontWeight: medium);
 
 TextStyle subHeadingRegular1 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 20, fontWeight: regular);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 20, fontWeight: regular);
 
 TextStyle subHeadingSemiBold2 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 16, fontWeight: regular);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 16, fontWeight: regular);
 
 TextStyle subHeadingMedium2 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 16, fontWeight: medium);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 16, fontWeight: medium);
 
 TextStyle subHeadingRegular2 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 16, fontWeight: regular);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 16, fontWeight: regular);
 
 TextStyle bodyMedium1 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 16, fontWeight: medium);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 16, fontWeight: medium);
 
 TextStyle bodyRegular1 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 16, fontWeight: regular);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 16, fontWeight: regular);
 
 TextStyle bodyLight1 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 16, fontWeight: light);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 16, fontWeight: light);
+
+TextStyle bodySemibold2 =
+    GoogleFonts.notoSans(color: neutral900, fontSize: 14, fontWeight: semiBold);
 
 TextStyle bodyMedium2 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 14, fontWeight: medium);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 14, fontWeight: medium);
 
 TextStyle bodyRegular2 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 16, fontWeight: regular);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 16, fontWeight: regular);
 
 TextStyle bodyLight2 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 16, fontWeight: light);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 16, fontWeight: light);
 
 TextStyle bodyMedium3 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 12, fontWeight: medium);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 12, fontWeight: medium);
 
 TextStyle bodyRegular3 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 12, fontWeight: regular);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 12, fontWeight: regular);
 
 TextStyle bodyLight3 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 12, fontWeight: light);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 12, fontWeight: light);
 
 TextStyle buttonSemiBold1 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 14, fontWeight: semiBold);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 14, fontWeight: semiBold);
 
 TextStyle buttonMedium1 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 14, fontWeight: medium);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 14, fontWeight: medium);
 
 TextStyle buttonSemiBold2 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 12, fontWeight: semiBold);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 12, fontWeight: semiBold);
 
 TextStyle buttonMedium2 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 12, fontWeight: medium);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 12, fontWeight: medium);
 
 TextStyle buttonMedium3 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 10, fontWeight: medium);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 10, fontWeight: medium);
 
 TextStyle caption1 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 12, fontWeight: regular);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 12, fontWeight: regular);
 
 TextStyle caption2 =
-    GoogleFonts.poppins(color: neutral900, fontSize: 10, fontWeight: light);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 10, fontWeight: light);
+
+TextStyle numberStyle =
+    GoogleFonts.poppins(color: neutral900, fontSize: 12, fontWeight: medium);
+
+TextStyle titleDrawerBold =
+    GoogleFonts.poppins(color: darkGreen, fontSize: 14, fontWeight: bold);
+
+TextStyle bodyDrawerRegular = GoogleFonts.poppins(
+    color: secondaryGreen, fontSize: 14, fontWeight: regular);
 
 BoxShadow shadowPrimary = BoxShadow(
     color: Colors.grey.withOpacity(0.5),
