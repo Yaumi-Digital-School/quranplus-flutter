@@ -65,13 +65,10 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
   Widget _buildContentSection() {
     return Column(
       children: <Widget>[
-        const ListTile(
+        ListTile(
           title: Text(
             'Content',
-            style: TextStyle(
-              fontSize: 14,
-              color: darkGreen,
-            ),
+            style: titleDrawerBold,
           ),
         ),
         Row(
@@ -132,10 +129,7 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
           ),
           Text(
             text,
-            style: const TextStyle(
-              color: secondaryGreen,
-              fontSize: 14,
-            ),
+            style: bodyDrawerRegular,
           ),
         ],
       ),
