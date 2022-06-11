@@ -101,6 +101,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
       ) {
         if (state.pages == null ||
             state.translations == null ||
+            state.latins == null ||
             state.tafsirs == null) {
           return const Scaffold(
             body: Center(
@@ -312,6 +313,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
     bool useBasmalahBeforeAyah = verse.verseNumber == 1;
     String translation =
         state.translations![verse.surahNumberInIndex][verse.verseNumberInIndex];
+    String latin =
+        state.latins![verse.surahNumberInIndex][verse.verseNumberInIndex];
     String tafsir =
         state.tafsirs![verse.surahNumberInIndex][verse.verseNumberInIndex];
     bool isWithTranslations = state.isWithTranslations;
@@ -360,6 +363,16 @@ class _SuratPageV3State extends State<SuratPageV3> {
                     wordSpacing: 2,
                   ),
                   textAlign: TextAlign.right,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  latin,
+                  style: bodyLatin1
                 ),
               ),
             ),

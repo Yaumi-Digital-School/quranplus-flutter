@@ -129,6 +129,9 @@ TextStyle caption1 =
 TextStyle caption2 =
     GoogleFonts.poppins(color: neutral900, fontSize: 10, fontWeight: light);
 
+TextStyle bodyLatin1 =
+    GoogleFonts.poppins(color: neutral600, fontSize: 12, fontWeight: regular);
+
 BoxShadow shadowPrimary = BoxShadow(
     color: Colors.grey.withOpacity(0.5),
     spreadRadius: 5,

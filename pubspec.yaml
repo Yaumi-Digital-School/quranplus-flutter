@@ -76,6 +76,7 @@ flutter:
     - data/quran_fonts/
     - data/quran_pages/
     - data/quran_translations/
+    - data/quran_latins/
     - data/quran_tafsirs/
 
   # An image asset can refer to one or more resolution-specific "variants", see
