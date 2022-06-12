@@ -23,6 +23,7 @@ class SuratPageState {
     this.pageController,
     this.translations,
     this.tafsirs,
+    this.latins,
     this.isWithTafsirs = false,
     this.isWithTranslations = true,
   });
@@ -31,6 +32,7 @@ class SuratPageState {
   List<QuranPage>? pages;
   List<List<String>>? translations;
   List<List<String>>? tafsirs;
+  List<List<String>>? latins;
   PageController? pageController;
   bool isWithTranslations;
   bool isWithTafsirs;
@@ -41,6 +43,7 @@ class SuratPageState {
     PageController? pageController,
     List<List<String>>? translations,
     List<List<String>>? tafsirs,
+    List<List<String>>? latins,
     bool? isWithTranslations,
     bool? isWithTafsirs,
   }) {
@@ -50,6 +53,7 @@ class SuratPageState {
       pageController: pageController ?? this.pageController,
       translations: translations ?? this.translations,
       tafsirs: tafsirs ?? this.tafsirs,
+      latins: latins ?? this.latins,
       isWithTafsirs: isWithTafsirs ?? this.isWithTafsirs,
       isWithTranslations: isWithTranslations ?? this.isWithTranslations,
     );
@@ -80,6 +84,7 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
   late List<QuranPage> allPages;
   List<List<String>>? _translations;
   List<List<String>>? _tafsirs;
+  List<List<String>>? _latins;
   late ValueNotifier<int> currentPage;
   late ValueNotifier<String> visibleSuratName;
   late ValueNotifier<int> visibleJuzNumber;
@@ -108,6 +113,7 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
     visibleIconBookmark = ValueNotifier(false);
     checkOneBookmark(startPageInIndex + 1);
     await _generateTranslations();
+    await _generateLatins();
     await _generateBaseTafsirs();
   }
 
@@ -153,6 +159,30 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
     }
 
     state = state.copyWith(translations: _translations);
+  }
+
+  Future<void> _generateLatins() async {
+    if (_suratDataService.latins.isEmpty) {
+      List<dynamic> map = await json.decode(
+        await rootBundle.loadString('data/quran_latins/latin.json'),
+      );
+
+      _latins = map
+          .map(
+            (e) => (e as List)
+                .map(
+                  (e) => (e as String),
+                )
+                .toList(),
+          )
+          .toList();
+
+      _suratDataService.setLatins(_latins ?? []);
+    } else {
+      _latins = _suratDataService.latins;
+    }
+
+    state = state.copyWith(latins: _latins);
   }
 
   Future<void> _generateBaseTafsirs() async {
