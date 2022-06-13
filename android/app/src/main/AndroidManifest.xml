@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.qurantafsir_flutter">
+    package="com.bi.quran.id">
    <application
         android:label="Quran Tafsir"
         android:name="${applicationName}"
