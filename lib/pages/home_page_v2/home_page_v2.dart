@@ -14,6 +14,7 @@ class HomePageV2 extends StatelessWidget {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(54.0),
         child: AppBar(
+          automaticallyImplyLeading: false,
           elevation: 0.5,
           centerTitle: false,
           foregroundColor: primary500,
