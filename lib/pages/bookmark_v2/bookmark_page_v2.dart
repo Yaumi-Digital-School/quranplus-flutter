@@ -181,7 +181,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                                   ),
                                   onPressed: () => Navigator.push(context,
                                       MaterialPageRoute(builder: (context) {
-                                    return HomePageV2();
+                                    return MainPage();
                                   })),
                                 ),
                               ),
