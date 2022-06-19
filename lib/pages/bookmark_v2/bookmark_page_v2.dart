@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_view_model.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/home_page_v2.dart';
+import 'package:qurantafsir_flutter/pages/main_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v2/surat_page_v2.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
@@ -48,10 +49,21 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(54.0),
               child: AppBar(
-                elevation: 2.5,
+                elevation: 0.7,
                 foregroundColor: Colors.black,
+                centerTitle: true,
                 title: Text("Bookmark"),
                 backgroundColor: backgroundColor,
+                leading: IconButton(
+                  onPressed: () => Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return MainPage();
+                    })),
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.black54,
+                  ),
+                ),
               ),
             ),
             body: Padding(
@@ -64,13 +76,13 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                   Container(
                     height: 50,
                     decoration: BoxDecoration(
-                        color: neutral200,
+                        color: neutral100,
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: const <BoxShadow>[
                           BoxShadow(
-                            color: neutral600,
-                            blurRadius: 7.0,
-                            spreadRadius: 0.1,
+                            color: neutral300,
+                            blurRadius: 9.0,
+                            spreadRadius: 0.9,
                           )
                         ]),
                     child: Padding(
@@ -97,85 +109,83 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                   Expanded(
                     child: TabBarView(
                       children: <Widget>[
-                        if (state.listBookmarks!.isNotEmpty) ... [
-                            ListView.builder(
-                                itemCount: state.listBookmarks!.length,
-                                itemBuilder: (context, index) {
-                                  return _buildListBookmark(
-                                    context: context,
-                                    bookmark: state.listBookmarks![index],
-                                    viewModel: viewModel,
-                                  );
-                                }),
-                        ] else ... [
+                        if (state.listBookmarks!.isNotEmpty) ...[
+                          ListView.builder(
+                              itemCount: state.listBookmarks!.length,
+                              itemBuilder: (context, index) {
+                                return _buildListBookmark(
+                                  context: context,
+                                  bookmark: state.listBookmarks![index],
+                                  viewModel: viewModel,
+                                );
+                              }),
+                        ] else ...[
                           Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Container(
-                                    alignment: Alignment.center,
-                                    width: 200,
-                                    height: 200,
-                                    decoration: const BoxDecoration(
-                                        image: DecorationImage(
-                                            image: AssetImage(
-                                      'images/empty_state.png',
-                                    ))),
-                                  ),
-                                  const SizedBox(
-                                    height: 50,
-                                  ),
-                                  Text(
-                                    'Ayah not found',
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                alignment: Alignment.center,
+                                width: 200,
+                                height: 200,
+                                decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                  'images/empty_state.png',
+                                ))),
+                              ),
+                              const SizedBox(
+                                height: 50,
+                              ),
+                              Text(
+                                'Ayah not found',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: semiBold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                'There is no bookmark ayah yet',
+                                style: TextStyle(
+                                  fontWeight: regular,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Container(
+                                height: 40,
+                                width: deviceWidth * 0.8,
+                                decoration: const BoxDecoration(
+                                  color: neutral100,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: neutral300,
+                                      blurRadius: 9,
+                                    )
+                                  ],
+                                ),
+                                child: TextButton(
+                                  child: const Text(
+                                    'Start Reading',
                                     style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: semiBold,
-                                    ),
-                                    textAlign: TextAlign.center,
+                                        color: primary500, fontSize: 17),
                                   ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    'There is no bookmark ayah yet',
-                                    style: TextStyle(
-                                      fontWeight: regular,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    height: 40,
-                                    width: deviceWidth * 0.8,
-                                    decoration: const BoxDecoration(
-                                      color: neutral100,
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(10)),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: neutral300,
-                                          spreadRadius: 3,
-                                          blurRadius: 7,
-                                          offset: Offset(0, 1),
-                                        )
-                                      ],
-                                    ),
-                                    child: TextButton(
-                                      child: const Text(
-                                        'Start Reading',
-                                        style: TextStyle(
-                                            color: primary500, fontSize: 17),
-                                      ),
-                                      onPressed: () => Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) {
-                                        return HomePageV2();
-                                      })),
-                                    ),
-                                  ),
-                                ],
-                              )
+                                  onPressed: () => Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return HomePageV2();
+                                  })),
+                                ),
+                              ),
+                            ],
+                          )
                         ],
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
