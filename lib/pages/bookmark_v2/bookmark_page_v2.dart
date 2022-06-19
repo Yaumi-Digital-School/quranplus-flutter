@@ -52,7 +52,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                 elevation: 0.7,
                 foregroundColor: Colors.black,
                 centerTitle: true,
-                title: Text("Bookmark"),
+                title: Text("Bookmark", style: TextStyle(fontSize: 16),),
                 backgroundColor: backgroundColor,
                 leading: IconButton(
                   onPressed: () => Navigator.push(context,
@@ -61,7 +61,8 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                     })),
                   icon: Icon(
                     Icons.arrow_back_ios,
-                    color: Colors.black54,
+                    size: 16,
+                    color: Colors.black,
                   ),
                 ),
               ),
