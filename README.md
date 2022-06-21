@@ -1,16 +1,19 @@
-# qurantafsir_flutter
+# Quran Tafsir App
 
-A new Flutter project.
+## Development Environment
 
-## Getting Started
+- Flutter Version : 2.10.2
+- Dart Version : 2.16.2
 
-This project is a starting point for a Flutter application.
+Untuk mempermudah versioning, bisa gunakan https://pub.dev/packages/fvm di local masing-masing
 
-A few resources to get you started if this is your first Flutter project:
+## Instalasi Repository
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+Berikut ini adalah cara menggunakan repository ini di local masing-masing : 
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. Install Flutter & Dart, bisa menggunakan https://pub.dev/packages/fvm. Letak perbedaannya nanti adalah pada pemanggilan command flutter, apabila menggunakan fvm maka pemanggilannya adalah `fvm flutter ...` dan apabila tanpa fvm adalah `flutter ...`
+2. Clone Repository
+3. Download dependencies dengan `fvm flutter pub get`
+4. Untuk melakukan generate beberapa file yang menggunakan library retrofit, jalankan `fvm flutter pub run build_runner build --delete-conflicting-outputs`
+5. Untuk iOS, jalankan `pod install` di dalam folder `ios`
+6. Jalankan aplikasi di emulator/hp anda dengan command `fvm flutter run`
