@@ -26,6 +26,7 @@ class SuratPageState {
     this.latins,
     this.isWithTafsirs = false,
     this.isWithTranslations = true,
+    this.isWithLatins = true,
   });
 
   Bookmarks? bookmarks;
@@ -36,6 +37,7 @@ class SuratPageState {
   PageController? pageController;
   bool isWithTranslations;
   bool isWithTafsirs;
+  bool isWithLatins;
 
   SuratPageState copyWith({
     Bookmarks? bookmarks,
@@ -46,6 +48,7 @@ class SuratPageState {
     List<List<String>>? latins,
     bool? isWithTranslations,
     bool? isWithTafsirs,
+    bool? isWithLatins,
   }) {
     return SuratPageState(
       bookmarks: bookmarks ?? this.bookmarks,
@@ -56,6 +59,7 @@ class SuratPageState {
       latins: latins ?? this.latins,
       isWithTafsirs: isWithTafsirs ?? this.isWithTafsirs,
       isWithTranslations: isWithTranslations ?? this.isWithTranslations,
+      isWithLatins: isWithLatins ?? this.isWithLatins,
     );
   }
 
@@ -244,6 +248,10 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
 
   void setIsWithTafsirs(bool value) {
     state = state.copyWith(isWithTafsirs: value);
+  }
+
+  void setisWithLatins(bool value) {
+    state = state.copyWith(isWithLatins: value);
   }
 
   Future<void> insertBookmark(namaSurat, juz, page) async {
