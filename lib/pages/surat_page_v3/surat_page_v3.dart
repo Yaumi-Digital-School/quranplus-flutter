@@ -227,8 +227,10 @@ class _SuratPageV3State extends State<SuratPageV3> {
               ),
             ),
             endDrawer: SuratPageSettingsDrawer(
+              isWithLatins: state.isWithLatins,
               isWithTranslation: state.isWithTranslations,
               isWithTafsir: state.isWithTafsirs,
+              onTapLatins: (value) => viewModel.setisWithLatins(value),
               onTapTranslation: (value) =>
                   viewModel.setIsWithTranslations(value),
               onTapTafsir: (value) => viewModel.setIsWithTafsirs(value),
@@ -327,6 +329,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
         state.tafsirs![verse.surahNumberInIndex][verse.verseNumberInIndex];
     bool isWithTranslations = state.isWithTranslations;
     bool isWithTafsirs = state.isWithTafsirs;
+    bool isWithLatins = state.isWithLatins;
     ValueKey key = ValueKey(verse.surahNameAndAyatKey);
 
     for (Word word in verse.words) {
@@ -374,16 +377,14 @@ class _SuratPageV3State extends State<SuratPageV3> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  latin,
-                  style: bodyLatin1
+            if (isWithLatins)
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(latin, style: bodyLatin1),
                 ),
               ),
-            ),
             if (isWithTranslations)
               Padding(
                 padding: const EdgeInsets.all(16),
