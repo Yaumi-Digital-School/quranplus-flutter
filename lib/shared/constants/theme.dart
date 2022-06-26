@@ -35,6 +35,7 @@ const Color exit800 = Color(0xFF6F0D34);
 const Color exit900 = Color(0xFF5C0831);
 
 const Color backgroundColor = Color(0xFFF8F7F3);
+const Color backgroundTextTafsir = Color(0xFFF0F0F0);
 
 const Color darkGreen = Color(0xFF728363);
 const Color secondaryGreen = Color(0xFF0E2009);
