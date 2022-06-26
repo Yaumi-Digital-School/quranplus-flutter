@@ -379,7 +379,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
             ),
             if (isWithLatins)
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(latin, style: bodyLatin1),
@@ -387,7 +387,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
               ),
             if (isWithTranslations)
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -399,18 +399,37 @@ class _SuratPageV3State extends State<SuratPageV3> {
                 ),
               ),
             if (isWithTafsirs)
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Tafsir Kemenag\n$tafsir',
-                    style: bodyRegular3.merge(
-                      const TextStyle(height: 1.5),
-                    ),
+              Container(
+                margin: const EdgeInsets.all(16),
+                decoration: const BoxDecoration(
+                    color: backgroundTextTafsir,
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 24,
+                  ),
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          tafsir,
+                          style: bodyRegular3.merge(
+                            const TextStyle(height: 1.5),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          'Tafsir Ringkasan Kemenag',
+                          style: bodyRegular3.copyWith(
+                              color: neutral900.withOpacity(0.5)),
+                        ),
+                      )
+                    ],
                   ),
                 ),
               ),

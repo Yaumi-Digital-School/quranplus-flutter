@@ -24,7 +24,7 @@ class SuratPageState {
     this.translations,
     this.tafsirs,
     this.latins,
-    this.isWithTafsirs = false,
+    this.isWithTafsirs = true,
     this.isWithTranslations = true,
     this.isWithLatins = true,
   });

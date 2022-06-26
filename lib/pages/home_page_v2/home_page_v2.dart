@@ -124,7 +124,7 @@ class _ListSuratByJuzState extends State<ListSuratByJuz> {
               overflow: TextOverflow.ellipsis,
             ),
             subtitle: Text(
-              "${surats[index].suratNameTranslation} (${surats[index].numberOfAyah} ayat)",
+              "Page ${surats[index].startPage}, Ayat ${surats[index].startAyat}",
               style: bodyLight3,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
