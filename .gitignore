@@ -9,6 +9,9 @@
 .history
 .svn/
 
+/lib/pages/test_page.dart
+/lib/pages/test_surat_page.dart
+
 # IntelliJ related
 *.iml
 *.ipr
@@ -44,3 +47,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# FVM 
+.fvm/flutter_sdk
