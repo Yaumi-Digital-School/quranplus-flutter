@@ -1,12 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbBookmarks.dart';
-import 'package:qurantafsir_flutter/shared/core/database/dbhelper.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
-import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
-import 'package:qurantafsir_flutter/shared/core/view_models/base_view_model.dart';
+import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 
 class BookmarkPageState {
   BookmarkPageState({
@@ -16,20 +12,21 @@ class BookmarkPageState {
   List<Bookmarks>? listBookmarks;
 
   BookmarkPageState copyWith({
-      List<Bookmarks>? listBookmarks,    
+    List<Bookmarks>? listBookmarks,
   }) {
     return BookmarkPageState(
-      listBookmarks: listBookmarks ?? this.listBookmarks
+      listBookmarks: listBookmarks ?? this.listBookmarks,
     );
   }
 }
-class BookmarkPageViewModel extends BaseViewModel<BookmarkPageState> {
-  BookmarkPageViewModel() : super(BookmarkPageState());
+
+class BookmarkPageStateNotifier extends BaseStateNotifier<BookmarkPageState> {
+  BookmarkPageStateNotifier() : super(BookmarkPageState());
 
   late DbBookmarks db;
 
   @override
-  Future<void> initViewModel() async {
+  Future<void> initStateNotifier() async {
     db = DbBookmarks();
     await _getAllBookmark();
   }
@@ -48,7 +45,6 @@ class BookmarkPageViewModel extends BaseViewModel<BookmarkPageState> {
       _listBookmark.add(Bookmarks.fromMap(bookmark));
     });
 
-
     state = state.copyWith(listBookmarks: _listBookmark);
   }
 
@@ -56,10 +52,4 @@ class BookmarkPageViewModel extends BaseViewModel<BookmarkPageState> {
     Navigator.pop(context);
     state = state.copyWith();
   }
-
-  // Future<void> deleteBookmark(suratID, ayatID, int position) async {
-  //   await db.deleteBookmark(suratID, ayatID);
-  //   listBookmark.removeAt(position);
-  //   state = state.copyWith();
-  // }
 }
