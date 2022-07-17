@@ -9,7 +9,6 @@ import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
-import 'package:qurantafsir_flutter/shared/core/services/surat_data_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 
 class SuratPageState {
@@ -57,11 +56,9 @@ class SuratPageState {
 class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   SuratPageStateNotifier({
     required this.startPageInIndex,
-    required SuratDataService suratDataService,
     required SharedPreferenceService sharedPreferenceService,
     this.bookmarks,
-  })  : _suratDataService = suratDataService,
-        _sharedPreferenceService = sharedPreferenceService,
+  })  : _sharedPreferenceService = sharedPreferenceService,
         super(
           SuratPageState(
             bookmarks: bookmarks,
@@ -69,7 +66,6 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
         );
 
   Bookmarks? bookmarks;
-  final SuratDataService _suratDataService;
   final SharedPreferenceService _sharedPreferenceService;
   final List<int> _firstPageSurahPointer = <int>[];
   List<int> get firstPageKeys => _firstPageSurahPointer;
@@ -131,84 +127,55 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   }
 
   Future<void> _generateTranslations() async {
-    if (_suratDataService.translations.isEmpty) {
-      List<dynamic> map = await json.decode(
-        await rootBundle.loadString('data/quran_translations/indonesia.json'),
-      );
+    List<dynamic> map = await json.decode(
+      await rootBundle.loadString('data/quran_translations/indonesia.json'),
+    );
 
-      _translations = map
-          .map(
-            (e) => (e as List)
-                .map(
-                  (e) => (e as String),
-                )
-                .toList(),
-          )
-          .toList();
-
-      _suratDataService.setTranslations(_translations ?? []);
-    } else {
-      await Future.delayed(
-        const Duration(milliseconds: 150),
-        () {
-          _translations = _suratDataService.translations;
-        },
-      );
-    }
+    _translations = map
+        .map(
+          (e) => (e as List)
+              .map(
+                (e) => (e as String),
+              )
+              .toList(),
+        )
+        .toList();
 
     state = state.copyWith(translations: _translations);
   }
 
   Future<void> _generateLatins() async {
-    if (_suratDataService.latins.isEmpty) {
-      List<dynamic> map = await json.decode(
-        await rootBundle.loadString('data/quran_latins/latin.json'),
-      );
+    List<dynamic> map = await json.decode(
+      await rootBundle.loadString('data/quran_latins/latin.json'),
+    );
 
-      _latins = map
-          .map(
-            (e) => (e as List)
-                .map(
-                  (e) => (e as String),
-                )
-                .toList(),
-          )
-          .toList();
-
-      _suratDataService.setLatins(_latins ?? []);
-    } else {
-      _latins = _suratDataService.latins;
-    }
+    _latins = map
+        .map(
+          (e) => (e as List)
+              .map(
+                (e) => (e as String),
+              )
+              .toList(),
+        )
+        .toList();
 
     state = state.copyWith(latins: _latins);
   }
 
   Future<void> _generateBaseTafsirs() async {
-    if (_suratDataService.tafsirs.isEmpty) {
-      List<dynamic> map = await json.decode(
-        await rootBundle
-            .loadString('data/quran_tafsirs/indonesia_kemenag.json'),
-      );
+    List<dynamic> map = await json.decode(
+      await rootBundle.loadString('data/quran_tafsirs/indonesia_kemenag.json'),
+    );
 
-      _tafsirs = map
-          .map(
-            (e) => (e as List)
-                .map(
-                  (e) => (e as String),
-                )
-                .toList(),
-          )
-          .toList();
-
-      _suratDataService.setTafsirs(_tafsirs ?? []);
-    } else {
-      await Future.delayed(
-        const Duration(milliseconds: 150),
-        () {
-          _tafsirs = _suratDataService.tafsirs;
-        },
-      );
-    }
+    _tafsirs = map
+        .map(
+          (e) => (e as List)
+              .map(
+                (e) => (e as String),
+              )
+              .toList(),
+        )
+        .toList();
 
     state = state.copyWith(tafsirs: _tafsirs);
   }
