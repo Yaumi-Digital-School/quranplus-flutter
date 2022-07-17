@@ -3,13 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
-import 'package:qurantafsir_flutter/shared/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/widgets/surat_page_settings_drawer.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_icons.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
-import 'package:qurantafsir_flutter/shared/core/provider/surat_data_provider.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -84,7 +83,6 @@ class _SuratPageV3State extends State<SuratPageV3> {
         (ref) {
           return SuratPageStateNotifier(
             startPageInIndex: widget.startPageInIndex,
-            suratDataService: ref.watch(suratDataServiceProvider),
             sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
           );
         },
