@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/providers.dart';
 import 'package:qurantafsir_flutter/widgets/surat_page_settings_drawer.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_icons.dart';
@@ -84,6 +85,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
           return SuratPageStateNotifier(
             startPageInIndex: widget.startPageInIndex,
             suratDataService: ref.watch(suratDataServiceProvider),
+            sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
           );
         },
       ),
@@ -98,7 +100,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
         if (state.pages == null ||
             state.translations == null ||
             state.latins == null ||
-            state.tafsirs == null) {
+            state.tafsirs == null ||
+            state.readingSettings == null) {
           return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
@@ -215,9 +218,9 @@ class _SuratPageV3State extends State<SuratPageV3> {
               ),
             ),
             endDrawer: SuratPageSettingsDrawer(
-              isWithLatins: state.isWithLatins,
-              isWithTranslation: state.isWithTranslations,
-              isWithTafsir: state.isWithTafsirs,
+              isWithLatins: state.readingSettings!.isWithLatins,
+              isWithTranslation: state.readingSettings!.isWithTranslations,
+              isWithTafsir: state.readingSettings!.isWithTafsirs,
               onTapLatins: (value) => notifier.setisWithLatins(value),
               onTapTranslation: (value) =>
                   notifier.setIsWithTranslations(value),
@@ -315,9 +318,9 @@ class _SuratPageV3State extends State<SuratPageV3> {
         state.latins![verse.surahNumberInIndex][verse.verseNumberInIndex];
     String tafsir =
         state.tafsirs![verse.surahNumberInIndex][verse.verseNumberInIndex];
-    bool isWithTranslations = state.isWithTranslations;
-    bool isWithTafsirs = state.isWithTafsirs;
-    bool isWithLatins = state.isWithLatins;
+    bool isWithTranslations = state.readingSettings!.isWithTranslations;
+    bool isWithTafsirs = state.readingSettings!.isWithTafsirs;
+    bool isWithLatins = state.readingSettings!.isWithLatins;
     ValueKey key = ValueKey(verse.surahNameAndAyatKey);
 
     for (Word word in verse.words) {

@@ -12,6 +12,9 @@
 /lib/pages/test_page.dart
 /lib/pages/test_surat_page.dart
 
+# Generated file
+*.g.dart
+
 # IntelliJ related
 *.iml
 *.ipr
