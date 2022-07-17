@@ -3,18 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qurantafsir_flutter/pages/surat_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbBookmarks.dart';
-import 'package:qurantafsir_flutter/shared/core/database/dbhelper.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
-import 'package:qurantafsir_flutter/shared/core/models/quran.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
-import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
 import 'package:qurantafsir_flutter/shared/core/services/surat_data_service.dart';
-import 'package:qurantafsir_flutter/shared/core/view_models/base_view_model.dart';
-import 'package:qurantafsir_flutter/shared/ui/view_model_connector.dart';
+import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 
 class SuratPageState {
   SuratPageState({
@@ -66,8 +60,8 @@ class SuratPageState {
   double get currentPage => pageController!.page!;
 }
 
-class SuratPageViewModel extends BaseViewModel<SuratPageState> {
-  SuratPageViewModel({
+class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
+  SuratPageStateNotifier({
     required this.startPageInIndex,
     required SuratDataService suratDataService,
     this.bookmarks,
@@ -98,7 +92,7 @@ class SuratPageViewModel extends BaseViewModel<SuratPageState> {
   bool? _isBookmarkChanged;
 
   @override
-  Future<void> initViewModel() async {
+  Future<void> initStateNotifier() async {
     db = DbBookmarks();
     allPages = await getPages();
     pageController = PageController(

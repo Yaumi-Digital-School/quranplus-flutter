@@ -1,17 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_view_model.dart';
-import 'package:qurantafsir_flutter/pages/home_page_v2/home_page_v2.dart';
+import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/main_page.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v2/surat_page_v2.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
-import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
-import 'package:qurantafsir_flutter/shared/ui/view_model_connector.dart';
+import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 
 class BookmarkPageV2 extends StatefulWidget {
   const BookmarkPageV2({Key? key}) : super(key: key);
@@ -24,18 +19,19 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
   @override
   Widget build(BuildContext context) {
     double deviceWidth = MediaQuery.of(context).size.width;
-    return ViewModelConnector<BookmarkPageViewModel, BookmarkPageState>(
-      viewModelProvider:
-          StateNotifierProvider<BookmarkPageViewModel, BookmarkPageState>(
+    return StateNotifierConnector<BookmarkPageStateNotifier, BookmarkPageState>(
+      stateNotifierProvider:
+          StateNotifierProvider<BookmarkPageStateNotifier, BookmarkPageState>(
         (ref) {
-          return BookmarkPageViewModel();
+          return BookmarkPageStateNotifier();
         },
       ),
-      onViewModelReady: (viewModel) async => await viewModel.initViewModel(),
+      onStateNotifierReady: (notifier) async =>
+          await notifier.initStateNotifier(),
       builder: (
         BuildContext context,
         BookmarkPageState state,
-        BookmarkPageViewModel viewModel,
+        BookmarkPageStateNotifier notifier,
         _,
       ) {
         if (state.listBookmarks == null) {
@@ -52,14 +48,17 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                 elevation: 0.7,
                 foregroundColor: Colors.black,
                 centerTitle: true,
-                title: Text("Bookmark", style: TextStyle(fontSize: 16),),
+                title: const Text(
+                  "Bookmark",
+                  style: TextStyle(fontSize: 16),
+                ),
                 backgroundColor: backgroundColor,
                 leading: IconButton(
                   onPressed: () => Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return MainPage();
-                    })),
-                  icon: Icon(
+                      MaterialPageRoute(builder: (context) {
+                    return const MainPage();
+                  })),
+                  icon: const Icon(
                     Icons.arrow_back_ios,
                     size: 16,
                     color: Colors.black,
@@ -117,7 +116,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                                 return _buildListBookmark(
                                   context: context,
                                   bookmark: state.listBookmarks![index],
-                                  viewModel: viewModel,
+                                  notifier: notifier,
                                 );
                               }),
                         ] else ...[
@@ -241,7 +240,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
   Widget _buildListBookmark({
     required BuildContext context,
     required Bookmarks bookmark,
-    required BookmarkPageViewModel viewModel,
+    required BookmarkPageStateNotifier notifier,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -296,7 +295,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
           );
 
           if (isBookmarkChanged is bool && isBookmarkChanged) {
-            viewModel.initViewModel();
+            notifier.initStateNotifier();
           }
         },
       ),

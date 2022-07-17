@@ -2,19 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qurantafsir_flutter/pages/bookmark_page.dart';
-import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_v2.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v2/surat_page_view_model.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_settings_drawer.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
+import 'package:qurantafsir_flutter/widgets/surat_page_settings_drawer.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_icons.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
-import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
-import 'package:qurantafsir_flutter/shared/core/models/quran.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
-import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
 import 'package:qurantafsir_flutter/shared/core/provider/surat_data_provider.dart';
-import 'package:qurantafsir_flutter/shared/ui/view_model_connector.dart';
+import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -82,21 +77,22 @@ class _SuratPageV3State extends State<SuratPageV3> {
   Widget build(BuildContext context) {
     final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-    return ViewModelConnector<SuratPageViewModel, SuratPageState>(
-      viewModelProvider:
-          StateNotifierProvider<SuratPageViewModel, SuratPageState>(
+    return StateNotifierConnector<SuratPageStateNotifier, SuratPageState>(
+      stateNotifierProvider:
+          StateNotifierProvider<SuratPageStateNotifier, SuratPageState>(
         (ref) {
-          return SuratPageViewModel(
+          return SuratPageStateNotifier(
             startPageInIndex: widget.startPageInIndex,
             suratDataService: ref.watch(suratDataServiceProvider),
           );
         },
       ),
-      onViewModelReady: (viewModel) async => await viewModel.initViewModel(),
+      onStateNotifierReady: (notifier) async =>
+          await notifier.initStateNotifier(),
       builder: (
         BuildContext context,
         SuratPageState state,
-        SuratPageViewModel viewModel,
+        SuratPageStateNotifier notifier,
         _,
       ) {
         if (state.pages == null ||
@@ -112,7 +108,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
 
         return WillPopScope(
           onWillPop: () async {
-            Navigator.pop(context, viewModel.isBookmarkChanged);
+            Navigator.pop(context, notifier.isBookmarkChanged);
             return true;
           },
           child: Scaffold(
@@ -127,7 +123,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
                     size: 30,
                   ),
                   onPressed: () => Navigator.of(context).pop(
-                    viewModel.isBookmarkChanged,
+                    notifier.isBookmarkChanged,
                   ),
                 ),
                 automaticallyImplyLeading: false,
@@ -137,7 +133,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     ValueListenableBuilder(
-                      valueListenable: viewModel.visibleSuratName,
+                      valueListenable: notifier.visibleSuratName,
                       builder: (context, value, __) {
                         return Text(
                           '$value',
@@ -151,7 +147,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
                     Row(
                       children: <Widget>[
                         ValueListenableBuilder(
-                          valueListenable: viewModel.currentPage,
+                          valueListenable: notifier.currentPage,
                           builder: (context, value, __) {
                             return Text(
                               'Page $value',
@@ -162,7 +158,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
                           },
                         ),
                         ValueListenableBuilder(
-                          valueListenable: viewModel.visibleJuzNumber,
+                          valueListenable: notifier.visibleJuzNumber,
                           builder: (context, value, __) {
                             return Text(
                               ', Juz $value',
@@ -179,37 +175,29 @@ class _SuratPageV3State extends State<SuratPageV3> {
                 backgroundColor: backgroundColor,
                 actions: <Widget>[
                   ValueListenableBuilder(
-                    valueListenable: viewModel.visibleIconBookmark,
+                    valueListenable: notifier.visibleIconBookmark,
                     builder: (context, value, __) {
-                      if (viewModel.visibleIconBookmark.value == true) {
+                      if (notifier.visibleIconBookmark.value == true) {
                         return IconButton(
                           icon: const Icon(Icons.bookmark_outlined),
                           onPressed: () {
-                            viewModel
-                                .deleteBookmark(viewModel.currentPage.value);
+                            notifier.deleteBookmark(notifier.currentPage.value);
                           },
                         );
                       } else {
                         return IconButton(
                           icon: const Icon(Icons.bookmark_outline),
                           onPressed: () {
-                            viewModel.insertBookmark(
-                              viewModel.visibleSuratName.value,
-                              viewModel.visibleJuzNumber.value,
-                              viewModel.currentPage.value,
+                            notifier.insertBookmark(
+                              notifier.visibleSuratName.value,
+                              notifier.visibleJuzNumber.value,
+                              notifier.currentPage.value,
                             );
                           },
                         );
                       }
                     },
                   ),
-                  // IconButton(
-                  //   icon: const Icon(CustomIcons.book),
-                  //   onPressed: () {
-                  //     ScaffoldMessenger.of(context).showSnackBar(
-                  //         const SnackBar(content: Text('This is a Full Page')));
-                  //   },
-                  // ),
                   IconButton(
                     icon: const Icon(CustomIcons.sliders),
                     onPressed: () {
@@ -223,17 +211,17 @@ class _SuratPageV3State extends State<SuratPageV3> {
               padding: const EdgeInsets.all(8.0),
               child: _buildPages(
                 state: state,
-                viewModel: viewModel,
+                notifier: notifier,
               ),
             ),
             endDrawer: SuratPageSettingsDrawer(
               isWithLatins: state.isWithLatins,
               isWithTranslation: state.isWithTranslations,
               isWithTafsir: state.isWithTafsirs,
-              onTapLatins: (value) => viewModel.setisWithLatins(value),
+              onTapLatins: (value) => notifier.setisWithLatins(value),
               onTapTranslation: (value) =>
-                  viewModel.setIsWithTranslations(value),
-              onTapTafsir: (value) => viewModel.setIsWithTafsirs(value),
+                  notifier.setIsWithTranslations(value),
+              onTapTafsir: (value) => notifier.setIsWithTafsirs(value),
             ),
           ),
         );
@@ -243,7 +231,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
 
   Widget _buildPages({
     required SuratPageState state,
-    required SuratPageViewModel viewModel,
+    required SuratPageStateNotifier notifier,
   }) {
     List<Widget> allPages = <Widget>[];
 
@@ -254,7 +242,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
         quranPageObject: state.pages![idx],
         pageNumberInQuran: pageNumberInQuran,
         state: state,
-        viewModel: viewModel,
+        notifier: notifier,
       );
 
       allPages.add(page);
@@ -265,8 +253,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
       controller: state.pageController,
       onPageChanged: (pageIndex) {
         int pageValue = pageIndex + 1;
-        viewModel.currentPage.value = pageValue;
-        viewModel.checkOneBookmark(pageValue);
+        notifier.currentPage.value = pageValue;
+        notifier.checkOneBookmark(pageValue);
       },
       children: allPages,
     );
@@ -276,7 +264,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     required QuranPage quranPageObject,
     required int pageNumberInQuran,
     required SuratPageState state,
-    required SuratPageViewModel viewModel,
+    required SuratPageStateNotifier notifier,
   }) {
     final int pageNumberInQuranInIndex = pageNumberInQuran - 1;
 
@@ -293,7 +281,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
             : AyahFontSize.regular,
         pageNumberInQuran: pageNumberInQuran,
         state: state,
-        viewModel: viewModel,
+        notifier: notifier,
       );
 
       ayahs.add(w);
@@ -316,7 +304,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     required AyahFontSize fontSize,
     required int pageNumberInQuran,
     required SuratPageState state,
-    required SuratPageViewModel viewModel,
+    required SuratPageStateNotifier notifier,
   }) {
     String allVerses = '';
     String fontFamilyPage = 'Page$pageNumberInQuran';
@@ -345,15 +333,15 @@ class _SuratPageV3State extends State<SuratPageV3> {
       child: VisibilityDetector(
         onVisibilityChanged: (info) {
           if (info.visibleFraction == 1) {
-            if (viewModel.visibleSuratName.value !=
+            if (notifier.visibleSuratName.value !=
                 surahNumberToSurahNameMap[verse.surahNumber]!) {
-              viewModel.visibleSuratName.value =
+              notifier.visibleSuratName.value =
                   surahNumberToSurahNameMap[verse.surahNumber]!;
-              viewModel.temp = verse.surahNumber;
+              notifier.temp = verse.surahNumber;
             }
 
-            if (viewModel.visibleJuzNumber.value != verse.juzNumber) {
-              viewModel.visibleJuzNumber.value = verse.juzNumber;
+            if (notifier.visibleJuzNumber.value != verse.juzNumber) {
+              notifier.visibleJuzNumber.value = verse.juzNumber;
             }
           }
         },
