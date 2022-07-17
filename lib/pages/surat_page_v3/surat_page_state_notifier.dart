@@ -7,6 +7,8 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbBookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
+import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
+import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/surat_data_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 
@@ -18,9 +20,7 @@ class SuratPageState {
     this.translations,
     this.tafsirs,
     this.latins,
-    this.isWithTafsirs = true,
-    this.isWithTranslations = true,
-    this.isWithLatins = true,
+    this.readingSettings,
   });
 
   Bookmarks? bookmarks;
@@ -29,9 +29,7 @@ class SuratPageState {
   List<List<String>>? tafsirs;
   List<List<String>>? latins;
   PageController? pageController;
-  bool isWithTranslations;
-  bool isWithTafsirs;
-  bool isWithLatins;
+  ReadingSettings? readingSettings;
 
   SuratPageState copyWith({
     Bookmarks? bookmarks,
@@ -40,9 +38,7 @@ class SuratPageState {
     List<List<String>>? translations,
     List<List<String>>? tafsirs,
     List<List<String>>? latins,
-    bool? isWithTranslations,
-    bool? isWithTafsirs,
-    bool? isWithLatins,
+    ReadingSettings? readingSettings,
   }) {
     return SuratPageState(
       bookmarks: bookmarks ?? this.bookmarks,
@@ -51,9 +47,7 @@ class SuratPageState {
       translations: translations ?? this.translations,
       tafsirs: tafsirs ?? this.tafsirs,
       latins: latins ?? this.latins,
-      isWithTafsirs: isWithTafsirs ?? this.isWithTafsirs,
-      isWithTranslations: isWithTranslations ?? this.isWithTranslations,
-      isWithLatins: isWithLatins ?? this.isWithLatins,
+      readingSettings: readingSettings ?? this.readingSettings,
     );
   }
 
@@ -64,8 +58,10 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   SuratPageStateNotifier({
     required this.startPageInIndex,
     required SuratDataService suratDataService,
+    required SharedPreferenceService sharedPreferenceService,
     this.bookmarks,
   })  : _suratDataService = suratDataService,
+        _sharedPreferenceService = sharedPreferenceService,
         super(
           SuratPageState(
             bookmarks: bookmarks,
@@ -74,6 +70,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
 
   Bookmarks? bookmarks;
   final SuratDataService _suratDataService;
+  final SharedPreferenceService _sharedPreferenceService;
   final List<int> _firstPageSurahPointer = <int>[];
   List<int> get firstPageKeys => _firstPageSurahPointer;
   late PageController pageController;
@@ -98,9 +95,12 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     pageController = PageController(
       initialPage: startPageInIndex,
     );
+    final ReadingSettings settings =
+        _sharedPreferenceService.getReadingSettings();
     state = state.copyWith(
       pages: allPages,
       pageController: pageController,
+      readingSettings: settings,
     );
     Verse firstVerseInDirectedPage = allPages[startPageInIndex].verses[0];
     temp = firstVerseInDirectedPage.surahNumber;
@@ -237,15 +237,33 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   }
 
   void setIsWithTranslations(bool value) {
-    state = state.copyWith(isWithTranslations: value);
+    final ReadingSettings settings = state.readingSettings!.copyWith(
+      isWithTranslations: value,
+    );
+
+    state = state.copyWith(readingSettings: settings);
+
+    _sharedPreferenceService.setReadingSettings(settings);
   }
 
   void setIsWithTafsirs(bool value) {
-    state = state.copyWith(isWithTafsirs: value);
+    final ReadingSettings settings = state.readingSettings!.copyWith(
+      isWithTafsirs: value,
+    );
+
+    state = state.copyWith(readingSettings: settings);
+
+    _sharedPreferenceService.setReadingSettings(settings);
   }
 
   void setisWithLatins(bool value) {
-    state = state.copyWith(isWithLatins: value);
+    final ReadingSettings settings = state.readingSettings!.copyWith(
+      isWithLatins: value,
+    );
+
+    state = state.copyWith(readingSettings: settings);
+
+    _sharedPreferenceService.setReadingSettings(settings);
   }
 
   Future<void> insertBookmark(namaSurat, juz, page) async {
