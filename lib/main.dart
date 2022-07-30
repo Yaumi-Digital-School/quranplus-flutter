@@ -42,8 +42,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("WKWKWKKW HAHAHAAH");
-    print(EnvConstants.baseUrl);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: AppConstants.appName,
