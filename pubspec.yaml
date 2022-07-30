@@ -46,6 +46,7 @@ dependencies:
   firebase_analytics: ^9.1.9
   page_transition: ^2.0.5
   shared_preferences: ^2.0.15
+  global_configuration: ^2.0.0-nullsafety.0
 
 dev_dependencies:
   flutter_test:
@@ -80,6 +81,7 @@ flutter:
     - data/quran_translations/
     - data/quran_latins/
     - data/quran_tafsirs/
+    - assets/cfg/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
