@@ -27,6 +27,11 @@ fvm flutter pub run build_runner build --delete-conflicting-outputs
 5. Untuk iOS, jalankan `pod install` di dalam folder `ios`
 6. Jalankan aplikasi di emulator/hp anda dengan command `fvm flutter run`
 
+## Setup Environment Variable
+
+1. Tambahkan file `env.json` di dalam directory `assets/cfg`
+2. Isi file `env.json` sesuai kebutuhan, silakan minta pada developer lain untuk value-value terupdatenya
+
 ## Cara Berkontribusi pada Repository
 
 Branch `master` adalah branch utama yang digunakan. Aplikasi yang sudah di publish ke publik adalah aplikasi yang di build dari branch `master`.
