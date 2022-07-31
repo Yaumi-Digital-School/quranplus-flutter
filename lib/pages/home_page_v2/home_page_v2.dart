@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/shared/core/env.dart';
+import 'package:qurantafsir_flutter/shared/core/models/form..dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
 
 class HomePageV2 extends StatelessWidget {
   const HomePageV2({Key? key}) : super(key: key);
@@ -27,11 +33,17 @@ class HomePageV2 extends StatelessWidget {
                   width: 65,
                   height: 24,
                   decoration: const BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage(
-                    'images/logo.png',
-                  ))),
+                    image: DecorationImage(
+                      image: AssetImage(
+                        'images/logo.png',
+                      ),
+                    ),
+                  ),
                 ),
+                IconButton(
+                  onPressed: _launchUrl,
+                  icon: Image.asset('images/icon_form.png', height: 24),
+                )
               ],
             ),
           ),
@@ -40,6 +52,27 @@ class HomePageV2 extends StatelessWidget {
       ),
       body: const ListSuratByJuz(),
     );
+  }
+}
+
+Future<FormLink> fetchLink() async {
+  final response = await http.get(Uri.parse(EnvConstants.baseUrl! + '/form/1'));
+
+  if (response.statusCode == 200) {
+    return FormLink.fromJson(jsonDecode(response.body));
+  } else {
+    throw Exception('Failed to load form link');
+  }
+}
+
+late Future<FormLink> futureLink;
+
+Future<void> _launchUrl() async {
+  futureLink = fetchLink();
+  final response = await futureLink;
+  final Uri _url = Uri.parse(response.link!);
+  if (!await launchUrl(_url)) {
+    throw 'Could not launch $_url';
   }
 }
 
