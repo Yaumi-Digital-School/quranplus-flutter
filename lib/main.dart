@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:qurantafsir_flutter/pages/main_page.dart';
 import 'package:qurantafsir_flutter/pages/splash_page.dart';
+import 'package:qurantafsir_flutter/pages/download_json_file.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -28,7 +29,7 @@ Future<void> main() async {
           sharedPreferenceService,
         ),
       ],
-      child: const MyApp(),
+      child: MyAppTest(),
     ),
   );
 }
