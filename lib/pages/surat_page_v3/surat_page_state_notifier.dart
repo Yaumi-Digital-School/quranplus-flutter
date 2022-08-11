@@ -10,6 +10,7 @@ import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:qurantafsir_flutter/widgets/surat_page_settings_drawer.dart';
 
 class SuratPageState {
   SuratPageState({
@@ -68,6 +69,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   Bookmarks? bookmarks;
   final SharedPreferenceService _sharedPreferenceService;
   final List<int> _firstPageSurahPointer = <int>[];
+
   List<int> get firstPageKeys => _firstPageSurahPointer;
   late PageController pageController;
   int startPageInIndex;
@@ -207,9 +209,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     final ReadingSettings settings = state.readingSettings!.copyWith(
       isWithTranslations: value,
     );
-
     state = state.copyWith(readingSettings: settings);
-
     _sharedPreferenceService.setReadingSettings(settings);
   }
 
@@ -231,6 +231,57 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     state = state.copyWith(readingSettings: settings);
 
     _sharedPreferenceService.setReadingSettings(settings);
+  }
+
+  void minusFontSize(int fontSize ) {
+    ReadingSettings settings = state.readingSettings!.copyWith(
+      fontSize: fontSize,
+    );
+
+    if (settings.fontSize >= 2) {
+      settings.fontSize--;
+      setValueFontSize(settings);
+    }
+    state = state.copyWith(readingSettings: settings);
+    _sharedPreferenceService.setReadingSettings(settings);
+  }
+  void addFontSize(int fontSize) {
+    ReadingSettings settings = state.readingSettings!.copyWith(
+      fontSize: fontSize,
+    );
+    if (settings.fontSize <= 4) {
+      settings.fontSize++;
+      setValueFontSize(settings);
+    }
+    state = state.copyWith(readingSettings: settings);
+    _sharedPreferenceService.setReadingSettings(settings);
+  }
+
+  void setValueFontSize(ReadingSettings readingSettings) {
+    switch (readingSettings.fontSize) {
+      case 1:
+        readingSettings.valueFontSize = 12;
+        readingSettings.valueFontSizeArabic = 24;
+        break;
+      case 2:
+        readingSettings.valueFontSize = 16;
+        readingSettings.valueFontSizeArabic = 36;
+        break;
+      case 3:
+        readingSettings.valueFontSize = 20;
+        readingSettings.valueFontSizeArabic = 40;
+        break;
+      case 4:
+        readingSettings.valueFontSize = 24;
+        readingSettings.valueFontSizeArabic = 44;
+        break;
+      case 5:
+        readingSettings.valueFontSize = 28;
+        readingSettings.valueFontSizeArabic = 48;
+        break;
+      default :
+        break ;
+    }
   }
 
   Future<void> insertBookmark(namaSurat, juz, page) async {
