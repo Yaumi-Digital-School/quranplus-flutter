@@ -13,21 +13,23 @@ import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+
 enum AyahFontSize {
   big,
   regular,
 }
 
 extension AyahFontSizeExt on AyahFontSize {
-  double get value {
+  SuratPageState get value {
     switch (this) {
       case AyahFontSize.big:
-        return 35;
+        return value.readingSettings!.valueFontSizeArabic  + 9 as SuratPageState ;
       case AyahFontSize.regular:
-        return 26;
+        return value.readingSettings!.valueFontSizeArabic as SuratPageState;
     }
   }
 }
+
 
 class SuratPageV3 extends StatefulWidget {
   const SuratPageV3({
@@ -219,10 +221,12 @@ class _SuratPageV3State extends State<SuratPageV3> {
               isWithLatins: state.readingSettings!.isWithLatins,
               isWithTranslation: state.readingSettings!.isWithTranslations,
               isWithTafsir: state.readingSettings!.isWithTafsirs,
+              fontSize: state.readingSettings!.fontSize,
               onTapLatins: (value) => notifier.setisWithLatins(value),
-              onTapTranslation: (value) =>
-                  notifier.setIsWithTranslations(value),
+              onTapTranslation: (value) => notifier.setIsWithTranslations(value),
               onTapTafsir: (value) => notifier.setIsWithTafsirs(value),
+              onTapAdd: (value) => notifier.addFontSize(value),
+              onTapMinus: (value)=> notifier.minusFontSize(value) ,
             ),
           ),
         );
@@ -358,7 +362,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
                   allVerses,
                   style: TextStyle(
                     fontFamily: fontFamilyPage,
-                    fontSize: fontSize.value,
+                    fontSize: state.readingSettings?.valueFontSizeArabic,
                     height: 1.6,
                     wordSpacing: 2,
                   ),
@@ -371,7 +375,9 @@ class _SuratPageV3State extends State<SuratPageV3> {
                 padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: Text(latin, style: bodyLatin1),
+                  child: Text(latin, style: bodyLatin1.merge(
+                    TextStyle(fontSize: state.readingSettings?.valueFontSize)
+                  )),
                 ),
               ),
             if (isWithTranslations)
@@ -382,7 +388,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
                   child: Text(
                     translation,
                     style: bodyRegular3.merge(
-                      const TextStyle(height: 1.5),
+                       TextStyle(height: 1.5, fontSize: state.readingSettings?.valueFontSize),
                     ),
                   ),
                 ),
@@ -405,7 +411,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
                         child: Text(
                           tafsir,
                           style: bodyRegular3.merge(
-                            const TextStyle(height: 1.5),
+                             TextStyle(height: 1.5 , fontSize: state.readingSettings?.valueFontSize),
                           ),
                         ),
                       ),

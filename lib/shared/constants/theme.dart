@@ -39,6 +39,10 @@ const Color backgroundTextTafsir = Color(0xFFF0F0F0);
 
 const Color darkGreen = Color(0xFF728363);
 const Color secondaryGreen = Color(0xFF0E2009);
+const Color secondaryGreen300 = Color(0xFFBAC6AA)  ;
+
+
+const Color brokenWhite = Color(0xffF8F7F3);
 
 FontWeight extraLight = FontWeight.w200;
 FontWeight light = FontWeight.w300;

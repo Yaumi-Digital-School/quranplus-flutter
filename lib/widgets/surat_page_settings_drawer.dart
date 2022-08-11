@@ -9,11 +9,14 @@ enum ContentType {
 }
 
 class SuratPageSettingsDrawer extends StatefulWidget {
-  const SuratPageSettingsDrawer({
+  SuratPageSettingsDrawer({
     Key? key,
     required this.onTapTranslation,
     required this.onTapTafsir,
     required this.onTapLatins,
+    required this.onTapAdd,
+    required this.onTapMinus,
+    required this.fontSize,
     this.isWithTranslation,
     this.isWithTafsir,
     this.isWithLatins,
@@ -22,10 +25,13 @@ class SuratPageSettingsDrawer extends StatefulWidget {
   final bool? isWithTranslation;
   final bool? isWithTafsir;
   final bool? isWithLatins;
+  final int fontSize;
 
   final ValueSetter<bool> onTapTranslation;
   final ValueSetter<bool> onTapTafsir;
   final ValueSetter<bool> onTapLatins;
+  final Function(int) onTapAdd;
+  final Function(int) onTapMinus;
 
   @override
   State<StatefulWidget> createState() => _SuratPageSettingsDrawerState();
@@ -51,9 +57,7 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
         padding: const EdgeInsets.only(top: 60),
         child: ListView(
           padding: EdgeInsets.zero,
-          children: <Widget>[
-            _buildContentSection(),
-          ],
+          children: <Widget>[_buildContentSection(), _buildChangeFontSize()],
         ),
       ),
     );
@@ -158,6 +162,59 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildChangeFontSize() {
+    return Column(
+      children: <Widget>[
+        ListTile(
+          title: Text(
+            'Font Size',
+            style: titleDrawerBold,
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            GestureDetector(
+                onTap: () => widget.onTapMinus(widget.fontSize),
+                child: _buildButtonFontSize(
+                    neutral200, Icons.remove, secondaryGreen300)),
+            Text(
+              '${widget.fontSize}x',
+              style: TextStyle(
+                  color: neutral700, fontSize: 14, fontWeight: FontWeight.w600),
+            ),
+            GestureDetector(
+                onTap: () => widget.onTapAdd(widget.fontSize),
+                child: _buildButtonFontSize(brokenWhite, Icons.add, darkGreen))
+          ],
+        )
+      ],
+    );
+  }
+
+  Widget _buildButtonFontSize(
+      Color colorButton, IconData iconButton, Color colorIcon) {
+    return Container(
+      height: 44,
+      width: 44,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: colorButton,
+          boxShadow: [
+            BoxShadow(
+                color: Color(0xff000000).withOpacity(0.1),
+                blurRadius: 6,
+                spreadRadius: 0,
+                offset: Offset(0, 0.9))
+          ]),
+      child: Center(
+          child: Icon(
+        iconButton,
+        color: colorIcon,
+      )),
     );
   }
 }
