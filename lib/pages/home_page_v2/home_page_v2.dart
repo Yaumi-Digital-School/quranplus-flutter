@@ -6,7 +6,7 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
-import 'package:qurantafsir_flutter/shared/core/models/form..dart';
+import 'package:qurantafsir_flutter/shared/core/models/form.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
@@ -40,9 +40,14 @@ class HomePageV2 extends StatelessWidget {
                     ),
                   ),
                 ),
-                IconButton(
-                  onPressed: _launchUrl,
-                  icon: Image.asset('images/icon_form.png', height: 24),
+                SizedBox(
+                  width: 100,
+                  child: IconButton(
+                    onPressed: _launchUrl,
+                    icon: Image.asset(
+                      'images/icon_form.png',
+                    ),
+                  ),
                 )
               ],
             ),
@@ -56,7 +61,8 @@ class HomePageV2 extends StatelessWidget {
 }
 
 Future<FormLink> fetchLink() async {
-  final response = await http.get(Uri.parse(EnvConstants.baseUrl! + '/form/1'));
+  final response = await http.get(
+      Uri.parse(EnvConstants.baseUrl! + '/api/resource/form-feedback'));
 
   if (response.statusCode == 200) {
     return FormLink.fromJson(jsonDecode(response.body));
@@ -70,7 +76,7 @@ late Future<FormLink> futureLink;
 Future<void> _launchUrl() async {
   futureLink = fetchLink();
   final response = await futureLink;
-  final Uri _url = Uri.parse(response.link!);
+  final Uri _url = Uri.parse(response.url!);
   if (!await launchUrl(_url)) {
     throw 'Could not launch $_url';
   }
