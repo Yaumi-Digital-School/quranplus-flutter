@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbBookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
+import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
@@ -21,10 +22,12 @@ class SuratPageState {
     this.tafsirs,
     this.latins,
     this.readingSettings,
+    this.fullPageSeparators,
   });
 
   Bookmarks? bookmarks;
   List<QuranPage>? pages;
+  List<FullPageSeparator>? fullPageSeparators;
   List<List<String>>? translations;
   List<List<String>>? tafsirs;
   List<List<String>>? latins;
@@ -34,6 +37,7 @@ class SuratPageState {
   SuratPageState copyWith({
     Bookmarks? bookmarks,
     List<QuranPage>? pages,
+    List<FullPageSeparator>? fullPageSeparators,
     PageController? pageController,
     List<List<String>>? translations,
     List<List<String>>? tafsirs,
@@ -48,10 +52,19 @@ class SuratPageState {
       tafsirs: tafsirs ?? this.tafsirs,
       latins: latins ?? this.latins,
       readingSettings: readingSettings ?? this.readingSettings,
+      fullPageSeparators: fullPageSeparators ?? this.fullPageSeparators,
     );
   }
 
   double get currentPage => pageController!.page!;
+
+  bool get isLoading =>
+      pages == null ||
+      translations == null ||
+      latins == null ||
+      tafsirs == null ||
+      readingSettings == null ||
+      fullPageSeparators == null;
 }
 
 class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
@@ -74,7 +87,8 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   late PageController pageController;
   int startPageInIndex;
   late DbBookmarks db;
-  late List<QuranPage> allPages;
+  late List<QuranPage> _allPages;
+  late List<FullPageSeparator> _fullPageSeparators;
   List<List<String>>? _translations;
   List<List<String>>? _tafsirs;
   List<List<String>>? _latins;
@@ -84,33 +98,43 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   late ValueNotifier<bool> visibleIconBookmark;
   List<int> currentVisibleSurahNumber = <int>[];
   late int temp;
+  int separatorBuilderIndex = 0;
   bool? _isBookmarkChanged;
 
   @override
   Future<void> initStateNotifier() async {
     db = DbBookmarks();
-    allPages = await getPages();
+    _allPages = await getPages();
     pageController = PageController(
       initialPage: startPageInIndex,
     );
     final ReadingSettings settings =
         _sharedPreferenceService.getReadingSettings();
-    state = state.copyWith(
-      pages: allPages,
-      pageController: pageController,
-      readingSettings: settings,
-    );
-    Verse firstVerseInDirectedPage = allPages[startPageInIndex].verses[0];
+    Verse firstVerseInDirectedPage = _allPages[startPageInIndex].verses[0];
     temp = firstVerseInDirectedPage.surahNumber;
     currentPage = ValueNotifier(startPageInIndex + 1);
     visibleSuratName = ValueNotifier(
-        surahNumberToSurahNameMap[firstVerseInDirectedPage.surahNumber]!);
-    visibleJuzNumber = ValueNotifier(firstVerseInDirectedPage.juzNumber);
+      surahNumberToSurahNameMap[firstVerseInDirectedPage.surahNumber]!,
+    );
+    visibleJuzNumber = ValueNotifier(
+      firstVerseInDirectedPage.juzNumber,
+    );
     visibleIconBookmark = ValueNotifier(false);
     checkOneBookmark(startPageInIndex + 1);
     await _generateTranslations();
     await _generateLatins();
     await _generateBaseTafsirs();
+    await _generateFullPageSeparators();
+
+    state = state.copyWith(
+      pages: _allPages,
+      pageController: pageController,
+      readingSettings: settings,
+      translations: _translations,
+      tafsirs: _tafsirs,
+      latins: _latins,
+      fullPageSeparators: _fullPageSeparators,
+    );
   }
 
   bool get isBookmarkChanged => _isBookmarkChanged ?? false;
@@ -118,14 +142,14 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   int getJuzAtStartOfPage({
     required int pageInIdx,
   }) {
-    return allPages[pageInIdx].verses[0].juzNumber;
+    return _allPages[pageInIdx].verses[0].juzNumber;
   }
 
   String getSuratNameAtStartOfPage({
     required int pageInIdx,
   }) {
     return surahNumberToSurahNameMap[
-        allPages[pageInIdx].verses[0].surahNumber]!;
+        _allPages[pageInIdx].verses[0].surahNumber]!;
   }
 
   Future<void> _generateTranslations() async {
@@ -142,8 +166,17 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
               .toList(),
         )
         .toList();
+  }
 
-    state = state.copyWith(translations: _translations);
+  Future<void> _generateFullPageSeparators() async {
+    List<dynamic> separatorJson = await json.decode(
+      await rootBundle.loadString('data/full_page_separator/separator.json'),
+    );
+
+    final FullPageSeparatorList fullPageSeparatorList =
+        FullPageSeparatorList.fromArray(separatorJson);
+
+    _fullPageSeparators = fullPageSeparatorList.separators;
   }
 
   Future<void> _generateLatins() async {
@@ -160,8 +193,6 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
               .toList(),
         )
         .toList();
-
-    state = state.copyWith(latins: _latins);
   }
 
   Future<void> _generateBaseTafsirs() async {
@@ -178,8 +209,6 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
               .toList(),
         )
         .toList();
-
-    state = state.copyWith(tafsirs: _tafsirs);
   }
 
   Future<List<QuranPage>> getPages() async {
@@ -233,7 +262,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     _sharedPreferenceService.setReadingSettings(settings);
   }
 
-  void minusFontSize(int fontSize ) {
+  void minusFontSize(int fontSize) {
     ReadingSettings settings = state.readingSettings!.copyWith(
       fontSize: fontSize,
     );
@@ -245,6 +274,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     state = state.copyWith(readingSettings: settings);
     _sharedPreferenceService.setReadingSettings(settings);
   }
+
   void addFontSize(int fontSize) {
     ReadingSettings settings = state.readingSettings!.copyWith(
       fontSize: fontSize,
@@ -279,9 +309,18 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
         readingSettings.valueFontSize = 28;
         readingSettings.valueFontSizeArabic = 48;
         break;
-      default :
-        break ;
+      default:
+        break;
     }
+  }
+
+  void setIsInFullPage(bool isInFullPage) {
+    final ReadingSettings settings = state.readingSettings!.copyWith(
+      isInFullPage: isInFullPage,
+    );
+
+    state = state.copyWith(readingSettings: settings);
+    _sharedPreferenceService.setReadingSettings(settings);
   }
 
   Future<void> insertBookmark(namaSurat, juz, page) async {

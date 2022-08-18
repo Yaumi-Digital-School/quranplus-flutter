@@ -46,6 +46,7 @@ dependencies:
   firebase_analytics: ^9.1.9
   page_transition: ^2.0.5
   shared_preferences: ^2.0.15
+  auto_size_text: ^3.0.0
   url_launcher: 6.1.5
   global_configuration: ^2.0.0-nullsafety.0
 
@@ -82,6 +83,7 @@ flutter:
     - data/quran_translations/
     - data/quran_latins/
     - data/quran_tafsirs/
+    - data/full_page_separator/
     - assets/cfg/
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -109,6 +111,9 @@ flutter:
 
     # ------------------------------------ #
     # Quran Font Page
+    - family: SurahName
+      fonts:
+        - asset: data/full_page_separator/surah.ttf
     - family: Page1
       fonts:
         - asset: data/quran_fonts/p1.ttf
