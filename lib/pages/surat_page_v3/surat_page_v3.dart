@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/widgets/surat_page_settings_drawer.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
@@ -13,7 +15,6 @@ import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-
 enum AyahFontSize {
   big,
   regular,
@@ -23,13 +24,12 @@ extension AyahFontSizeExt on AyahFontSize {
   SuratPageState get value {
     switch (this) {
       case AyahFontSize.big:
-        return value.readingSettings!.valueFontSizeArabic  + 9 as SuratPageState ;
+        return value.readingSettings!.valueFontSizeArabic + 9 as SuratPageState;
       case AyahFontSize.regular:
         return value.readingSettings!.valueFontSizeArabic as SuratPageState;
     }
   }
 }
-
 
 class SuratPageV3 extends StatefulWidget {
   const SuratPageV3({
@@ -97,11 +97,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
         SuratPageStateNotifier notifier,
         _,
       ) {
-        if (state.pages == null ||
-            state.translations == null ||
-            state.latins == null ||
-            state.tafsirs == null ||
-            state.readingSettings == null) {
+        if (state.isLoading) {
           return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
@@ -202,6 +198,11 @@ class _SuratPageV3State extends State<SuratPageV3> {
                     },
                   ),
                   IconButton(
+                    icon: const Icon(CustomIcons.book),
+                    onPressed: () => notifier
+                        .setIsInFullPage(!state.readingSettings!.isInFullPage),
+                  ),
+                  IconButton(
                     icon: const Icon(CustomIcons.sliders),
                     onPressed: () {
                       _scaffoldKey.currentState?.openEndDrawer();
@@ -212,10 +213,16 @@ class _SuratPageV3State extends State<SuratPageV3> {
             ),
             body: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: _buildPages(
-                state: state,
-                notifier: notifier,
-              ),
+              child: state.readingSettings!.isInFullPage
+                  ? _buildPagesInFullPage(
+                      state: state,
+                      notifier: notifier,
+                      context: context,
+                    )
+                  : _buildPages(
+                      state: state,
+                      notifier: notifier,
+                    ),
             ),
             endDrawer: SuratPageSettingsDrawer(
               isWithLatins: state.readingSettings!.isWithLatins,
@@ -223,14 +230,140 @@ class _SuratPageV3State extends State<SuratPageV3> {
               isWithTafsir: state.readingSettings!.isWithTafsirs,
               fontSize: state.readingSettings!.fontSize,
               onTapLatins: (value) => notifier.setisWithLatins(value),
-              onTapTranslation: (value) => notifier.setIsWithTranslations(value),
+              onTapTranslation: (value) =>
+                  notifier.setIsWithTranslations(value),
               onTapTafsir: (value) => notifier.setIsWithTafsirs(value),
               onTapAdd: (value) => notifier.addFontSize(value),
-              onTapMinus: (value)=> notifier.minusFontSize(value) ,
+              onTapMinus: (value) => notifier.minusFontSize(value),
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildPageInFullPage({
+    required SuratPageState state,
+    required int pageIndex,
+    required BuildContext context,
+    required SuratPageStateNotifier notifier,
+  }) {
+    final List<String> texts = List<String>.filled(15, '');
+    final int page = pageIndex + 1;
+
+    for (final Verse verse in state.pages![pageIndex].verses) {
+      for (final Word word in verse.words) {
+        texts[word.lineNumber - 1] += word.code;
+      }
+    }
+
+    while (notifier.separatorBuilderIndex < state.fullPageSeparators!.length &&
+        state.fullPageSeparators![notifier.separatorBuilderIndex].page ==
+            page) {
+      final FullPageSeparator separator =
+          state.fullPageSeparators![notifier.separatorBuilderIndex];
+
+      if (!separator.bismillah) {
+        texts[separator.line - 1] = separator.unicode!;
+      }
+
+      notifier.separatorBuilderIndex++;
+    }
+
+    List<Widget> textInWidgets = texts
+        .map(
+          (String words) => _buildFullPagePerLine(
+            page: page,
+            text: words,
+          ),
+        )
+        .toList();
+
+    final double bottomPadding = MediaQuery.of(context).size.height * 0.1;
+    final double topPadding = MediaQuery.of(context).size.height * 0.05;
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(11, topPadding, 11, bottomPadding),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: textInWidgets,
+      ),
+    );
+  }
+
+  Widget _buildFullPagePerLine({
+    required String text,
+    required int page,
+  }) {
+    String fontFamily = 'Page$page';
+    if (text.length == 1) {
+      fontFamily = 'SurahName';
+    }
+
+    if (text.isEmpty) {
+      if (page == 1 || page == 2) {
+        return const SizedBox.shrink();
+      }
+
+      return _buildBasmalah(
+        isInFullPage: true,
+      );
+    }
+
+    if (page == 1 || page == 2) {
+      return AutoSizeText(
+        text,
+        style: TextStyle(
+          height: 1.5,
+          fontFamily: fontFamily,
+          fontSize: 30,
+        ),
+      );
+    }
+
+    return Expanded(
+      child: AutoSizeText(
+        text,
+        style: TextStyle(
+          height: 1.5,
+          fontFamily: fontFamily,
+          fontSize: 30,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPagesInFullPage({
+    required SuratPageState state,
+    required SuratPageStateNotifier notifier,
+    required BuildContext context,
+  }) {
+    List<Widget> allPages = <Widget>[];
+
+    for (int idx = 0; idx < state.pages!.length; idx++) {
+      Widget page = _buildPageInFullPage(
+        state: state,
+        pageIndex: idx,
+        context: context,
+        notifier: notifier,
+      );
+
+      allPages.add(page);
+    }
+
+    return PageView(
+      reverse: true,
+      controller: state.pageController,
+      onPageChanged: (pageIndex) {
+        int pageValue = pageIndex + 1;
+        int surahNumber = state.pages![pageIndex].verses[0].surahNumber;
+        String surahName = surahNumberToSurahNameMap[surahNumber] ?? '';
+        notifier.visibleSuratName.value = surahName;
+        notifier.currentPage.value = pageValue;
+        notifier.checkOneBookmark(pageValue);
+      },
+      children: allPages,
     );
   }
 
@@ -375,9 +508,9 @@ class _SuratPageV3State extends State<SuratPageV3> {
                 padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: Text(latin, style: bodyLatin1.merge(
-                    TextStyle(fontSize: state.readingSettings?.valueFontSize)
-                  )),
+                  child: Text(latin,
+                      style: bodyLatin1.merge(TextStyle(
+                          fontSize: state.readingSettings?.valueFontSize))),
                 ),
               ),
             if (isWithTranslations)
@@ -388,7 +521,9 @@ class _SuratPageV3State extends State<SuratPageV3> {
                   child: Text(
                     translation,
                     style: bodyRegular3.merge(
-                       TextStyle(height: 1.5, fontSize: state.readingSettings?.valueFontSize),
+                      TextStyle(
+                          height: 1.5,
+                          fontSize: state.readingSettings?.valueFontSize),
                     ),
                   ),
                 ),
@@ -411,7 +546,9 @@ class _SuratPageV3State extends State<SuratPageV3> {
                         child: Text(
                           tafsir,
                           style: bodyRegular3.merge(
-                             TextStyle(height: 1.5 , fontSize: state.readingSettings?.valueFontSize),
+                            TextStyle(
+                                height: 1.5,
+                                fontSize: state.readingSettings?.valueFontSize),
                           ),
                         ),
                       ),
@@ -442,14 +579,23 @@ class _SuratPageV3State extends State<SuratPageV3> {
     );
   }
 
-  Widget _buildBasmalah() {
+  Widget _buildBasmalah({
+    bool isInFullPage = false,
+  }) {
+    if (isInFullPage) {
+      return Image.asset(
+        'images/bismillah_v2.png',
+        width: 170,
+      );
+    }
+
     return Container(
       width: 165,
       height: 80,
       decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage(
-            'images/bismillah.png',
+            'images/bismillah_v2.png',
           ),
         ),
       ),
