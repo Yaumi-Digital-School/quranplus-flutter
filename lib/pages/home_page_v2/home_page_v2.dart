@@ -61,8 +61,8 @@ class HomePageV2 extends StatelessWidget {
 }
 
 Future<FormLink> fetchLink() async {
-  final response = await http.get(
-      Uri.parse(EnvConstants.baseUrl! + '/api/resource/form-feedback'));
+  final response = await http
+      .get(Uri.parse(EnvConstants.baseUrl! + '/api/resource/form-feedback'));
 
   if (response.statusCode == 200) {
     return FormLink.fromJson(jsonDecode(response.body));
