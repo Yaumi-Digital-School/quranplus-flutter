@@ -257,17 +257,16 @@ class _SuratPageV3State extends State<SuratPageV3> {
       }
     }
 
-    while (notifier.separatorBuilderIndex < state.fullPageSeparators!.length &&
-        state.fullPageSeparators![notifier.separatorBuilderIndex].page ==
-            page) {
+    while (state.separatorBuilderIndex < state.fullPageSeparators!.length &&
+        state.fullPageSeparators![state.separatorBuilderIndex].page == page) {
       final FullPageSeparator separator =
-          state.fullPageSeparators![notifier.separatorBuilderIndex];
+          state.fullPageSeparators![state.separatorBuilderIndex];
 
       if (!separator.bismillah) {
         texts[separator.line - 1] = separator.unicode!;
       }
 
-      notifier.separatorBuilderIndex++;
+      state.separatorBuilderIndex++;
     }
 
     List<Widget> textInWidgets = texts

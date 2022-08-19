@@ -32,6 +32,7 @@ class SuratPageState {
   List<List<String>>? latins;
   PageController? pageController;
   ReadingSettings? readingSettings;
+  int separatorBuilderIndex = 0;
 
   SuratPageState copyWith({
     Bookmarks? bookmarks,
@@ -43,6 +44,8 @@ class SuratPageState {
     List<List<String>>? latins,
     ReadingSettings? readingSettings,
   }) {
+    separatorBuilderIndex = 0;
+
     return SuratPageState(
       bookmarks: bookmarks ?? this.bookmarks,
       pages: pages ?? this.pages,
@@ -97,7 +100,6 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   late ValueNotifier<bool> visibleIconBookmark;
   List<int> currentVisibleSurahNumber = <int>[];
   late int temp;
-  int separatorBuilderIndex = 0;
   bool? _isBookmarkChanged;
 
   @override
