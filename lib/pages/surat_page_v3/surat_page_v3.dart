@@ -415,8 +415,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
         verse: verse,
         useDivider: useDivider,
         fontSize: pageNumberInQuran == 1 || pageNumberInQuran == 2
-            ? AyahFontSize.big
-            : AyahFontSize.regular,
+            ? state.readingSettings!.valueFontSizeArabicFirstSheet
+            : state.readingSettings!.valueFontSizeArabic,
         pageNumberInQuran: pageNumberInQuran,
         state: state,
         notifier: notifier,
@@ -439,7 +439,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
   Widget _buildAyah({
     required Verse verse,
     required bool useDivider,
-    required AyahFontSize fontSize,
+    required double fontSize,
     required int pageNumberInQuran,
     required SuratPageState state,
     required SuratPageStateNotifier notifier,
@@ -495,7 +495,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
                   allVerses,
                   style: TextStyle(
                     fontFamily: fontFamilyPage,
-                    fontSize: state.readingSettings?.valueFontSizeArabic,
+                    fontSize: fontSize,
                     height: 1.6,
                     wordSpacing: 2,
                   ),

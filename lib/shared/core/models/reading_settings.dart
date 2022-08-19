@@ -11,6 +11,7 @@ class ReadingSettings {
     this.fontSize = 1,
     this.valueFontSize = 12,
     this.valueFontSizeArabic = 24,
+    this.valueFontSizeArabicFirstSheet = 35,
     this.isInFullPage = false,
   });
 
@@ -20,6 +21,7 @@ class ReadingSettings {
   int fontSize;
   double valueFontSize;
   double valueFontSizeArabic;
+  double valueFontSizeArabicFirstSheet;
   bool isInFullPage;
 
   factory ReadingSettings.fromJson(Map<String, dynamic> json) =>
@@ -35,6 +37,7 @@ class ReadingSettings {
     double? valueFontSizeArabic,
     int? fontSize,
     bool? isInFullPage,
+    double? valueFontSizeArabicFirstSheet,
   }) {
     return ReadingSettings(
       isWithTafsirs: isWithTafsirs ?? this.isWithTafsirs,
@@ -43,6 +46,8 @@ class ReadingSettings {
       valueFontSize: valueFontSize ?? this.valueFontSize,
       valueFontSizeArabic: valueFontSizeArabic ?? this.valueFontSizeArabic,
       fontSize: fontSize ?? this.fontSize,
+      valueFontSizeArabicFirstSheet:
+          valueFontSizeArabicFirstSheet ?? this.valueFontSizeArabicFirstSheet,
       isInFullPage: isInFullPage ?? this.isInFullPage,
     );
   }

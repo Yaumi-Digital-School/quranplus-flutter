@@ -11,7 +11,6 @@ import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
-import 'package:qurantafsir_flutter/widgets/surat_page_settings_drawer.dart';
 
 class SuratPageState {
   SuratPageState({
@@ -292,22 +291,27 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
       case 1:
         readingSettings.valueFontSize = 12;
         readingSettings.valueFontSizeArabic = 24;
+        readingSettings.valueFontSizeArabicFirstSheet = 35;
         break;
       case 2:
         readingSettings.valueFontSize = 16;
         readingSettings.valueFontSizeArabic = 36;
+        readingSettings.valueFontSizeArabicFirstSheet = 47;
         break;
       case 3:
         readingSettings.valueFontSize = 20;
         readingSettings.valueFontSizeArabic = 40;
+        readingSettings.valueFontSizeArabicFirstSheet = 51;
         break;
       case 4:
         readingSettings.valueFontSize = 24;
         readingSettings.valueFontSizeArabic = 44;
+        readingSettings.valueFontSizeArabicFirstSheet = 55;
         break;
       case 5:
         readingSettings.valueFontSize = 28;
         readingSettings.valueFontSizeArabic = 48;
+        readingSettings.valueFontSizeArabicFirstSheet = 59;
         break;
       default:
         break;
