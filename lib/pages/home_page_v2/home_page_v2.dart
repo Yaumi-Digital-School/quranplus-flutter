@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
@@ -8,8 +9,12 @@ import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/shared/core/models/form.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
+
+import 'home_page_state_notifier.dart';
 
 class HomePageV2 extends StatelessWidget {
   const HomePageV2({Key? key}) : super(key: key);
@@ -17,49 +22,49 @@ class HomePageV2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(54.0),
-        child: AppBar(
-          automaticallyImplyLeading: false,
-          elevation: 0.5,
-          centerTitle: false,
-          foregroundColor: primary500,
-          title: Transform.translate(
-            offset: const Offset(8, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-                  width: 65,
-                  height: 24,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(
-                        'images/logo.png',
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(54.0),
+          child: AppBar(
+            automaticallyImplyLeading: false,
+            elevation: 0.5,
+            centerTitle: false,
+            foregroundColor: primary500,
+            title: Transform.translate(
+              offset: const Offset(8, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                    width: 65,
+                    height: 24,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(
+                          'images/logo.png',
+                        ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 100,
-                  child: IconButton(
-                    onPressed: _launchUrl,
-                    icon: Image.asset(
-                      'images/icon_form.png',
+                  SizedBox(
+                    width: 100,
+                    child: IconButton(
+                      onPressed: _launchUrl,
+                      icon: Image.asset(
+                        'images/icon_form.png',
+                      ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
+            backgroundColor: backgroundColor,
           ),
-          backgroundColor: backgroundColor,
         ),
-      ),
-      body: const ListSuratByJuz(),
-    );
+        body: const ListSuratByJuz());
   }
 }
 
+// TODO move this to state notifier
 Future<FormLink> fetchLink() async {
   final response = await http
       .get(Uri.parse(EnvConstants.baseUrl! + '/api/resource/form-feedback'));
@@ -92,37 +97,88 @@ class ListSuratByJuz extends StatefulWidget {
 class _ListSuratByJuzState extends State<ListSuratByJuz> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-        future: DefaultAssetBundle.of(context).loadString(AppConstants.jsonJuz),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final List<JuzElement> juzs = juzFromJson(snapshot.requireData).juz;
-            return ListView.builder(
-              shrinkWrap: true,
-              itemCount: juzs.length,
-              itemBuilder: (context, index) {
+    return StateNotifierConnector<HomePageStateNotifier, HomePageState>(
+      stateNotifierProvider:
+          StateNotifierProvider<HomePageStateNotifier, HomePageState>(
+        (ref) {
+          return HomePageStateNotifier(
+            sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
+          );
+        },
+      ),
+      onStateNotifierReady: (notifier) async =>
+          await notifier.initStateNotifier(),
+      builder: (
+        BuildContext context,
+        HomePageState state,
+        HomePageStateNotifier notifier,
+        _,
+      ) {
+        notifier.getUsername();
+        return FutureBuilder<String>(
+            future:
+                DefaultAssetBundle.of(context).loadString(AppConstants.jsonJuz),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final List<JuzElement> juzs =
+                    juzFromJson(snapshot.requireData).juz;
                 return Column(
-                  children: <Widget>[
+                  children: [
                     Container(
-                      height: 42,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 30),
                       alignment: Alignment.centerLeft,
-                      decoration: const BoxDecoration(color: neutral200),
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      decoration: const BoxDecoration(
+                        color: backgroundColor,
+                        boxShadow: [
+                          BoxShadow(
+                              color: Color.fromRGBO(0, 0, 0, 0.08),
+                              blurRadius: 15,
+                              offset: Offset(4, 4))
+                        ],
+                      ),
                       child: Text(
-                        juzs[index].name,
+                        state.name.isNotEmpty
+                            ? 'Assalamu’alaikum, ${state.name}'
+                            : 'Assalamu’alaikum',
                         textAlign: TextAlign.start,
-                        style: bodyRegular1,
+                        style: captionSemiBold1,
                       ),
                     ),
-                    _buildListSuratByJuz(context, juzs[index])
+                    Expanded(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: juzs.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: <Widget>[
+                              Container(
+                                height: 42,
+                                alignment: Alignment.centerLeft,
+                                decoration:
+                                    const BoxDecoration(color: neutral200),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 24),
+                                child: Text(
+                                  juzs[index].name,
+                                  textAlign: TextAlign.start,
+                                  style: bodyRegular1,
+                                ),
+                              ),
+                              _buildListSuratByJuz(context, juzs[index])
+                            ],
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 );
-              },
-            );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        });
+              } else {
+                return const Center(child: CircularProgressIndicator());
+              }
+            });
+      },
+    );
   }
 
   Widget _buildListSuratByJuz(BuildContext context, JuzElement juz) {
@@ -136,6 +192,7 @@ class _ListSuratByJuzState extends State<ListSuratByJuz> {
         itemCount: surats.length,
         itemBuilder: (context, index) {
           return ListTile(
+            tileColor: backgroundColor,
             minLeadingWidth: 20,
             leading: Container(
               alignment: Alignment.center,

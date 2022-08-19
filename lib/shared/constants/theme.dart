@@ -34,6 +34,8 @@ const Color exit700 = Color(0xFF8A1538);
 const Color exit800 = Color(0xFF6F0D34);
 const Color exit900 = Color(0xFF5C0831);
 
+const Color errorColor = Color(0xFFFF6D7E);
+
 const Color backgroundColor = Color(0xFFF8F7F3);
 const Color backgroundTextTafsir = Color(0xFFF0F0F0);
 
@@ -79,7 +81,7 @@ TextStyle subHeadingRegular1 =
     GoogleFonts.notoSans(color: neutral900, fontSize: 20, fontWeight: regular);
 
 TextStyle subHeadingSemiBold2 =
-    GoogleFonts.notoSans(color: neutral900, fontSize: 16, fontWeight: regular);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 16, fontWeight: semiBold);
 
 TextStyle subHeadingMedium2 =
     GoogleFonts.notoSans(color: neutral900, fontSize: 16, fontWeight: medium);
@@ -103,10 +105,10 @@ TextStyle bodyMedium2 =
     GoogleFonts.notoSans(color: neutral900, fontSize: 14, fontWeight: medium);
 
 TextStyle bodyRegular2 =
-    GoogleFonts.notoSans(color: neutral900, fontSize: 16, fontWeight: regular);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 14, fontWeight: regular);
 
 TextStyle bodyLight2 =
-    GoogleFonts.notoSans(color: neutral900, fontSize: 16, fontWeight: light);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 14, fontWeight: light);
 
 TextStyle bodyMedium3 =
     GoogleFonts.notoSans(color: neutral900, fontSize: 12, fontWeight: medium);
@@ -116,6 +118,9 @@ TextStyle bodyRegular3 =
 
 TextStyle bodyLight3 =
     GoogleFonts.notoSans(color: neutral900, fontSize: 12, fontWeight: light);
+
+TextStyle buttonRegular1 =
+    GoogleFonts.notoSans(color: neutral900, fontSize: 14, fontWeight: regular);
 
 TextStyle buttonSemiBold1 =
     GoogleFonts.notoSans(color: neutral900, fontSize: 14, fontWeight: semiBold);
@@ -135,7 +140,13 @@ TextStyle buttonMedium3 =
 TextStyle caption1 =
     GoogleFonts.notoSans(color: neutral900, fontSize: 12, fontWeight: regular);
 
-TextStyle caption2 =
+TextStyle captionSemiBold1 =
+    GoogleFonts.notoSans(color: neutral900, fontSize: 12, fontWeight: semiBold);
+
+TextStyle captionRegular2 =
+    GoogleFonts.notoSans(color: neutral900, fontSize: 10, fontWeight: regular);
+
+TextStyle captionLight2 =
     GoogleFonts.notoSans(color: neutral900, fontSize: 10, fontWeight: light);
 
 TextStyle numberStyle =
@@ -155,3 +166,19 @@ BoxShadow shadowPrimary = BoxShadow(
     spreadRadius: 5,
     blurRadius: 7,
     offset: const Offset(0, 3));
+
+OutlineInputBorder enabledInputBorder = OutlineInputBorder(
+  borderSide: const BorderSide(
+    color: neutral500,
+    width: 0.5,
+  ),
+  borderRadius: BorderRadius.circular(8.0),
+);
+
+OutlineInputBorder errorInputBorder = OutlineInputBorder(
+    borderSide: const BorderSide(
+        color: errorColor,
+        width: 1,
+    ),
+    borderRadius: BorderRadius.circular(8.0),
+);

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:qurantafsir_flutter/pages/bookmark_page.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_v2.dart';
-import 'package:qurantafsir_flutter/pages/home_page.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/home_page_v2.dart';
+import 'package:qurantafsir_flutter/pages/settings_page/settings_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
 class MainPage extends StatefulWidget {
@@ -15,9 +14,10 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _pages = <Widget>[
-    HomePageV2(),
-    BookmarkPageV2(),
+  static final List<Widget> _pages = <Widget>[
+    const HomePageV2(),
+    const BookmarkPageV2(),
+    SettingsPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -39,6 +39,10 @@ class _MainPageState extends State<MainPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.bookmark),
             label: 'Bookmark',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
         currentIndex: _selectedIndex,
