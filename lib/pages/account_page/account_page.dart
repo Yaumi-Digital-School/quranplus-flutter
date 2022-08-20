@@ -233,17 +233,7 @@ class AccountPage extends StatelessWidget {
                           maxLength: 4,
                           style: bodyMedium2,
                           onChanged: (value) {
-                            if (value.isNotEmpty) {
-                              var year = DateFormat.y().format(DateTime.now());
-                              var yearInt = int.parse(year) - 1;
-                              if (int.parse(value) > yearInt) {
-                                notifier.yearChanged(yearInt.toString());
-                              } else {
-                                notifier.yearChanged(value);
-                              }
-                            } else {
-                              notifier.yearChanged('');
-                            }
+                            notifier.yearChanged(value);
                           },
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
