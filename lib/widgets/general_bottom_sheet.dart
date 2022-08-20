@@ -57,8 +57,7 @@ class GeneralBottomSheet {
     );
   }
 
-  Future showNoInternetBottomSheet(
-      BuildContext context, Function() onRefreshClicked) {
+  Future showNoInternetBottomSheet(BuildContext context) {
     return showGeneralBottomSheet(
       context,
       '',
@@ -87,7 +86,8 @@ class GeneralBottomSheet {
                 'Refresh',
                 style: captionSemiBold1.apply(color: primary500),
               ),
-              onPressed: onRefreshClicked,
+              // TODO changes to refresh action
+              onPressed: () => Navigator.pop(context),
             ),
           ],
         ),

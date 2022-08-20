@@ -73,10 +73,7 @@ class SettingsPage extends StatelessWidget {
                 return AccountPage();
               }));
             } else {
-              _generalBottomSheet.showNoInternetBottomSheet(
-                // TODO changes to refresh action
-                  context,
-                      () => Navigator.pop(context));
+              _generalBottomSheet.showNoInternetBottomSheet(context);
             }
           },
           child: _buildImageButton(
@@ -100,10 +97,7 @@ class SettingsPage extends StatelessWidget {
                   );
               });
             } else {
-              _generalBottomSheet.showNoInternetBottomSheet(
-                  // TODO changes to refresh action
-                  context,
-                  () => Navigator.pop(context));
+              _generalBottomSheet.showNoInternetBottomSheet(context);
             }
           },
           child: _buildImageButton(
@@ -245,10 +239,7 @@ class SettingsPage extends StatelessWidget {
                   );
               });
             } else {
-              _generalBottomSheet.showNoInternetBottomSheet(
-                  // TODO changes to refresh action
-                  context,
-                  () => Navigator.pop(context));
+              _generalBottomSheet.showNoInternetBottomSheet(context);
             }
           },
           icon: state.resultStatus == ResultStatus.inProgress

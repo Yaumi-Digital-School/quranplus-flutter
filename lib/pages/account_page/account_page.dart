@@ -349,10 +349,8 @@ class AccountPage extends StatelessWidget {
                                 Navigator.of(context).pop();
                               });
                             } else {
-                              _generalBottomSheet.showNoInternetBottomSheet(
-                                  // TODO changes to refresh action
-                                  context,
-                                  () => Navigator.pop(context));
+                              _generalBottomSheet
+                                  .showNoInternetBottomSheet(context);
                             }
                           }
                         : null,
