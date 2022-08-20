@@ -101,8 +101,16 @@ class AccountPageStateNotifier extends BaseStateNotifier<AccountPageState> {
     state = state.copyWith(formStatus: status, gender: gender);
   }
 
-  void dateOfMonthChanged(String dateOfMonth) async {
+  void dateOfMonthChanged(String value) async {
     FormStatus status = FormStatus.dirty;
+
+    var dateOfMonth = value;
+    if (dateOfMonth.isNotEmpty) {
+      if (int.parse(dateOfMonth) > 31) {
+        dateOfMonth = '31';
+      }
+    }
+
     var valid = _checkValidation(
       state.name,
       state.email,
@@ -117,10 +125,16 @@ class AccountPageStateNotifier extends BaseStateNotifier<AccountPageState> {
     state = state.copyWith(formStatus: status, dateOfMonth: dateOfMonth);
   }
 
-  void monthChanged(String month) async {
+  void monthChanged(String value) async {
     FormStatus status = FormStatus.dirty;
-    var newMonth = month.length == 1 ? '0$month' : month;
+    var month = value;
+    if (month.isNotEmpty) {
+      if (int.parse(month) > 12) {
+        month = '12';
+      }
+    }
 
+    var newMonth = month.length == 1 ? '0$month' : month;
     var valid = _checkValidation(
       state.name,
       state.email,
@@ -135,9 +149,18 @@ class AccountPageStateNotifier extends BaseStateNotifier<AccountPageState> {
     state = state.copyWith(formStatus: status, month: month);
   }
 
-  void yearChanged(String year) async {
-    if (year.length == 4) {
+  void yearChanged(String value) async {
+    if (value.length == 4) {
       FormStatus status = FormStatus.dirty;
+
+      var year = value;
+      if (year.isNotEmpty) {
+        var yearNow = DateFormat.y().format(DateTime.now());
+        var yearNowInt = int.parse(yearNow) - 1;
+        if (int.parse(year) > yearNowInt) {
+          year = yearNowInt.toString();
+        }
+      }
 
       if (int.parse(year) < 1900) {
         year = '1900';
@@ -155,7 +178,7 @@ class AccountPageStateNotifier extends BaseStateNotifier<AccountPageState> {
       }
 
       state = state.copyWith(formStatus: status, year: year);
-    } else if (year.isEmpty) {
+    } else if (value.isEmpty) {
       state = state.copyWith(year: '');
     }
   }

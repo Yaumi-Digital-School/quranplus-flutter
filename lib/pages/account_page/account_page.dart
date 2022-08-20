@@ -157,15 +157,7 @@ class AccountPage extends StatelessWidget {
                           maxLength: 2,
                           style: bodyMedium2,
                           onChanged: (value) {
-                            if (value.isNotEmpty) {
-                              if (int.parse(value) > 31) {
-                                notifier.dateOfMonthChanged('31');
-                              } else {
-                                notifier.dateOfMonthChanged(value);
-                              }
-                            } else {
-                              notifier.dateOfMonthChanged('');
-                            }
+                            notifier.dateOfMonthChanged(value);
                           },
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
@@ -203,15 +195,7 @@ class AccountPage extends StatelessWidget {
                           maxLength: 2,
                           style: bodyMedium2,
                           onChanged: (value) {
-                            if (value.isNotEmpty) {
-                              if (int.parse(value) > 12) {
-                                notifier.monthChanged('12');
-                              } else {
-                                notifier.monthChanged(value);
-                              }
-                            } else {
-                              notifier.monthChanged('');
-                            }
+                            notifier.monthChanged(value);
                           },
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
