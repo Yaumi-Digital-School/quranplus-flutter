@@ -150,17 +150,17 @@ class AccountPageStateNotifier extends BaseStateNotifier<AccountPageState> {
   }
 
   void yearChanged(String value) async {
-    if (value.length == 4) {
-      FormStatus status = FormStatus.dirty;
-
-      var year = value;
-      if (year.isNotEmpty) {
-        var yearNow = DateFormat.y().format(DateTime.now());
-        var yearNowInt = int.parse(yearNow) - 1;
-        if (int.parse(year) > yearNowInt) {
-          year = yearNowInt.toString();
-        }
+    var year = value;
+    if (year.isNotEmpty) {
+      var yearNow = DateFormat.y().format(DateTime.now());
+      var yearNowInt = int.parse(yearNow) - 1;
+      if (int.parse(year) > yearNowInt) {
+        year = yearNowInt.toString();
       }
+    }
+
+    if (year.length == 4) {
+      FormStatus status = FormStatus.dirty;
 
       if (int.parse(year) < 1900) {
         year = '1900';
@@ -178,7 +178,7 @@ class AccountPageStateNotifier extends BaseStateNotifier<AccountPageState> {
       }
 
       state = state.copyWith(formStatus: status, year: year);
-    } else if (value.isEmpty) {
+    } else if (year.isEmpty) {
       state = state.copyWith(year: '');
     }
   }
