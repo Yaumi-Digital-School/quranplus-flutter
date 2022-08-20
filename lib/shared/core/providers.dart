@@ -29,19 +29,16 @@ final Provider<UserApi> userApiProvider =
 
 final Provider<UserRepository> userRepositoryProvider =
     Provider<UserRepository>((ProviderRef<UserRepository> ref) {
-  final UserApi userApi = ref.watch(userApiProvider);
-
-  return UserRepository(userApi: userApi);
+  return UserRepository(
+      userApi: ref.watch(userApiProvider),
+      sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider));
 });
 
 final StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>
     settingsPageProvider =
     StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>(
-        (StateNotifierProviderRef<SettingsPageStateNotifier,
-                SettingsPageState>
+        (StateNotifierProviderRef<SettingsPageStateNotifier, SettingsPageState>
             ref) {
   return SettingsPageStateNotifier(
-    repository: ref.watch(userRepositoryProvider),
-    sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
-  );
+      repository: ref.watch(userRepositoryProvider));
 });

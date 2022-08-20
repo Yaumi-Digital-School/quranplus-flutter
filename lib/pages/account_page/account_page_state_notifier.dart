@@ -236,16 +236,11 @@ class AccountPageStateNotifier extends BaseStateNotifier<AccountPageState> {
 
       if (isSuccess) {
         state = state.copyWith(resultStatus: ResultStatus.success);
-        _setUsername(state.name);
       } else {
         state = state.copyWith(resultStatus: ResultStatus.failure);
       }
     } catch (_) {
       state = state.copyWith(resultStatus: ResultStatus.failure);
     }
-  }
-
-  Future<void> _setUsername(String name) async {
-    await _sharedPreferenceService.setUsername(name);
   }
 }

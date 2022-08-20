@@ -34,15 +34,11 @@ class SettingsPageState {
 }
 
 class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
-  SettingsPageStateNotifier({
-    required UserRepository repository,
-    required SharedPreferenceService sharedPreferenceService,
-  })  : _repository = repository,
-        _sharedPreferenceService = sharedPreferenceService,
+  SettingsPageStateNotifier({required UserRepository repository})
+      : _repository = repository,
         super(SettingsPageState());
 
   final UserRepository _repository;
-  final SharedPreferenceService _sharedPreferenceService;
 
   @override
   Future<void> initStateNotifier() async {
@@ -51,7 +47,7 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
   }
 
   Future<void> _getToken() async {
-    var token = await _sharedPreferenceService.getApiToken();
+    var token = await _repository.getToken();
 
     if (token.isEmpty) {
       state = state.copyWith(
@@ -63,14 +59,6 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
         token: token,
       );
     }
-  }
-
-  Future<void> _setToken(String token) async {
-    await _sharedPreferenceService.setApiToken(token);
-  }
-
-  Future<void> _removeToken() async {
-    await _sharedPreferenceService.removeApiToken();
   }
 
   Future<void> signInWithGoogle(
@@ -92,8 +80,6 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
           token: token,
         );
 
-        _setToken(token);
-        _getUserProfile(token);
         onSuccess.call();
       }
     } catch (_) {
@@ -109,8 +95,6 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
     state = state.copyWith(resultStatus: ResultStatus.inProgress);
 
     await _repository.signOut();
-    _removeToken();
-    _removeUsername();
 
     state = state.copyWith(
         authenticationStatus: AuthenticationStatus.unauthenticated,
@@ -118,25 +102,5 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
         token: '');
 
     onSuccess.call();
-  }
-
-  Future<void> _getUserProfile(String token) async {
-    state = state.copyWith(resultStatus: ResultStatus.inProgress);
-
-    try {
-      var user = await _repository.getUserProfile(token);
-      state = state.copyWith(resultStatus: ResultStatus.success, user: user);
-      _setUsername(user.name);
-    } catch (_) {
-      state = state.copyWith(resultStatus: ResultStatus.failure);
-    }
-  }
-
-  Future<void> _setUsername(String name) async {
-    await _sharedPreferenceService.setUsername(name);
-  }
-
-  Future<void> _removeUsername() async {
-    await _sharedPreferenceService.removeUsername();
   }
 }

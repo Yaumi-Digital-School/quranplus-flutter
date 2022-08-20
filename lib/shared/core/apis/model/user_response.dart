@@ -19,7 +19,7 @@ class UserResponse {
       message: json['message'] ?? '',
       errorMessage: json['error_message'] ?? '',
       token: (data == null) ? '' : (data['access_token'] ?? ''),
-      data: (data == null) ? User.empty : User.fromJson(json['data']),
+      data: (data == null) ? User.empty : User.fromJson(data),
     );
   }
 }

@@ -1,13 +1,15 @@
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/user_api.dart';
+import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/models/user.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/user_response.dart';
 import 'package:retrofit/retrofit.dart';
 
 class UserRepository {
-  UserRepository({required this.userApi});
+  UserRepository({required this.userApi, required this.sharedPreferenceService});
 
   final UserApi userApi;
+  final SharedPreferenceService sharedPreferenceService;
   late GoogleSignIn _googleSignIn;
 
   Future<void> initRepository() async {
@@ -37,6 +39,12 @@ class UserRepository {
         throw Exception('SignIn failed, token is empty');
       }
 
+      var username = response.data.data?.name ?? '';
+      if (username.isNotEmpty) {
+        setUsername(username);
+      }
+
+      setToken(token);
       return token;
     } catch (error) {
       throw Exception('SignIn error: ' + error.toString());
@@ -45,6 +53,8 @@ class UserRepository {
 
   Future<void> signOut() async {
     _googleSignIn.signOut();
+    removeToken();
+    removeUsername();
   }
 
   Future<User> getUserProfile(String token) async {
@@ -61,6 +71,7 @@ class UserRepository {
             'getUserProfile error: ' + response.data.errorMessage.toString());
       }
 
+      setUsername(data.name);
       return data;
     } catch (error) {
       throw Exception('getUserProfile error: ' + error.toString());
@@ -85,5 +96,29 @@ class UserRepository {
     } catch (error) {
       throw Exception('updateUserProfile error: ' + error.toString());
     }
+  }
+
+  Future<String> getToken() async {
+    return await sharedPreferenceService.getApiToken();
+  }
+
+  Future<void> setToken(String token) async {
+    await sharedPreferenceService.setApiToken(token);
+  }
+
+  Future<void> removeToken() async {
+    await sharedPreferenceService.removeApiToken();
+  }
+
+  Future<String> getUsername() async {
+    return await sharedPreferenceService.getUsername();
+  }
+
+  Future<void> setUsername(String name) async {
+    await sharedPreferenceService.setUsername(name);
+  }
+
+  Future<void> removeUsername() async {
+    await sharedPreferenceService.removeUsername();
   }
 }

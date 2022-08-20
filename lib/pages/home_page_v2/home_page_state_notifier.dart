@@ -4,18 +4,14 @@ import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notif
 class HomePageState {
   HomePageState({
     this.name = '',
-    this.token = ''
   });
 
-  String token;
   String name;
 
   HomePageState copyWith({
-    String? token,
     String? name,
   }) {
     return HomePageState(
-      token: token ?? this.token,
       name: name ?? this.name,
     );
   }
@@ -35,12 +31,7 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
   }
 
   void getUsername() async {
-    var token = await _sharedPreferenceService.getApiToken();
-    var name = '';
-    if (token.isNotEmpty) {
-      name = await _sharedPreferenceService.getUsername();
-    }
-
-    state = state.copyWith(token: token, name: name);
+    var name = await _sharedPreferenceService.getUsername();
+    state = state.copyWith(name: name);
   }
 }

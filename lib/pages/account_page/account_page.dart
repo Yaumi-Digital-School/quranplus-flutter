@@ -108,8 +108,6 @@ class AccountPage extends StatelessWidget {
                     decoration: InputDecoration(
                       enabled: false,
                       contentPadding: const EdgeInsets.all(8),
-                      hintText: 'email@gmail.com',
-                      hintStyle: bodyMedium2.apply(color: neutral400),
                       border: enabledInputBorder,
                       enabledBorder: enabledInputBorder,
                       fillColor: neutral300,
