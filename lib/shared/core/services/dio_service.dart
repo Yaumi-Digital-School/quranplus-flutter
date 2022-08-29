@@ -4,9 +4,13 @@ import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class DioService {
-  DioService({required this.baseUrl});
+  DioService({
+    required this.baseUrl,
+    this.accessToken,
+  });
 
   final String baseUrl;
+  final String? accessToken;
 
   static final CancelToken _cancelToken = CancelToken();
   final int _timeOut = 10000;
@@ -64,12 +68,13 @@ class DioService {
       );
   }
 
-  Dio? getDioJwt() {
+  Dio getDioWithAccessToken() {
     final Dio baseDio = _makeBaseDio();
 
     return baseDio
       ..options.headers.addAll(<String, dynamic>{
         HttpHeaders.contentTypeHeader: 'application/json',
+        'x-access-token': accessToken,
       })
       ..interceptors.add(
         InterceptorsWrapper(
@@ -77,25 +82,7 @@ class DioService {
             RequestOptions option,
             RequestInterceptorHandler handler,
           ) async {
-            option.cancelToken =
-                _cancelToken; //Assign _cancelToken for cancelling request later
-
-            // add JWT functionality if any
-
-            // if (jwtToken != null) {
-            //   if (!option.headers
-            //       .containsKey(HttpHeaders.authorizationHeader)) {
-            //     option.headers[HttpHeaders.authorizationHeader] =
-            //         'Bearer $jwtToken';
-            //   }
-            // } else {
-            //   option.headers.remove(HttpHeaders.authorizationHeader);
-            //   _cancelToken.cancel(
-            //     'LOGGED_OUT',
-            //   ); //Cancel All Request With _cancelToken
-
-            //   _cancelToken = CancelToken();
-            // }
+            option.cancelToken = _cancelToken;
 
             return handler.next(option);
           },

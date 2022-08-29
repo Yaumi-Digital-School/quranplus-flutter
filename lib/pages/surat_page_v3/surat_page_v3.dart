@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
@@ -86,11 +87,18 @@ class _SuratPageV3State extends State<SuratPageV3> {
           return SuratPageStateNotifier(
             startPageInIndex: widget.startPageInIndex,
             sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
+            bookmarkApi: ref.watch(bookmarkApiProvider),
+            isLoggedIn: ref.watch(userRepositoryProvider).isLoggedIn,
           );
         },
       ),
-      onStateNotifierReady: (notifier) async =>
-          await notifier.initStateNotifier(),
+      onStateNotifierReady: (notifier) async {
+        final ConnectivityResult connectivityResult =
+            await Connectivity().checkConnectivity();
+        await notifier.initStateNotifier(
+          connectivityResult: connectivityResult,
+        );
+      },
       builder: (
         BuildContext context,
         SuratPageState state,
@@ -179,18 +187,25 @@ class _SuratPageV3State extends State<SuratPageV3> {
                       if (notifier.visibleIconBookmark.value == true) {
                         return IconButton(
                           icon: const Icon(Icons.bookmark_outlined),
-                          onPressed: () {
-                            notifier.deleteBookmark(notifier.currentPage.value);
+                          onPressed: () async {
+                            final ConnectivityResult connectivityResult =
+                                await Connectivity().checkConnectivity();
+                            notifier.deleteBookmark(
+                              notifier.currentPage.value,
+                              connectivityResult,
+                            );
                           },
                         );
                       } else {
                         return IconButton(
                           icon: const Icon(Icons.bookmark_outline),
-                          onPressed: () {
+                          onPressed: () async {
+                            final ConnectivityResult connectivityResult =
+                                await Connectivity().checkConnectivity();
                             notifier.insertBookmark(
                               notifier.visibleSuratName.value,
-                              notifier.visibleJuzNumber.value,
                               notifier.currentPage.value,
+                              connectivityResult,
                             );
                           },
                         );
@@ -360,7 +375,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
         String surahName = surahNumberToSurahNameMap[surahNumber] ?? '';
         notifier.visibleSuratName.value = surahName;
         notifier.currentPage.value = pageValue;
-        notifier.checkOneBookmark(pageValue);
+        notifier.checkIsBookmarkExists(pageValue);
       },
       children: allPages,
     );
@@ -391,7 +406,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
       onPageChanged: (pageIndex) {
         int pageValue = pageIndex + 1;
         notifier.currentPage.value = pageValue;
-        notifier.checkOneBookmark(pageValue);
+        notifier.checkIsBookmarkExists(pageValue);
       },
       children: allPages,
     );

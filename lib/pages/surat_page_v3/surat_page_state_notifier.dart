@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbBookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
@@ -11,10 +13,10 @@ import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:retrofit/retrofit.dart';
 
 class SuratPageState {
   SuratPageState({
-    this.bookmarks,
     this.pages,
     this.pageController,
     this.translations,
@@ -22,9 +24,9 @@ class SuratPageState {
     this.latins,
     this.readingSettings,
     this.fullPageSeparators,
+    this.isBookmarkFetched = false,
   });
 
-  Bookmarks? bookmarks;
   List<QuranPage>? pages;
   List<FullPageSeparator>? fullPageSeparators;
   List<List<String>>? translations;
@@ -33,9 +35,9 @@ class SuratPageState {
   PageController? pageController;
   ReadingSettings? readingSettings;
   int separatorBuilderIndex = 0;
+  bool isBookmarkFetched;
 
   SuratPageState copyWith({
-    Bookmarks? bookmarks,
     List<QuranPage>? pages,
     List<FullPageSeparator>? fullPageSeparators,
     PageController? pageController,
@@ -43,11 +45,12 @@ class SuratPageState {
     List<List<String>>? tafsirs,
     List<List<String>>? latins,
     ReadingSettings? readingSettings,
+    bool? isBookmarkFetched,
   }) {
     separatorBuilderIndex = 0;
 
     return SuratPageState(
-      bookmarks: bookmarks ?? this.bookmarks,
+      isBookmarkFetched: isBookmarkFetched ?? this.isBookmarkFetched,
       pages: pages ?? this.pages,
       pageController: pageController ?? this.pageController,
       translations: translations ?? this.translations,
@@ -66,26 +69,28 @@ class SuratPageState {
       latins == null ||
       tafsirs == null ||
       readingSettings == null ||
-      fullPageSeparators == null;
+      fullPageSeparators == null ||
+      !isBookmarkFetched;
 }
 
 class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   SuratPageStateNotifier({
     required this.startPageInIndex,
     required SharedPreferenceService sharedPreferenceService,
-    this.bookmarks,
+    required BookmarkApi bookmarkApi,
+    bool isLoggedIn = false,
   })  : _sharedPreferenceService = sharedPreferenceService,
-        super(
-          SuratPageState(
-            bookmarks: bookmarks,
-          ),
-        );
+        _isLoggedIn = isLoggedIn,
+        _bookmarkApi = bookmarkApi,
+        super(SuratPageState());
 
-  Bookmarks? bookmarks;
   final SharedPreferenceService _sharedPreferenceService;
   final List<int> _firstPageSurahPointer = <int>[];
+  final List<int> _bookmarkList = <int>[];
 
   List<int> get firstPageKeys => _firstPageSurahPointer;
+  final BookmarkApi _bookmarkApi;
+  final bool _isLoggedIn;
   late PageController pageController;
   int startPageInIndex;
   late DbBookmarks db;
@@ -103,7 +108,9 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   bool? _isBookmarkChanged;
 
   @override
-  Future<void> initStateNotifier() async {
+  Future<void> initStateNotifier({
+    ConnectivityResult? connectivityResult,
+  }) async {
     db = DbBookmarks();
     _allPages = await getPages();
     pageController = PageController(
@@ -121,7 +128,8 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
       firstVerseInDirectedPage.juzNumber,
     );
     visibleIconBookmark = ValueNotifier(false);
-    checkOneBookmark(startPageInIndex + 1);
+
+    await _getBookmarkListFromLocal();
     await _generateTranslations();
     await _generateLatins();
     await _generateBaseTafsirs();
@@ -135,7 +143,10 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
       tafsirs: _tafsirs,
       latins: _latins,
       fullPageSeparators: _fullPageSeparators,
+      isBookmarkFetched: true,
     );
+
+    checkIsBookmarkExists(startPageInIndex + 1);
   }
 
   bool get isBookmarkChanged => _isBookmarkChanged ?? false;
@@ -329,13 +340,80 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     _sharedPreferenceService.setReadingSettings(settings);
   }
 
-  Future<void> insertBookmark(namaSurat, juz, page) async {
-    await db
-        .saveBookmark(Bookmarks(namaSurat: namaSurat, juz: juz, page: page));
+  Future<void> insertBookmark(
+    String surahName,
+    int page,
+    ConnectivityResult connectivityResult,
+  ) async {
+    if (connectivityResult != ConnectionState.none && _isLoggedIn) {
+      await _toggleBookmark(
+        surahName: surahName,
+        page: page,
+      );
+    }
+
+    await db.saveBookmark(
+      Bookmarks(
+        surahName: surahName,
+        page: page,
+      ),
+    );
+
+    _bookmarkList.add(page);
     visibleIconBookmark.value = true;
     _setIsBookmarkChanged();
   }
 
+  Future<void> _toggleBookmark({
+    required int page,
+    String? surahName,
+  }) async {
+    try {
+      HttpResponse<CreateBookmarkResponse> response =
+          await _bookmarkApi.createBookmark(
+              request: CreateBookmarkRequest(
+        surahId: surahNameToSurahNumberMap[surahName],
+        page: page,
+      ));
+    } catch (e) {
+      // TODO(yumnanaruto): add logging here
+    }
+  }
+
+  void checkIsBookmarkExists(int page) {
+    final bool isExists = _bookmarkList.contains(page);
+    if (isExists) {
+      visibleIconBookmark.value = true;
+      return;
+    }
+
+    visibleIconBookmark.value = false;
+  }
+
+  Future<void> _getBookmarkList() async {
+    List<Bookmarks>? _listBookmark;
+
+    HttpResponse<GetBookmarkListResponse> response =
+        await _bookmarkApi.getBookmarkList();
+
+    if (response.response.statusCode == 200) {
+      _listBookmark = response.data.data;
+      _listBookmark.forEach((bookmark) {
+        _bookmarkList.add(bookmark.page);
+      });
+    }
+  }
+
+  Future<void> _getBookmarkListFromLocal() async {
+    var result = await db.getAllBookmark();
+    result!.forEach((bookmark) {
+      _bookmarkList.add(
+        Bookmarks.fromMap(bookmark).page,
+      );
+    });
+  }
+
+  @Deprecated('Please use checkIsBookmarkExists instead')
   Future<bool> checkOneBookmark(startPage) async {
     var result = await db.oneBookmark(startPage);
     if (result == false) {
@@ -345,9 +423,20 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     }
   }
 
-  Future<void> deleteBookmark(startPage) async {
-    await db.deleteBookmark(startPage);
+  Future<void> deleteBookmark(
+    int page,
+    ConnectivityResult connectivityResult,
+  ) async {
+    if (connectivityResult != ConnectivityResult.none && _isLoggedIn) {
+      await _toggleBookmark(
+        page: page,
+      );
+    }
+
+    await db.deleteBookmark(page);
+
     visibleIconBookmark.value = false;
+    _bookmarkList.removeWhere((pageInList) => pageInList == page);
     _setIsBookmarkChanged();
   }
 

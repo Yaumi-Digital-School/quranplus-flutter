@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
@@ -6,6 +7,8 @@ import 'package:qurantafsir_flutter/pages/main_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 
 class BookmarkPageV2 extends StatefulWidget {
@@ -23,16 +26,25 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
       stateNotifierProvider:
           StateNotifierProvider<BookmarkPageStateNotifier, BookmarkPageState>(
         (ref) {
-          return BookmarkPageStateNotifier();
+          return BookmarkPageStateNotifier(
+            bookmarkApi: ref.watch(bookmarkApiProvider),
+            isLoggedIn: ref.watch(userRepositoryProvider).isLoggedIn,
+          );
         },
       ),
-      onStateNotifierReady: (notifier) async =>
-          await notifier.initStateNotifier(),
+      onStateNotifierReady: (notifier) async {
+        final ConnectivityResult connectivity =
+            await Connectivity().checkConnectivity();
+
+        await notifier.initStateNotifier(
+          connectivityResult: connectivity,
+        );
+      },
       builder: (
         BuildContext context,
         BookmarkPageState state,
         BookmarkPageStateNotifier notifier,
-        _,
+        WidgetRef ref,
       ) {
         if (state.listBookmarks == null) {
           return const Center(
@@ -261,19 +273,14 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
           ],
         ),
         title: Text(
-          "Surat ${bookmark.namaSurat.toString()}",
+          "Surat ${bookmark.surahName}",
           style: bodyMedium3,
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Row(
           children: <Widget>[
             Text(
-              "Page ${bookmark.page.toString()}, ",
-              style: caption1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            Text(
-              "Juz ${bookmark.juz.toString()}",
+              "Page ${bookmark.page.toString()}",
               style: caption1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -281,7 +288,13 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
         ),
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[Text(bookmark.page.toString())],
+          children: <Widget>[
+            Text(
+              bookmark.createdAtFormatted,
+              textAlign: TextAlign.right,
+              style: caption1,
+            ),
+          ],
         ),
         onTap: () async {
           var isBookmarkChanged = await Navigator.push(
@@ -295,7 +308,10 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
           );
 
           if (isBookmarkChanged is bool && isBookmarkChanged) {
-            notifier.initStateNotifier();
+            final ConnectivityResult connectivityResult =
+                await Connectivity().checkConnectivity();
+            await notifier.initStateNotifier(
+                connectivityResult: connectivityResult);
           }
         },
       ),

@@ -7,6 +7,7 @@ import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:qurantafsir_flutter/shared/core/repositories/user_repository.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'firebase_options.dart';
@@ -41,16 +42,27 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: AppConstants.appName,
-      theme: ThemeData(
-          primarySwatch: Colors.blue, backgroundColor: backgroundColor),
-      initialRoute: AppConstants.routeSplash,
-      navigatorObservers: <NavigatorObserver>[observer],
-      routes: {
-        AppConstants.routeSplash: (context) => const SplashPage(),
-        AppConstants.routeMain: (context) => const MainPage()
+    return Consumer(
+      builder: (context, ref, child) {
+        final SharedPreferenceService sp =
+            ref.watch(sharedPreferenceServiceProvider);
+        final UserRepository ur = ref.watch(userRepositoryProvider);
+        if (sp.getApiToken().isNotEmpty) {
+          ur.setIsLoggedIn(true);
+        }
+
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: AppConstants.appName,
+          theme: ThemeData(
+              primarySwatch: Colors.blue, backgroundColor: backgroundColor),
+          initialRoute: AppConstants.routeSplash,
+          navigatorObservers: <NavigatorObserver>[observer],
+          routes: {
+            AppConstants.routeSplash: (context) => const SplashPage(),
+            AppConstants.routeMain: (context) => const MainPage()
+          },
+        );
       },
     );
   }

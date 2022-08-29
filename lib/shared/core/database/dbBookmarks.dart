@@ -9,18 +9,26 @@ class DbBookmarks {
   static final DbBookmarks _instance = DbBookmarks._internal();
   static Database? _database;
 
+  final int _currentVersion = 2;
+
   //inisialisasi beberapa variabel yang dibutuhkan
   final String tableName = 'bookmarks';
   final String columnId = 'id';
+  final String columnPage = 'page';
+
+  // V1
   final String columnNamaSurat = 'namaSurat';
   final String columnJuz = 'juz';
-  final String columnPage = 'page';
+
+  // V2
+  final String columnSurahName = 'surahName';
+  final String columnCreatedAt = 'createdAt';
 
   DbBookmarks._internal();
   factory DbBookmarks() => _instance;
 
   //cek apakah database ada
-  Future<Database?> get _db  async {
+  Future<Database?> get _db async {
     // _database.delete(tableName);
     if (_database != null) {
       return _database;
@@ -32,8 +40,31 @@ class DbBookmarks {
   Future<Database?> _initDb() async {
     String databasePath = await getDatabasesPath();
     String path = join(databasePath, 'bookmarks.db');
-    print("database path" + path);
-    return await openDatabase(path, version: 1, onCreate: _onCreate);
+    return await openDatabase(
+      path,
+      version: _currentVersion,
+      onCreate: _onCreate,
+      onUpgrade: (Database db, int oldVersion, int newVersion) async {
+        switch (oldVersion) {
+          case 1:
+            await db.transaction((txn) async {
+              await txn.execute(
+                  'CREATE TABLE temp_$tableName($columnId INTEGER PRIMARY KEY, $columnSurahName TEXT, $columnPage INTEGER, $columnCreatedAt TEXT)');
+              await txn.execute('''
+                INSERT INTO temp_$tableName($columnSurahName, $columnPage)
+                SELECT $columnNamaSurat, $columnPage
+                FROM $tableName
+              ''');
+              await txn.execute('DROP TABLE $tableName');
+              await txn
+                  .execute('ALTER TABLE temp_$tableName RENAME TO $tableName');
+            });
+            break;
+          default:
+            break;
+        }
+      },
+    );
   }
 
   Future<void> _deleteDb() async {
@@ -45,8 +76,9 @@ class DbBookmarks {
 
   //membuat tabel dan field-fieldnya
   Future<void> _onCreate(Database db, int version) async {
-     var sql = "CREATE TABLE $tableName($columnId INTEGER PRIMARY KEY, $columnNamaSurat TEXT, $columnJuz INTEGER, $columnPage INTEGER)";
-     await db.execute(sql);
+    var sql =
+        "CREATE TABLE $tableName($columnId INTEGER PRIMARY KEY, $columnSurahName TEXT, $columnPage INTEGER, $columnCreatedAt TEXT)";
+    await db.execute(sql);
   }
 
   //insert ke database
@@ -60,9 +92,9 @@ class DbBookmarks {
     var dbClient = await _db;
     var result = await dbClient!.query(tableName, columns: [
       columnId,
-      columnNamaSurat,
-      columnJuz,
-      columnPage
+      columnSurahName,
+      columnPage,
+      columnCreatedAt,
     ]);
 
     return result.toList();
@@ -77,7 +109,8 @@ class DbBookmarks {
   //hapus database
   Future<int?> deleteBookmark(startPage) async {
     var dbClient = await _db;
-    return await dbClient!.delete(tableName, where: '$columnPage = ?', whereArgs: [startPage]);
+    return await dbClient!
+        .delete(tableName, where: '$columnPage = ?', whereArgs: [startPage]);
   }
 
   Future<bool?> oneBookmark(startPage) async {
@@ -85,9 +118,9 @@ class DbBookmarks {
     List<Map> maps = await dbclient!.query(tableName,
         columns: [
           columnId,
-          columnNamaSurat,
-          columnJuz,
-          columnPage
+          columnSurahName,
+          columnPage,
+          columnCreatedAt,
         ],
         where: '$columnPage = ?',
         whereArgs: [startPage]);
