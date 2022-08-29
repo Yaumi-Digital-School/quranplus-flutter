@@ -8,7 +8,14 @@ class UserRepository {
   UserRepository({required this.userApi});
 
   final UserApi userApi;
+  bool _isLoggedIn = false;
   late GoogleSignIn _googleSignIn;
+
+  bool get isLoggedIn => _isLoggedIn;
+
+  void setIsLoggedIn(bool value) {
+    _isLoggedIn = value;
+  }
 
   Future<void> initRepository() async {
     _googleSignIn = GoogleSignIn(scopes: [
@@ -17,7 +24,7 @@ class UserRepository {
     ]);
   }
 
-  Future<String> signInWithGoogle() async {
+  Future<UserResponse> signInWithGoogle() async {
     try {
       final googleUser = await _googleSignIn.signIn();
 
@@ -37,7 +44,9 @@ class UserRepository {
         throw Exception('SignIn failed, token is empty');
       }
 
-      return token;
+      setIsLoggedIn(true);
+
+      return response.data;
     } catch (error) {
       throw Exception('SignIn error: ' + error.toString());
     }
@@ -45,6 +54,7 @@ class UserRepository {
 
   Future<void> signOut() async {
     _googleSignIn.signOut();
+    setIsLoggedIn(false);
   }
 
   Future<User> getUserProfile(String token) async {

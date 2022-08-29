@@ -38,7 +38,7 @@ class SharedPreferenceService {
     _sharedPreferences.setString(_apiTokenKey, token ?? '');
   }
 
-  Future<String> getApiToken() async {
+  String getApiToken() {
     return _sharedPreferences.getString(_apiTokenKey) ?? '';
   }
 
@@ -51,7 +51,7 @@ class SharedPreferenceService {
     _sharedPreferences.setString(_usernameKey, name ?? '');
   }
 
-  Future<String> getUsername() async {
+  String getUsername() {
     return _sharedPreferences.getString(_usernameKey) ?? '';
   }
 

@@ -1,5 +1,8 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/model/user_response.dart';
 import 'package:qurantafsir_flutter/shared/core/models/user.dart';
 import 'package:qurantafsir_flutter/shared/core/repositories/user_repository.dart';
+import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
@@ -7,13 +10,13 @@ import 'package:qurantafsir_flutter/shared/utils/result_status.dart';
 
 class SettingsPageState {
   SettingsPageState({
-    this.authenticationStatus = AuthenticationStatus.unauthenticated,
+    this.authenticationStatus,
     this.resultStatus = ResultStatus.pure,
     this.token = '',
     this.user = User.empty,
   });
 
-  AuthenticationStatus authenticationStatus;
+  AuthenticationStatus? authenticationStatus;
   ResultStatus resultStatus;
   String token;
   User user;
@@ -31,6 +34,8 @@ class SettingsPageState {
       user: user ?? this.user,
     );
   }
+
+  bool get isLoading => authenticationStatus == null;
 }
 
 class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
@@ -50,8 +55,8 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
     _getToken();
   }
 
-  Future<void> _getToken() async {
-    var token = await _sharedPreferenceService.getApiToken();
+  void _getToken() {
+    var token = _sharedPreferenceService.getApiToken();
 
     if (token.isEmpty) {
       state = state.copyWith(
@@ -74,26 +79,28 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
   }
 
   Future<void> signInWithGoogle(
-      Function() onSuccess, Function() onError) async {
+    Function() onSuccess,
+    Function() onError,
+  ) async {
     state = state.copyWith(resultStatus: ResultStatus.inProgress);
 
     try {
-      var token = await _repository.signInWithGoogle();
+      UserResponse user = await _repository.signInWithGoogle();
 
-      if (token.isEmpty) {
+      if ((user.token ?? '').isEmpty) {
         state = state.copyWith(
           authenticationStatus: AuthenticationStatus.unknown,
           resultStatus: ResultStatus.canceled,
         );
       } else {
+        await _setToken(user.token!);
+        await _setUsername(user.data!.name);
+
         state = state.copyWith(
           authenticationStatus: AuthenticationStatus.authenticated,
           resultStatus: ResultStatus.success,
-          token: token,
+          token: user.token!,
         );
-
-        _setToken(token);
-        _getUserProfile(token);
         onSuccess.call();
       }
     } catch (_) {
@@ -109,27 +116,16 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
     state = state.copyWith(resultStatus: ResultStatus.inProgress);
 
     await _repository.signOut();
-    _removeToken();
-    _removeUsername();
+    await _removeToken();
+    await _removeUsername();
 
     state = state.copyWith(
-        authenticationStatus: AuthenticationStatus.unauthenticated,
-        resultStatus: ResultStatus.pure,
-        token: '');
+      authenticationStatus: AuthenticationStatus.unauthenticated,
+      resultStatus: ResultStatus.pure,
+      token: '',
+    );
 
     onSuccess.call();
-  }
-
-  Future<void> _getUserProfile(String token) async {
-    state = state.copyWith(resultStatus: ResultStatus.inProgress);
-
-    try {
-      var user = await _repository.getUserProfile(token);
-      state = state.copyWith(resultStatus: ResultStatus.success, user: user);
-      _setUsername(user.name);
-    } catch (_) {
-      state = state.copyWith(resultStatus: ResultStatus.failure);
-    }
   }
 
   Future<void> _setUsername(String name) async {

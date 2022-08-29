@@ -15,7 +15,7 @@ class StateNotifierConnector<T extends StateNotifier<P>, P>
     BuildContext context,
     P state,
     T notifier,
-    Widget? child,
+    WidgetRef ref,
   ) builder;
   final StateNotifierProvider<T, P> stateNotifierProvider;
   final Widget? child;
@@ -44,7 +44,7 @@ class _StateNotifierConnectorState<T extends StateNotifier<P>, P>
       context,
       state,
       notifier,
-      widget.child,
+      ref,
     );
   }
 }

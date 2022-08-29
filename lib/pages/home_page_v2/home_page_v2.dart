@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
@@ -16,167 +17,149 @@ import 'package:http/http.dart' as http;
 
 import 'home_page_state_notifier.dart';
 
+StateNotifierProvider<HomePageStateNotifier, HomePageState>
+    homePageStateNotifier =
+    StateNotifierProvider<HomePageStateNotifier, HomePageState>(
+  (ref) {
+    return HomePageStateNotifier(
+      sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
+    );
+  },
+);
+
 class HomePageV2 extends StatelessWidget {
   const HomePageV2({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(54.0),
-          child: AppBar(
-            automaticallyImplyLeading: false,
-            elevation: 0.5,
-            centerTitle: false,
-            foregroundColor: primary500,
-            title: Transform.translate(
-              offset: const Offset(8, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    width: 65,
-                    height: 24,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(
-                          'images/logo.png',
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 100,
-                    child: IconButton(
-                      onPressed: _launchUrl,
-                      icon: Image.asset(
-                        'images/icon_form.png',
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            backgroundColor: backgroundColor,
-          ),
-        ),
-        body: const ListSuratByJuz());
-  }
-}
-
-// TODO move this to state notifier
-Future<FormLink> fetchLink() async {
-  final response = await http
-      .get(Uri.parse(EnvConstants.baseUrl! + '/api/resource/form-feedback'));
-
-  if (response.statusCode == 200) {
-    return FormLink.fromJson(jsonDecode(response.body));
-  } else {
-    throw Exception('Failed to load form link');
-  }
-}
-
-late Future<FormLink> futureLink;
-
-Future<void> _launchUrl() async {
-  futureLink = fetchLink();
-  final response = await futureLink;
-  final Uri _url = Uri.parse(response.url!);
-  if (!await launchUrl(_url)) {
-    throw 'Could not launch $_url';
-  }
-}
-
-class ListSuratByJuz extends StatefulWidget {
-  const ListSuratByJuz({Key? key}) : super(key: key);
-
-  @override
-  State<ListSuratByJuz> createState() => _ListSuratByJuzState();
-}
-
-class _ListSuratByJuzState extends State<ListSuratByJuz> {
-  @override
-  Widget build(BuildContext context) {
     return StateNotifierConnector<HomePageStateNotifier, HomePageState>(
-      stateNotifierProvider:
-          StateNotifierProvider<HomePageStateNotifier, HomePageState>(
-        (ref) {
-          return HomePageStateNotifier(
-            sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
-          );
-        },
-      ),
-      onStateNotifierReady: (notifier) async =>
-          await notifier.initStateNotifier(),
+      stateNotifierProvider: homePageStateNotifier,
+      onStateNotifierReady: (notifier) async {
+        await notifier.initStateNotifier();
+      },
       builder: (
         BuildContext context,
         HomePageState state,
         HomePageStateNotifier notifier,
         _,
       ) {
-        notifier.getUsername();
-        return FutureBuilder<String>(
-            future:
-                DefaultAssetBundle.of(context).loadString(AppConstants.jsonJuz),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                final List<JuzElement> juzs =
-                    juzFromJson(snapshot.requireData).juz;
-                return Column(
-                  children: [
+        if (state.juzElements == null || state.feedbackUrl == null) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        return Scaffold(
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(54.0),
+            child: AppBar(
+              automaticallyImplyLeading: false,
+              elevation: 0.5,
+              centerTitle: false,
+              foregroundColor: primary500,
+              title: Transform.translate(
+                offset: const Offset(8, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 30),
-                      alignment: Alignment.centerLeft,
+                      width: 65,
+                      height: 24,
                       decoration: const BoxDecoration(
-                        color: backgroundColor,
-                        boxShadow: [
-                          BoxShadow(
-                              color: Color.fromRGBO(0, 0, 0, 0.08),
-                              blurRadius: 15,
-                              offset: Offset(4, 4))
-                        ],
-                      ),
-                      child: Text(
-                        state.name.isNotEmpty
-                            ? 'Assalamu’alaikum, ${state.name}'
-                            : 'Assalamu’alaikum',
-                        textAlign: TextAlign.start,
-                        style: captionSemiBold1,
+                        image: DecorationImage(
+                          image: AssetImage(
+                            'images/logo.png',
+                          ),
+                        ),
                       ),
                     ),
-                    Expanded(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: juzs.length,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: <Widget>[
-                              Container(
-                                height: 42,
-                                alignment: Alignment.centerLeft,
-                                decoration:
-                                    const BoxDecoration(color: neutral200),
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 24),
-                                child: Text(
-                                  juzs[index].name,
-                                  textAlign: TextAlign.start,
-                                  style: bodyRegular1,
-                                ),
-                              ),
-                              _buildListSuratByJuz(context, juzs[index])
-                            ],
-                          );
-                        },
+                    SizedBox(
+                      width: 100,
+                      child: IconButton(
+                        onPressed: () => _launchUrl(state.feedbackUrl),
+                        icon: Image.asset(
+                          'images/icon_form.png',
+                        ),
                       ),
-                    ),
+                    )
                   ],
-                );
-              } else {
-                return const Center(child: CircularProgressIndicator());
-              }
-            });
+                ),
+              ),
+              backgroundColor: backgroundColor,
+            ),
+          ),
+          body: const ListSuratByJuz(),
+        );
+      },
+    );
+  }
+
+  Future<void> _launchUrl(String? url) async {
+    final Uri _url = Uri.parse(url ?? '');
+    if (!await launchUrl(_url)) {
+      throw 'Could not launch $_url';
+    }
+  }
+}
+
+class ListSuratByJuz extends StatelessWidget {
+  const ListSuratByJuz({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer(
+      builder: (BuildContext context, WidgetRef ref, Widget? child) {
+        HomePageState state = ref.watch(homePageStateNotifier);
+        return Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+              alignment: Alignment.centerLeft,
+              decoration: const BoxDecoration(
+                color: backgroundColor,
+                boxShadow: [
+                  BoxShadow(
+                      color: Color.fromRGBO(0, 0, 0, 0.08),
+                      blurRadius: 15,
+                      offset: Offset(4, 4))
+                ],
+              ),
+              child: Text(
+                state.name.isNotEmpty
+                    ? 'Assalamu’alaikum, ${state.name}'
+                    : 'Assalamu’alaikum',
+                textAlign: TextAlign.start,
+                style: captionSemiBold1,
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: state.juzElements!.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: <Widget>[
+                      Container(
+                        height: 42,
+                        alignment: Alignment.centerLeft,
+                        decoration: const BoxDecoration(color: neutral200),
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Text(
+                          state.juzElements![index].name,
+                          textAlign: TextAlign.start,
+                          style: bodyRegular1,
+                        ),
+                      ),
+                      _buildListSuratByJuz(context, state.juzElements![index])
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
+        );
       },
     );
   }

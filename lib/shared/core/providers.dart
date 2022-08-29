@@ -1,14 +1,21 @@
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/user_api.dart';
+import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/shared/core/repositories/user_repository.dart';
 import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 
-final Provider<DioService> dioServiceProvider = Provider<DioService>((_) {
+final StateProvider<DioService> dioServiceProvider =
+    StateProvider<DioService>((ref) {
+  final SharedPreferenceService sharedPreferenceService =
+      ref.watch(sharedPreferenceServiceProvider);
+
   return DioService(
-    baseUrl: AppConstants.baseUrl,
+    baseUrl: EnvConstants.baseUrl ?? '',
+    accessToken: sharedPreferenceService.getApiToken(),
   );
 });
 
@@ -18,9 +25,16 @@ final Provider<SharedPreferenceService> sharedPreferenceServiceProvider =
   return service;
 });
 
+final Provider<BookmarkApi> bookmarkApiProvider = Provider<BookmarkApi>((ref) {
+  final DioService dioService = ref.watch(dioServiceProvider);
+  return BookmarkApi(
+    dioService.getDioWithAccessToken(),
+  );
+});
+
 final Provider<UserApi> userApiProvider =
     Provider<UserApi>((ProviderRef<UserApi> ref) {
-  final DioService dioService = ref.watch(dioServiceProvider);
+  final DioService dioService = ref.read(dioServiceProvider);
 
   return UserApi(
     dioService.getDio(),
@@ -37,8 +51,7 @@ final Provider<UserRepository> userRepositoryProvider =
 final StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>
     settingsPageProvider =
     StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>(
-        (StateNotifierProviderRef<SettingsPageStateNotifier,
-                SettingsPageState>
+        (StateNotifierProviderRef<SettingsPageStateNotifier, SettingsPageState>
             ref) {
   return SettingsPageStateNotifier(
     repository: ref.watch(userRepositoryProvider),
