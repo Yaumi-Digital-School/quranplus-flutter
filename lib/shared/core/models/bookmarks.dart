@@ -99,7 +99,7 @@ class Bookmarks {
     );
 
     if (timeDiffInDay < const Duration(days: 1)) {
-      return '${convertedStr.hour}:${convertedStr.minute.toString().padLeft(2, "0")}';
+      return '${convertedStr.hour.toString().padLeft(2, "0")}:${convertedStr.minute.toString().padLeft(2, "0")}';
     }
 
     if (timeDiffInDay <= const Duration(days: 7)) {

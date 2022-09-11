@@ -77,7 +77,7 @@ class DbBookmarks {
   //membuat tabel dan field-fieldnya
   Future<void> _onCreate(Database db, int version) async {
     var sql =
-        "CREATE TABLE $tableName($columnId INTEGER PRIMARY KEY, $columnSurahName TEXT, $columnPage INTEGER, $columnCreatedAt TEXT)";
+        'CREATE TABLE $tableName($columnId INTEGER PRIMARY KEY, $columnSurahName TEXT, $columnPage INTEGER, $columnCreatedAt TEXT)';
     await db.execute(sql);
   }
 
@@ -90,12 +90,11 @@ class DbBookmarks {
   //read database
   Future<List?> getAllBookmark() async {
     var dbClient = await _db;
-    var result = await dbClient!.query(tableName, columns: [
-      columnId,
-      columnSurahName,
-      columnPage,
-      columnCreatedAt,
-    ]);
+    var result = await dbClient!.query(
+      tableName,
+      columns: [columnId, columnSurahName, columnPage, columnCreatedAt],
+      orderBy: '$columnId DESC',
+    );
 
     return result.toList();
   }
@@ -115,15 +114,12 @@ class DbBookmarks {
 
   Future<bool?> oneBookmark(startPage) async {
     var dbclient = await _db;
-    List<Map> maps = await dbclient!.query(tableName,
-        columns: [
-          columnId,
-          columnSurahName,
-          columnPage,
-          columnCreatedAt,
-        ],
-        where: '$columnPage = ?',
-        whereArgs: [startPage]);
+    List<Map> maps = await dbclient!.query(
+      tableName,
+      columns: [columnPage],
+      where: '$columnPage = ?',
+      whereArgs: [startPage],
+    );
     if (maps.isNotEmpty) {
       return true;
     }
