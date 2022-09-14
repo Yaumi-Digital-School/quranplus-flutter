@@ -88,7 +88,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
             startPageInIndex: widget.startPageInIndex,
             sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
             bookmarkApi: ref.watch(bookmarkApiProvider),
-            isLoggedIn: ref.watch(userRepositoryProvider).isLoggedIn,
+            bookmarksService: ref.watch(bookmarksService),
+            isLoggedIn: ref.watch(authenticationService).isLoggedIn,
           );
         },
       ),

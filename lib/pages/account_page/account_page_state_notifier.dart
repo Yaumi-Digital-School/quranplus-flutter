@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/core/models/user.dart';
-import 'package:qurantafsir_flutter/shared/core/repositories/user_repository.dart';
+import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/utils/form_status.dart';
@@ -52,13 +52,13 @@ class AccountPageState {
 
 class AccountPageStateNotifier extends BaseStateNotifier<AccountPageState> {
   AccountPageStateNotifier({
-    required UserRepository repository,
+    required AuthenticationService repository,
     required SharedPreferenceService sharedPreferenceService,
   })  : _repository = repository,
         _sharedPreferenceService = sharedPreferenceService,
         super(AccountPageState());
 
-  final UserRepository _repository;
+  final AuthenticationService _repository;
   final SharedPreferenceService _sharedPreferenceService;
   late String _token;
 

@@ -37,7 +37,7 @@ class DbBookmarks {
     return _database;
   }
 
-  Future<Database?> _initDb() async {
+  Future<Database> _initDb() async {
     String databasePath = await getDatabasesPath();
     String path = join(databasePath, 'bookmarks.db');
     return await openDatabase(
@@ -79,6 +79,21 @@ class DbBookmarks {
     var sql =
         "CREATE TABLE $tableName($columnId INTEGER PRIMARY KEY, $columnSurahName TEXT, $columnPage INTEGER, $columnCreatedAt TEXT)";
     await db.execute(sql);
+  }
+
+  Future<void> clearTable() async {
+    final Database db = await _db ?? await _initDb();
+    final String sql = 'DELETE FROM $tableName';
+    await db.execute(sql);
+  }
+
+  Future<void> bulkCreateBookmarks(List<Bookmarks> bookmarks) async {
+    final Database db = await _db ?? await _initDb();
+    await db.transaction((txn) async {
+      for (Bookmarks bookmark in bookmarks) {
+        await txn.insert(tableName, bookmark.toMapAfterMergeToServer());
+      }
+    });
   }
 
   //insert ke database

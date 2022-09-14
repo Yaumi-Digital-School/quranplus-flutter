@@ -2,21 +2,39 @@
 
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 
 part 'bookmarks.g.dart';
 
 @JsonSerializable()
 class GetBookmarkListResponse {
   GetBookmarkListResponse({
-    required this.data,
+    this.data,
     required this.message,
   });
 
-  final List<Bookmarks> data;
+  final List<Bookmarks>? data;
   final String message;
 
   factory GetBookmarkListResponse.fromJson(Map<String, dynamic> json) =>
       _$GetBookmarkListResponseFromJson(json);
+}
+
+@JsonSerializable()
+class MergeBookmarkRequest {
+  MergeBookmarkRequest({
+    required this.surahID,
+    required this.createdAt,
+    required this.page,
+  });
+
+  @JsonKey(name: 'surah_id')
+  int surahID;
+  @JsonKey(name: 'created_at')
+  String createdAt;
+  int page;
+
+  Map<String, dynamic> toJson() => _$MergeBookmarkRequestToJson(this);
 }
 
 @JsonSerializable()
@@ -52,13 +70,14 @@ class CreateBookmarkRequest {
 @JsonSerializable()
 class Bookmarks {
   Bookmarks({
-    this.id,
+    this.surahID,
     required this.surahName,
     required this.page,
     this.createdAt,
   });
 
-  int? id;
+  @JsonKey(name: 'surah_id')
+  int? surahID;
   @JsonKey(name: 'surah_name')
   late String surahName;
   @JsonKey(name: 'created_at')
@@ -69,9 +88,6 @@ class Bookmarks {
     var map = Map<String, dynamic>();
     final DateTime currentTime = DateTime.now();
 
-    if (id != null) {
-      map['id'] = id;
-    }
     map['surahName'] = surahName;
     map['page'] = page;
     map['createdAt'] = currentTime.toString();
@@ -79,8 +95,17 @@ class Bookmarks {
     return map;
   }
 
+  Map<String, dynamic> toMapAfterMergeToServer() {
+    var map = Map<String, dynamic>();
+
+    map['surahName'] = surahNumberToSurahNameMap[surahID];
+    map['page'] = page;
+    map['createdAt'] = createdAt;
+
+    return map;
+  }
+
   Bookmarks.fromMap(Map<String, dynamic> map) {
-    this.id = map['id'];
     this.surahName = map['surahName'];
     this.page = map['page'];
     this.createdAt = map['createdAt'];
@@ -92,7 +117,9 @@ class Bookmarks {
     }
 
     final DateTime currentTime = DateTime.now();
-    final DateTime convertedStr = DateTime.parse(createdAt!);
+    final DateTime convertedStr = DateTime.parse(createdAt!).add(
+      const Duration(hours: 7), // TODO(yumnanaruto): temporary fix
+    );
 
     final Duration timeDiffInDay = DateUtils.dateOnly(currentTime).difference(
       DateUtils.dateOnly(convertedStr),
@@ -111,4 +138,6 @@ class Bookmarks {
 
   factory Bookmarks.fromJson(Map<String, dynamic> json) =>
       _$BookmarksFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BookmarksToJson(this);
 }

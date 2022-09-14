@@ -15,4 +15,9 @@ abstract class BookmarkApi {
 
   @GET('/api/bookmarks')
   Future<HttpResponse<GetBookmarkListResponse>> getBookmarkList();
+
+  @PUT('/api/bookmarks')
+  Future<HttpResponse<GetBookmarkListResponse>> mergeBookmarks({
+    @Body() required List<MergeBookmarkRequest> request,
+  });
 }
