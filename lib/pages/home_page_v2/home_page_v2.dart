@@ -106,60 +106,76 @@ class HomePageV2 extends StatelessWidget {
 
 class ListSuratByJuz extends StatelessWidget {
   const ListSuratByJuz({Key? key}) : super(key: key);
+  double diameterButtonSearch(BuildContext context) =>
+      MediaQuery.of(context).size.width * 1 / 6;
 
   @override
   Widget build(BuildContext context) {
     return Consumer(
       builder: (BuildContext context, WidgetRef ref, Widget? child) {
         HomePageState state = ref.watch(homePageStateNotifier);
-        return Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-              alignment: Alignment.centerLeft,
-              decoration: const BoxDecoration(
-                color: backgroundColor,
-                boxShadow: [
-                  BoxShadow(
-                      color: Color.fromRGBO(0, 0, 0, 0.08),
-                      blurRadius: 15,
-                      offset: Offset(4, 4))
-                ],
+        return Stack(children: <Widget>[
+          Column(
+            children: [
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+                alignment: Alignment.centerLeft,
+                decoration: const BoxDecoration(
+                  color: backgroundColor,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Color.fromRGBO(0, 0, 0, 0.08),
+                        blurRadius: 15,
+                        offset: Offset(4, 4))
+                  ],
+                ),
+                child: Text(
+                  state.name.isNotEmpty
+                      ? 'Assalamu’alaikum, ${state.name}'
+                      : 'Assalamu’alaikum',
+                  textAlign: TextAlign.start,
+                  style: captionSemiBold1,
+                ),
               ),
-              child: Text(
-                state.name.isNotEmpty
-                    ? 'Assalamu’alaikum, ${state.name}'
-                    : 'Assalamu’alaikum',
-                textAlign: TextAlign.start,
-                style: captionSemiBold1,
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: state.juzElements!.length,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: <Widget>[
-                      Container(
-                        height: 42,
-                        alignment: Alignment.centerLeft,
-                        decoration: const BoxDecoration(color: neutral200),
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: Text(
-                          state.juzElements![index].name,
-                          textAlign: TextAlign.start,
-                          style: bodyRegular1,
+              Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: state.juzElements!.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: <Widget>[
+                        Container(
+                          height: 42,
+                          alignment: Alignment.centerLeft,
+                          decoration: const BoxDecoration(color: neutral200),
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Text(
+                            state.juzElements![index].name,
+                            textAlign: TextAlign.start,
+                            style: bodyRegular1,
+                          ),
                         ),
-                      ),
-                      _buildListSuratByJuz(context, state.juzElements![index])
-                    ],
-                  );
-                },
+                        _buildListSuratByJuz(context, state.juzElements![index])
+                      ],
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
-        );
+            ],
+          ),
+          Positioned(
+              bottom: diameterButtonSearch(context) * 2 / 6,
+              right: diameterButtonSearch(context) * 2 / 6,
+              child: Container(
+                  width: diameterButtonSearch(context),
+                  height: diameterButtonSearch(context),
+                  decoration: const BoxDecoration(
+                      shape: BoxShape.circle, color: darkGreen),
+                  child: ButtonSearch(
+                    key: key,
+                  )))
+        ]);
       },
     );
   }
@@ -233,4 +249,259 @@ class ListSuratByJuz extends StatelessWidget {
       ),
     );
   }
+}
+
+String PageData = '';
+
+class ButtonSearch extends StatelessWidget {
+  const ButtonSearch({Key? key}) : super(key: key);
+
+  @override
+  Widget build(
+    BuildContext context,
+  ) {
+    return IconButton(
+        onPressed: () => _searchDialog(context),
+        icon: const Icon(
+          Icons.search_outlined,
+          size: 37.0,
+          color: neutral100,
+        ));
+  }
+
+  Future<void> _searchDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: brokenWhite,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          content: SizedBox(
+            height: MediaQuery.of(context).size.height / 4,
+            width: MediaQuery.of(context).size.width,
+            child: DefaultTabController(
+              length: 2,
+              child: Column(
+                children: [
+                  Container(
+                    height: MediaQuery.of(context).size.height / 18,
+                    decoration: BoxDecoration(
+                        color: neutral100,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: const <BoxShadow>[
+                          BoxShadow(
+                            color: neutral300,
+                            blurRadius: 9.0,
+                            spreadRadius: 0.9,
+                          )
+                        ]),
+                    child: Column(
+                      children: [
+                        Container(
+                          child: TabBar(
+                            unselectedLabelColor: primary500,
+                            indicator: BoxDecoration(
+                                color: primary500,
+                                borderRadius: BorderRadius.circular(20)),
+                            tabs: const <Widget>[
+                              Tab(
+                                text: 'Page',
+                              ),
+                              Tab(
+                                text: 'Ayah',
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height / 6,
+                      child: TabBarView(
+                          physics: const NeverScrollableScrollPhysics(),
+                          children: <Widget>[
+                            _tabviewSearchPage(context),
+                            _tabviewSearchSurahandAyah(context)
+                          ]),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _dropdownSuggestionTextfield(BuildContext context) {
+    List<String> _numberPageString =
+        Numberpage().map((el) => el.toString()).toList();
+
+    return RawAutocomplete<String>(
+      optionsBuilder: (TextEditingValue textEditingValue) {
+        return _numberPageString.where((String option) {
+          return option.contains(textEditingValue.text.toLowerCase());
+        });
+      },
+      fieldViewBuilder: (BuildContext context,
+          TextEditingController textEditingController,
+          FocusNode focusNode,
+          VoidCallback onFieldSubmitted) {
+        return TextFormField(
+            controller: textEditingController,
+            focusNode: focusNode,
+            onFieldSubmitted: (String value) {
+              onFieldSubmitted();
+            },
+            onChanged: (String page) {
+              PageData = page;
+            },
+            decoration: InputDecoration(
+              suffixIcon: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.keyboard_arrow_down)),
+            ));
+      },
+      optionsViewBuilder: (BuildContext context,
+          AutocompleteOnSelected<String> onSelected, Iterable<String> options) {
+        return Align(
+          alignment: Alignment.topLeft,
+          child: Material(
+            elevation: 4.0,
+            child: SizedBox(
+              height: 200.0,
+              width: MediaQuery.of(context).size.width * 2.1 / 3,
+              child: ListView.builder(
+                padding: const EdgeInsets.all(8.0),
+                itemCount: options.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final String option = options.elementAt(index);
+                  return GestureDetector(
+                    onTap: () {
+                      onSelected(option);
+                    },
+                    child: ListTile(
+                      title: Text(option),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _tabviewSearchSurahandAyah(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 5.0,
+        ),
+        Container(
+          height: MediaQuery.of(context).size.height / 10,
+          width: MediaQuery.of(context).size.width,
+          child: Row(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width * 3 / 7,
+                child: const TextField(
+                  enabled: true,
+                  decoration:
+                      InputDecoration(hintText: '1', labelText: 'Surah'),
+                ),
+              ),
+              const SizedBox(
+                width: 10.0,
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width * 1.5 / 7,
+                child: const TextField(
+                  decoration: InputDecoration(hintText: '1', labelText: 'Ayah'),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(
+          height: 25.0,
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: const EdgeInsets.all(6.0),
+            primary: Colors.white,
+            onPrimary: primary500,
+            elevation: 2,
+            minimumSize: const Size.fromHeight(40),
+          ),
+          onPressed: () {},
+          child: Text('Search'),
+        ),
+      ],
+    );
+  }
+
+  Widget _tabviewSearchPage(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 15.0,
+        ),
+        Container(
+          margin: EdgeInsets.only(top: 10.0),
+          width: MediaQuery.of(context).size.width,
+          child: const Text('Page',
+              textAlign: TextAlign.start, style: TextStyle(fontSize: 15.0)),
+        ),
+        _dropdownSuggestionTextfield(context),
+        const SizedBox(
+          height: 30.0,
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: const EdgeInsets.all(6.0),
+            primary: Colors.white,
+            onPrimary: primary500,
+            elevation: 2,
+            minimumSize: const Size.fromHeight(40),
+          ),
+          onPressed: () {
+            int page = int.parse(PageData);
+            int startPageInIndexValue = page - 1;
+            print(page);
+
+            Navigator.pushReplacement(
+              context,
+              PageTransition(
+                type: PageTransitionType.fade,
+                child: SuratPageV3(
+                  startPageInIndex: startPageInIndexValue,
+                ),
+              ),
+            );
+          },
+          child: Text('Search'),
+        ),
+      ],
+    );
+  }
+}
+
+List<int> Numberpage() {
+  List<int> Number = [];
+  for (int count = 1; count < 605; count++) {
+    Number.add(count);
+  }
+  return Number;
 }

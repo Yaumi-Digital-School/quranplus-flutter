@@ -55,6 +55,7 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
         await Connectivity().checkConnectivity();
     _getUsername();
     await _getJuzElements();
+    await _getJuzElements();
     if (connectivityResult != ConnectivityResult.none) {
       _feedbackUrl = (await _fetchLink()).url ?? '';
     }
