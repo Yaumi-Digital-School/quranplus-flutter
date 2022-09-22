@@ -326,6 +326,10 @@ Widget _dropdownSuggestionSearchPage(BuildContext context) {
                 final String option = options.elementAt(index);
                 return GestureDetector(
                   onTap: () {
+                    // temporary change
+                    // library saat ini belum bisa memilih value dari drop down apabila current valuenya sama dengan
+                    // value yang sedang tampil
+                    onSelected('');
                     onSelected(option);
                     PageData = option;
                   },
