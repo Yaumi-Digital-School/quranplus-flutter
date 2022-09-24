@@ -28,7 +28,7 @@ class SettingsPage extends StatelessWidget {
                       SettingsPageState>
                   ref) {
         return SettingsPageStateNotifier(
-          repository: ref.watch(userRepositoryProvider),
+          repository: ref.watch(authenticationService),
           sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
         );
       }),
@@ -276,6 +276,7 @@ class SettingsPage extends StatelessWidget {
                   accessToken:
                       ref.read(sharedPreferenceServiceProvider).getApiToken(),
                 );
+                ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
               }, () {
                 ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()

@@ -7,7 +7,7 @@ import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:qurantafsir_flutter/shared/core/repositories/user_repository.dart';
+import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'firebase_options.dart';
@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
       builder: (context, ref, child) {
         final SharedPreferenceService sp =
             ref.watch(sharedPreferenceServiceProvider);
-        final UserRepository ur = ref.watch(userRepositoryProvider);
+        final AuthenticationService ur = ref.watch(authenticationService);
         if (sp.getApiToken().isNotEmpty) {
           ur.setIsLoggedIn(true);
         }

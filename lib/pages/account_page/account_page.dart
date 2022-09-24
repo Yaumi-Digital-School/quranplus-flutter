@@ -24,7 +24,7 @@ class AccountPage extends StatelessWidget {
           StateNotifierProvider<AccountPageStateNotifier, AccountPageState>(
         (ref) {
           return AccountPageStateNotifier(
-            repository: ref.watch(userRepositoryProvider),
+            repository: ref.watch(authenticationService),
             sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
           );
         },
