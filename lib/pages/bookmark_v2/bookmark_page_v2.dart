@@ -27,8 +27,8 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
           StateNotifierProvider<BookmarkPageStateNotifier, BookmarkPageState>(
         (ref) {
           return BookmarkPageStateNotifier(
-            bookmarkApi: ref.watch(bookmarkApiProvider),
-            isLoggedIn: ref.watch(userRepositoryProvider).isLoggedIn,
+            isLoggedIn: ref.watch(authenticationService).isLoggedIn,
+            bookmarksService: ref.watch(bookmarksService),
           );
         },
       ),

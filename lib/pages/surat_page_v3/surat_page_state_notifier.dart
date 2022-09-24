@@ -11,6 +11,7 @@ import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
+import 'package:qurantafsir_flutter/shared/core/services/bookmarks_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 import 'package:retrofit/retrofit.dart';
@@ -78,10 +79,12 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     required this.startPageInIndex,
     required SharedPreferenceService sharedPreferenceService,
     required BookmarkApi bookmarkApi,
+    required BookmarksService bookmarksService,
     bool isLoggedIn = false,
   })  : _sharedPreferenceService = sharedPreferenceService,
         _isLoggedIn = isLoggedIn,
         _bookmarkApi = bookmarkApi,
+        _bookmarksService = bookmarksService,
         super(SuratPageState());
 
   final SharedPreferenceService _sharedPreferenceService;
@@ -90,6 +93,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
 
   List<int> get firstPageKeys => _firstPageSurahPointer;
   final BookmarkApi _bookmarkApi;
+  final BookmarksService _bookmarksService;
   final bool _isLoggedIn;
   late PageController pageController;
   int startPageInIndex;
@@ -345,19 +349,23 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     int page,
     ConnectivityResult connectivityResult,
   ) async {
-    if (connectivityResult != ConnectionState.none && _isLoggedIn) {
-      await _toggleBookmark(
-        surahName: surahName,
-        page: page,
-      );
-    }
-
     await db.saveBookmark(
       Bookmarks(
         surahName: surahName,
         page: page,
       ),
     );
+
+    if (connectivityResult != ConnectionState.none && _isLoggedIn) {
+      _toggleBookmark(
+        surahName: surahName,
+        page: page,
+      );
+    }
+
+    if (connectivityResult == ConnectionState.none) {
+      _bookmarksService.setIsMerged(false);
+    }
 
     _bookmarkList.add(page);
     visibleIconBookmark.value = true;
@@ -369,7 +377,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     String? surahName,
   }) async {
     try {
-      HttpResponse<CreateBookmarkResponse> response =
+      HttpResponse<CreateBookmarkResponse> _ =
           await _bookmarkApi.createBookmark(
               request: CreateBookmarkRequest(
         surahId: surahNameToSurahNumberMap[surahName],
@@ -388,20 +396,6 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     }
 
     visibleIconBookmark.value = false;
-  }
-
-  Future<void> _getBookmarkList() async {
-    List<Bookmarks>? _listBookmark;
-
-    HttpResponse<GetBookmarkListResponse> response =
-        await _bookmarkApi.getBookmarkList();
-
-    if (response.response.statusCode == 200) {
-      _listBookmark = response.data.data;
-      _listBookmark.forEach((bookmark) {
-        _bookmarkList.add(bookmark.page);
-      });
-    }
   }
 
   Future<void> _getBookmarkListFromLocal() async {

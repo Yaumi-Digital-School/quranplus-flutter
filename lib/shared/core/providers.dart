@@ -3,9 +3,10 @@ import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/user_api.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
-import 'package:qurantafsir_flutter/shared/core/repositories/user_repository.dart';
+import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qurantafsir_flutter/shared/core/services/bookmarks_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 
 final StateProvider<DioService> dioServiceProvider =
@@ -41,11 +42,22 @@ final Provider<UserApi> userApiProvider =
   );
 });
 
-final Provider<UserRepository> userRepositoryProvider =
-    Provider<UserRepository>((ProviderRef<UserRepository> ref) {
+final Provider<AuthenticationService> authenticationService =
+    Provider<AuthenticationService>((ref) {
   final UserApi userApi = ref.watch(userApiProvider);
 
-  return UserRepository(userApi: userApi);
+  return AuthenticationService(
+    userApi: userApi,
+  );
+});
+
+final Provider<BookmarksService> bookmarksService =
+    Provider<BookmarksService>((ref) {
+  final BookmarkApi bookmarkApi = ref.watch(bookmarkApiProvider);
+
+  return BookmarksService(
+    bookmarkApi: bookmarkApi,
+  );
 });
 
 final StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>
@@ -54,7 +66,7 @@ final StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>
         (StateNotifierProviderRef<SettingsPageStateNotifier, SettingsPageState>
             ref) {
   return SettingsPageStateNotifier(
-    repository: ref.watch(userRepositoryProvider),
+    repository: ref.watch(authenticationService),
     sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
   );
 });
