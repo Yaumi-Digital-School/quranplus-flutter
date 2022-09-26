@@ -9,11 +9,8 @@ class GeneralSearchDialog {
         return AlertDialog(
           backgroundColor: brokenWhite,
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          content: SizedBox(
-              height: MediaQuery.of(context).size.height / 4,
-              width: MediaQuery.of(context).size.width,
-              child: widgetChild),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(19)),
+          content: SizedBox(height: 205, width: 253, child: widgetChild),
         );
       },
     );
@@ -39,7 +36,7 @@ class GeneralSearchDialog {
             ),
           ),
           const SizedBox(
-            height: 25.0,
+            height: 16.0,
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -71,7 +68,7 @@ class GeneralSearchDialog {
         child: Column(
           children: [
             Container(
-              height: MediaQuery.of(context).size.height / 18,
+              height: 44,
               decoration: BoxDecoration(
                   color: neutral100,
                   borderRadius: BorderRadius.circular(20),
@@ -85,6 +82,8 @@ class GeneralSearchDialog {
               child: Column(
                 children: [
                   Container(
+                    margin: EdgeInsets.all(5.0),
+                    height: 34,
                     child: TabBar(
                         unselectedLabelColor: primary500,
                         indicator: BoxDecoration(
@@ -99,7 +98,7 @@ class GeneralSearchDialog {
             ),
             Expanded(
               child: SizedBox(
-                height: MediaQuery.of(context).size.height / 6,
+                height: 125,
                 child: TabBarView(
                   physics: const NeverScrollableScrollPhysics(),
                   children: WidgetchildTabbarview,

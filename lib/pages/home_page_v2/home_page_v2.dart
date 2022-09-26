@@ -274,14 +274,18 @@ class ButtonSearch extends StatelessWidget {
     ];
 
     final GeneralSearchDialog _generalSearchDialog = GeneralSearchDialog();
-    return IconButton(
-        onPressed: () => _generalSearchDialog.searchDialogWithTabbar(
-            context, TabbarTabs, WidgetTabbarviewChildren),
-        icon: const Icon(
-          Icons.search_outlined,
-          size: 37.0,
-          color: neutral100,
-        ));
+    return Consumer(
+        builder: (BuildContext context, WidgetRef ref, Widget? child) {
+      HomePageState state = ref.watch(homePageStateNotifier);
+      return IconButton(
+          onPressed: () => _generalSearchDialog.searchDialogWithTabbar(
+              context, TabbarTabs, WidgetTabbarviewChildren),
+          icon: const Icon(
+            Icons.search_outlined,
+            size: 37.0,
+            color: neutral100,
+          ));
+    });
   }
 }
 
@@ -318,7 +322,7 @@ Widget _dropdownSuggestionSearchPage(BuildContext context) {
           elevation: 4.0,
           child: SizedBox(
             height: 200.0,
-            width: MediaQuery.of(context).size.width * 2.1 / 3,
+            width: 257,
             child: ListView.builder(
               padding: const EdgeInsets.all(8.0),
               itemCount: options.length,
@@ -474,7 +478,7 @@ Widget tabviewSearchPage(BuildContext context) {
       ),
       _dropdownSuggestionSearchPage(context),
       const SizedBox(
-        height: 30.0,
+        height: 21.0,
       ),
       ElevatedButton(
         style: ElevatedButton.styleFrom(
@@ -524,16 +528,16 @@ Widget tabviewSearchSurahandAyah(BuildContext context) {
       ),
       Container(
         height: MediaQuery.of(context).size.height / 10,
-        width: MediaQuery.of(context).size.width,
+        width: 253,
         child: Row(
           children: [
             Container(
-                width: MediaQuery.of(context).size.width * 3 / 7,
+                width: 163,
                 child: Column(
                   children: [
                     Container(
                       margin: EdgeInsets.only(top: 10.0),
-                      width: MediaQuery.of(context).size.width * 3 / 7,
+                      width: 101,
                       child: const Text('Surah',
                           textAlign: TextAlign.start,
                           style: TextStyle(fontSize: 15.0)),
@@ -545,12 +549,12 @@ Widget tabviewSearchSurahandAyah(BuildContext context) {
               width: 10.0,
             ),
             Container(
-              width: MediaQuery.of(context).size.width * 1.5 / 7,
+              width: 80,
               child: Column(
                 children: [
                   Container(
                     margin: EdgeInsets.only(top: 10.0),
-                    width: MediaQuery.of(context).size.width * 1.5 / 7,
+                    width: 55.5,
                     child: const Text('Ayah',
                         textAlign: TextAlign.start,
                         style: TextStyle(fontSize: 15.0)),
@@ -563,7 +567,7 @@ Widget tabviewSearchSurahandAyah(BuildContext context) {
         ),
       ),
       const SizedBox(
-        height: 25.0,
+        height: 20.0,
       ),
       ElevatedButton(
         style: ElevatedButton.styleFrom(
