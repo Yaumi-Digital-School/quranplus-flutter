@@ -45,7 +45,9 @@ class HomePageV2 extends StatelessWidget {
         HomePageStateNotifier notifier,
         _,
       ) {
-        if (state.juzElements == null || state.feedbackUrl == null) {
+        if (state.juzElements == null ||
+            state.feedbackUrl == null ||
+            state.ayahPage == null) {
           return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
@@ -178,6 +180,7 @@ class ListSuratByJuz extends StatelessWidget {
                     shape: BoxShape.circle, color: darkGreen),
                 child: ButtonSearch(
                   key: key,
+                  versePagetoAyah: state.ayahPage,
                 ),
               ),
             )
@@ -258,10 +261,14 @@ class ListSuratByJuz extends StatelessWidget {
   }
 }
 
-String PageData = '';
+String PageData = "Al-Fatihah";
+int surahIndex = 0;
+int pageAyah = 0;
 
 class ButtonSearch extends StatelessWidget {
-  ButtonSearch({Key? key}) : super(key: key);
+  ButtonSearch({Key? key, required this.versePagetoAyah}) : super(key: key);
+
+  Map<String, List<String>>? versePagetoAyah;
 
   @override
   Widget build(
@@ -270,7 +277,7 @@ class ButtonSearch extends StatelessWidget {
     List<String> TabbarTabs = ['Page', 'Ayah'];
     List<Widget> WidgetTabbarviewChildren = [
       tabviewSearchPage(context),
-      tabviewSearchSurahandAyah(context)
+      tabviewSearchSurahandAyah(context, versePagetoAyah)
     ];
 
     final GeneralSearchDialog _generalSearchDialog = GeneralSearchDialog();
@@ -350,10 +357,13 @@ Widget _dropdownSuggestionSearchPage(BuildContext context) {
   );
 }
 
-Widget _dropdownSuggestionSearchSurah(BuildContext context) {
-  List<String> _surahString = surahNumberToSurahNameMap.entries.map((e) {
-    return e.value;
+Widget _dropdownSuggestionSearchSurah(
+    BuildContext context, Map<String, List<String>>? versePagetoAyah) {
+  List<dynamic> _surah = versePagetoAyah!.entries.map((e) {
+    return e.key;
   }).toList();
+
+  final List<String> _surahString = _surah.map((e) => e.toString()).toList();
 
   return RawAutocomplete<String>(
     optionsBuilder: (TextEditingValue textEditingValue) {
@@ -384,7 +394,7 @@ Widget _dropdownSuggestionSearchSurah(BuildContext context) {
           elevation: 4.0,
           child: SizedBox(
             height: 200.0,
-            width: MediaQuery.of(context).size.width * 3 / 7,
+            width: 163,
             child: ListView.builder(
               padding: const EdgeInsets.all(8.0),
               itemCount: options.length,
@@ -394,6 +404,7 @@ Widget _dropdownSuggestionSearchSurah(BuildContext context) {
                   onTap: () {
                     onSelected(option);
                     PageData = option;
+                    surahIndex = index;
                   },
                   child: ListTile(
                     title: Text(option),
@@ -408,12 +419,21 @@ Widget _dropdownSuggestionSearchSurah(BuildContext context) {
   );
 }
 
-Widget _dropdownSuggestionSearchAyah(BuildContext context) {
-  List<String> _ayahString = [];
+Widget _dropdownSuggestionSearchAyah(
+    BuildContext context, Map<String, List<String>>? versePagetoAyah) {
+  List<dynamic> _ayah = versePagetoAyah!.entries.map((e) {
+    return e.value;
+  }).toList();
+  List<String> _arayPage = List<String>.from(_ayah[surahIndex]!.map((x) {
+    int endString = x.indexOf(':');
+
+    return x.substring(0, endString);
+  }));
+  List<String> _page = List<String>.from(_ayah[surahIndex]!.map((x) => x));
 
   return RawAutocomplete<String>(
     optionsBuilder: (TextEditingValue textEditingValue) {
-      return _ayahString.where((String option) {
+      return _page.where((String option) {
         return option.contains(textEditingValue.text.toLowerCase());
       });
     },
@@ -440,19 +460,24 @@ Widget _dropdownSuggestionSearchAyah(BuildContext context) {
           elevation: 4.0,
           child: SizedBox(
             height: 200.0,
-            width: MediaQuery.of(context).size.width * 3 / 7,
+            width: 79.9,
             child: ListView.builder(
               padding: const EdgeInsets.all(8.0),
               itemCount: options.length,
               itemBuilder: (BuildContext context, int index) {
                 final String option = options.elementAt(index);
+                int endString = option.indexOf(':');
+                final String ayahSelect = option.substring(0, endString);
+
                 return GestureDetector(
                   onTap: () {
-                    onSelected(option);
-                    PageData = option;
+                    onSelected(ayahSelect);
+                    PageData = ayahSelect;
+                    pageAyah = int.parse(option.substring(endString + 1));
+                    print(pageAyah);
                   },
                   child: ListTile(
-                    title: Text(option),
+                    title: Text(option.substring(0, endString)),
                   ),
                 );
               },
@@ -492,7 +517,7 @@ Widget tabviewSearchPage(BuildContext context) {
           minimumSize: const Size.fromHeight(40),
         ),
         onPressed: () {
-          int page = int.parse(PageData);
+          int page = int.parse(PageData!);
           int startPageInIndexValue = page - 1;
           print(page);
 
@@ -520,7 +545,8 @@ List<int> Numberpage() {
   return Number;
 }
 
-Widget tabviewSearchSurahandAyah(BuildContext context) {
+Widget tabviewSearchSurahandAyah(
+    BuildContext context, Map<String, List<String>>? versePagetoAyah) {
   return Column(
     children: [
       const SizedBox(
@@ -542,7 +568,7 @@ Widget tabviewSearchSurahandAyah(BuildContext context) {
                           textAlign: TextAlign.start,
                           style: TextStyle(fontSize: 15.0)),
                     ),
-                    _dropdownSuggestionSearchSurah(context),
+                    _dropdownSuggestionSearchSurah(context, versePagetoAyah),
                   ],
                 )),
             const SizedBox(
@@ -559,7 +585,7 @@ Widget tabviewSearchSurahandAyah(BuildContext context) {
                         textAlign: TextAlign.start,
                         style: TextStyle(fontSize: 15.0)),
                   ),
-                  _dropdownSuggestionSearchAyah(context),
+                  _dropdownSuggestionSearchAyah(context, versePagetoAyah),
                 ],
               ),
             ),
@@ -580,7 +606,21 @@ Widget tabviewSearchSurahandAyah(BuildContext context) {
           elevation: 2,
           minimumSize: const Size.fromHeight(40),
         ),
-        onPressed: () {},
+        onPressed: () {
+          int page = pageAyah;
+          int startPageInIndexValue = page - 1;
+          print(pageAyah);
+
+          Navigator.pushReplacement(
+            context,
+            PageTransition(
+              type: PageTransitionType.fade,
+              child: SuratPageV3(
+                startPageInIndex: startPageInIndexValue,
+              ),
+            ),
+          );
+        },
         child: Text('Search'),
       ),
     ],

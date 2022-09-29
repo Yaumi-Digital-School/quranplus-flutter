@@ -7,6 +7,7 @@ import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/shared/core/models/form.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
+import 'package:qurantafsir_flutter/shared/core/models/verse-topage.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 import 'package:http/http.dart' as http;
@@ -17,25 +18,28 @@ class HomePageState {
     this.token = '',
     this.juzElements,
     this.feedbackUrl,
+    this.ayahPage,
   });
 
   String token;
   String name;
   List<JuzElement>? juzElements;
   String? feedbackUrl;
+  Map<String, List<String>>? ayahPage;
 
   HomePageState copyWith({
     String? token,
     String? name,
     List<JuzElement>? juzElements,
     String? feedbackUrl,
+    Map<String, List<String>>? ayahPage,
   }) {
     return HomePageState(
-      token: token ?? this.token,
-      name: name ?? this.name,
-      juzElements: juzElements ?? this.juzElements,
-      feedbackUrl: feedbackUrl ?? this.feedbackUrl,
-    );
+        token: token ?? this.token,
+        name: name ?? this.name,
+        juzElements: juzElements ?? this.juzElements,
+        feedbackUrl: feedbackUrl ?? this.feedbackUrl,
+        ayahPage: ayahPage ?? this.ayahPage);
   }
 }
 
@@ -47,6 +51,7 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
 
   final SharedPreferenceService _sharedPreferenceService;
   late List<JuzElement> _juzElements;
+  late Map<String, List<String>>? _ayahPage;
   String? _token, _name, _feedbackUrl;
 
   @override
@@ -55,17 +60,23 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
         await Connectivity().checkConnectivity();
     _getUsername();
     await _getJuzElements();
-    await _getJuzElements();
+    await _getVerseToAyahPage();
     if (connectivityResult != ConnectivityResult.none) {
       _feedbackUrl = (await _fetchLink()).url ?? '';
     }
 
     state = state.copyWith(
-      token: _token,
-      name: _name,
-      juzElements: _juzElements,
-      feedbackUrl: _feedbackUrl ?? '',
-    );
+        token: _token,
+        name: _name,
+        juzElements: _juzElements,
+        feedbackUrl: _feedbackUrl ?? '',
+        ayahPage: _ayahPage);
+  }
+
+  Future<void> _getVerseToAyahPage() async {
+    final String ayahPageJsonParse =
+        await rootBundle.loadString(AppConstants.ayahPageJson);
+    _ayahPage = verseToPageJsonParse(ayahPageJsonParse);
   }
 
   void _getUsername() {
