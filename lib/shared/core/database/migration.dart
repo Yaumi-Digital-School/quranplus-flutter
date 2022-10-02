@@ -29,13 +29,14 @@ class DbMigration {
 
   Future<void> _migrate_1(Database db) async {
     var sql =
-        "CREATE TABLE ${BookmarksTable.tableName}(${BookmarksTable.columnId} INTEGER PRIMARY KEY, ${BookmarksTable.columnNamaSurat} TEXT, ${BookmarksTable.columnJuz} INTEGER, ${BookmarksTable.columnPage} INTEGER)";
+        "CREATE TABLE IF NOT EXISTS ${BookmarksTable.tableName}(${BookmarksTable.columnId} INTEGER PRIMARY KEY, ${BookmarksTable.columnNamaSurat} TEXT, ${BookmarksTable.columnJuz} INTEGER, ${BookmarksTable.columnPage} INTEGER)";
     await db.execute(sql);
   }
 
   Future<void> _migrate_2(Database db) async {
     await db.transaction((txn) async {
-      await txn.execute('''CREATE TABLE temp_${BookmarksTable.tableName}(
+      await txn.execute(
+          '''CREATE TABLE IF NOT EXISTS temp_${BookmarksTable.tableName}(
               ${BookmarksTable.columnId} INTEGER PRIMARY KEY, 
               ${BookmarksTable.columnSurahName} TEXT, 
               ${BookmarksTable.columnPage} INTEGER, 
@@ -48,7 +49,7 @@ class DbMigration {
                 SELECT ${BookmarksTable.columnNamaSurat}, ${BookmarksTable.columnPage}
                 FROM ${BookmarksTable.tableName}
               ''');
-      await txn.execute('DROP TABLE ${BookmarksTable.tableName}');
+      await txn.execute('DROP TABLE IF EXISTS ${BookmarksTable.tableName}');
       await txn.execute(
           'ALTER TABLE temp_${BookmarksTable.tableName} RENAME TO ${BookmarksTable.tableName}');
     });
@@ -56,7 +57,7 @@ class DbMigration {
 
   Future<void> _migrate_3(Database db) async {
     await db.execute('''
-      CREATE TABLE ${FavoriteAyahsTable.tableName}(
+      CREATE TABLE IF NOT EXISTS ${FavoriteAyahsTable.tableName}(
         ${FavoriteAyahsTable.columnId} INTEGER PRIMARY KEY,
         ${FavoriteAyahsTable.surahId} INTEGER,
         ${FavoriteAyahsTable.ayahSurah} INTEGER,

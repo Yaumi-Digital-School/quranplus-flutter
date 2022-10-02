@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/widgets/search_by_page_or_ayah.dart';
 
 class GeneralSearchDialog {
-  Future searchDialog(BuildContext context, Widget widgetChild) {
+  static Future searchDialog(BuildContext context, Widget widgetChild) {
     return showDialog(
       context: context,
       builder: (context) {
@@ -10,13 +11,17 @@ class GeneralSearchDialog {
           backgroundColor: brokenWhite,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(19)),
-          content: SizedBox(height: 205, width: 253, child: widgetChild),
+          content: SizedBox(
+            height: 205,
+            width: 253,
+            child: widgetChild,
+          ),
         );
       },
     );
   }
 
-  Future searchDialoggeneral(BuildContext context, Function function) {
+  static Future searchDialoggeneral(BuildContext context, Function function) {
     return searchDialog(
       context,
       Column(
@@ -59,8 +64,23 @@ class GeneralSearchDialog {
     );
   }
 
-  Future searchDialogWithTabbar(BuildContext context, List<String> tabBar,
-      List<Widget> WidgetchildTabbarview) {
+  static Future<void> searchDialogByPageOrAyah(
+    BuildContext context,
+    Map<String, List<String>> verseMapper,
+  ) {
+    return searchDialog(
+      context,
+      SearchByPageOrAyah(
+        verseMapper: verseMapper,
+      ),
+    );
+  }
+
+  static Future searchDialogWithTabbar(
+    BuildContext context,
+    List<String> tabBar,
+    List<Widget> WidgetchildTabbarview,
+  ) {
     return searchDialog(
       context,
       DefaultTabController(
