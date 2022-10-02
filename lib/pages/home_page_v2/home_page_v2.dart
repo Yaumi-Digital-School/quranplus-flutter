@@ -223,7 +223,7 @@ class ListSuratByJuz extends StatelessWidget {
                   type: PageTransitionType.fade,
                   child: SuratPageV3(
                     startPageInIndex: startPageInIndexValue,
-                    firstPagePointerIndex: surats[index].hashKey,
+                    firstPagePointerIndex: surats[index].startPageID,
                   ),
                 ),
               );

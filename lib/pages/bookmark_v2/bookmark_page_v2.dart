@@ -4,9 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/main_page.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
+import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
@@ -21,7 +23,6 @@ class BookmarkPageV2 extends StatefulWidget {
 class _BookmarkPageV2State extends State<BookmarkPageV2> {
   @override
   Widget build(BuildContext context) {
-    double deviceWidth = MediaQuery.of(context).size.width;
     return StateNotifierConnector<BookmarkPageStateNotifier, BookmarkPageState>(
       stateNotifierProvider:
           StateNotifierProvider<BookmarkPageStateNotifier, BookmarkPageState>(
@@ -29,6 +30,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
           return BookmarkPageStateNotifier(
             isLoggedIn: ref.watch(authenticationService).isLoggedIn,
             bookmarksService: ref.watch(bookmarksService),
+            favoriteAyahsService: ref.watch(favoriteAyahsService),
           );
         },
       ),
@@ -46,11 +48,6 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
         BookmarkPageStateNotifier notifier,
         WidgetRef ref,
       ) {
-        if (state.listBookmarks == null) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
         return DefaultTabController(
           length: 2,
           child: Scaffold(
@@ -88,22 +85,24 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                   Container(
                     height: 50,
                     decoration: BoxDecoration(
-                        color: neutral100,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: const <BoxShadow>[
-                          BoxShadow(
-                            color: neutral300,
-                            blurRadius: 9.0,
-                            spreadRadius: 0.9,
-                          )
-                        ]),
+                      color: neutral100,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: const <BoxShadow>[
+                        BoxShadow(
+                          color: neutral300,
+                          blurRadius: 9.0,
+                          spreadRadius: 0.9,
+                        )
+                      ],
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: TabBar(
                         unselectedLabelColor: primary500,
                         indicator: BoxDecoration(
-                            color: primary500,
-                            borderRadius: BorderRadius.circular(20)),
+                          color: primary500,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                         tabs: const <Widget>[
                           Tab(
                             text: 'Bookmark',
@@ -121,121 +120,13 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                   Expanded(
                     child: TabBarView(
                       children: <Widget>[
-                        if (state.listBookmarks!.isNotEmpty) ...[
-                          ListView.builder(
-                              itemCount: state.listBookmarks!.length,
-                              itemBuilder: (context, index) {
-                                return _buildListBookmark(
-                                  context: context,
-                                  bookmark: state.listBookmarks![index],
-                                  notifier: notifier,
-                                );
-                              }),
-                        ] else ...[
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
-                                alignment: Alignment.center,
-                                width: 200,
-                                height: 200,
-                                decoration: const BoxDecoration(
-                                    image: DecorationImage(
-                                        image: AssetImage(
-                                  'images/empty_state.png',
-                                ))),
-                              ),
-                              const SizedBox(
-                                height: 50,
-                              ),
-                              Text(
-                                'Ayah not found',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: semiBold,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                'There is no bookmark ayah yet',
-                                style: TextStyle(
-                                  fontWeight: regular,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Container(
-                                height: 40,
-                                width: deviceWidth * 0.8,
-                                decoration: const BoxDecoration(
-                                  color: neutral100,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: neutral300,
-                                      blurRadius: 9,
-                                    )
-                                  ],
-                                ),
-                                child: TextButton(
-                                  child: const Text(
-                                    'Start Reading',
-                                    style: TextStyle(
-                                        color: primary500, fontSize: 17),
-                                  ),
-                                  onPressed: () => Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
-                                    return MainPage();
-                                  })),
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              alignment: Alignment.center,
-                              width: 200,
-                              height: 200,
-                              decoration: const BoxDecoration(
-                                  image: DecorationImage(
-                                      image: AssetImage(
-                                'images/coming_soon.png',
-                              ))),
-                            ),
-                            const SizedBox(
-                              height: 50,
-                            ),
-                            Text(
-                              'Coming Soon!',
-                              style: TextStyle(
-                                color: neutral700,
-                                fontSize: 20,
-                                fontWeight: semiBold,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              'This feature is still under development',
-                              style: TextStyle(
-                                fontWeight: regular,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+                        _buildBookmarkSection(
+                          notifier: notifier,
+                          state: state,
+                        ),
+                        _buildFavoriteSection(
+                          notifier: notifier,
+                          state: state,
                         ),
                       ],
                     ),
@@ -246,6 +137,220 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildFavoriteSection({
+    required BookmarkPageState state,
+    required BookmarkPageStateNotifier notifier,
+  }) {
+    if (state.listFavoriteAyah == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (state.listFavoriteAyah!.isNotEmpty) {
+      return ListView.builder(
+        itemCount: state.listFavoriteAyah!.length,
+        itemBuilder: (context, index) {
+          return _buildFavoritedAyah(
+            context: context,
+            favoriteAyah: state.listFavoriteAyah![index],
+            notifier: notifier,
+          );
+        },
+      );
+    }
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          alignment: Alignment.center,
+          width: 200,
+          height: 200,
+          decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage(
+            'images/coming_soon.png',
+          ))),
+        ),
+        const SizedBox(
+          height: 50,
+        ),
+        Text(
+          'Coming Soon!',
+          style: TextStyle(
+            color: neutral700,
+            fontSize: 20,
+            fontWeight: semiBold,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Text(
+          'This feature is still under development',
+          style: TextStyle(
+            fontWeight: regular,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBookmarkSection({
+    required BookmarkPageState state,
+    required BookmarkPageStateNotifier notifier,
+  }) {
+    if (state.listBookmarks == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (state.listBookmarks!.isNotEmpty) {
+      return ListView.builder(
+        itemCount: state.listBookmarks!.length,
+        itemBuilder: (context, index) {
+          return _buildListBookmark(
+            context: context,
+            bookmark: state.listBookmarks![index],
+            notifier: notifier,
+          );
+        },
+      );
+    }
+
+    double deviceWidth = MediaQuery.of(context).size.width;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          alignment: Alignment.center,
+          width: 200,
+          height: 200,
+          decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage(
+            'images/empty_state.png',
+          ))),
+        ),
+        const SizedBox(
+          height: 50,
+        ),
+        Text(
+          'Ayah not found',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: semiBold,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Text(
+          'There is no bookmark ayah yet',
+          style: TextStyle(
+            fontWeight: regular,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        Container(
+          height: 40,
+          width: deviceWidth * 0.8,
+          decoration: const BoxDecoration(
+            color: neutral100,
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            boxShadow: [
+              BoxShadow(
+                color: neutral300,
+                blurRadius: 9,
+              )
+            ],
+          ),
+          child: TextButton(
+            child: const Text(
+              'Start Reading',
+              style: TextStyle(color: primary500, fontSize: 17),
+            ),
+            onPressed: () =>
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return MainPage();
+            })),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFavoritedAyah({
+    required BuildContext context,
+    required FavoriteAyahs favoriteAyah,
+    required BookmarkPageStateNotifier notifier,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: ListTile(
+        minLeadingWidth: 20,
+        leading: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: 24,
+              height: 24,
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage(
+                'images/icon_favorite.png',
+              ))),
+            ),
+          ],
+        ),
+        title: Text(
+          'Surat ${favoriteAyah.surahName}',
+          style: bodyMedium1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        subtitle: Row(
+          children: <Widget>[
+            Text(
+              'Ayah ${favoriteAyah.ayahSurah.toString()}',
+              style: caption1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+        onTap: () async {
+          var onPopParam = await Navigator.push(
+            context,
+            PageTransition(
+              type: PageTransitionType.fade,
+              child: SuratPageV3(
+                startPageInIndex: favoriteAyah.page - 1,
+                firstPagePointerIndex: favoriteAyah.ayahHashCode,
+              ),
+            ),
+          );
+
+          if (onPopParam is SuratPageV3OnPopParam) {
+            _onPopFromSurahPage(
+              onPopParam,
+              notifier,
+            );
+          }
+        },
+      ),
     );
   }
 
@@ -274,7 +379,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
         ),
         title: Text(
           "Surat ${bookmark.surahName}",
-          style: bodyMedium3,
+          style: bodyMedium1,
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Row(
@@ -297,7 +402,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
           ],
         ),
         onTap: () async {
-          var isBookmarkChanged = await Navigator.push(
+          var onPopParam = await Navigator.push(
             context,
             PageTransition(
               type: PageTransitionType.fade,
@@ -307,14 +412,39 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
             ),
           );
 
-          if (isBookmarkChanged is bool && isBookmarkChanged) {
-            final ConnectivityResult connectivityResult =
-                await Connectivity().checkConnectivity();
-            await notifier.initStateNotifier(
-                connectivityResult: connectivityResult);
+          if (onPopParam is SuratPageV3OnPopParam) {
+            _onPopFromSurahPage(
+              onPopParam,
+              notifier,
+            );
           }
         },
       ),
     );
+  }
+
+  Future<void> _onPopFromSurahPage(
+    SuratPageV3OnPopParam onPopParam,
+    BookmarkPageStateNotifier notifier,
+  ) async {
+    final ConnectivityResult connectivityResult =
+        await Connectivity().checkConnectivity();
+
+    final bool bookmarkChanged = onPopParam.isBookmarkChanged;
+    final bool favoriteAyahChanged = onPopParam.isFavoriteAyahChanged;
+
+    if (!bookmarkChanged && favoriteAyahChanged) {
+      await notifier.initFavoriteAyahSection(
+        connectivityResult: connectivityResult,
+      );
+    } else if (bookmarkChanged && !favoriteAyahChanged) {
+      await notifier.initBookmarkSection(
+        connectivityResult: connectivityResult,
+      );
+    } else {
+      await notifier.initStateNotifier(
+        connectivityResult: connectivityResult,
+      );
+    }
   }
 }

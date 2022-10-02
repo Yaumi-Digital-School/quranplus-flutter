@@ -55,6 +55,7 @@ class SuratByJuz {
     required this.suratNameTranslation,
     required this.startAyat,
     required this.startPage,
+    required this.startPageID,
   });
 
   String number;
@@ -64,23 +65,22 @@ class SuratByJuz {
   String suratNameTranslation;
   String startAyat;
   String startPage;
+  int startPageID;
 
   int get startPageToInt => int.parse(startPage);
   int get startAyatToInt => int.parse(startAyat);
   int get numberToInt => int.parse(number);
 
-  String get nameAndAyatKey => '$nameLatin:$startAyat';
-
-  int get hashKey => nameAndAyatKey.hashCode;
-
   factory SuratByJuz.fromJson(Map<String, dynamic> json) => SuratByJuz(
-      number: json["number"],
-      name: json["name"],
-      nameLatin: json["name_latin"],
-      numberOfAyah: json["number_of_ayah"],
-      suratNameTranslation: json["surat_name_translation"],
-      startAyat: json["start_ayat"],
-      startPage: json["start_page"]);
+        number: json["number"],
+        name: json["name"],
+        nameLatin: json["name_latin"],
+        numberOfAyah: json["number_of_ayah"],
+        suratNameTranslation: json["surat_name_translation"],
+        startAyat: json["start_ayat"],
+        startPage: json["start_page"],
+        startPageID: json["start_ayat_id"],
+      );
 
   Map<String, dynamic> toJson() => {
         "number": number,
@@ -89,6 +89,7 @@ class SuratByJuz {
         "number_of_ayah": numberOfAyah,
         "surat_name_translation": suratNameTranslation,
         "start_ayat": startAyat,
-        "start_page": startPage
+        "start_page": startPage,
+        "start_ayat_id": startPageID,
       };
 }

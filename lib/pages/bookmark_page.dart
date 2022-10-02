@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/pages/surat_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
-import 'package:qurantafsir_flutter/shared/core/database/dbBookmarks.dart';
+import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 
 import 'package:qurantafsir_flutter/shared/core/database/dbhelper.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
@@ -14,7 +14,7 @@ import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
 
 class BookmarkPage extends StatefulWidget {
-  const BookmarkPage({ Key? key }) : super(key: key);
+  const BookmarkPage({Key? key}) : super(key: key);
 
   @override
   _BookmarkPageState createState() => _BookmarkPageState();
@@ -23,8 +23,8 @@ class BookmarkPage extends StatefulWidget {
 class _BookmarkPageState extends State<BookmarkPage> {
   List<Bookmarks> listBookmark = [];
   List<dynamic> listayatID = [];
-  DbBookmarks db = DbBookmarks();
-  
+  DbLocal db = DbLocal();
+
   @override
   void initState() {
     //menjalankan fungsi getallbookmark saat pertama kali dimuat
@@ -35,30 +35,29 @@ class _BookmarkPageState extends State<BookmarkPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(54.0),
-          child: AppBar(
-            elevation: 2.5,
-            foregroundColor: Colors.black,
-            title: Text("Bookmark"),
-            backgroundColor: backgroundColor,
-          ),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(54.0),
+        child: AppBar(
+          elevation: 2.5,
+          foregroundColor: Colors.black,
+          title: Text("Bookmark"),
+          backgroundColor: backgroundColor,
         ),
-        body: ListView.builder(
-            itemCount: listBookmark.length,
-            itemBuilder: (context, index) {
-              return _buildListBookmark(context, listBookmark[index]);
-            }),
+      ),
+      body: ListView.builder(
+          itemCount: listBookmark.length,
+          itemBuilder: (context, index) {
+            return _buildListBookmark(context, listBookmark[index]);
+          }),
     );
   }
 
   Widget _buildListBookmark(BuildContext context, Bookmarks bookmark) {
     return Padding(
-      padding: const EdgeInsets.symmetric( horizontal: 8.0 ),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: ListTile(
         minLeadingWidth: 20,
-                leading: Container(
+        leading: Container(
           alignment: Alignment.center,
           height: 34,
           width: 30,
@@ -98,25 +97,23 @@ class _BookmarkPageState extends State<BookmarkPage> {
             ),
           ],
         ),
-        trailing: 
-        FittedBox(
+        trailing: FittedBox(
           fit: BoxFit.fill,
           child: Row(
             children: [
               // button hapus
               IconButton(
                 icon: Icon(Icons.delete),
-                onPressed: (){
+                onPressed: () {
                   //membuat dialog konfirmasi hapus
                   AlertDialog hapus = AlertDialog(
                     title: Text("Information"),
                     content: Container(
-                      height: 100, 
+                      height: 100,
                       child: Column(
                         children: [
                           Text(
-                            "Yakin ingin Menghapus Data berikut ? \n Surat : "
-                          )
+                              "Yakin ingin Menghapus Data berikut ? \n Surat : ")
                         ],
                       ),
                     ),
@@ -125,12 +122,11 @@ class _BookmarkPageState extends State<BookmarkPage> {
                     //jika tidak maka tutup dialog
                     actions: [
                       TextButton(
-                        onPressed: (){
-                          // _deleteBookmark(bookmark.number, listayatID, index);
-                          // Navigator.pop(context);
-                        }, 
-                        child: Text("Ya")
-                      ), 
+                          onPressed: () {
+                            // _deleteBookmark(bookmark.number, listayatID, index);
+                            // Navigator.pop(context);
+                          },
+                          child: Text("Ya")),
                       TextButton(
                         child: Text('Tidak'),
                         onPressed: () {
@@ -140,21 +136,21 @@ class _BookmarkPageState extends State<BookmarkPage> {
                     ],
                   );
                   showDialog(context: context, builder: (context) => hapus);
-                }, 
+                },
               )
             ],
           ),
         ),
         onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) {
-              //       int startPageInIndexValue = bookmark.startPageToInt;
-              //       return SuratPageV3(startPage: startPageInIndexValue);
-              //     },
-              //   ),
-              // );
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) {
+          //       int startPageInIndexValue = bookmark.startPageToInt;
+          //       return SuratPageV3(startPage: startPageInIndexValue);
+          //     },
+          //   ),
+          // );
         },
       ),
     );

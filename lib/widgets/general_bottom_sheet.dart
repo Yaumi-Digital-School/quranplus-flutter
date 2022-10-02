@@ -3,7 +3,10 @@ import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
 class GeneralBottomSheet {
   Future showGeneralBottomSheet(
-      BuildContext context, String label, Widget widgetChild) {
+    BuildContext context,
+    String label,
+    Widget widgetChild,
+  ) {
     return showModalBottomSheet(
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
@@ -12,19 +15,22 @@ class GeneralBottomSheet {
       context: context,
       builder: (context) {
         return Wrap(
-          children: [
+          children: <Widget>[
             Container(
               height: 56,
               width: double.infinity,
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(16), bottom: Radius.zero),
+                  top: Radius.circular(16),
+                  bottom: Radius.zero,
+                ),
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                      color: Color.fromRGBO(0, 0, 0, 0.1),
-                      blurRadius: 15,
-                      offset: Offset(4, 12))
+                    color: Color.fromRGBO(0, 0, 0, 0.1),
+                    blurRadius: 10,
+                    offset: Offset(4, 12),
+                  ),
                 ],
               ),
               child: Column(
