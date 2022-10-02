@@ -6,8 +6,10 @@ import 'package:flutter/services.dart';
 
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
-import 'package:qurantafsir_flutter/shared/core/database/dbBookmarks.dart';
+import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
+import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
+import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
@@ -62,6 +64,10 @@ class SuratPageState {
     );
   }
 
+  SuratPageState refresh() {
+    return copyWith();
+  }
+
   double get currentPage => pageController!.page!;
 
   bool get isLoading =>
@@ -90,6 +96,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   final SharedPreferenceService _sharedPreferenceService;
   final List<int> _firstPageSurahPointer = <int>[];
   final List<int> _bookmarkList = <int>[];
+  final List<int> _favoriteAyahList = <int>[];
 
   List<int> get firstPageKeys => _firstPageSurahPointer;
   final BookmarkApi _bookmarkApi;
@@ -97,7 +104,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   final bool _isLoggedIn;
   late PageController pageController;
   int startPageInIndex;
-  late DbBookmarks db;
+  late DbLocal db;
   late List<QuranPage> _allPages;
   late List<FullPageSeparator> _fullPageSeparators;
   List<List<String>>? _translations;
@@ -110,12 +117,13 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   List<int> currentVisibleSurahNumber = <int>[];
   late int temp;
   bool? _isBookmarkChanged;
+  bool? _isFavoriteAyahChanged;
 
   @override
   Future<void> initStateNotifier({
     ConnectivityResult? connectivityResult,
   }) async {
-    db = DbBookmarks();
+    db = DbLocal();
     _allPages = await getPages();
     pageController = PageController(
       initialPage: startPageInIndex,
@@ -134,6 +142,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     visibleIconBookmark = ValueNotifier(false);
 
     await _getBookmarkListFromLocal();
+    await _getFavoriteListFromLocal();
     await _generateTranslations();
     await _generateLatins();
     await _generateBaseTafsirs();
@@ -153,7 +162,12 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     checkIsBookmarkExists(startPageInIndex + 1);
   }
 
+  bool isAyahFavorited(int ayahID) {
+    return _favoriteAyahList.contains(ayahID);
+  }
+
   bool get isBookmarkChanged => _isBookmarkChanged ?? false;
+  bool get isFavoriteAyahChanged => _isFavoriteAyahChanged ?? false;
 
   int getJuzAtStartOfPage({
     required int pageInIdx,
@@ -407,6 +421,71 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     });
   }
 
+  Future<void> _getFavoriteListFromLocal() async {
+    List<FavoriteAyahs> result = await db.getAllFavoriteAyahs();
+    for (FavoriteAyahs favorite in result) {
+      _favoriteAyahList.add(favorite.ayahHashCode);
+    }
+  }
+
+  Future<void> toggleFavoriteAyah({
+    required int surahNumber,
+    required int ayahNumber,
+    required int ayahID,
+    required int page,
+    required ConnectivityResult connectivityResult,
+  }) async {
+    if (isAyahFavorited(ayahID)) {
+      await _deleteFavoriteAyah(ayahID);
+    } else {
+      await _insertFavoriteAyah(
+        surahNumber: surahNumber,
+        ayahNumber: ayahNumber,
+        ayahID: ayahID,
+        page: page,
+        connectivityResult: connectivityResult,
+      );
+    }
+
+    _setIsFavoriteAyahChanged();
+    state = state.refresh();
+  }
+
+  Future<void> _deleteFavoriteAyah(int ayahID) async {
+    await db.deleteFavoriteAyahs(ayahID);
+    _favoriteAyahList.removeWhere((item) => item == ayahID);
+  }
+
+  Future<void> _insertFavoriteAyah({
+    required int surahNumber,
+    required int ayahNumber,
+    required int ayahID,
+    required int page,
+    required ConnectivityResult connectivityResult,
+  }) async {
+    await db.saveFavoriteAyahs(
+      FavoriteAyahs(
+        surahId: surahNumber,
+        page: page,
+        ayahSurah: ayahNumber,
+        ayahHashCode: ayahID,
+      ),
+    );
+
+    // if (connectivityResult != ConnectionState.none && _isLoggedIn) {
+    //   _toggleBookmark(
+    //     surahName: surahName,
+    //     page: page,
+    //   );
+    // }
+
+    // if (connectivityResult == ConnectionState.none) {
+    //   _bookmarksService.setIsMerged(false);
+    // }
+
+    _favoriteAyahList.add(ayahID);
+  }
+
   @Deprecated('Please use checkIsBookmarkExists instead')
   Future<bool> checkOneBookmark(startPage) async {
     var result = await db.oneBookmark(startPage);
@@ -436,6 +515,10 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
 
   void _setIsBookmarkChanged() {
     _isBookmarkChanged = true;
+  }
+
+  void _setIsFavoriteAyahChanged() {
+    _isFavoriteAyahChanged = true;
   }
 
   void addFirstPagePointer(int value) {

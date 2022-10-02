@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_page.dart';
 import 'package:qurantafsir_flutter/pages/home_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
-import 'package:qurantafsir_flutter/shared/core/database/dbBookmarks.dart';
+import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbhelper.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/surat.dart';
 
 class SuratPage extends StatelessWidget {
-  DbBookmarks db = DbBookmarks();
+  DbLocal db = DbLocal();
   final Surat surat;
   Bookmarks? bookmark;
 

@@ -11,7 +11,8 @@
           "number_of_ayah": "7",
           "surat_name_translation": "Pembukaan",
           "start_ayat": "1",
-          "start_page": "1"
+          "start_page": "1",
+          "start_ayat_id": 1
         },
         {
           "number": "2",
@@ -20,7 +21,8 @@
           "number_of_ayah": "286",
           "surat_name_translation": "Sapi",
           "start_ayat": "1",
-          "start_page": "2"
+          "start_page": "2",
+          "start_ayat_id": 8
         }
       ]
     },
@@ -35,7 +37,8 @@
           "number_of_ayah": "286",
           "surat_name_translation": "Sapi",
           "start_ayat": "142",
-          "start_page": "22"
+          "start_page": "22",
+          "start_ayat_id": 149
         }
       ]
     },
@@ -50,7 +53,8 @@
           "number_of_ayah": "286",
           "surat_name_translation": "Sapi",
           "start_ayat": "253",
-          "start_page": "42"
+          "start_page": "42",
+          "start_ayat_id": 260
         },
         {
           "number": "3",
@@ -59,7 +63,8 @@
           "number_of_ayah": "200",
           "surat_name_translation": "Keluarga Imran",
           "start_ayat": "1",
-          "start_page": "50"
+          "start_page": "50",
+          "start_ayat_id": 294
         }
       ]
     },
@@ -74,7 +79,8 @@
           "number_of_ayah": "200",
           "surat_name_translation": "Keluarga Imran",
           "start_ayat": "93",
-          "start_page": "62"
+          "start_page": "62",
+          "start_ayat_id": 386
         },
         {
           "number": "4",
@@ -83,7 +89,8 @@
           "number_of_ayah": "176",
           "surat_name_translation": "Wanita",
           "start_ayat": "1",
-          "start_page": "77"
+          "start_page": "77",
+          "start_ayat_id": 494
         }
       ]
     },
@@ -98,7 +105,8 @@
           "number_of_ayah": "176",
           "surat_name_translation": "Wanita",
           "start_ayat": "24",
-          "start_page": "82"
+          "start_page": "82",
+          "start_ayat_id": 517
         }
       ]
     },
@@ -113,7 +121,8 @@
           "number_of_ayah": "176",
           "surat_name_translation": "Wanita",
           "start_ayat": "148",
-          "start_page": "102"
+          "start_page": "102",
+          "start_ayat_id": 641
         },
         {
           "number": "5",
@@ -122,7 +131,8 @@
           "number_of_ayah": "120",
           "surat_name_translation": "Hidangan",
           "start_ayat": "1",
-          "start_page": "106"
+          "start_page": "106",
+          "start_ayat_id": 670
         }
       ]
     },
@@ -137,7 +147,8 @@
           "number_of_ayah": "120",
           "surat_name_translation": "Hidangan",
           "start_ayat": "82",
-          "start_page": "121"
+          "start_page": "121",
+          "start_ayat_id": 751
         },
         {
           "number": "6",
@@ -146,7 +157,8 @@
           "number_of_ayah": "165",
           "surat_name_translation": "Binatang Ternak",
           "start_ayat": "1",
-          "start_page": "128"
+          "start_page": "128",
+          "start_ayat_id": 790
         }
       ]
     },
@@ -161,7 +173,8 @@
           "number_of_ayah": "165",
           "surat_name_translation": "Binatang Ternak",
           "start_ayat": "111",
-          "start_page": "142"
+          "start_page": "142",
+          "start_ayat_id": 900
         },
         {
           "number": "7",
@@ -170,7 +183,8 @@
           "number_of_ayah": "206",
           "surat_name_translation": "Tempat Tertinggi",
           "start_ayat": "1",
-          "start_page": "151"
+          "start_page": "151",
+          "start_ayat_id": 955
         }
       ]
     },
@@ -185,7 +199,8 @@
           "number_of_ayah": "206",
           "surat_name_translation": "Tempat Tertinggi",
           "start_ayat": "88",
-          "start_page": "162"
+          "start_page": "162",
+          "start_ayat_id": 1042
         },
         {
           "number": "8",
@@ -194,7 +209,8 @@
           "number_of_ayah": "75",
           "surat_name_translation": "Rampasan Perang",
           "start_ayat": "1",
-          "start_page": "177"
+          "start_page": "177",
+          "start_ayat_id": 1161
         }
       ]
     },
@@ -209,7 +225,8 @@
           "number_of_ayah": "75",
           "surat_name_translation": "Rampasan Perang",
           "start_ayat": "41",
-          "start_page": "182"
+          "start_page": "182",
+          "start_ayat_id": 1201
         },
         {
           "number": "9",
@@ -218,7 +235,8 @@
           "number_of_ayah": "129",
           "surat_name_translation": "Pengampunan",
           "start_ayat": "1",
-          "start_page": "187"
+          "start_page": "187",
+          "start_ayat_id": 1236
         }
       ]
     },
@@ -233,7 +251,8 @@
           "number_of_ayah": "129",
           "surat_name_translation": "Pengampunan",
           "start_ayat": "93",
-          "start_page": "201"
+          "start_page": "201",
+          "start_ayat_id": 1328
         },
         {
           "number": "10",
@@ -242,7 +261,8 @@
           "number_of_ayah": "109",
           "surat_name_translation": "Yunus",
           "start_ayat": "1",
-          "start_page": "208"
+          "start_page": "208",
+          "start_ayat_id": 1365
         },
         {
           "number": "11",
@@ -251,7 +271,8 @@
           "number_of_ayah": "123",
           "surat_name_translation": "Hud",
           "start_ayat": "1",
-          "start_page": "221"
+          "start_page": "221",
+          "start_ayat_id": 1474
         }
       ]
     },
@@ -266,7 +287,8 @@
           "number_of_ayah": "123",
           "surat_name_translation": "Hud",
           "start_ayat": "6",
-          "start_page": "222"
+          "start_page": "222",
+          "start_ayat_id": 1479
         },
         {
           "number": "12",
@@ -275,7 +297,8 @@
           "number_of_ayah": "111",
           "surat_name_translation": "Yusuf",
           "start_ayat": "1",
-          "start_page": "235"
+          "start_page": "235",
+          "start_ayat_id": 1597
         }
       ]
     },
@@ -290,7 +313,8 @@
           "number_of_ayah": "111",
           "surat_name_translation": "Yusuf",
           "start_ayat": "53",
-          "start_page": "242"
+          "start_page": "242",
+          "start_ayat_id": 1649
         },
         {
           "number": "13",
@@ -299,7 +323,8 @@
           "number_of_ayah": "43",
           "surat_name_translation": "Guruh",
           "start_ayat": "1",
-          "start_page": "249"
+          "start_page": "249",
+          "start_ayat_id": 1708
         },
         {
           "number": "14",
@@ -308,7 +333,8 @@
           "number_of_ayah": "52",
           "surat_name_translation": "Ibrahim",
           "start_ayat": "1",
-          "start_page": "255"
+          "start_page": "255",
+          "start_ayat_id": 1751
         }
       ]
     },
@@ -323,7 +349,8 @@
           "number_of_ayah": "99",
           "surat_name_translation": "Hijr",
           "start_ayat": "1",
-          "start_page": "262"
+          "start_page": "262",
+          "start_ayat_id": 1803
         },
         {
           "number": "16",
@@ -332,7 +359,8 @@
           "number_of_ayah": "128",
           "surat_name_translation": "Lebah",
           "start_ayat": "1",
-          "start_page": "267"
+          "start_page": "267",
+          "start_ayat_id": 1902
         }
       ]
     },
@@ -347,7 +375,8 @@
           "number_of_ayah": "111",
           "surat_name_translation": "Memperjalankan Malam Hari",
           "start_ayat": "1",
-          "start_page": "282"
+          "start_page": "282",
+          "start_ayat_id": 2030
         },
         {
           "number": "18",
@@ -356,7 +385,8 @@
           "number_of_ayah": "110",
           "surat_name_translation": "Goa",
           "start_ayat": "1",
-          "start_page": "293"
+          "start_page": "293",
+          "start_ayat_id": 2141
         }
       ]
     },
@@ -371,7 +401,8 @@
           "number_of_ayah": "110",
           "surat_name_translation": "Goa",
           "start_ayat": "75",
-          "start_page": "302"
+          "start_page": "302",
+          "start_ayat_id": 2215
         },
         {
           "number": "19",
@@ -380,7 +411,8 @@
           "number_of_ayah": "98",
           "surat_name_translation": "Maryam",
           "start_ayat": "1",
-          "start_page": "305"
+          "start_page": "305",
+          "start_ayat_id": 2251
         },
         {
           "number": "20",
@@ -389,7 +421,8 @@
           "number_of_ayah": "135",
           "surat_name_translation": "Taha",
           "start_ayat": "1",
-          "start_page": "312"
+          "start_page": "312",
+          "start_ayat_id": 2349
         }
       ]
     },
@@ -404,7 +437,8 @@
           "number_of_ayah": "112",
           "surat_name_translation": "Para Nabi",
           "start_ayat": "1",
-          "start_page": "322"
+          "start_page": "322",
+          "start_ayat_id": 2484
         },
         {
           "number": "22",
@@ -413,7 +447,8 @@
           "number_of_ayah": "78",
           "surat_name_translation": "Haji",
           "start_ayat": "1",
-          "start_page": "332"
+          "start_page": "332",
+          "start_ayat_id": 2596
         }
       ]
     },
@@ -428,7 +463,8 @@
           "number_of_ayah": "118",
           "surat_name_translation": "Orang-Orang Mukmin",
           "start_ayat": "1",
-          "start_page": "342"
+          "start_page": "342",
+          "start_ayat_id": 2674
         },
         {
           "number": "24",
@@ -437,7 +473,8 @@
           "number_of_ayah": "64",
           "surat_name_translation": "Cahaya",
           "start_ayat": "1",
-          "start_page": "350"
+          "start_page": "350",
+          "start_ayat_id": 2792
         },
         {
           "number": "25",
@@ -446,7 +483,8 @@
           "number_of_ayah": "77",
           "surat_name_translation": "Pembeda",
           "start_ayat": "1",
-          "start_page": "359"
+          "start_page": "359",
+          "start_ayat_id": 2856
         }
       ]
     },
@@ -461,7 +499,8 @@
           "number_of_ayah": "77",
           "surat_name_translation": "Pembeda",
           "start_ayat": "21",
-          "start_page": "362"
+          "start_page": "362",
+          "start_ayat_id": 2876
         },
         {
           "number": "26",
@@ -470,7 +509,8 @@
           "number_of_ayah": "227",
           "surat_name_translation": "Para Penyair",
           "start_ayat": "1",
-          "start_page": "368"
+          "start_page": "367",
+          "start_ayat_id": 2933
         },
         {
           "number": "27",
@@ -479,7 +519,8 @@
           "number_of_ayah": "93",
           "surat_name_translation": "Semut-semut",
           "start_ayat": "1",
-          "start_page": "377"
+          "start_page": "377",
+          "start_ayat_id": 3160
         }
       ]
     },
@@ -494,7 +535,8 @@
           "number_of_ayah": "93",
           "surat_name_translation": "Semut-semut",
           "start_ayat": "56",
-          "start_page": "382"
+          "start_page": "382",
+          "start_ayat_id": 3215
         },
         {
           "number": "28",
@@ -503,7 +545,8 @@
           "number_of_ayah": "88",
           "surat_name_translation": "Kisah-Kisah",
           "start_ayat": "1",
-          "start_page": "385"
+          "start_page": "385",
+          "start_ayat_id": 3253
         },
         {
           "number": "29",
@@ -512,7 +555,8 @@
           "number_of_ayah": "69",
           "surat_name_translation": "Laba-Laba",
           "start_ayat": "1",
-          "start_page": "396"
+          "start_page": "396",
+          "start_ayat_id": 3341
         }
       ]
     },
@@ -527,7 +571,8 @@
           "number_of_ayah": "69",
           "surat_name_translation": "Laba-Laba",
           "start_ayat": "46",
-          "start_page": "402"
+          "start_page": "402",
+          "start_ayat_id": 3386
         },
         {
           "number": "30",
@@ -536,7 +581,8 @@
           "number_of_ayah": "60",
           "surat_name_translation": "Romawi",
           "start_ayat": "1",
-          "start_page": "404"
+          "start_page": "404",
+          "start_ayat_id": 3410
         },
         {
           "number": "31",
@@ -545,7 +591,8 @@
           "number_of_ayah": "34",
           "surat_name_translation": "Luqman",
           "start_ayat": "1",
-          "start_page": "411"
+          "start_page": "411",
+          "start_ayat_id": 3470
         },
         {
           "number": "32",
@@ -554,7 +601,8 @@
           "number_of_ayah": "30",
           "surat_name_translation": "Sajdah",
           "start_ayat": "1",
-          "start_page": "415"
+          "start_page": "415",
+          "start_ayat_id": 3504
         },
         {
           "number": "33",
@@ -563,7 +611,8 @@
           "number_of_ayah": "73",
           "surat_name_translation": "Golongan Yang Bersekutu",
           "start_ayat": "1",
-          "start_page": "418"
+          "start_page": "418",
+          "start_ayat_id": 3534
         }
       ]
     },
@@ -578,7 +627,8 @@
           "number_of_ayah": "73",
           "surat_name_translation": "Golongan Yang Bersekutu",
           "start_ayat": "31",
-          "start_page": "422"
+          "start_page": "422",
+          "start_ayat_id": 3564
         },
         {
           "number": "34",
@@ -587,7 +637,8 @@
           "number_of_ayah": "54",
           "surat_name_translation": "Saba'",
           "start_ayat": "1",
-          "start_page": "428"
+          "start_page": "428",
+          "start_ayat_id": 3607
         },
         {
           "number": "35",
@@ -596,7 +647,8 @@
           "number_of_ayah": "45",
           "surat_name_translation": "Maha Pencipta",
           "start_ayat": "1",
-          "start_page": "434"
+          "start_page": "434",
+          "start_ayat_id": 3661
         },
         {
           "number": "36",
@@ -605,7 +657,8 @@
           "number_of_ayah": "83",
           "surat_name_translation": "Yasin",
           "start_ayat": "1",
-          "start_page": "440"
+          "start_page": "440",
+          "start_ayat_id": 3706
         }
       ]
     },
@@ -620,7 +673,8 @@
           "number_of_ayah": "83",
           "surat_name_translation": "Yasin",
           "start_ayat": "28",
-          "start_page": "442"
+          "start_page": "442",
+          "start_ayat_id": 3733
         },
         {
           "number": "37",
@@ -629,7 +683,8 @@
           "number_of_ayah": "182",
           "surat_name_translation": "Barisan-Barisan",
           "start_ayat": "1",
-          "start_page": "446"
+          "start_page": "446",
+          "start_ayat_id": 3789
         },
         {
           "number": "38",
@@ -638,7 +693,8 @@
           "number_of_ayah": "88",
           "surat_name_translation": "Sad",
           "start_ayat": "1",
-          "start_page": "453"
+          "start_page": "453",
+          "start_ayat_id": 3971
         },
         {
           "number": "39",
@@ -647,7 +703,8 @@
           "number_of_ayah": "75",
           "surat_name_translation": "Rombongan",
           "start_ayat": "1",
-          "start_page": "458"
+          "start_page": "458",
+          "start_ayat_id": 4059
         }
       ]
     },
@@ -662,7 +719,8 @@
           "number_of_ayah": "75",
           "surat_name_translation": "Rombongan",
           "start_ayat": "32",
-          "start_page": "462"
+          "start_page": "462",
+          "start_ayat_id": 4090
         },
         {
           "number": "40",
@@ -671,7 +729,8 @@
           "number_of_ayah": "85",
           "surat_name_translation": "Maha Pengampun",
           "start_ayat": "1",
-          "start_page": "467"
+          "start_page": "467",
+          "start_ayat_id": 4134
         },
         {
           "number": "41",
@@ -680,7 +739,8 @@
           "number_of_ayah": "54",
           "surat_name_translation": "Yang Dijelaskan",
           "start_ayat": "1",
-          "start_page": "477"
+          "start_page": "477",
+          "start_ayat_id": 4219
         }
       ]
     },
@@ -695,7 +755,8 @@
           "number_of_ayah": "54",
           "surat_name_translation": "Yang Dijelaskan",
           "start_ayat": "47",
-          "start_page": "482"
+          "start_page": "482",
+          "start_ayat_id": 4265
         },
         {
           "number": "42",
@@ -704,7 +765,8 @@
           "number_of_ayah": "53",
           "surat_name_translation": "Musyawarah",
           "start_ayat": "1",
-          "start_page": "483"
+          "start_page": "483",
+          "start_ayat_id": 4273
         },
         {
           "number": "43",
@@ -713,7 +775,8 @@
           "number_of_ayah": "89",
           "surat_name_translation": "Perhiasan",
           "start_ayat": "1",
-          "start_page": "489"
+          "start_page": "489",
+          "start_ayat_id": 4326
         },
         {
           "number": "44",
@@ -722,7 +785,8 @@
           "number_of_ayah": "59",
           "surat_name_translation": "Kabut",
           "start_ayat": "1",
-          "start_page": "496"
+          "start_page": "496",
+          "start_ayat_id": 4415
         },
         {
           "number": "45",
@@ -731,7 +795,8 @@
           "number_of_ayah": "37",
           "surat_name_translation": "Berlutut",
           "start_ayat": "1",
-          "start_page": "499"
+          "start_page": "499",
+          "start_ayat_id": 4474
         }
       ]
     },
@@ -746,7 +811,8 @@
           "number_of_ayah": "35",
           "surat_name_translation": "Bukit Pasir",
           "start_ayat": "1",
-          "start_page": "502"
+          "start_page": "502",
+          "start_ayat_id": 4511
         },
         {
           "number": "47",
@@ -755,7 +821,8 @@
           "number_of_ayah": "38",
           "surat_name_translation": "Muhammad",
           "start_ayat": "1",
-          "start_page": "507"
+          "start_page": "507",
+          "start_ayat_id": 4546
         },
         {
           "number": "48",
@@ -764,7 +831,8 @@
           "number_of_ayah": "29",
           "surat_name_translation": "Kemenangan",
           "start_ayat": "1",
-          "start_page": "511"
+          "start_page": "511",
+          "start_ayat_id": 4584
         },
         {
           "number": "49",
@@ -773,7 +841,8 @@
           "number_of_ayah": "18",
           "surat_name_translation": "Kamar-Kamar",
           "start_ayat": "1",
-          "start_page": "515"
+          "start_page": "515",
+          "start_ayat_id": 4613
         },
         {
           "number": "50",
@@ -782,7 +851,8 @@
           "number_of_ayah": "45",
           "surat_name_translation": "Qaf",
           "start_ayat": "1",
-          "start_page": "518"
+          "start_page": "518",
+          "start_ayat_id": 4631
         },
         {
           "number": "51",
@@ -791,7 +861,8 @@
           "number_of_ayah": "60",
           "surat_name_translation": "Angin yang Menerbangkan",
           "start_ayat": "1",
-          "start_page": "520"
+          "start_page": "520",
+          "start_ayat_id": 4676
         }
       ]
     },
@@ -806,7 +877,8 @@
           "number_of_ayah": "60",
           "surat_name_translation": "Angin yang Menerbangkan",
           "start_ayat": "31",
-          "start_page": "522"
+          "start_page": "522",
+          "start_ayat_id": 4706
         },
         {
           "number": "52",
@@ -815,7 +887,8 @@
           "number_of_ayah": "49",
           "surat_name_translation": "Bukit Tursina",
           "start_ayat": "1",
-          "start_page": "523"
+          "start_page": "523",
+          "start_ayat_id": 4736
         },
         {
           "number": "53",
@@ -824,7 +897,8 @@
           "number_of_ayah": "62",
           "surat_name_translation": "Bintang",
           "start_ayat": "1",
-          "start_page": "526"
+          "start_page": "526",
+          "start_ayat_id": 4785
         },
         {
           "number": "54",
@@ -833,7 +907,8 @@
           "number_of_ayah": "55",
           "surat_name_translation": "Bulan",
           "start_ayat": "1",
-          "start_page": "528"
+          "start_page": "528",
+          "start_ayat_id": 4847
         },
         {
           "number": "55",
@@ -842,7 +917,8 @@
           "number_of_ayah": "78",
           "surat_name_translation": "Maha Pengasih",
           "start_ayat": "1",
-          "start_page": "531"
+          "start_page": "531",
+          "start_ayat_id": 4902
         },
         {
           "number": "56",
@@ -851,7 +927,8 @@
           "number_of_ayah": "96",
           "surat_name_translation": "Hari Kiamat",
           "start_ayat": "1",
-          "start_page": "534"
+          "start_page": "534",
+          "start_ayat_id": 4980
         },
         {
           "number": "57",
@@ -860,7 +937,8 @@
           "number_of_ayah": "29",
           "surat_name_translation": "Besi",
           "start_ayat": "1",
-          "start_page": "537"
+          "start_page": "537",
+          "start_ayat_id": 5076
         }
       ]
     },
@@ -875,7 +953,8 @@
           "number_of_ayah": "22",
           "surat_name_translation": "Gugatan",
           "start_ayat": "1",
-          "start_page": "542"
+          "start_page": "542",
+          "start_ayat_id": 5105
         },
         {
           "number": "59",
@@ -884,7 +963,8 @@
           "number_of_ayah": "24",
           "surat_name_translation": "Pengusiran",
           "start_ayat": "1",
-          "start_page": "545"
+          "start_page": "545",
+          "start_ayat_id": 5127
         },
         {
           "number": "60",
@@ -893,7 +973,8 @@
           "number_of_ayah": "13",
           "surat_name_translation": "Wanita Yang Diuji",
           "start_ayat": "1",
-          "start_page": "549"
+          "start_page": "549",
+          "start_ayat_id": 5151
         },
         {
           "number": "61",
@@ -902,7 +983,8 @@
           "number_of_ayah": "14",
           "surat_name_translation": "Barisan",
           "start_ayat": "1",
-          "start_page": "551"
+          "start_page": "551",
+          "start_ayat_id": 5164
         },
         {
           "number": "62",
@@ -911,7 +993,8 @@
           "number_of_ayah": "11",
           "surat_name_translation": "Jumat",
           "start_ayat": "1",
-          "start_page": "553"
+          "start_page": "553",
+          "start_ayat_id": 5178
         },
         {
           "number": "63",
@@ -920,7 +1003,8 @@
           "number_of_ayah": "11",
           "surat_name_translation": "Orang-Orang Munafik",
           "start_ayat": "1",
-          "start_page": "554"
+          "start_page": "554",
+          "start_ayat_id": 5189
         },
         {
           "number": "64",
@@ -929,7 +1013,8 @@
           "number_of_ayah": "18",
           "surat_name_translation": "Pengungkapan Kesalahan",
           "start_ayat": "1",
-          "start_page": "556"
+          "start_page": "556",
+          "start_ayat_id": 5200
         },
         {
           "number": "65",
@@ -938,7 +1023,8 @@
           "number_of_ayah": "12",
           "surat_name_translation": "Talak",
           "start_ayat": "1",
-          "start_page": "558"
+          "start_page": "558",
+          "start_ayat_id": 5218
         },
         {
           "number": "66",
@@ -947,7 +1033,8 @@
           "number_of_ayah": "12",
           "surat_name_translation": "Pengharaman",
           "start_ayat": "1",
-          "start_page": "560"
+          "start_page": "560",
+          "start_ayat_id": 5230
         }
       ]
     },
@@ -962,7 +1049,8 @@
           "number_of_ayah": "30",
           "surat_name_translation": "Kerajaan",
           "start_ayat": "1",
-          "start_page": "562"
+          "start_page": "562",
+          "start_ayat_id": 5242
         },
         {
           "number": "68",
@@ -971,7 +1059,8 @@
           "number_of_ayah": "52",
           "surat_name_translation": "Pena",
           "start_ayat": "1",
-          "start_page": "564"
+          "start_page": "564",
+          "start_ayat_id": 5272
         },
         {
           "number": "69",
@@ -980,7 +1069,8 @@
           "number_of_ayah": "52",
           "surat_name_translation": "Hari Kiamat",
           "start_ayat": "1",
-          "start_page": "566"
+          "start_page": "566",
+          "start_ayat_id": 5324
         },
         {
           "number": "70",
@@ -989,7 +1079,8 @@
           "number_of_ayah": "44",
           "surat_name_translation": "Tempat Naik",
           "start_ayat": "1",
-          "start_page": "568"
+          "start_page": "568",
+          "start_ayat_id": 5376
         },
         {
           "number": "71",
@@ -998,7 +1089,8 @@
           "number_of_ayah": "28",
           "surat_name_translation": "Nuh",
           "start_ayat": "1",
-          "start_page": "570"
+          "start_page": "570",
+          "start_ayat_id": 5420
         },
         {
           "number": "72",
@@ -1007,7 +1099,8 @@
           "number_of_ayah": "28",
           "surat_name_translation": "Jin",
           "start_ayat": "1",
-          "start_page": "572"
+          "start_page": "572",
+          "start_ayat_id": 5448
         },
         {
           "number": "73",
@@ -1016,7 +1109,8 @@
           "number_of_ayah": "20",
           "surat_name_translation": "Orang Yang Berselimut",
           "start_ayat": "1",
-          "start_page": "574"
+          "start_page": "574",
+          "start_ayat_id": 5476
         },
         {
           "number": "74",
@@ -1025,7 +1119,8 @@
           "number_of_ayah": "56",
           "surat_name_translation": "Orang Yang Berkemul",
           "start_ayat": "1",
-          "start_page": "575"
+          "start_page": "575",
+          "start_ayat_id": 5496
         },
         {
           "number": "75",
@@ -1034,7 +1129,8 @@
           "number_of_ayah": "40",
           "surat_name_translation": "Hari Kiamat",
           "start_ayat": "1",
-          "start_page": "577"
+          "start_page": "577",
+          "start_ayat_id": 5552
         },
         {
           "number": "76",
@@ -1043,7 +1139,8 @@
           "number_of_ayah": "31",
           "surat_name_translation": "Manusia",
           "start_ayat": "1",
-          "start_page": "578"
+          "start_page": "578",
+          "start_ayat_id": 5592
         },
         {
           "number": "77",
@@ -1052,7 +1149,8 @@
           "number_of_ayah": "50",
           "surat_name_translation": "Malaikat Yang Diutus",
           "start_ayat": "1",
-          "start_page": "580"
+          "start_page": "580",
+          "start_ayat_id": 5623
         }
       ]
     },
@@ -1067,7 +1165,8 @@
           "number_of_ayah": "40",
           "surat_name_translation": "Berita Besar",
           "start_ayat": "1",
-          "start_page": "582"
+          "start_page": "582",
+          "start_ayat_id": 5673
         },
         {
           "number": "79",
@@ -1076,7 +1175,8 @@
           "number_of_ayah": "46",
           "surat_name_translation": "Malaikat Yang Mencabut",
           "start_ayat": "1",
-          "start_page": "583"
+          "start_page": "583",
+          "start_ayat_id": 5713
         },
         {
           "number": "80",
@@ -1085,7 +1185,8 @@
           "number_of_ayah": "42",
           "surat_name_translation": "Bermuka Masam",
           "start_ayat": "1",
-          "start_page": "585"
+          "start_page": "585",
+          "start_ayat_id": 5759
         },
         {
           "number": "81",
@@ -1094,7 +1195,8 @@
           "number_of_ayah": "29",
           "surat_name_translation": "Penggulungan",
           "start_ayat": "1",
-          "start_page": "586"
+          "start_page": "586",
+          "start_ayat_id": 5801
         },
         {
           "number": "82",
@@ -1103,7 +1205,8 @@
           "number_of_ayah": "19",
           "surat_name_translation": "Terbelah",
           "start_ayat": "1",
-          "start_page": "587"
+          "start_page": "587",
+          "start_ayat_id": 5830
         },
         {
           "number": "83",
@@ -1112,7 +1215,8 @@
           "number_of_ayah": "36",
           "surat_name_translation": "Orang-Orang Curang",
           "start_ayat": "1",
-          "start_page": "587"
+          "start_page": "587",
+          "start_ayat_id": 5849
         },
         {
           "number": "84",
@@ -1121,7 +1225,8 @@
           "number_of_ayah": "25",
           "surat_name_translation": "Terbelah",
           "start_ayat": "1",
-          "start_page": "589"
+          "start_page": "589",
+          "start_ayat_id": 5885
         },
         {
           "number": "85",
@@ -1130,7 +1235,8 @@
           "number_of_ayah": "22",
           "surat_name_translation": "Gugusan Bintang",
           "start_ayat": "1",
-          "start_page": "590"
+          "start_page": "590",
+          "start_ayat_id": 5910
         },
         {
           "number": "86",
@@ -1139,7 +1245,8 @@
           "number_of_ayah": "17",
           "surat_name_translation": "Yang Datang Di Malam Hari",
           "start_ayat": "1",
-          "start_page": "591"
+          "start_page": "591",
+          "start_ayat_id": 5932
         },
         {
           "number": "87",
@@ -1148,7 +1255,8 @@
           "number_of_ayah": "19",
           "surat_name_translation": "Maha Tinggi",
           "start_ayat": "1",
-          "start_page": "591"
+          "start_page": "591",
+          "start_ayat_id": 5949
         },
         {
           "number": "88",
@@ -1157,7 +1265,8 @@
           "number_of_ayah": "26",
           "surat_name_translation": "Hari Kiamat",
           "start_ayat": "1",
-          "start_page": "592"
+          "start_page": "592",
+          "start_ayat_id": 5968
         },
         {
           "number": "89",
@@ -1166,7 +1275,8 @@
           "number_of_ayah": "30",
           "surat_name_translation": "Fajar",
           "start_ayat": "1",
-          "start_page": "593"
+          "start_page": "593",
+          "start_ayat_id": 5994
         },
         {
           "number": "90",
@@ -1175,7 +1285,8 @@
           "number_of_ayah": "20",
           "surat_name_translation": "Negeri",
           "start_ayat": "1",
-          "start_page": "594"
+          "start_page": "594",
+          "start_ayat_id": 6024
         },
         {
           "number": "91",
@@ -1184,7 +1295,8 @@
           "number_of_ayah": "15",
           "surat_name_translation": "Matahari",
           "start_ayat": "1",
-          "start_page": "595"
+          "start_page": "595",
+          "start_ayat_id": 6044
         },
         {
           "number": "92",
@@ -1193,7 +1305,8 @@
           "number_of_ayah": "21",
           "surat_name_translation": "Malam",
           "start_ayat": "1",
-          "start_page": "595"
+          "start_page": "595",
+          "start_ayat_id": 6059
         },
         {
           "number": "93",
@@ -1202,7 +1315,8 @@
           "number_of_ayah": "11",
           "surat_name_translation": "Duha",
           "start_ayat": "1",
-          "start_page": "596"
+          "start_page": "596",
+          "start_ayat_id": 6080
         },
         {
           "number": "94",
@@ -1211,7 +1325,8 @@
           "number_of_ayah": "8",
           "surat_name_translation": "Lapang",
           "start_ayat": "1",
-          "start_page": "596"
+          "start_page": "596",
+          "start_ayat_id": 6091
         },
         {
           "number": "95",
@@ -1220,7 +1335,8 @@
           "number_of_ayah": "8",
           "surat_name_translation": "Buah Tin",
           "start_ayat": "1",
-          "start_page": "597"
+          "start_page": "597",
+          "start_ayat_id": 6099
         },
         {
           "number": "96",
@@ -1229,7 +1345,8 @@
           "number_of_ayah": "19",
           "surat_name_translation": "Segumpal Darah",
           "start_ayat": "1",
-          "start_page": "597"
+          "start_page": "597",
+          "start_ayat_id": 6107
         },
         {
           "number": "97",
@@ -1238,7 +1355,8 @@
           "number_of_ayah": "5",
           "surat_name_translation": "Kemuliaan",
           "start_ayat": "1",
-          "start_page": "598"
+          "start_page": "598",
+          "start_ayat_id": 6126
         },
         {
           "number": "98",
@@ -1247,7 +1365,8 @@
           "number_of_ayah": "8",
           "surat_name_translation": "Bukti Nyata",
           "start_ayat": "1",
-          "start_page": "598"
+          "start_page": "598",
+          "start_ayat_id": 6131
         },
         {
           "number": "99",
@@ -1256,7 +1375,8 @@
           "number_of_ayah": "8",
           "surat_name_translation": "Guncangan",
           "start_ayat": "1",
-          "start_page": "599"
+          "start_page": "599",
+          "start_ayat_id": 6139
         },
         {
           "number": "100",
@@ -1265,7 +1385,8 @@
           "number_of_ayah": "11",
           "surat_name_translation": "Kuda Yang Berlari Kencang",
           "start_ayat": "1",
-          "start_page": "599"
+          "start_page": "599",
+          "start_ayat_id": 6147
         },
         {
           "number": "101",
@@ -1274,7 +1395,8 @@
           "number_of_ayah": "11",
           "surat_name_translation": "Hari Kiamat",
           "start_ayat": "1",
-          "start_page": "600"
+          "start_page": "600",
+          "start_ayat_id": 6158
         },
         {
           "number": "102",
@@ -1283,7 +1405,8 @@
           "number_of_ayah": "8",
           "surat_name_translation": "Bermegah-Megahan",
           "start_ayat": "1",
-          "start_page": "600"
+          "start_page": "600",
+          "start_ayat_id": 6169
         },
         {
           "number": "103",
@@ -1292,7 +1415,8 @@
           "number_of_ayah": "3",
           "surat_name_translation": "Asar",
           "start_ayat": "1",
-          "start_page": "601"
+          "start_page": "601",
+          "start_ayat_id": 6177
         },
         {
           "number": "104",
@@ -1301,7 +1425,8 @@
           "number_of_ayah": "9",
           "surat_name_translation": "Pengumpat",
           "start_ayat": "1",
-          "start_page": "601"
+          "start_page": "601",
+          "start_ayat_id": 6180
         },
         {
           "number": "105",
@@ -1310,7 +1435,8 @@
           "number_of_ayah": "5",
           "surat_name_translation": "Gajah",
           "start_ayat": "1",
-          "start_page": "601"
+          "start_page": "601",
+          "start_ayat_id": 6189
         },
         {
           "number": "106",
@@ -1319,7 +1445,8 @@
           "number_of_ayah": "4",
           "surat_name_translation": "Quraisy",
           "start_ayat": "1",
-          "start_page": "602"
+          "start_page": "602",
+          "start_ayat_id": 6194
         },
         {
           "number": "107",
@@ -1328,7 +1455,8 @@
           "number_of_ayah": "7",
           "surat_name_translation": "Barang Yang Berguna",
           "start_ayat": "1",
-          "start_page": "602"
+          "start_page": "602",
+          "start_ayat_id": 6198
         },
         {
           "number": "108",
@@ -1337,7 +1465,8 @@
           "number_of_ayah": "3",
           "surat_name_translation": "Pemberian Yang Banyak",
           "start_ayat": "1",
-          "start_page": "602"
+          "start_page": "602",
+          "start_ayat_id": 6205
         },
         {
           "number": "109",
@@ -1346,7 +1475,8 @@
           "number_of_ayah": "6",
           "surat_name_translation": "Orang-Orang kafir",
           "start_ayat": "1",
-          "start_page": "603"
+          "start_page": "603",
+          "start_ayat_id": 6208
         },
         {
           "number": "110",
@@ -1355,7 +1485,8 @@
           "number_of_ayah": "3",
           "surat_name_translation": "Pertolongan",
           "start_ayat": "1",
-          "start_page": "603"
+          "start_page": "603",
+          "start_ayat_id": 6214
         },
         {
           "number": "111",
@@ -1364,7 +1495,8 @@
           "number_of_ayah": "5",
           "surat_name_translation": "Api Yang Bergejolak",
           "start_ayat": "1",
-          "start_page": "603"
+          "start_page": "603",
+          "start_ayat_id": 6217
         },
         {
           "number": "112",
@@ -1373,7 +1505,8 @@
           "number_of_ayah": "4",
           "surat_name_translation": "Ikhlas",
           "start_ayat": "1",
-          "start_page": "604"
+          "start_page": "604",
+          "start_ayat_id": 6222
         },
         {
           "number": "113",
@@ -1382,7 +1515,8 @@
           "number_of_ayah": "5",
           "surat_name_translation": "Subuh",
           "start_ayat": "1",
-          "start_page": "604"
+          "start_page": "604",
+          "start_ayat_id": 6226
         },
         {
           "number": "114",
@@ -1391,7 +1525,8 @@
           "number_of_ayah": "6",
           "surat_name_translation": "Manusia",
           "start_ayat": "1",
-          "start_page": "604"
+          "start_page": "604",
+          "start_ayat_id": 6231
         }
       ]
     }
