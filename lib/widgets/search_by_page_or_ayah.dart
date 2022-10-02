@@ -124,6 +124,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
         return TextFormField(
           key: textFieldPage,
           keyboardType: TextInputType.number,
+          style: bodyRegular2,
           controller: textEditingController,
           focusNode: focusNode,
           onFieldSubmitted: (String value) {
@@ -196,7 +197,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
           child: Text(
             'Page',
             textAlign: TextAlign.start,
-            style: bodyRegular1,
+            style: bodyRegular2,
           ),
         ),
         _dropdownSuggestionSearchPage(context),
@@ -251,7 +252,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
                     alignment: Alignment.topLeft,
                     child: Text(
                       'Surah',
-                      style: bodyRegular1,
+                      style: bodyRegular2,
                     ),
                   ),
                   _dropdownSuggestionSearchSurah(
@@ -273,7 +274,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
                     child: Text(
                       'Ayah',
                       textAlign: TextAlign.start,
-                      style: bodyRegular1,
+                      style: bodyRegular2,
                     ),
                   ),
                   _dropdownSuggestionSearchAyah(
@@ -338,6 +339,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
         return TextFormField(
           key: textFieldSurah,
           controller: textEditingController,
+          style: bodyRegular2,
           focusNode: focusNode,
           onFieldSubmitted: (String value) {
             onFieldSubmitted();
@@ -423,6 +425,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
         return TextFormField(
           key: textFieldAyah,
           keyboardType: TextInputType.number,
+          style: bodyRegular2,
           controller: textEditingController,
           focusNode: focusNode,
           onFieldSubmitted: (String value) {
