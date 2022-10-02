@@ -48,13 +48,11 @@ class Verse {
   List<Word> words;
 
   int get surahNumber => int.parse(verseKey.split(":")[0]);
+  String get surahName => surahNumberToSurahNameMap[surahNumber] ?? '';
   int get surahNumberInIndex => surahNumber - 1;
   int get verseNumberInIndex => verseNumber - 1;
 
-  String get surahNameAndAyatKey =>
-      '${surahNumberToSurahNameMap[surahNumber]!}:$verseNumber';
-
-  int get hashKey => surahNameAndAyatKey.hashCode;
+  String get surahNameAndAyatKey => '$surahName:$verseNumber';
 
   factory Verse.fromJson(Map<String, dynamic> json) => _$VerseFromJson(json);
 }

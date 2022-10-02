@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/surat_page_settings_drawer.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_icons.dart';
@@ -30,6 +31,16 @@ extension AyahFontSizeExt on AyahFontSize {
         return value.readingSettings!.valueFontSizeArabic as SuratPageState;
     }
   }
+}
+
+class SuratPageV3OnPopParam {
+  SuratPageV3OnPopParam({
+    this.isBookmarkChanged = false,
+    this.isFavoriteAyahChanged = false,
+  });
+
+  final bool isBookmarkChanged;
+  final bool isFavoriteAyahChanged;
 }
 
 class SuratPageV3 extends StatefulWidget {
@@ -116,7 +127,11 @@ class _SuratPageV3State extends State<SuratPageV3> {
 
         return WillPopScope(
           onWillPop: () async {
-            Navigator.pop(context, notifier.isBookmarkChanged);
+            final SuratPageV3OnPopParam param = SuratPageV3OnPopParam(
+              isBookmarkChanged: notifier.isBookmarkChanged,
+              isFavoriteAyahChanged: notifier.isFavoriteAyahChanged,
+            );
+            Navigator.pop(context, param);
             return true;
           },
           child: Scaffold(
@@ -130,9 +145,15 @@ class _SuratPageV3State extends State<SuratPageV3> {
                     color: Colors.black,
                     size: 30,
                   ),
-                  onPressed: () => Navigator.of(context).pop(
-                    notifier.isBookmarkChanged,
-                  ),
+                  onPressed: () {
+                    final SuratPageV3OnPopParam param = SuratPageV3OnPopParam(
+                      isBookmarkChanged: notifier.isBookmarkChanged,
+                      isFavoriteAyahChanged: notifier.isFavoriteAyahChanged,
+                    );
+                    Navigator.of(context).pop(
+                      param,
+                    );
+                  },
                 ),
                 automaticallyImplyLeading: false,
                 elevation: 2.5,
@@ -471,6 +492,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     bool isWithTranslations = state.readingSettings!.isWithTranslations;
     bool isWithTafsirs = state.readingSettings!.isWithTafsirs;
     bool isWithLatins = state.readingSettings!.isWithLatins;
+    bool isFavorited = notifier.isAyahFavorited(verse.id);
     ValueKey key = ValueKey(verse.surahNameAndAyatKey);
 
     for (Word word in verse.words) {
@@ -482,7 +504,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
       controller: pageNumberInQuran - 1 == widget.startPageInIndex
           ? firstPageScrollController
           : AutoScrollController(),
-      index: verse.hashKey,
+      index: verse.id,
       child: VisibilityDetector(
         onVisibilityChanged: (info) {
           if (info.visibleFraction == 1) {
@@ -502,19 +524,63 @@ class _SuratPageV3State extends State<SuratPageV3> {
         child: Column(
           children: <Widget>[
             if (useBasmalahBeforeAyah) _buildBasmalah(),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  allVerses,
-                  style: TextStyle(
-                    fontFamily: fontFamilyPage,
-                    fontSize: fontSize,
-                    height: 1.6,
-                    wordSpacing: 2,
+            GestureDetector(
+              onLongPress: () {
+                GeneralBottomSheet().showGeneralBottomSheet(
+                  context,
+                  verse.surahNameAndAyatKey,
+                  FavoriteAyahCTA(
+                    onTap: () async {
+                      final ConnectivityResult connectivityResult =
+                          await Connectivity().checkConnectivity();
+
+                      await notifier.toggleFavoriteAyah(
+                        surahNumber: verse.surahNumber,
+                        ayahNumber: verse.verseNumber,
+                        ayahID: verse.id,
+                        page: pageNumberInQuran,
+                        connectivityResult: connectivityResult,
+                      );
+                    },
+                    isFavorited: notifier.isAyahFavorited(
+                      verse.id,
+                    ),
                   ),
-                  textAlign: TextAlign.right,
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    if (isFavorited)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          width: 24,
+                          height: 24,
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                'images/icon_favorite.png',
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        allVerses,
+                        style: TextStyle(
+                          fontFamily: fontFamilyPage,
+                          fontSize: fontSize,
+                          height: 1.6,
+                          wordSpacing: 2,
+                        ),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -612,6 +678,67 @@ class _SuratPageV3State extends State<SuratPageV3> {
           image: AssetImage(
             'images/bismillah_v2.png',
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class FavoriteAyahCTA extends StatefulWidget {
+  const FavoriteAyahCTA({
+    Key? key,
+    required this.onTap,
+    this.isFavorited = false,
+  }) : super(key: key);
+
+  final VoidCallback onTap;
+  final bool isFavorited;
+
+  @override
+  State<FavoriteAyahCTA> createState() => _FavoriteAyahCTAState();
+}
+
+class _FavoriteAyahCTAState extends State<FavoriteAyahCTA> {
+  late bool isFavorited;
+
+  @override
+  void initState() {
+    isFavorited = widget.isFavorited;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        widget.onTap();
+        setState(() {
+          isFavorited = !isFavorited;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(18, 18, 0, 18),
+        child: Row(
+          children: <Widget>[
+            Container(
+              width: 24,
+              height: 24,
+              margin: const EdgeInsets.only(right: 10),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                    isFavorited
+                        ? 'images/icon_favorite_inactive.png'
+                        : 'images/icon_favorite.png',
+                  ),
+                ),
+              ),
+            ),
+            Text(
+              isFavorited ? 'Unfavorite' : 'Favorite',
+              style: captionSemiBold1,
+            ),
+          ],
         ),
       ),
     );

@@ -7,6 +7,7 @@ import 'package:qurantafsir_flutter/shared/core/services/authentication_service.
 import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/core/services/bookmarks_service.dart';
+import 'package:qurantafsir_flutter/shared/core/services/favorite_ayahs_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 
 final StateProvider<DioService> dioServiceProvider =
@@ -58,6 +59,13 @@ final Provider<BookmarksService> bookmarksService =
   return BookmarksService(
     bookmarkApi: bookmarkApi,
   );
+});
+
+final Provider<FavoriteAyahsService> favoriteAyahsService =
+    Provider<FavoriteAyahsService>((ref) {
+  // final BookmarkApi bookmarkApi = ref.watch(bookmarkApiProvider);
+
+  return FavoriteAyahsService();
 });
 
 final StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>

@@ -1,6 +1,6 @@
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
-import 'package:qurantafsir_flutter/shared/core/database/dbBookmarks.dart';
+import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -10,7 +10,7 @@ class BookmarksService {
   }) : _bookmarkApi = bookmarkApi;
 
   bool _isMerged = false;
-  final DbBookmarks _db = DbBookmarks();
+  final DbLocal _db = DbLocal();
   final BookmarkApi _bookmarkApi;
 
   bool get isMerged => _isMerged;
@@ -43,7 +43,7 @@ class BookmarksService {
   }
 
   Future<void> clearBookmarkAndMergeFromServer() async {
-    await _db.clearTable();
+    await _db.clearTableBookmarks();
     final List<Bookmarks> _serverBookmarks = await _getBookmarkList();
     await _db.bulkCreateBookmarks(_serverBookmarks);
     setIsMerged(true);
@@ -79,7 +79,7 @@ class BookmarksService {
     );
 
     final List<Bookmarks> _serverBookmarks = await _getBookmarkList();
-    await _db.clearTable();
+    await _db.clearTableBookmarks();
     await _db.bulkCreateBookmarks(_serverBookmarks);
     setIsMerged(true);
   }
