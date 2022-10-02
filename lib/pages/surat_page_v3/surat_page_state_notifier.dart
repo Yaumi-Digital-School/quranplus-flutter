@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/favorite_ayah_api.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
@@ -13,7 +14,9 @@ import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/services/bookmarks_service.dart';
+import 'package:qurantafsir_flutter/shared/core/services/favorite_ayahs_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 import 'package:retrofit/retrofit.dart';
@@ -85,12 +88,16 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     required this.startPageInIndex,
     required SharedPreferenceService sharedPreferenceService,
     required BookmarkApi bookmarkApi,
+    required FavoriteAyahApi favoriteAyahApi,
     required BookmarksService bookmarksService,
+    required FavoriteAyahsService favoriteAyahsService,
     bool isLoggedIn = false,
   })  : _sharedPreferenceService = sharedPreferenceService,
+        _favoriteAyahApi = favoriteAyahApi,
         _isLoggedIn = isLoggedIn,
         _bookmarkApi = bookmarkApi,
         _bookmarksService = bookmarksService,
+        _favoriteAyahsService = favoriteAyahsService,
         super(SuratPageState());
 
   final SharedPreferenceService _sharedPreferenceService;
@@ -100,7 +107,9 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
 
   List<int> get firstPageKeys => _firstPageSurahPointer;
   final BookmarkApi _bookmarkApi;
+  final FavoriteAyahApi _favoriteAyahApi;
   final BookmarksService _bookmarksService;
+  final FavoriteAyahsService _favoriteAyahsService;
   final bool _isLoggedIn;
   late PageController pageController;
   int startPageInIndex;
@@ -445,6 +454,19 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
         page: page,
         connectivityResult: connectivityResult,
       );
+    }
+
+    if (connectivityResult != ConnectivityResult.none && _isLoggedIn) {
+      _favoriteAyahApi.toggleFavorite(
+        request: ToggleFavoriteAyahRequest(
+          surahID: surahNumber,
+          page: page,
+          ayahHashCode: ayahID,
+          ayahSurah: ayahNumber,
+        ),
+      );
+    } else {
+      _favoriteAyahsService.setIsMerged(false);
     }
 
     _setIsFavoriteAyahChanged();

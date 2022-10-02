@@ -2,6 +2,31 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_favorite_ayahs.dart';
 
+part 'favorite_ayahs.g.dart';
+
+@JsonSerializable()
+class ToggleFavoriteAyahRequest {
+  ToggleFavoriteAyahRequest({
+    required this.surahID,
+    required this.page,
+    required this.ayahHashCode,
+    required this.ayahSurah,
+  });
+
+  @JsonKey(name: 'surah_id')
+  final int surahID;
+  final int page;
+  @JsonKey(name: 'ayah_hash_code')
+  final int ayahHashCode;
+  @JsonKey(name: 'ayah_surah')
+  final int ayahSurah;
+
+  factory ToggleFavoriteAyahRequest.fromJson(Map<String, dynamic> json) =>
+      _$ToggleFavoriteAyahRequestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ToggleFavoriteAyahRequestToJson(this);
+}
+
 class FavoriteAyahs {
   FavoriteAyahs({
     required this.surahId,
