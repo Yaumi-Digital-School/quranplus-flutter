@@ -327,7 +327,8 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
     return RawAutocomplete<String>(
       optionsBuilder: (TextEditingValue textEditingValue) {
         return listOfSurahs.where((String option) {
-          return option.contains(textEditingValue.text.toLowerCase());
+          final String optionInLower = option.toLowerCase();
+          return optionInLower.contains(textEditingValue.text.toLowerCase());
         });
       },
       fieldViewBuilder: (
