@@ -19,7 +19,7 @@ Future<void> main() async {
       SharedPreferenceService();
   await sharedPreferenceService.init();
 
-  await GlobalConfiguration().loadFromAsset('env');
+  await GlobalConfiguration().loadFromAsset('env.local');
 
   runApp(
     ProviderScope(

@@ -1,20 +1,13 @@
-import 'dart:convert';
-
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
-import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
-import 'package:qurantafsir_flutter/shared/core/env.dart';
-import 'package:qurantafsir_flutter/shared/core/models/form.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
+import 'package:qurantafsir_flutter/widgets/searchDialog.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:http/http.dart' as http;
-
 import 'home_page_state_notifier.dart';
 
 StateNotifierProvider<HomePageStateNotifier, HomePageState>
@@ -43,7 +36,9 @@ class HomePageV2 extends StatelessWidget {
         HomePageStateNotifier notifier,
         _,
       ) {
-        if (state.juzElements == null || state.feedbackUrl == null) {
+        if (state.juzElements == null ||
+            state.feedbackUrl == null ||
+            state.ayahPage == null) {
           return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
@@ -106,58 +101,79 @@ class HomePageV2 extends StatelessWidget {
 
 class ListSuratByJuz extends StatelessWidget {
   const ListSuratByJuz({Key? key}) : super(key: key);
+  double diameterButtonSearch(BuildContext context) =>
+      MediaQuery.of(context).size.width * 1 / 6;
 
   @override
   Widget build(BuildContext context) {
     return Consumer(
       builder: (BuildContext context, WidgetRef ref, Widget? child) {
         HomePageState state = ref.watch(homePageStateNotifier);
-        return Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-              alignment: Alignment.centerLeft,
-              decoration: const BoxDecoration(
-                color: backgroundColor,
-                boxShadow: [
-                  BoxShadow(
-                      color: Color.fromRGBO(0, 0, 0, 0.08),
-                      blurRadius: 15,
-                      offset: Offset(4, 4))
-                ],
-              ),
-              child: Text(
-                state.name.isNotEmpty
-                    ? 'Assalamu’alaikum, ${state.name}'
-                    : 'Assalamu’alaikum',
-                textAlign: TextAlign.start,
-                style: captionSemiBold1,
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: state.juzElements!.length,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: <Widget>[
-                      Container(
-                        height: 42,
-                        alignment: Alignment.centerLeft,
-                        decoration: const BoxDecoration(color: neutral200),
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: Text(
-                          state.juzElements![index].name,
-                          textAlign: TextAlign.start,
-                          style: bodyRegular1,
-                        ),
-                      ),
-                      _buildListSuratByJuz(context, state.juzElements![index])
+        return Stack(
+          children: <Widget>[
+            Column(
+              children: [
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+                  alignment: Alignment.centerLeft,
+                  decoration: const BoxDecoration(
+                    color: backgroundColor,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromRGBO(0, 0, 0, 0.08),
+                          blurRadius: 15,
+                          offset: Offset(4, 4))
                     ],
-                  );
-                },
-              ),
+                  ),
+                  child: Text(
+                    state.name.isNotEmpty
+                        ? 'Assalamu’alaikum, ${state.name}'
+                        : 'Assalamu’alaikum',
+                    textAlign: TextAlign.start,
+                    style: captionSemiBold1,
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: state.juzElements!.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: <Widget>[
+                          Container(
+                            height: 42,
+                            alignment: Alignment.centerLeft,
+                            decoration: const BoxDecoration(color: neutral200),
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            child: Text(
+                              state.juzElements![index].name,
+                              textAlign: TextAlign.start,
+                              style: bodyRegular1,
+                            ),
+                          ),
+                          _buildListSuratByJuz(
+                              context, state.juzElements![index]),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
+            Positioned(
+              bottom: diameterButtonSearch(context) * 2 / 6,
+              right: diameterButtonSearch(context) * 2 / 6,
+              child: Container(
+                width: diameterButtonSearch(context),
+                height: diameterButtonSearch(context),
+                decoration: const BoxDecoration(
+                    shape: BoxShape.circle, color: darkGreen),
+                child: _ButtonSearch(
+                  versePagetoAyah: state.ayahPage!,
+                ),
+              ),
+            )
           ],
         );
       },
@@ -182,15 +198,18 @@ class ListSuratByJuz extends StatelessWidget {
               height: 34,
               width: 30,
               decoration: const BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                        color: Color.fromRGBO(0, 0, 0, 0.1),
-                        offset: Offset(1.0, 2.0),
-                        blurRadius: 5.0,
-                        spreadRadius: 1.0)
-                  ],
-                  borderRadius: BorderRadius.all(Radius.circular(20))),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                      color: Color.fromRGBO(0, 0, 0, 0.1),
+                      offset: Offset(1.0, 2.0),
+                      blurRadius: 5.0,
+                      spreadRadius: 1.0)
+                ],
+                borderRadius: BorderRadius.all(
+                  Radius.circular(20),
+                ),
+              ),
               child: Text(
                 surats[index].number,
                 style: numberStyle,
@@ -231,6 +250,39 @@ class ListSuratByJuz extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class _ButtonSearch extends StatelessWidget {
+  const _ButtonSearch({
+    Key? key,
+    required this.versePagetoAyah,
+  }) : super(key: key);
+
+  final Map<String, List<String>>? versePagetoAyah;
+
+  @override
+  Widget build(
+    BuildContext context,
+  ) {
+    return Consumer(
+      builder: (BuildContext context, WidgetRef ref, Widget? child) {
+        HomePageState state = ref.watch(homePageStateNotifier);
+        return IconButton(
+          onPressed: () {
+            GeneralSearchDialog.searchDialogByPageOrAyah(
+              context,
+              state.ayahPage ?? <String, List<String>>{},
+            );
+          },
+          icon: const Icon(
+            Icons.search_outlined,
+            size: 37.0,
+            color: neutral100,
+          ),
+        );
+      },
     );
   }
 }
