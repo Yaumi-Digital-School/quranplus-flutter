@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
@@ -25,14 +26,17 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
   late List<String> listOfSurahOptions;
   late List<String> listOfPages;
   late List<String> listOfAyahBasedOnSurah;
-  String selectedSurah = '';
+  late bool isSearchByAyahDisabled;
   int selectedPageOnSelectPage = 0;
   int selectedPageOnSelectAyah = 0;
   int selectedAyahID = 0;
   int selectedAyah = 0;
+  int maxPageQuran = 604;
+  int minPageQuran = 1;
 
   @override
   void initState() {
+    isSearchByAyahDisabled = true;
     verseMapper = widget.verseMapper;
     listOfPages = [for (int i = 1; i <= 604; i++) i.toString()];
     listOfAyahBasedOnSurah = <String>[];
@@ -106,6 +110,9 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
 
   Widget _dropdownSuggestionSearchPage(BuildContext context) {
     return RawAutocomplete<String>(
+      initialValue: TextEditingValue(
+        text: minPageQuran.toString(),
+      ),
       optionsBuilder: (TextEditingValue textEditingValue) {
         return listOfPages.where(
           (String option) {
@@ -130,8 +137,30 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
           onFieldSubmitted: (String value) {
             onFieldSubmitted();
           },
-          onChanged: (String page) {
-            selectedPageOnSelectPage = int.parse(page);
+          inputFormatters: <TextInputFormatter>[
+            TextInputFormatter.withFunction(
+              (_, newValue) {
+                final int newValueInInt = int.parse(newValue.text);
+                if (newValueInInt > maxPageQuran) {
+                  selectedPageOnSelectPage = maxPageQuran;
+                  return TextEditingValue(
+                    text: maxPageQuran.toString(),
+                  );
+                }
+
+                if (newValueInInt < minPageQuran) {
+                  selectedPageOnSelectPage = minPageQuran;
+                  return TextEditingValue(
+                    text: minPageQuran.toString(),
+                  );
+                }
+
+                return newValue;
+              },
+            ),
+          ],
+          onChanged: (String value) {
+            selectedPageOnSelectPage = int.parse(value);
           },
         );
       },
@@ -300,20 +329,22 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
             elevation: 2,
             minimumSize: const Size.fromHeight(40),
           ),
-          onPressed: () {
-            int startPageInIndexValue = selectedPageOnSelectAyah - 1;
+          onPressed: isSearchByAyahDisabled
+              ? null
+              : () {
+                  int startPageInIndexValue = selectedPageOnSelectAyah - 1;
 
-            Navigator.pushReplacement(
-              context,
-              PageTransition(
-                type: PageTransitionType.fade,
-                child: SuratPageV3(
-                  startPageInIndex: startPageInIndexValue,
-                  firstPagePointerIndex: selectedAyahID,
-                ),
-              ),
-            );
-          },
+                  Navigator.pushReplacement(
+                    context,
+                    PageTransition(
+                      type: PageTransitionType.fade,
+                      child: SuratPageV3(
+                        startPageInIndex: startPageInIndexValue,
+                        firstPagePointerIndex: selectedAyahID,
+                      ),
+                    ),
+                  );
+                },
           child: const Text('Search'),
         ),
       ],
@@ -345,8 +376,12 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
           onFieldSubmitted: (String value) {
             onFieldSubmitted();
           },
-          onChanged: (String surahName) {
-            selectedSurah = surahName;
+          validator: (String? value) {},
+          onChanged: (_) {
+            if (isSearchByAyahDisabled) return;
+            setState(() {
+              isSearchByAyahDisabled = true;
+            });
           },
         );
       },
@@ -378,12 +413,12 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
                       // value yang sedang tampil
                       onSelected('');
                       onSelected(surahName);
-                      selectedSurah = surahName;
                       setState(() {
                         listOfAyahBasedOnSurah = verseMapper[
                                 surahNameToSurahNumberMap[surahName]
                                     .toString()] ??
                             <String>[];
+                        isSearchByAyahDisabled = false;
                       });
                     },
                     child: Padding(
@@ -432,6 +467,20 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
           onFieldSubmitted: (String value) {
             onFieldSubmitted();
           },
+          inputFormatters: <TextInputFormatter>[
+            TextInputFormatter.withFunction(
+              (_, newValue) {
+                final int newValueInInt = int.parse(newValue.text);
+                if (newValueInInt > ayahOptions.length) {
+                  return TextEditingValue(
+                    text: ayahOptions.length.toString(),
+                  );
+                }
+
+                return newValue;
+              },
+            ),
+          ],
           onChanged: (String ayah) {
             selectedAyah = int.parse(ayah);
           },
