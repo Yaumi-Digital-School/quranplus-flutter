@@ -6,6 +6,7 @@ import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_state_notifi
 import 'package:qurantafsir_flutter/pages/main_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
+import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
@@ -309,10 +310,10 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
             Container(
               width: 24,
               height: 24,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                   image: DecorationImage(
                       image: AssetImage(
-                'images/icon_favorite.png',
+                IconPath.iconFavorite,
               ))),
             ),
           ],
@@ -369,11 +370,9 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
             Container(
               width: 24,
               height: 24,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: AssetImage(
-                'images/icon_bookmark.png',
-              ))),
+                      image: AssetImage(IconPath.iconBookmark))),
             ),
           ],
         ),

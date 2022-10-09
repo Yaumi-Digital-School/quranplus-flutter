@@ -5,6 +5,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
@@ -558,10 +559,10 @@ class _SuratPageV3State extends State<SuratPageV3> {
                         child: Container(
                           width: 24,
                           height: 24,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             image: DecorationImage(
                               image: AssetImage(
-                                'images/icon_favorite.png',
+                                IconPath.iconFavorite,
                               ),
                             ),
                           ),
@@ -728,8 +729,8 @@ class _FavoriteAyahCTAState extends State<FavoriteAyahCTA> {
                 image: DecorationImage(
                   image: AssetImage(
                     isFavorited
-                        ? 'images/icon_favorite_inactive.png'
-                        : 'images/icon_favorite.png',
+                        ? IconPath.iconFavoriteInactive
+                        : IconPath.iconFavorite,
                   ),
                 ),
               ),
