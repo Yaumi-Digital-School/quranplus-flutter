@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/account_page/account_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
@@ -112,7 +113,7 @@ class SettingsPage extends StatelessWidget {
           },
           child: _buildImageButton(
             'Account',
-            'images/icon_account.png',
+            IconPath.iconAccounnt,
             neutral900,
           ),
         ),
@@ -143,7 +144,7 @@ class SettingsPage extends StatelessWidget {
           },
           child: _buildImageButton(
             'Sign out',
-            'images/icon_logout.png',
+            IconPath.iconLogout,
             exit500,
           ),
         ),
@@ -182,7 +183,7 @@ class SettingsPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'images/icon_sync.png',
+                    IconPath.iconSync,
                     width: 24,
                   ),
                   const SizedBox(width: 16),
@@ -207,7 +208,7 @@ class SettingsPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'images/icon_update_now.png',
+                    IconPath.iconUpdateNow,
                     width: 24,
                   ),
                   const SizedBox(width: 16),
@@ -231,7 +232,7 @@ class SettingsPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'images/icon_collaborate.png',
+                    IconPath.iconCollaborate,
                     width: 24,
                   ),
                   const SizedBox(width: 16),
@@ -296,7 +297,7 @@ class SettingsPage extends StatelessWidget {
           icon: state.resultStatus == ResultStatus.inProgress
               ? Container()
               : Image.asset(
-                  'images/icon_google.png',
+                  IconPath.iconGoogle,
                   width: 16,
                 ),
           label: state.resultStatus == ResultStatus.inProgress
