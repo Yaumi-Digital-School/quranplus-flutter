@@ -4,6 +4,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/widgets/button.dart';
 
 class SearchByPageOrAyah extends StatefulWidget {
   const SearchByPageOrAyah({
@@ -233,34 +234,28 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
         const SizedBox(
           height: 21.0,
         ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            padding: const EdgeInsets.all(6.0),
-            primary: Colors.white,
-            onPrimary: primary500,
-            elevation: 2,
-            minimumSize: const Size.fromHeight(40),
-          ),
-          onPressed: () {
-            int startPageInIndexValue = selectedPageOnSelectPage - 1;
-
-            Navigator.pushReplacement(
-              context,
-              PageTransition(
-                type: PageTransitionType.fade,
-                child: SuratPageV3(
-                  startPageInIndex: startPageInIndexValue,
-                ),
-              ),
-            );
-          },
-          child: const Text('Search'),
+        ButtonSecondary(
+          label: 'Search',
+          onTap: _onPressedSearchPage,
         ),
       ],
     );
+  }
+
+  _onPressedSearchPage() {
+    {
+      int startPageInIndexValue = selectedPageOnSelectPage - 1;
+
+      Navigator.pushReplacement(
+        context,
+        PageTransition(
+          type: PageTransitionType.fade,
+          child: SuratPageV3(
+            startPageInIndex: startPageInIndexValue,
+          ),
+        ),
+      );
+    }
   }
 
   Widget _tabviewSearchSurahandAyah({
@@ -318,37 +313,33 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
         const SizedBox(
           height: 21.0,
         ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            padding: const EdgeInsets.all(6.0),
-            primary: Colors.white,
-            onPrimary: primary500,
-            elevation: 2,
-            minimumSize: const Size.fromHeight(40),
-          ),
-          onPressed: isSearchByAyahDisabled
-              ? null
-              : () {
-                  int startPageInIndexValue = selectedPageOnSelectAyah - 1;
-
-                  Navigator.pushReplacement(
-                    context,
-                    PageTransition(
-                      type: PageTransitionType.fade,
-                      child: SuratPageV3(
-                        startPageInIndex: startPageInIndexValue,
-                        firstPagePointerIndex: selectedAyahID,
-                      ),
-                    ),
-                  );
-                },
-          child: const Text('Search'),
-        ),
+        ButtonSecondary(
+          label: 'Search',
+          onTap: _onPressedSearchSurahandAyah(isSearchByAyahDisabled),
+        )
       ],
     );
+  }
+
+  _onPressedSearchSurahandAyah(bool isSearchByAyahDisabled) {
+    if (isSearchByAyahDisabled) {
+      return null;
+    } else {
+      return () {
+        int startPageInIndexValue = selectedPageOnSelectAyah - 1;
+
+        Navigator.pushReplacement(
+          context,
+          PageTransition(
+            type: PageTransitionType.fade,
+            child: SuratPageV3(
+              startPageInIndex: startPageInIndexValue,
+              firstPagePointerIndex: selectedAyahID,
+            ),
+          ),
+        );
+      };
+    }
   }
 
   Widget _dropdownSuggestionSearchSurah(
