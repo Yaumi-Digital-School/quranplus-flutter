@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/account_page/account_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
@@ -11,6 +12,7 @@ import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
 import 'package:qurantafsir_flutter/shared/utils/result_status.dart';
+import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
@@ -112,7 +114,7 @@ class SettingsPage extends StatelessWidget {
           },
           child: _buildImageButton(
             'Account',
-            'images/icon_account.png',
+            IconPath.iconAccounnt,
             neutral900,
           ),
         ),
@@ -143,7 +145,7 @@ class SettingsPage extends StatelessWidget {
           },
           child: _buildImageButton(
             'Sign out',
-            'images/icon_logout.png',
+            IconPath.iconLogout,
             exit500,
           ),
         ),
@@ -182,7 +184,7 @@ class SettingsPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'images/icon_sync.png',
+                    IconPath.iconSync,
                     width: 24,
                   ),
                   const SizedBox(width: 16),
@@ -207,7 +209,7 @@ class SettingsPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'images/icon_update_now.png',
+                    IconPath.iconUpdateNow,
                     width: 24,
                   ),
                   const SizedBox(width: 16),
@@ -231,7 +233,7 @@ class SettingsPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'images/icon_collaborate.png',
+                    IconPath.iconCollaborate,
                     width: 24,
                   ),
                   const SizedBox(width: 16),
@@ -254,18 +256,9 @@ class SettingsPage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 48),
-        ElevatedButton.icon(
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            padding: const EdgeInsets.all(6.0),
-            primary: Colors.white,
-            onPrimary: primary500,
-            elevation: 2,
-            minimumSize: const Size.fromHeight(40),
-          ),
-          onPressed: () async {
+        ButtonSecondary(
+          label: 'Sign In with Google',
+          onTap: () async {
             var connectivityResult = await Connectivity().checkConnectivity();
             if (connectivityResult != ConnectivityResult.none) {
               notifier.signInWithGoogle(() {
@@ -293,18 +286,7 @@ class SettingsPage extends StatelessWidget {
                   () => Navigator.pop(context));
             }
           },
-          icon: state.resultStatus == ResultStatus.inProgress
-              ? Container()
-              : Image.asset(
-                  'images/icon_google.png',
-                  width: 16,
-                ),
-          label: state.resultStatus == ResultStatus.inProgress
-              ? const CircularProgressIndicator()
-              : Text(
-                  'Sign In with Google',
-                  style: bodySemibold2.apply(color: primary500),
-                ),
+          leftIcon: IconPath.iconGoogle,
         ),
       ],
     );

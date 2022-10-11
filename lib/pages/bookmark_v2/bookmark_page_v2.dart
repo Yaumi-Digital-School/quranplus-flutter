@@ -6,12 +6,15 @@ import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_state_notifi
 import 'package:qurantafsir_flutter/pages/main_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
+import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
+
+import '../../widgets/button.dart';
 
 class BookmarkPageV2 extends StatefulWidget {
   const BookmarkPageV2({Key? key}) : super(key: key);
@@ -279,20 +282,22 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
               )
             ],
           ),
-          child: TextButton(
-            child: const Text(
-              'Start Reading',
-              style: TextStyle(color: primary500, fontSize: 17),
-            ),
-            onPressed: () =>
+          child: ButtonSecondary(
+            label: 'Start Reading',
+            onTap: () =>
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
               return MainPage();
             })),
           ),
-        ),
+        )
       ],
     );
   }
+
+  _onPressedStartReading(BuildContext context) =>
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return MainPage();
+      }));
 
   Widget _buildFavoritedAyah({
     required BuildContext context,
@@ -309,10 +314,10 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
             Container(
               width: 24,
               height: 24,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                   image: DecorationImage(
                       image: AssetImage(
-                'images/icon_favorite.png',
+                IconPath.iconFavorite,
               ))),
             ),
           ],
@@ -369,11 +374,9 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
             Container(
               width: 24,
               height: 24,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: AssetImage(
-                'images/icon_bookmark.png',
-              ))),
+                      image: AssetImage(IconPath.iconBookmark))),
             ),
           ],
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
 class GeneralBottomSheet {
@@ -75,7 +76,7 @@ class GeneralBottomSheet {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image.asset(
-              'images/icon_no_wifi.png',
+              IconPath.iconNoWifi,
               width: 36,
             ),
             const SizedBox(height: 8),
@@ -86,7 +87,7 @@ class GeneralBottomSheet {
             const SizedBox(height: 28),
             TextButton.icon(
               icon: Image.asset(
-                'images/icon_refresh.png',
+                IconPath.iconRefresh,
                 width: 24,
               ),
               label: Text(

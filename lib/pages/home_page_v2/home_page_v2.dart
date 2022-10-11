@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
+import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
@@ -75,7 +76,7 @@ class HomePageV2 extends StatelessWidget {
                       child: IconButton(
                         onPressed: () => _launchUrl(state.feedbackUrl),
                         icon: Image.asset(
-                          'images/icon_form.png',
+                          IconPath.iconForm,
                         ),
                       ),
                     )
