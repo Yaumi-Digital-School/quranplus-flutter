@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/search_by_page_or_ayah.dart';
 
 class GeneralSearchDialog {
@@ -21,7 +22,7 @@ class GeneralSearchDialog {
     );
   }
 
-  static Future searchDialoggeneral(BuildContext context, Function function) {
+  static Future searchDialoggeneral(BuildContext context, Function() function) {
     return searchDialog(
       context,
       Column(
@@ -29,7 +30,7 @@ class GeneralSearchDialog {
           const SizedBox(
             height: 5.0,
           ),
-          Container(
+          SizedBox(
             height: MediaQuery.of(context).size.height / 10,
             width: MediaQuery.of(context).size.width,
             child: Container(
@@ -43,22 +44,10 @@ class GeneralSearchDialog {
           const SizedBox(
             height: 16.0,
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              padding: const EdgeInsets.all(6.0),
-              primary: Colors.white,
-              onPrimary: primary500,
-              elevation: 2,
-              minimumSize: const Size.fromHeight(40),
-            ),
-            onPressed: () {
-              function;
-            },
-            child: Text('Search'),
-          ),
+          ButtonSecondary(
+            label: 'Search',
+            onTap: function,
+          )
         ],
       ),
     );

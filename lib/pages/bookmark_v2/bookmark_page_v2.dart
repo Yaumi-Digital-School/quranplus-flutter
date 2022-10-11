@@ -14,6 +14,8 @@ import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 
+import '../../widgets/button.dart';
+
 class BookmarkPageV2 extends StatefulWidget {
   const BookmarkPageV2({Key? key}) : super(key: key);
 
@@ -280,20 +282,22 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
               )
             ],
           ),
-          child: TextButton(
-            child: const Text(
-              'Start Reading',
-              style: TextStyle(color: primary500, fontSize: 17),
-            ),
-            onPressed: () =>
+          child: ButtonSecondary(
+            label: 'Start Reading',
+            onTap: () =>
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
               return MainPage();
             })),
           ),
-        ),
+        )
       ],
     );
   }
+
+  _onPressedStartReading(BuildContext context) =>
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return MainPage();
+      }));
 
   Widget _buildFavoritedAyah({
     required BuildContext context,

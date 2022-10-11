@@ -9,6 +9,7 @@ import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/form_status.dart';
 import 'package:qurantafsir_flutter/shared/utils/result_status.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 
 class AccountPage extends StatelessWidget {
@@ -357,40 +358,11 @@ class AccountPage extends StatelessWidget {
                     ),
                   ],
                   const SizedBox(height: 48),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: const EdgeInsets.all(6.0),
-                      primary: Colors.white,
-                      onPrimary: primary500,
-                      elevation: 2,
-                      minimumSize: const Size.fromHeight(40),
-                    ),
-                    onPressed: (state.formStatus == FormStatus.valid)
-                        ? () async {
-                            var connectivityResult =
-                                await Connectivity().checkConnectivity();
-                            if (connectivityResult != ConnectivityResult.none) {
-                              notifier.saveButtonChecked(() {
-                                Navigator.of(context).pop();
-                              });
-                            } else {
-                              _generalBottomSheet.showNoInternetBottomSheet(
-                                  // TODO changes to refresh action
-                                  context,
-                                  () => Navigator.pop(context));
-                            }
-                          }
-                        : null,
-                    child: state.resultStatus == ResultStatus.inProgress
-                        ? const CircularProgressIndicator()
-                        : Text(
-                            'Save',
-                            style: bodySemibold2.apply(color: primary500),
-                          ),
-                  ),
+                  ButtonSecondary(
+                    label: 'Save',
+                    onTap: _onPressedButtonSave(
+                        state.formStatus, context, notifier),
+                  )
                 ],
               ),
             ),
@@ -398,5 +370,26 @@ class AccountPage extends StatelessWidget {
         );
       },
     );
+  }
+
+  _onPressedButtonSave(FormStatus formStatus, BuildContext context,
+      AccountPageStateNotifier notifier) {
+    if (formStatus == FormStatus.valid) {
+      return () async {
+        var connectivityResult = await Connectivity().checkConnectivity();
+        if (connectivityResult != ConnectivityResult.none) {
+          notifier.saveButtonChecked(() {
+            Navigator.of(context).pop();
+          });
+        } else {
+          _generalBottomSheet.showNoInternetBottomSheet(
+              // TODO changes to refresh action
+              context,
+              () => Navigator.pop(context));
+        }
+      };
+    } else {
+      return null;
+    }
   }
 }

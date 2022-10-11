@@ -12,6 +12,7 @@ import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
 import 'package:qurantafsir_flutter/shared/utils/result_status.dart';
+import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
@@ -255,18 +256,9 @@ class SettingsPage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 48),
-        ElevatedButton.icon(
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            padding: const EdgeInsets.all(6.0),
-            primary: Colors.white,
-            onPrimary: primary500,
-            elevation: 2,
-            minimumSize: const Size.fromHeight(40),
-          ),
-          onPressed: () async {
+        ButtonSecondary(
+          label: 'Sign In with Google',
+          onTap: () async {
             var connectivityResult = await Connectivity().checkConnectivity();
             if (connectivityResult != ConnectivityResult.none) {
               notifier.signInWithGoogle(() {
@@ -294,18 +286,7 @@ class SettingsPage extends StatelessWidget {
                   () => Navigator.pop(context));
             }
           },
-          icon: state.resultStatus == ResultStatus.inProgress
-              ? Container()
-              : Image.asset(
-                  IconPath.iconGoogle,
-                  width: 16,
-                ),
-          label: state.resultStatus == ResultStatus.inProgress
-              ? const CircularProgressIndicator()
-              : Text(
-                  'Sign In with Google',
-                  style: bodySemibold2.apply(color: primary500),
-                ),
+          leftIcon: IconPath.iconGoogle,
         ),
       ],
     );
