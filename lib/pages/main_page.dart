@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_v2.dart';
+import 'package:qurantafsir_flutter/pages/habit_page/habit_page.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/home_page_v2.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
@@ -16,6 +17,7 @@ class _MainPageState extends State<MainPage> {
 
   static final List<Widget> _pages = <Widget>[
     const HomePageV2(),
+    const HabitPage(),
     const BookmarkPageV2(),
     SettingsPage(),
   ];
@@ -35,6 +37,12 @@ class _MainPageState extends State<MainPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: ImageIcon(
+              AssetImage("images/Icon_habit.png"),
+            ),
+            label: 'Habit',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bookmark),
