@@ -59,3 +59,34 @@ class ButtonSecondary extends StatelessWidget {
     );
   }
 }
+
+class ButtonNeutral extends StatelessWidget {
+  const ButtonNeutral({
+    required this.label,
+    required this.onTap,
+  });
+
+  final String label;
+  final Function()? onTap;
+  @override
+  Widget build(
+    BuildContext context,
+  ) {
+    return SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: const BorderSide(color: darkGreen, width: 2)),
+            padding: const EdgeInsets.all(6.0),
+            primary: Colors.white,
+            onPrimary: primary500,
+            elevation: 0,
+            minimumSize: const Size.fromHeight(40),
+          ),
+          onPressed: onTap,
+          child: Text(label),
+        ));
+  }
+}
