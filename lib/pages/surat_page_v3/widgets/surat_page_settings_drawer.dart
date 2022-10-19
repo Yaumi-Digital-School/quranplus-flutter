@@ -9,7 +9,7 @@ enum ContentType {
 }
 
 class SuratPageSettingsDrawer extends StatefulWidget {
-  SuratPageSettingsDrawer({
+  const SuratPageSettingsDrawer({
     Key? key,
     required this.onTapTranslation,
     required this.onTapTafsir,
@@ -183,7 +183,7 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
                     neutral200, Icons.remove, secondaryGreen300)),
             Text(
               '${widget.fontSize}x',
-              style: TextStyle(
+              style: const TextStyle(
                   color: neutral700, fontSize: 14, fontWeight: FontWeight.w600),
             ),
             GestureDetector(
@@ -205,10 +205,10 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
           color: colorButton,
           boxShadow: [
             BoxShadow(
-                color: Color(0xff000000).withOpacity(0.1),
+                color: const Color(0xff000000).withOpacity(0.1),
                 blurRadius: 6,
                 spreadRadius: 0,
-                offset: Offset(0, 0.9))
+                offset: const Offset(0, 0.9))
           ]),
       child: Center(
           child: Icon(
