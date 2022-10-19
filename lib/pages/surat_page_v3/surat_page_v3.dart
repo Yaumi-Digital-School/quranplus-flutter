@@ -9,7 +9,6 @@ import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
-import 'package:qurantafsir_flutter/widgets/surat_page_settings_drawer.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_icons.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
@@ -18,11 +17,14 @@ import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import 'widgets/widgets.dart';
+
 enum AyahFontSize {
   big,
   regular,
 }
 
+//! Apakah sabi untuk dihapus extension ini?
 extension AyahFontSizeExt on AyahFontSize {
   SuratPageState get value {
     switch (this) {
@@ -679,67 +681,6 @@ class _SuratPageV3State extends State<SuratPageV3> {
           image: AssetImage(
             'images/bismillah_v2.png',
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class FavoriteAyahCTA extends StatefulWidget {
-  const FavoriteAyahCTA({
-    Key? key,
-    required this.onTap,
-    this.isFavorited = false,
-  }) : super(key: key);
-
-  final VoidCallback onTap;
-  final bool isFavorited;
-
-  @override
-  State<FavoriteAyahCTA> createState() => _FavoriteAyahCTAState();
-}
-
-class _FavoriteAyahCTAState extends State<FavoriteAyahCTA> {
-  late bool isFavorited;
-
-  @override
-  void initState() {
-    isFavorited = widget.isFavorited;
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        widget.onTap();
-        setState(() {
-          isFavorited = !isFavorited;
-        });
-      },
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(18, 18, 0, 18),
-        child: Row(
-          children: <Widget>[
-            Container(
-              width: 24,
-              height: 24,
-              margin: const EdgeInsets.only(right: 10),
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(
-                    isFavorited
-                        ? IconPath.iconFavoriteInactive
-                        : IconPath.iconFavorite,
-                  ),
-                ),
-              ),
-            ),
-            Text(
-              isFavorited ? 'Unfavorite' : 'Favorite',
-              style: captionSemiBold1,
-            ),
-          ],
         ),
       ),
     );
