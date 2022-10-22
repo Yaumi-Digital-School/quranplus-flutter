@@ -103,6 +103,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
             sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
             bookmarkApi: ref.watch(bookmarkApiProvider),
             bookmarksService: ref.watch(bookmarksService),
+            favoriteAyahsService: ref.watch(favoriteAyahsService),
             isLoggedIn: ref.watch(authenticationService).isLoggedIn,
           );
         },

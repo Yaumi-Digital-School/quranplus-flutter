@@ -270,6 +270,9 @@ class SettingsPage extends StatelessWidget {
                       ref.read(sharedPreferenceServiceProvider).getApiToken(),
                 );
                 ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
+                ref
+                    .read(favoriteAyahsService)
+                    .clearFavoriteAndMergeFromServer();
               }, () {
                 ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()

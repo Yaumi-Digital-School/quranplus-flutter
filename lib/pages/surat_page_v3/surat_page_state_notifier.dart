@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/favorite_ayah_api.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
@@ -14,6 +15,7 @@ import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart'
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
 import 'package:qurantafsir_flutter/shared/core/services/bookmarks_service.dart';
+import 'package:qurantafsir_flutter/shared/core/services/favorite_ayahs_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 import 'package:retrofit/retrofit.dart';
@@ -86,11 +88,13 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     required SharedPreferenceService sharedPreferenceService,
     required BookmarkApi bookmarkApi,
     required BookmarksService bookmarksService,
+    required FavoriteAyahsService favoriteAyahsService,
     bool isLoggedIn = false,
   })  : _sharedPreferenceService = sharedPreferenceService,
         _isLoggedIn = isLoggedIn,
         _bookmarkApi = bookmarkApi,
         _bookmarksService = bookmarksService,
+        _favoriteAyahsService = favoriteAyahsService,
         super(SuratPageState());
 
   final SharedPreferenceService _sharedPreferenceService;
@@ -101,6 +105,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   List<int> get firstPageKeys => _firstPageSurahPointer;
   final BookmarkApi _bookmarkApi;
   final BookmarksService _bookmarksService;
+  final FavoriteAyahsService _favoriteAyahsService;
   final bool _isLoggedIn;
   late PageController pageController;
   int startPageInIndex;
@@ -435,16 +440,25 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     required int page,
     required ConnectivityResult connectivityResult,
   }) async {
+    final FavoriteAyahs ayah = FavoriteAyahs(
+      surahId: surahNumber,
+      page: page,
+      ayahSurah: ayahNumber,
+      ayahHashCode: ayahID,
+    );
+
     if (isAyahFavorited(ayahID)) {
       await _deleteFavoriteAyah(ayahID);
     } else {
-      await _insertFavoriteAyah(
-        surahNumber: surahNumber,
-        ayahNumber: ayahNumber,
-        ayahID: ayahID,
-        page: page,
-        connectivityResult: connectivityResult,
+      await _insertFavoriteAyah(ayah: ayah);
+    }
+
+    if (connectivityResult != ConnectivityResult.none && _isLoggedIn) {
+      _favoriteAyahsService.toggleAyahToServer(
+        ayah: ayah,
       );
+    } else {
+      _favoriteAyahsService.setIsMerged(false);
     }
 
     _setIsFavoriteAyahChanged();
@@ -452,38 +466,15 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   }
 
   Future<void> _deleteFavoriteAyah(int ayahID) async {
-    await db.deleteFavoriteAyahs(ayahID);
+    await _favoriteAyahsService.deleteFavoriteAyahs(ayahID);
     _favoriteAyahList.removeWhere((item) => item == ayahID);
   }
 
   Future<void> _insertFavoriteAyah({
-    required int surahNumber,
-    required int ayahNumber,
-    required int ayahID,
-    required int page,
-    required ConnectivityResult connectivityResult,
+    required FavoriteAyahs ayah,
   }) async {
-    await db.saveFavoriteAyahs(
-      FavoriteAyahs(
-        surahId: surahNumber,
-        page: page,
-        ayahSurah: ayahNumber,
-        ayahHashCode: ayahID,
-      ),
-    );
-
-    // if (connectivityResult != ConnectionState.none && _isLoggedIn) {
-    //   _toggleBookmark(
-    //     surahName: surahName,
-    //     page: page,
-    //   );
-    // }
-
-    // if (connectivityResult == ConnectionState.none) {
-    //   _bookmarksService.setIsMerged(false);
-    // }
-
-    _favoriteAyahList.add(ayahID);
+    await _favoriteAyahsService.saveFavoriteAyahs(ayah);
+    _favoriteAyahList.add(ayah.ayahHashCode);
   }
 
   @Deprecated('Please use checkIsBookmarkExists instead')

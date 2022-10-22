@@ -1,6 +1,7 @@
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/favorite_ayah_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/user_api.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
@@ -34,6 +35,14 @@ final Provider<BookmarkApi> bookmarkApiProvider = Provider<BookmarkApi>((ref) {
   );
 });
 
+final Provider<FavoriteAyahApi> favoriteAyahApiProvider =
+    Provider<FavoriteAyahApi>((ref) {
+  final DioService dioService = ref.watch(dioServiceProvider);
+  return FavoriteAyahApi(
+    dioService.getDioWithAccessToken(),
+  );
+});
+
 final Provider<UserApi> userApiProvider =
     Provider<UserApi>((ProviderRef<UserApi> ref) {
   final DioService dioService = ref.read(dioServiceProvider);
@@ -63,9 +72,11 @@ final Provider<BookmarksService> bookmarksService =
 
 final Provider<FavoriteAyahsService> favoriteAyahsService =
     Provider<FavoriteAyahsService>((ref) {
-  // final BookmarkApi bookmarkApi = ref.watch(bookmarkApiProvider);
+  final FavoriteAyahApi favoriteAyahApi = ref.watch(favoriteAyahApiProvider);
 
-  return FavoriteAyahsService();
+  return FavoriteAyahsService(
+    favoriteAyahApi: favoriteAyahApi,
+  );
 });
 
 final StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>

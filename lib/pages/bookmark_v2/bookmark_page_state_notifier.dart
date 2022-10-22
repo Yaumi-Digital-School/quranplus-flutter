@@ -55,12 +55,9 @@ class BookmarkPageStateNotifier extends BaseStateNotifier<BookmarkPageState> {
     }
 
     _localBookmarks = await _bookmarksService.getBookmarkFromLocal();
-    _localFavoriteAyahs =
-        await _favoriteAyahsService.getFavoriteAyahListLocal();
 
     state = state.copyWith(
       listBookmarks: _localBookmarks,
-      listFavoriteAyah: _localFavoriteAyahs,
     );
   }
 
@@ -68,9 +65,9 @@ class BookmarkPageStateNotifier extends BaseStateNotifier<BookmarkPageState> {
     ConnectivityResult? connectivityResult,
   }) async {
     _connectivityResult = connectivityResult ?? ConnectivityResult.none;
-    // if (_isLoggedIn && _connectivityResult != ConnectivityResult.none) {
-    //   await _bookmarksService.mergeBookmarkToServer();
-    // }
+    if (_isLoggedIn && _connectivityResult != ConnectivityResult.none) {
+      await _favoriteAyahsService.mergeFavoriteAyahToServer();
+    }
 
     _localFavoriteAyahs =
         await _favoriteAyahsService.getFavoriteAyahListLocal();

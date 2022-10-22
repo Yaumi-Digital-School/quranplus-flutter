@@ -24,6 +24,9 @@ class BookmarkPageV2 extends StatefulWidget {
 }
 
 class _BookmarkPageV2State extends State<BookmarkPageV2> {
+  final int bookmarkTabIdx = 0;
+  final int favoriteTabIdx = 1;
+
   @override
   Widget build(BuildContext context) {
     return StateNotifierConnector<BookmarkPageStateNotifier, BookmarkPageState>(
@@ -106,6 +109,15 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                           color: primary500,
                           borderRadius: BorderRadius.circular(20),
                         ),
+                        onTap: (int tabIdx) async {
+                          final ConnectivityResult connectivityResult =
+                              await Connectivity().checkConnectivity();
+
+                          if (tabIdx == favoriteTabIdx) {
+                            await notifier.initFavoriteAyahSection(
+                                connectivityResult: connectivityResult);
+                          }
+                        },
                         tabs: const <Widget>[
                           Tab(
                             text: 'Bookmark',
