@@ -34,6 +34,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
   int selectedAyah = 0;
   int maxPageQuran = 604;
   int minPageQuran = 1;
+  bool isSurahNotFound = false;
 
   @override
   void initState() {
@@ -42,7 +43,8 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
     listOfPages = [for (int i = 1; i <= 604; i++) i.toString()];
     listOfAyahBasedOnSurah = <String>[];
     listOfSurahOptions = verseMapper.keys
-        .map((e) => surahNumberToSurahNameMap[int.tryParse(e)].toString())
+        .map((e) =>
+            "$e. ${surahNumberToSurahNameMap[int.tryParse(e)].toString()}")
         .toList();
     super.initState();
   }
@@ -271,6 +273,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
             Expanded(
               flex: 3,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
                     alignment: Alignment.topLeft,
@@ -279,10 +282,20 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
                       style: bodyRegular2,
                     ),
                   ),
+                  const SizedBox(
+                    height: 12,
+                  ),
                   _dropdownSuggestionSearchSurah(
                     context,
                     listOfSurahOptions,
                   ),
+                  const SizedBox(
+                    height: 2,
+                  ),
+                  Text(
+                    isSurahNotFound ? "Surah not found" : "",
+                    style: bodyRegular1.copyWith(fontSize: 8, color: exit500),
+                  )
                 ],
               ),
             ),
@@ -292,6 +305,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
             Expanded(
               flex: 2,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
                     alignment: Alignment.topLeft,
@@ -301,10 +315,23 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
                       style: bodyRegular2,
                     ),
                   ),
+                  const SizedBox(
+                    height: 12,
+                  ),
                   _dropdownSuggestionSearchAyah(
                     context: context,
                     ayahOptions: listOfAyahBasedOnSurah,
                   ),
+                  const SizedBox(
+                    height: 2,
+                  ),
+                  Text(
+                    listOfAyahBasedOnSurah.isNotEmpty && !isSurahNotFound
+                        ? "${listOfAyahBasedOnSurah.length} Ayah"
+                        : "",
+                    style:
+                        bodyRegular1.copyWith(fontSize: 8, color: neutral500),
+                  )
                 ],
               ),
             ),
@@ -315,14 +342,16 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
         ),
         ButtonSecondary(
           label: 'Search',
-          onTap: _onPressedSearchSurahandAyah(isSearchByAyahDisabled),
+          onTap: _onPressedSearchSurahandAyah(
+            isSearchByAyahDisabled,
+          ),
         )
       ],
     );
   }
 
   _onPressedSearchSurahandAyah(bool isSearchByAyahDisabled) {
-    if (isSearchByAyahDisabled) {
+    if (isSearchByAyahDisabled || isSurahNotFound) {
       return null;
     } else {
       return () {
@@ -348,10 +377,32 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
   ) {
     return RawAutocomplete<String>(
       optionsBuilder: (TextEditingValue textEditingValue) {
-        return listOfSurahs.where((String option) {
+        final list = listOfSurahs.where((String option) {
           final String optionInLower = option.toLowerCase();
           return optionInLower.contains(textEditingValue.text.toLowerCase());
         });
+
+        if (list.isEmpty &&
+            textEditingValue.text.isNotEmpty &&
+            !isSurahNotFound) {
+          setState(() {
+            isSurahNotFound = true;
+          });
+        }
+
+        if (list.isNotEmpty && isSurahNotFound) {
+          setState(() {
+            isSurahNotFound = false;
+          });
+        }
+
+        if (textEditingValue.text.isEmpty && isSurahNotFound) {
+          setState(() {
+            isSurahNotFound = false;
+          });
+        }
+
+        return list;
       },
       fieldViewBuilder: (
         BuildContext context,
@@ -364,16 +415,14 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
           controller: textEditingController,
           style: bodyRegular2,
           focusNode: focusNode,
+          decoration: const InputDecoration(
+            contentPadding: EdgeInsets.symmetric(vertical: 4),
+            isDense: true,
+          ),
           onFieldSubmitted: (String value) {
             onFieldSubmitted();
           },
           validator: (String? value) {},
-          onChanged: (_) {
-            if (isSearchByAyahDisabled) return;
-            setState(() {
-              isSearchByAyahDisabled = true;
-            });
-          },
         );
       },
       optionsViewBuilder: (
@@ -393,7 +442,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
               height: 180,
               width: textFieldWidth,
               child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 4),
                 itemCount: options.length,
                 itemBuilder: (BuildContext context, int index) {
                   final String surahName = options.elementAt(index);
@@ -404,11 +453,17 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
                       // value yang sedang tampil
                       onSelected('');
                       onSelected(surahName);
+                      final numberOfSurah = surahName.split(".")[0];
+                      final listAyah = verseMapper[numberOfSurah] ?? <String>[];
+                      final ayahId =
+                          listAyah.isNotEmpty ? listAyah[0].split(":")[2] : "0";
+                      final page =
+                          listAyah.isNotEmpty ? listAyah[0].split(":")[1] : "0";
+
                       setState(() {
-                        listOfAyahBasedOnSurah = verseMapper[
-                                surahNameToSurahNumberMap[surahName]
-                                    .toString()] ??
-                            <String>[];
+                        listOfAyahBasedOnSurah = listAyah;
+                        selectedAyahID = int.parse(ayahId);
+                        selectedPageOnSelectAyah = int.parse(page);
                         isSearchByAyahDisabled = false;
                       });
                     },
@@ -458,6 +513,10 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
           onFieldSubmitted: (String value) {
             onFieldSubmitted();
           },
+          decoration: const InputDecoration(
+            contentPadding: EdgeInsets.symmetric(vertical: 4),
+            isDense: true,
+          ),
           inputFormatters: <TextInputFormatter>[
             TextInputFormatter.withFunction(
               (_, newValue) {
@@ -508,10 +567,12 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
                       // temporary change
                       // library saat ini belum bisa memilih value dari drop down apabila current valuenya sama dengan
                       // value yang sedang tampil
+
                       onSelected('');
                       onSelected(ayahOption);
                       selectedPageOnSelectAyah = int.parse(page);
                       selectedAyah = int.parse(ayahOption);
+
                       selectedAyahID = int.parse(ayahID);
                     },
                     child: Padding(
