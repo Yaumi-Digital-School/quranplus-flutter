@@ -27,7 +27,7 @@ class ButtonSecondary extends StatelessWidget {
             padding: const EdgeInsets.all(6.0),
             primary: Colors.white,
             onPrimary: primary500,
-            elevation: 2,
+            elevation: 1,
             minimumSize: const Size.fromHeight(40),
           ),
           onPressed: onTap,

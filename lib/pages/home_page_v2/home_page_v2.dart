@@ -7,6 +7,7 @@ import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
+import 'package:qurantafsir_flutter/widgets/daily_Progres_Tracker.dart';
 import 'package:qurantafsir_flutter/widgets/searchDialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'home_page_state_notifier.dart';
@@ -136,28 +137,44 @@ class ListSuratByJuz extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: state.juzElements!.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: <Widget>[
-                          Container(
-                            height: 42,
-                            alignment: Alignment.centerLeft,
-                            decoration: const BoxDecoration(color: neutral200),
-                            padding: const EdgeInsets.symmetric(horizontal: 24),
-                            child: Text(
-                              state.juzElements![index].name,
-                              textAlign: TextAlign.start,
-                              style: bodyRegular1,
-                            ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(15, 11, 15, 24),
+                          child: DailyProgresTracker(
+                            target: 1,
+                            dailyProgres: 0.0,
                           ),
-                          _buildListSuratByJuz(
-                              context, state.juzElements![index]),
-                        ],
-                      );
-                    },
+                        ),
+                        ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: state.juzElements!.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: <Widget>[
+                                Container(
+                                  height: 42,
+                                  alignment: Alignment.centerLeft,
+                                  decoration:
+                                      const BoxDecoration(color: neutral200),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 24),
+                                  child: Text(
+                                    state.juzElements![index].name,
+                                    textAlign: TextAlign.start,
+                                    style: bodyRegular1,
+                                  ),
+                                ),
+                                _buildListSuratByJuz(
+                                    context, state.juzElements![index]),
+                              ],
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
