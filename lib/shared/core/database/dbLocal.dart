@@ -79,12 +79,16 @@ class DbLocal {
   //read database
   Future<List?> getAllBookmark() async {
     var dbClient = await _db;
-    var result = await dbClient.query(BookmarksTable.tableName, columns: [
-      BookmarksTable.columnId,
-      BookmarksTable.columnSurahName,
-      BookmarksTable.columnPage,
-      BookmarksTable.columnCreatedAt,
-    ]);
+    var result = await dbClient.query(
+      BookmarksTable.tableName,
+      columns: [
+        BookmarksTable.columnId,
+        BookmarksTable.columnSurahName,
+        BookmarksTable.columnPage,
+        BookmarksTable.columnCreatedAt,
+      ],
+      orderBy: "datetime(${BookmarksTable.columnCreatedAt}) DESC",
+    );
 
     return result.toList();
   }
