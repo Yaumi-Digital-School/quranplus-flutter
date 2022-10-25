@@ -117,9 +117,7 @@ class Bookmarks {
     }
 
     final DateTime currentTime = DateTime.now();
-    final DateTime convertedStr = DateTime.parse(createdAt!).add(
-      const Duration(hours: 7), // TODO(yumnanaruto): temporary fix
-    );
+    final DateTime convertedStr = DateTime.parse(createdAt ?? '');
 
     final Duration timeDiffInDay = DateUtils.dateOnly(currentTime).difference(
       DateUtils.dateOnly(convertedStr),
