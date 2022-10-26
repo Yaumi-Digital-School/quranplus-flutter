@@ -28,7 +28,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
   late List<String> listOfPages;
   late List<String> listOfAyahBasedOnSurah;
   late bool isSearchByAyahDisabled;
-  int selectedPageOnSelectPage = 0;
+  int selectedPageOnSelectPage = 1;
   int selectedPageOnSelectAyah = 0;
   int selectedAyahID = 0;
   int selectedAyah = 0;
@@ -511,7 +511,22 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
           controller: textEditingController,
           focusNode: focusNode,
           onFieldSubmitted: (String value) {
-            onFieldSubmitted();
+            if (int.parse(value) <= 0) {
+              return;
+            }
+            final ayah = ayahOptions.firstWhere(
+              (element) {
+                final ayahNumber = element.split(":");
+                return ayahNumber[0] == value;
+              },
+            );
+            final List<String> splittedOption = ayah.split(':');
+            final String ayahOption = splittedOption[0];
+            final String page = splittedOption[1];
+            final String ayahID = splittedOption[2];
+            selectedPageOnSelectAyah = int.parse(page);
+            selectedAyah = int.parse(ayahOption);
+            selectedAyahID = int.parse(ayahID);
           },
           decoration: const InputDecoration(
             contentPadding: EdgeInsets.symmetric(vertical: 4),

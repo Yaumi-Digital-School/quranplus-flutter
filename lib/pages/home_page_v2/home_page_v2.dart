@@ -7,7 +7,7 @@ import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
-import 'package:qurantafsir_flutter/widgets/daily_Progres_Tracker.dart';
+import 'package:qurantafsir_flutter/widgets/daily_progress_tracker.dart';
 import 'package:qurantafsir_flutter/widgets/searchDialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'home_page_state_notifier.dart';
