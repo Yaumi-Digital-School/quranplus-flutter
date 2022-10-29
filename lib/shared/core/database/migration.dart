@@ -15,6 +15,7 @@ class DbMigration {
     _migrate_2,
     _migrate_3,
     _migrate_4,
+    _migrate_5,
   ];
 
   Future<void> migrate(
@@ -29,6 +30,14 @@ class DbMigration {
       await _migrations[m](db);
       log('migration number ${m + 1} succeeded', name: 'migrations');
     }
+
+    // Temporary dummy data
+    await db.transaction((txn) async {
+      await txn.execute('''
+        insert or ignore into habit_daily_summary (target, pages, date) values 
+        (5,5,date('now'))
+      ''');
+    });
   }
 
   Future<void> _migrate_1(Database db) async {
@@ -101,5 +110,11 @@ class DbMigration {
         )
       ''');
     });
+  }
+
+  Future<void> _migrate_5(Database db) async {
+    const String sql =
+        'CREATE UNIQUE INDEX habit_daily_summary_date ON habit_daily_summary(date)';
+    await db.execute(sql);
   }
 }

@@ -15,10 +15,13 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
+  // Temporary value to include/exclude habit in build
+  bool isHabitEnabled = true;
 
-  static final List<Widget> _pages = <Widget>[
+  final List<Widget> _pages = <Widget>[
     const HomePageV2(),
-    const HabitPage(),
+    // Only enable if `isHabitEnabled` true
+    // const HabitPage(),
     const BookmarkPageV2(),
     SettingsPage(),
   ];
@@ -39,12 +42,13 @@ class _MainPageState extends State<MainPage> {
             icon: Icon(Icons.home),
             label: 'Home',
           ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage(IconPath.iconHabit),
+          if (isHabitEnabled)
+            BottomNavigationBarItem(
+              icon: ImageIcon(
+                AssetImage(IconPath.iconHabit),
+              ),
+              label: 'Habit',
             ),
-            label: 'Habit',
-          ),
           const BottomNavigationBarItem(
             icon: Icon(Icons.bookmark),
             label: 'Bookmark',

@@ -105,6 +105,8 @@ class ListSuratByJuz extends StatelessWidget {
   const ListSuratByJuz({Key? key}) : super(key: key);
   double diameterButtonSearch(BuildContext context) =>
       MediaQuery.of(context).size.width * 1 / 6;
+  // Temporary value to include/exclude habit in build
+  final bool isHabitEnabled = true;
 
   @override
   Widget build(BuildContext context) {
@@ -140,13 +142,14 @@ class ListSuratByJuz extends StatelessWidget {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        const Padding(
-                          padding: EdgeInsets.fromLTRB(15, 11, 15, 24),
-                          child: DailyProgresTracker(
-                            target: 1,
-                            dailyProgres: 0.0,
+                        if (isHabitEnabled)
+                          const Padding(
+                            padding: EdgeInsets.fromLTRB(15, 11, 15, 24),
+                            child: DailyProgresTracker(
+                              target: 1,
+                              dailyProgres: 0.0,
+                            ),
                           ),
-                        ),
                         ListView.builder(
                           physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
