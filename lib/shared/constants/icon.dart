@@ -14,5 +14,5 @@ class IconPath {
   static String iconFavoriteInactive = 'images/icon_favorite_inactive.png';
   static String iconNoWifi = 'images/icon_no_wifi.png';
   static String iconRefresh = 'images/icon_refresh.png';
-  static String iconHabit = 'images/Icon_habit.png';
+  static String iconChecklistCheck = 'images/icon_checklist_check.png';
 }
