@@ -98,8 +98,8 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
               child: TabBarView(
                 physics: const NeverScrollableScrollPhysics(),
                 children: <Widget>[
-                  _tabviewSearchPage(context),
-                  _tabviewSearchSurahandAyah(
+                  _tabViewSearchPage(context),
+                  _tabViewSearchSurahAndAyah(
                     context: context,
                   )
                 ],
@@ -218,7 +218,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
     );
   }
 
-  Widget _tabviewSearchPage(BuildContext context) {
+  Widget _tabViewSearchPage(BuildContext context) {
     return Column(
       children: [
         const SizedBox(
@@ -260,7 +260,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
     }
   }
 
-  Widget _tabviewSearchSurahandAyah({
+  Widget _tabViewSearchSurahAndAyah({
     required BuildContext context,
   }) {
     return Column(
@@ -342,7 +342,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
         ),
         ButtonSecondary(
           label: 'Search',
-          onTap: _onPressedSearchSurahandAyah(
+          onTap: _onPressedSearchSurahAndAyah(
             isSearchByAyahDisabled,
           ),
         )
@@ -350,7 +350,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
     );
   }
 
-  _onPressedSearchSurahandAyah(bool isSearchByAyahDisabled) {
+  _onPressedSearchSurahAndAyah(bool isSearchByAyahDisabled) {
     if (isSearchByAyahDisabled || isSurahNotFound) {
       return null;
     } else {
@@ -422,8 +422,19 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
           onFieldSubmitted: (String value) {
             onFieldSubmitted();
           },
-          validator: (String? value) {},
         );
+      },
+      onSelected: (String value) {
+        final numberOfSurah = value.split(".")[0];
+        final listAyah = verseMapper[numberOfSurah] ?? <String>[];
+        final ayahId = listAyah.isNotEmpty ? listAyah[0].split(":")[2] : "0";
+        final page = listAyah.isNotEmpty ? listAyah[0].split(":")[1] : "0";
+        setState(() {
+          listOfAyahBasedOnSurah = listAyah;
+          selectedAyahID = int.parse(ayahId);
+          selectedPageOnSelectAyah = int.parse(page);
+          isSearchByAyahDisabled = false;
+        });
       },
       optionsViewBuilder: (
         BuildContext context,
