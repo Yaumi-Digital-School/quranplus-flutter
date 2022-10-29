@@ -2,7 +2,10 @@ import 'dart:developer';
 
 import 'package:qurantafsir_flutter/shared/core/database/db_bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_favorite_ayahs.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_habit_progress.dart';
 import 'package:sqflite/sqflite.dart';
+
+import 'db_habit_daily_summary.dart';
 
 class DbMigration {
   int get migrationsCount => _migrations.length;
@@ -11,6 +14,7 @@ class DbMigration {
     _migrate_1,
     _migrate_2,
     _migrate_3,
+    _migrate_4,
   ];
 
   Future<void> migrate(
@@ -65,5 +69,37 @@ class DbMigration {
         ${FavoriteAyahsTable.ayahHashCode} INTEGER,
         ${FavoriteAyahsTable.createdAt})
     ''');
+  }
+
+  Future<void> _migrate_4(Database db) async {
+    await db.transaction((txn) async {
+      await txn.execute('''
+        create table if not exists ${HabitDailySummaryTable.tableName}(
+          ${HabitDailySummaryTable.columnID} integer primary key autoincrement not null,
+          ${HabitDailySummaryTable.target} integer,
+          ${HabitDailySummaryTable.pages} integer,
+          ${HabitDailySummaryTable.date} date not null,
+          ${HabitDailySummaryTable.targetUpdatedDate} date,
+          ${HabitDailySummaryTable.createdAt} default CURRENT_TIMESTAMP not null,
+          ${HabitDailySummaryTable.updatedAt} date
+        )
+      ''');
+      await txn.execute('''
+        create table if not exists ${HabitProgressTable.tableName}(
+          ${HabitProgressTable.columnID} integer primary key autoincrement not null,
+          ${HabitProgressTable.uuid} text not null,
+          ${HabitProgressTable.pages} integer,
+          ${HabitProgressTable.habitDailySummaryID} integer not null,
+          ${HabitProgressTable.description} text,
+          ${HabitProgressTable.createdAt} default CURRENT_TIMESTAMP not null,
+          ${HabitProgressTable.updatedAt} date,
+          
+          CONSTRAINT habit_progress_uuid UNIQUE (${HabitProgressTable.uuid}),
+          CONSTRAINT fk_habit_daily_summary_id
+            FOREIGN KEY (habit_daily_summary_id)
+            REFERENCES ${HabitDailySummaryTable.tableName}(id)
+        )
+      ''');
+    });
   }
 }
