@@ -30,7 +30,7 @@ class DailyProgresTracker extends StatelessWidget {
         width: double.infinity,
         height: 176,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(12, 17, 12, 10),
+          padding: const EdgeInsets.fromLTRB(12, 17, 12, 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -54,14 +54,15 @@ class DailyProgresTracker extends StatelessWidget {
                 child: LinearPercentIndicator(
                   animation: true,
                   lineHeight: 20.0,
-                  animationDuration: 2500,
+                  animationDuration: 1000,
+                  padding: const EdgeInsets.symmetric(horizontal: 0),
                   percent: dailyProgres / target,
-                  barRadius: Radius.circular(9),
+                  barRadius: const Radius.circular(9),
                   progressColor: darkGreen,
                 ),
               ),
               Container(
-                margin: EdgeInsets.fromLTRB(0, 5, 10, 5),
+                margin: const EdgeInsets.only(top: 5),
                 alignment: Alignment.centerRight,
                 child: Text(
                   target > 1
