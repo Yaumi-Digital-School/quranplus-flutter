@@ -21,7 +21,7 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _pages = <Widget>[
     const HomePageV2(),
     // Only enable if `isHabitEnabled` true
-    // const HabitPage(),
+    const HabitPage(),
     const BookmarkPageV2(),
     SettingsPage(),
   ];
@@ -45,7 +45,7 @@ class _MainPageState extends State<MainPage> {
           if (isHabitEnabled)
             BottomNavigationBarItem(
               icon: ImageIcon(
-                AssetImage(IconPath.iconHabit),
+                AssetImage(IconPath.iconChecklistCheck),
               ),
               label: 'Habit',
             ),
