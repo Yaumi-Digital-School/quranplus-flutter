@@ -5,7 +5,7 @@ import 'package:qurantafsir_flutter/shared/core/database/db_favorite_ayahs.dart'
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_progress.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'db_habit_daily_summary.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_habit_daily_summary.dart';
 
 class DbMigration {
   int get migrationsCount => _migrations.length;
@@ -15,7 +15,6 @@ class DbMigration {
     _migrate_2,
     _migrate_3,
     _migrate_4,
-    _migrate_5,
   ];
 
   Future<void> migrate(
@@ -34,7 +33,7 @@ class DbMigration {
     // Temporary dummy data
     await db.transaction((txn) async {
       await txn.execute('''
-        insert or ignore into habit_daily_summary (target, pages, date) values 
+        insert or ignore into habit_daily_summary (target, total_pages, date) values 
         (5,5,date('now'))
       ''');
     });
@@ -86,9 +85,9 @@ class DbMigration {
         create table if not exists ${HabitDailySummaryTable.tableName}(
           ${HabitDailySummaryTable.columnID} integer primary key autoincrement not null,
           ${HabitDailySummaryTable.target} integer,
-          ${HabitDailySummaryTable.pages} integer,
+          ${HabitDailySummaryTable.totalPages} integer,
           ${HabitDailySummaryTable.date} date not null,
-          ${HabitDailySummaryTable.targetUpdatedDate} date,
+          ${HabitDailySummaryTable.targetUpdatedTime} time,
           ${HabitDailySummaryTable.createdAt} default CURRENT_TIMESTAMP not null,
           ${HabitDailySummaryTable.updatedAt} date
         )
@@ -100,21 +99,18 @@ class DbMigration {
           ${HabitProgressTable.pages} integer,
           ${HabitProgressTable.habitDailySummaryID} integer not null,
           ${HabitProgressTable.description} text,
+          ${HabitProgressTable.inputTime} time not null,
           ${HabitProgressTable.createdAt} default CURRENT_TIMESTAMP not null,
           ${HabitProgressTable.updatedAt} date,
-          
           CONSTRAINT habit_progress_uuid UNIQUE (${HabitProgressTable.uuid}),
           CONSTRAINT fk_habit_daily_summary_id
             FOREIGN KEY (habit_daily_summary_id)
             REFERENCES ${HabitDailySummaryTable.tableName}(id)
         )
       ''');
+      await txn.execute('''
+        CREATE UNIQUE INDEX habit_daily_summary_date ON ${HabitDailySummaryTable.tableName}(date)
+      ''');
     });
-  }
-
-  Future<void> _migrate_5(Database db) async {
-    const String sql =
-        'CREATE UNIQUE INDEX habit_daily_summary_date ON habit_daily_summary(date)';
-    await db.execute(sql);
   }
 }
