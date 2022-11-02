@@ -485,7 +485,11 @@ class _SuratPageV3State extends State<SuratPageV3> {
   }) {
     String allVerses = '';
     String fontFamilyPage = 'Page$pageNumberInQuran';
-    bool useBasmalahBeforeAyah = verse.verseNumber == 1;
+
+    bool useBasmalahBeforeAyah =
+        notifier.visibleSuratName.value != "At-Taubah" &&
+            verse.verseNumber == 1;
+
     String translation =
         state.translations![verse.surahNumberInIndex][verse.verseNumberInIndex];
     String latin =
