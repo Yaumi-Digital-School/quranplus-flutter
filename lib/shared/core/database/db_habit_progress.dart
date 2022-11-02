@@ -7,4 +7,5 @@ class HabitProgressTable {
   static const String createdAt = 'created_at';
   static const String updatedAt = 'updated_at';
   static const String habitDailySummaryID = 'habit_daily_summary_id';
+  static const String inputTime = 'input_time';
 }
