@@ -144,14 +144,26 @@ class ListSuratByJuz extends StatelessWidget {
                       children: [
                         if (isHabitEnabled)
                           const Padding(
-                            padding: EdgeInsets.fromLTRB(15, 11, 15, 24),
-                            child: DailyProgresTracker(
-                              target: 1,
-                              dailyProgres: 0.0,
+                            padding: EdgeInsets.fromLTRB(20, 12, 20, 30),
+                            child: Card(
+                              color: Colors.white,
+                              elevation: 1.2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15)),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 16, horizontal: 12),
+                                child: DailyProgressTracker(
+                                  target: 1,
+                                  dailyProgress: 0.5,
+                                ),
+                              ),
                             ),
                           ),
                         ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemCount: state.juzElements!.length,
                           itemBuilder: (context, index) {
