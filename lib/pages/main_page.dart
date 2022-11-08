@@ -21,7 +21,7 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _pages = <Widget>[
     const HomePageV2(),
     // Only enable if `isHabitEnabled` true
-    const HabitPage(),
+    HabitPage(),
     const BookmarkPageV2(),
     SettingsPage(),
   ];
