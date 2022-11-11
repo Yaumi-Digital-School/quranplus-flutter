@@ -51,7 +51,7 @@ class HabitPageStateNotifier extends BaseStateNotifier<HabitPageState> {
 
   @override
   Future<void> initStateNotifier() async {
-    _repository.initRepository();
+    await _repository.initRepository();
     _getToken();
   }
 

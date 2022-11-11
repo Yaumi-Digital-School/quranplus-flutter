@@ -1,8 +1,6 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/user_response.dart';
 import 'package:qurantafsir_flutter/shared/core/models/user.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
-import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
@@ -51,7 +49,7 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
 
   @override
   Future<void> initStateNotifier() async {
-    _repository.initRepository();
+    await _repository.initRepository();
     _getToken();
   }
 
