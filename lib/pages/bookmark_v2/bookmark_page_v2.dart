@@ -166,43 +166,8 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
       );
     }
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Container(
-          alignment: Alignment.center,
-          width: 200,
-          height: 200,
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage(
-            'images/coming_soon.png',
-          ))),
-        ),
-        const SizedBox(
-          height: 50,
-        ),
-        Text(
-          'Coming Soon!',
-          style: TextStyle(
-            color: neutral700,
-            fontSize: 20,
-            fontWeight: semiBold,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Text(
-          'This feature is still under development',
-          style: TextStyle(
-            fontWeight: regular,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ],
+    return _buildEmptyState(
+      message: 'There is no favorite ayah yet',
     );
   }
 
@@ -229,68 +194,8 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
       );
     }
 
-    double deviceWidth = MediaQuery.of(context).size.width;
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Container(
-          alignment: Alignment.center,
-          width: 200,
-          height: 200,
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage(
-            'images/empty_state.png',
-          ))),
-        ),
-        const SizedBox(
-          height: 50,
-        ),
-        Text(
-          'Ayah not found',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: semiBold,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Text(
-          'There is no bookmark ayah yet',
-          style: TextStyle(
-            fontWeight: regular,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        Container(
-          height: 40,
-          width: deviceWidth * 0.8,
-          decoration: const BoxDecoration(
-            color: neutral100,
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            boxShadow: [
-              BoxShadow(
-                color: neutral300,
-                blurRadius: 9,
-              )
-            ],
-          ),
-          child: ButtonSecondary(
-            label: 'Start Reading',
-            onTap: () =>
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return MainPage();
-            })),
-          ),
-        )
-      ],
+    return _buildEmptyState(
+      message: 'There is no bookmark ayah yet',
     );
   }
 
@@ -356,6 +261,74 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
           }
         },
       ),
+    );
+  }
+
+  Widget _buildEmptyState({
+    required String message,
+  }) {
+    final double deviceWidth = MediaQuery.of(context).size.width;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          alignment: Alignment.center,
+          width: 200,
+          height: 200,
+          decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage(
+            'images/empty_state.png',
+          ))),
+        ),
+        const SizedBox(
+          height: 50,
+        ),
+        Text(
+          'Ayah not found',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: semiBold,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Text(
+          message,
+          style: TextStyle(
+            fontWeight: regular,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        Container(
+          height: 40,
+          width: deviceWidth * 0.8,
+          decoration: const BoxDecoration(
+            color: neutral100,
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            boxShadow: [
+              BoxShadow(
+                color: neutral300,
+                blurRadius: 9,
+              )
+            ],
+          ),
+          child: ButtonSecondary(
+            label: 'Start Reading',
+            onTap: () =>
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return const MainPage();
+            })),
+          ),
+        )
+      ],
     );
   }
 
