@@ -77,37 +77,11 @@ class SettingsPage extends StatelessWidget {
                     : RegistrationView(
                         nextWidget: ButtonSecondary(
                           label: 'Sign In with Google',
-                          onTap: () async {
-                            var connectivityResult =
-                                await Connectivity().checkConnectivity();
-                            if (connectivityResult != ConnectivityResult.none) {
-                              notifier.signInWithGoogle(() {
-                                Navigator.of(context).pushReplacementNamed(
-                                    AppConstants.routeMain);
-                                ref.read(dioServiceProvider.notifier).state =
-                                    DioService(
-                                  baseUrl: EnvConstants.baseUrl!,
-                                  accessToken: ref
-                                      .read(sharedPreferenceServiceProvider)
-                                      .getApiToken(),
-                                );
-                                ref
-                                    .read(bookmarksService)
-                                    .clearBookmarkAndMergeFromServer();
-                              }, () {
-                                ScaffoldMessenger.of(context)
-                                  ..hideCurrentSnackBar()
-                                  ..showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Sign in Gagal'),
-                                    ),
-                                  );
-                              });
-                            } else {
-                              _generalBottomSheet.showNoInternetBottomSheet(
-                                  context, () => Navigator.pop(context));
-                            }
-                          },
+                          onTap: _onTapButtonSignIn(
+                            context,
+                            notifier,
+                            ref,
+                          ),
                           leftIcon: IconPath.iconGoogle,
                         ),
                       )),
@@ -115,6 +89,38 @@ class SettingsPage extends StatelessWidget {
         );
       },
     );
+  }
+
+  _onTapButtonSignIn(
+    BuildContext context,
+    SettingsPageStateNotifier notifier,
+    WidgetRef ref,
+  ) {
+    return () async {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      if (connectivityResult != ConnectivityResult.none) {
+        notifier.signInWithGoogle(() {
+          Navigator.of(context).pushReplacementNamed(AppConstants.routeMain);
+          ref.read(dioServiceProvider.notifier).state = DioService(
+            baseUrl: EnvConstants.baseUrl!,
+            accessToken:
+                ref.read(sharedPreferenceServiceProvider).getApiToken(),
+          );
+          ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
+        }, () {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              const SnackBar(
+                content: Text('Sign in Gagal'),
+              ),
+            );
+        });
+      } else {
+        _generalBottomSheet.showNoInternetBottomSheet(
+            context, () => Navigator.pop(context));
+      }
+    };
   }
 
   Widget _buildUserView(
