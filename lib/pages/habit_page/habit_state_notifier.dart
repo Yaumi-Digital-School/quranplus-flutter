@@ -1,13 +1,15 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/user_response.dart';
 import 'package:qurantafsir_flutter/shared/core/models/user.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
+import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
 import 'package:qurantafsir_flutter/shared/utils/result_status.dart';
 
-class SettingsPageState {
-  SettingsPageState({
+class HabitPageState {
+  HabitPageState({
     this.authenticationStatus,
     this.resultStatus = ResultStatus.pure,
     this.token = '',
@@ -19,13 +21,13 @@ class SettingsPageState {
   String token;
   User user;
 
-  SettingsPageState copyWith({
+  HabitPageState copyWith({
     AuthenticationStatus? authenticationStatus,
     ResultStatus? resultStatus,
     String? token,
     User? user,
   }) {
-    return SettingsPageState(
+    return HabitPageState(
       authenticationStatus: authenticationStatus ?? this.authenticationStatus,
       resultStatus: resultStatus ?? this.resultStatus,
       token: token ?? this.token,
@@ -36,13 +38,13 @@ class SettingsPageState {
   bool get isLoading => authenticationStatus == null;
 }
 
-class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
-  SettingsPageStateNotifier({
+class HabitPageStateNotifier extends BaseStateNotifier<HabitPageState> {
+  HabitPageStateNotifier({
     required AuthenticationService repository,
     required SharedPreferenceService sharedPreferenceService,
   })  : _repository = repository,
         _sharedPreferenceService = sharedPreferenceService,
-        super(SettingsPageState());
+        super(HabitPageState());
 
   final AuthenticationService _repository;
   final SharedPreferenceService _sharedPreferenceService;
@@ -70,10 +72,6 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
 
   Future<void> _setToken(String token) async {
     await _sharedPreferenceService.setApiToken(token);
-  }
-
-  Future<void> _removeToken() async {
-    await _sharedPreferenceService.removeApiToken();
   }
 
   Future<void> signInWithGoogle(
@@ -110,27 +108,7 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
     }
   }
 
-  Future<void> signOut(Function() onSuccess) async {
-    state = state.copyWith(resultStatus: ResultStatus.inProgress);
-
-    await _repository.signOut();
-    await _removeToken();
-    await _removeUsername();
-
-    state = state.copyWith(
-      authenticationStatus: AuthenticationStatus.unauthenticated,
-      resultStatus: ResultStatus.pure,
-      token: '',
-    );
-
-    onSuccess.call();
-  }
-
   Future<void> _setUsername(String name) async {
     await _sharedPreferenceService.setUsername(name);
-  }
-
-  Future<void> _removeUsername() async {
-    await _sharedPreferenceService.removeUsername();
   }
 }
