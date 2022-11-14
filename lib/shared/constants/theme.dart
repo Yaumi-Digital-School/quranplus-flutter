@@ -41,8 +41,8 @@ const Color backgroundTextTafsir = Color(0xFFF0F0F0);
 
 const Color darkGreen = Color(0xFF728363);
 const Color secondaryGreen = Color(0xFF0E2009);
-const Color secondaryGreen300 = Color(0xFFBAC6AA)  ;
-
+const Color secondaryGreen300 = Color(0xFFBAC6AA);
+const Color yellowBorder = Color(0xFFFFC535);
 
 const Color brokenWhite = Color(0xffF8F7F3);
 
@@ -176,9 +176,9 @@ OutlineInputBorder enabledInputBorder = OutlineInputBorder(
 );
 
 OutlineInputBorder errorInputBorder = OutlineInputBorder(
-    borderSide: const BorderSide(
-        color: errorColor,
-        width: 1,
-    ),
-    borderRadius: BorderRadius.circular(8.0),
+  borderSide: const BorderSide(
+    color: errorColor,
+    width: 1,
+  ),
+  borderRadius: BorderRadius.circular(8.0),
 );

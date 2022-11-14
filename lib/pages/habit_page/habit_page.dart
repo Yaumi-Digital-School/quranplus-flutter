@@ -14,6 +14,7 @@ import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/registration_view.dart';
 
 import '../../shared/constants/theme.dart';
+import 'habit_progress/habit_progress_view.dart';
 
 class HabitPage extends StatelessWidget {
   HabitPage({Key? key}) : super(key: key);
@@ -64,12 +65,12 @@ class HabitPage extends StatelessWidget {
               ),
             ),
             body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: state.authenticationStatus ==
-                        AuthenticationStatus.authenticated
-                    ? const Center()
-                    : RegistrationView(
+              child: state.authenticationStatus ==
+                      AuthenticationStatus.authenticated
+                  ? HabitProgress()
+                  : Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: RegistrationView(
                         nextWidget: ButtonSecondary(
                           label: 'Sign In with Google',
                           onTap: _onTapButtonSignIn(
@@ -80,7 +81,7 @@ class HabitPage extends StatelessWidget {
                           leftIcon: IconPath.iconGoogle,
                         ),
                       ),
-              ),
+                    ),
             ));
       },
     );

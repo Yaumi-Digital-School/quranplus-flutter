@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/habit_daily_seven_days_item.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_daily_summary.dart';
@@ -6,8 +7,11 @@ import 'package:qurantafsir_flutter/shared/core/database/migration.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
+import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+
+import 'db_habit_daily_summary.dart';
 
 class DbLocal {
   static final DbLocal _instance = DbLocal._internal();
@@ -235,5 +239,48 @@ class DbLocal {
     }
 
     return HabitDailySummary.fromJson(currentDataQuery);
+  }
+
+  Future<List<HabitDailySevenDaysItem>> getLastSevenDays(DateTime date) async {
+    DateFormat dateFormat = DateFormat("yyyy-MM-dd");
+    final cleanDate = DateTime(date.year, date.month, date.day);
+    final formattedDate = dateFormat.format(cleanDate);
+    final sixDayBefore = cleanDate.subtract(const Duration(days: 6));
+    final formattedSixDayBefore = dateFormat.format(sixDayBefore);
+    final dbClient = await _db;
+
+    List result = await dbClient.query(
+      HabitDailySummaryTable.tableName,
+      columns: [
+        HabitDailySummaryTable.target,
+        HabitDailySummaryTable.totalPages,
+        HabitDailySummaryTable.date,
+      ],
+      where:
+          '${HabitDailySummaryTable.date} >= ? AND ${HabitDailySummaryTable.date} <= ?',
+      whereArgs: [formattedSixDayBefore, formattedDate],
+      orderBy: "${HabitDailySummaryTable.date} ASC",
+    );
+
+    // init
+    List<HabitDailySevenDaysItem> summaryLastSevenDay = [
+      for (int index = 0; index < 7; index++)
+        HabitDailySevenDaysItem(
+          date: sixDayBefore.add(Duration(days: index)),
+          totalPages: null,
+          target: null,
+        )
+    ];
+
+    for (var element in result) {
+      final elementDate = element[HabitDailySummaryTable.date];
+      final parsedElementDate =
+          DateUtils.stringToDate(elementDate, DateFormatType.yyyyMMdd);
+      final difference = parsedElementDate.difference(sixDayBefore).inDays;
+      summaryLastSevenDay[difference] =
+          HabitDailySevenDaysItem.fromJson(element);
+    }
+
+    return summaryLastSevenDay;
   }
 }
