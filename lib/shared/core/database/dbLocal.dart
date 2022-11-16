@@ -1,8 +1,11 @@
+import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_favorite_ayahs.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/database/migration.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
+import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -29,17 +32,22 @@ class DbLocal {
   Future<Database> _initDb() async {
     String databasePath = await getDatabasesPath();
     String path = join(databasePath, 'bookmarks.db');
-    return await openDatabase(
-      path,
-      version: _currentVersion,
-      onCreate: _onCreate,
-      onUpgrade: (Database db, int oldVersion, int newVersion) async {
-        await migration.migrate(
-          db,
-          oldVersion: oldVersion,
-        );
-      },
-    );
+    return await openDatabase(path,
+        version: _currentVersion, onCreate: _onCreate,
+        onUpgrade: (Database db, int oldVersion, int newVersion) async {
+      await migration.migrate(
+        db,
+        oldVersion: oldVersion,
+      );
+    }, onOpen: (Database db) async {
+      // Temporary dummy data
+      await db.transaction((txn) async {
+        await txn.execute('''
+        insert or ignore into habit_daily_summary (target, total_pages, date) values 
+        (5,5,date('now'))
+      ''');
+      });
+    });
   }
 
   Future<void> _deleteDb() async {
@@ -189,5 +197,43 @@ class DbLocal {
     }
 
     return false;
+  }
+
+  Future<HabitDailySummary> getCurrentDayHabitDailySummary() async {
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String formattedDate = formatter.format(now);
+
+    var dbClient = await _db;
+    List<Map<String, Object?>> result = await dbClient.query(
+      HabitDailySummaryTable.tableName,
+      columns: [
+        HabitDailySummaryTable.target,
+        HabitDailySummaryTable.totalPages,
+        HabitDailySummaryTable.date,
+      ],
+      orderBy: '${HabitDailySummaryTable.date} DESC',
+      limit: 1,
+    );
+
+    if (result.isEmpty) {
+      return HabitDailySummary.fromJson({
+        HabitDailySummaryTable.target: 1,
+        HabitDailySummaryTable.totalPages: 0,
+        HabitDailySummaryTable.date: formattedDate,
+      });
+    }
+
+    final currentDataQuery = result[0];
+    if (currentDataQuery[HabitDailySummaryTable.date] != formattedDate) {
+      return HabitDailySummary.fromJson({
+        HabitDailySummaryTable.target:
+            currentDataQuery[HabitDailySummaryTable.target],
+        HabitDailySummaryTable.totalPages: 0,
+        HabitDailySummaryTable.date: formattedDate,
+      });
+    }
+
+    return HabitDailySummary.fromJson(currentDataQuery);
   }
 }
