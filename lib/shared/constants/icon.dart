@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-
 class IconPath {
   IconPath();
   static String iconForm = 'images/icon_form.png';

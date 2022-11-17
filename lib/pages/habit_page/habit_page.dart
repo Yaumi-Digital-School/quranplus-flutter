@@ -67,7 +67,7 @@ class HabitPage extends StatelessWidget {
             body: SingleChildScrollView(
               child: state.authenticationStatus ==
                       AuthenticationStatus.authenticated
-                  ? HabitProgress()
+                  ? const HabitProgress()
                   : Padding(
                       padding: const EdgeInsets.all(16),
                       child: RegistrationView(
