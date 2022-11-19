@@ -1,11 +1,11 @@
 import 'package:intl/intl.dart';
-import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/habit_daily_seven_days_item.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/database/migration.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
+import 'package:qurantafsir_flutter/shared/core/models/habit_daily_seven_days_item.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 import 'package:sqflite/sqflite.dart';

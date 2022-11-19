@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/shared/core/models/habit_daily_seven_days_item.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/widgets/daily_progress_tracker.dart';
 
-import 'habit_daily_seven_days_item.dart';
 import 'habit_progress_state_notifier.dart';
 
 class HabitProgress extends StatelessWidget {
