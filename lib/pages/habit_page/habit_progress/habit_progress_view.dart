@@ -89,6 +89,12 @@ class HabitProgress extends StatelessWidget {
                                       state.currentProgress!.totalPage!)
                               : const DailyProgressTracker(
                                   target: 1, dailyProgress: 0),
+                          const SizedBox(height: 24),
+                          _button("Change Target", () {}),
+                          const SizedBox(height: 16),
+                          _button("Add Progress Manually", () {}),
+                          const SizedBox(height: 16),
+                          _button("Add Progress by Reading", () {}),
                         ],
                       ),
                     ),
@@ -115,6 +121,26 @@ class HabitProgress extends StatelessWidget {
       return "images/${additionalStr}active_progress_75.png";
     }
     return "images/${additionalStr}active_progress_100.png";
+  }
+
+  Widget _button(String title, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        decoration: BoxDecoration(
+          border: Border.all(color: darkGreen, width: 1),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Center(
+          child: Text(
+            title,
+            style: bodySemibold2.copyWith(color: darkGreen),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildProgressDailyItem(HabitDailySevenDaysItem item) {
