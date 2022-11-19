@@ -1,10 +1,9 @@
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/habit_daily_seven_days_item.dart';
+import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
-
-import '../../../shared/core/database/dbLocal.dart';
-import '../../../shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 
 class HabitProgressState {
   bool? isLoading = true;

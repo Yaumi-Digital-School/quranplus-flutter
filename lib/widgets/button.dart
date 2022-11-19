@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
 class ButtonSecondary extends StatelessWidget {
   const ButtonSecondary({
