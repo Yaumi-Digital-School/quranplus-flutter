@@ -267,8 +267,8 @@ class DbLocal {
       for (int index = 0; index < 7; index++)
         HabitDailySevenDaysItem(
           date: sixDayBefore.add(Duration(days: index)),
-          totalPages: null,
-          target: null,
+          totalPages: 0,
+          target: 1,
         )
     ];
 

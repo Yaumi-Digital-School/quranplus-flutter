@@ -2,8 +2,8 @@ import 'package:qurantafsir_flutter/shared/core/database/db_habit_daily_summary.
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 
 class HabitDailySevenDaysItem {
-  final int? target;
-  final int? totalPages;
+  final int target;
+  final int totalPages;
   final DateTime date;
 
   HabitDailySevenDaysItem({

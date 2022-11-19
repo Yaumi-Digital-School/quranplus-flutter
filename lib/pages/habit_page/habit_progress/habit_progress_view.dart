@@ -150,8 +150,8 @@ class HabitProgress extends StatelessWidget {
     final isToday = now.difference(item.date).inDays == 0;
     double progress = 0;
 
-    if (item.target != null && item.target != 0 && item.totalPages != null) {
-      progress = item.totalPages! / item.target!;
+    if (item.target != 0) {
+      progress = item.totalPages / item.target;
     }
 
     return Expanded(
