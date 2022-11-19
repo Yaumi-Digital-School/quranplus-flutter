@@ -19,8 +19,6 @@ class HabitDailySummary {
 
   Map<String, dynamic> toMap() {
     final Map<String, dynamic> map = <String, dynamic>{};
-    final DateTime currentTime = DateTime.now();
-
     map[HabitDailySummaryTable.target] = target;
     map[HabitDailySummaryTable.totalPages] = totalPage;
     return map;

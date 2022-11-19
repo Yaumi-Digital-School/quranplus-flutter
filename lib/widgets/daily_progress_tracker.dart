@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:intl/intl.dart';
-import 'package:qurantafsir_flutter/widgets/button.dart';
 
 class DailyProgressTracker extends StatelessWidget {
   const DailyProgressTracker({
@@ -12,7 +11,7 @@ class DailyProgressTracker extends StatelessWidget {
   }) : super(key: key);
 
   final int target;
-  final double dailyProgress;
+  final int dailyProgress;
   @override
   Widget build(BuildContext context) {
     DateTime now = DateTime.now();

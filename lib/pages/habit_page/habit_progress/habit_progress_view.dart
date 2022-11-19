@@ -82,7 +82,13 @@ class HabitProgress extends StatelessWidget {
                             color: neutral300,
                           ),
                           const SizedBox(height: 16),
-                          DailyProgressTracker(target: 2, dailyProgress: 1),
+                          state.currentProgress != null
+                              ? DailyProgressTracker(
+                                  target: state.currentProgress!.target!,
+                                  dailyProgress:
+                                      state.currentProgress!.totalPage!)
+                              : const DailyProgressTracker(
+                                  target: 1, dailyProgress: 0),
                         ],
                       ),
                     ),
