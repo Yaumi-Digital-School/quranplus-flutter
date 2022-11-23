@@ -4,17 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/main_page.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
-import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
-
-import '../../widgets/button.dart';
+import 'package:qurantafsir_flutter/widgets/button.dart';
 
 class BookmarkPageV2 extends StatefulWidget {
   const BookmarkPageV2({Key? key}) : super(key: key);
@@ -201,7 +198,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
 
   _onPressedStartReading(BuildContext context) =>
       Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return MainPage();
+        return const MainPage();
       }));
 
   Widget _buildFavoritedAyah({

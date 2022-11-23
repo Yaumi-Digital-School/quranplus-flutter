@@ -64,7 +64,7 @@ class AccountPageStateNotifier extends BaseStateNotifier<AccountPageState> {
 
   @override
   Future<void> initStateNotifier() async {
-    var token = await _sharedPreferenceService.getApiToken();
+    var token = _sharedPreferenceService.getApiToken();
     _token = token;
     _getUserProfile();
   }

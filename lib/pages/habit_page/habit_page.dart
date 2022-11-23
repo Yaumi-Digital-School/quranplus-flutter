@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
+import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
@@ -13,7 +14,7 @@ import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/registration_view.dart';
 
-import '../../shared/constants/theme.dart';
+import 'habit_progress/habit_progress_view.dart';
 
 class HabitPage extends StatelessWidget {
   HabitPage({Key? key}) : super(key: key);
@@ -64,12 +65,12 @@ class HabitPage extends StatelessWidget {
               ),
             ),
             body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: state.authenticationStatus ==
-                        AuthenticationStatus.authenticated
-                    ? const Center()
-                    : RegistrationView(
+              child: state.authenticationStatus ==
+                      AuthenticationStatus.authenticated
+                  ? const HabitProgress()
+                  : Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: RegistrationView(
                         nextWidget: ButtonSecondary(
                           label: 'Sign In with Google',
                           onTap: _onTapButtonSignIn(
@@ -80,7 +81,7 @@ class HabitPage extends StatelessWidget {
                           leftIcon: IconPath.iconGoogle,
                         ),
                       ),
-              ),
+                    ),
             ));
       },
     );

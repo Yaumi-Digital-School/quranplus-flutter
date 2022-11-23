@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
-import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
@@ -414,11 +413,11 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
 
   Future<void> _getBookmarkListFromLocal() async {
     var result = await db.getAllBookmark();
-    result!.forEach((bookmark) {
+    for (var bookmark in result!) {
       _bookmarkList.add(
         Bookmarks.fromMap(bookmark).page,
       );
-    });
+    }
   }
 
   Future<void> _getFavoriteListFromLocal() async {

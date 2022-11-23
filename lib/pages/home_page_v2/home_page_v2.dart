@@ -157,7 +157,7 @@ class ListSuratByJuz extends StatelessWidget {
                                     vertical: 16, horizontal: 12),
                                 child: DailyProgressTracker(
                                   target: 1,
-                                  dailyProgress: 0.5,
+                                  dailyProgress: 1,
                                 ),
                               ),
                             ),
