@@ -113,17 +113,11 @@ class HabitProgress extends StatelessWidget {
 
   String _buildUrlStar(double progress, bool isToday) {
     String additionalStr = isToday ? "" : "in";
-    if (progress < 0.25) {
+    if (progress == 0) {
       return "images/${additionalStr}active_progress_0.png";
     }
-    if (progress < 0.5) {
-      return "images/${additionalStr}active_progress_25.png";
-    }
-    if (progress < 0.75) {
-      return "images/${additionalStr}active_progress_50.png";
-    }
     if (progress < 1) {
-      return "images/${additionalStr}active_progress_75.png";
+      return "images/${additionalStr}active_progress_50.png";
     }
     return "images/${additionalStr}active_progress_100.png";
   }
