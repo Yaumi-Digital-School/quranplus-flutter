@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_seven_days_item.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/daily_progress_tracker.dart';
@@ -21,7 +22,8 @@ class HabitProgress extends StatelessWidget {
           (StateNotifierProviderRef<HabitProgressStateNotifier,
                   HabitProgressState>
               ref) {
-            return HabitProgressStateNotifier();
+            return HabitProgressStateNotifier(
+                habitDailySummaryService: ref.watch(habitDailySummaryService));
           },
         ),
         onStateNotifierReady: (notifier) async =>

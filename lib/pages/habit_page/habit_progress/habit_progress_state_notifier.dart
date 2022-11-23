@@ -38,9 +38,13 @@ class HabitProgressState {
 }
 
 class HabitProgressStateNotifier extends BaseStateNotifier<HabitProgressState> {
-  HabitProgressStateNotifier() : super(HabitProgressState());
+  HabitProgressStateNotifier({
+    required HabitDailySummaryService habitDailySummaryService,
+  })  : _habitDailyService = habitDailySummaryService,
+        super(HabitProgressState());
+
   late DbLocal db;
-  final _habitDailyService = HabitDailySummaryService();
+  final HabitDailySummaryService _habitDailyService;
 
   @override
   Future<void> initStateNotifier() async {
