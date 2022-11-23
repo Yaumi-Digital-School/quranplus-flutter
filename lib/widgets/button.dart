@@ -98,10 +98,11 @@ class ButtonNeutral extends StatelessWidget {
 
 class ButtonPrimary extends StatelessWidget {
   const ButtonPrimary({
+    Key? key,
     required this.label,
     required this.onTap,
     this.size = ButtonSize.regular,
-  });
+  }) : super(key: key);
 
   final String label;
   final Function()? onTap;
