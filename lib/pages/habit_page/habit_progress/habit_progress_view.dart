@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
-import 'package:qurantafsir_flutter/shared/core/models/habit_daily_seven_days_item.dart';
+import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
@@ -89,7 +89,7 @@ class HabitProgress extends StatelessWidget {
                               ? DailyProgressTracker(
                                   target: state.currentProgress!.target!,
                                   dailyProgress:
-                                      state.currentProgress!.totalPage!)
+                                      state.currentProgress!.totalPages!)
                               : const DailyProgressTracker(
                                   target: 1, dailyProgress: 0),
                           const SizedBox(height: 24),
@@ -122,15 +122,15 @@ class HabitProgress extends StatelessWidget {
     return "images/${additionalStr}active_progress_100.png";
   }
 
-  Widget _buildProgressDailyItem(HabitDailySevenDaysItem item) {
-    final nameOfDay = DateFormat('EEEE').format(item.date).substring(0, 3);
-    final numberOfDay = DateFormat('d').format(item.date);
+  Widget _buildProgressDailyItem(HabitDailySummary item) {
+    final nameOfDay = DateFormat('EEEE').format(item.date!).substring(0, 3);
+    final numberOfDay = DateFormat('d').format(item.date!);
     final now = DateTime.now();
-    final isToday = now.difference(item.date).inDays == 0;
+    final isToday = now.difference(item.date!).inDays == 0;
     double progress = 0;
 
-    if (item.target != 0) {
-      progress = item.totalPages / item.target;
+    if (item.target != null && item.totalPages != null && item.target != 0) {
+      progress = item.totalPages! / item.target!;
     }
 
     return Expanded(
@@ -153,12 +153,12 @@ class HabitProgress extends StatelessWidget {
     );
   }
 
-  Widget _buildProgressDaily(List<HabitDailySevenDaysItem>? summary) {
+  Widget _buildProgressDaily(List<HabitDailySummary>? summary) {
     List<Widget> rowChildren = [];
     if (summary == null || summary.isEmpty) {
       return Row();
     }
-    for (HabitDailySevenDaysItem item in summary) {
+    for (HabitDailySummary item in summary) {
       rowChildren.add(_buildProgressDailyItem(item));
     }
 

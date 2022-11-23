@@ -1,6 +1,5 @@
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
-import 'package:qurantafsir_flutter/shared/core/models/habit_daily_seven_days_item.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
@@ -10,7 +9,7 @@ class HabitProgressState {
   bool? isError = false;
   String? currentMonth = "";
   HabitDailySummary? currentProgress;
-  List<HabitDailySevenDaysItem>? lastSevenDays = [];
+  List<HabitDailySummary>? lastSevenDays = [];
 
   HabitProgressState({
     this.isLoading,
@@ -23,7 +22,7 @@ class HabitProgressState {
   HabitProgressState copyWith({
     bool? isLoading,
     String? currentMonth,
-    List<HabitDailySevenDaysItem>? lastSevenDays,
+    List<HabitDailySummary>? lastSevenDays,
     bool? isError,
     HabitDailySummary? currentProgress,
   }) {
@@ -52,8 +51,7 @@ class HabitProgressStateNotifier extends BaseStateNotifier<HabitProgressState> {
       db = DbLocal();
       DateTime now = DateTime.now();
       String formattedDate = DateFormat('MMMM yyyy').format(now);
-      final List<HabitDailySevenDaysItem> listHabit =
-          await db.getLastSevenDays(now);
+      final List<HabitDailySummary> listHabit = await db.getLastSevenDays(now);
       final HabitDailySummary currentProgress =
           await _habitDailyService.getCurrentDayHabitDailySummaryListLocal();
       state = state.copyWith(
