@@ -124,7 +124,6 @@ class ButtonPrimary extends StatelessWidget {
           padding: const EdgeInsets.all(6.0),
           primary: darkGreen,
           onPrimary: Colors.white,
-          elevation: 0,
           minimumSize: const Size.fromHeight(40),
         ),
         onPressed: onTap,
