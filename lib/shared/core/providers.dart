@@ -62,7 +62,7 @@ final Provider<BookmarksService> bookmarksService =
   );
 });
 
-final Provider<HabitDailySummaryService> habitDailySummayService =
+final Provider<HabitDailySummaryService> habitDailySummaryService =
     Provider<HabitDailySummaryService>((ref) {
   return HabitDailySummaryService();
 });
