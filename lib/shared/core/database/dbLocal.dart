@@ -35,22 +35,17 @@ class DbLocal {
   Future<Database> _initDb() async {
     String databasePath = await getDatabasesPath();
     String path = join(databasePath, 'bookmarks.db');
-    return await openDatabase(path,
-        version: _currentVersion, onCreate: _onCreate,
-        onUpgrade: (Database db, int oldVersion, int newVersion) async {
-      await migration.migrate(
-        db,
-        oldVersion: oldVersion,
-      );
-    }, onOpen: (Database db) async {
-      // Temporary dummy data
-      await db.transaction((txn) async {
-        await txn.execute('''
-        insert or ignore into habit_daily_summary (target, total_pages, date) values 
-        (5,5,date('now'))
-      ''');
-      });
-    });
+    return await openDatabase(
+      path,
+      version: _currentVersion,
+      onCreate: _onCreate,
+      onUpgrade: (Database db, int oldVersion, int newVersion) async {
+        await migration.migrate(
+          db,
+          oldVersion: oldVersion,
+        );
+      },
+    );
   }
 
   Future<void> _deleteDb() async {

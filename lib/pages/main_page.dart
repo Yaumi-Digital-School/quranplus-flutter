@@ -8,12 +8,12 @@ import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
-
+  static GlobalKey globalKey = GlobalKey<State<BottomNavigationBar>>();
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<MainPage> createState() => MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
   // Temporary value to include/exclude habit in build
   bool isHabitEnabled = true;
@@ -26,7 +26,7 @@ class _MainPageState extends State<MainPage> {
     SettingsPage(),
   ];
 
-  void _onItemTapped(int index) {
+  void onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
@@ -37,6 +37,7 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       body: Center(child: _pages.elementAt(_selectedIndex)),
       bottomNavigationBar: BottomNavigationBar(
+        key: MainPage.globalKey,
         items: <BottomNavigationBarItem>[
           const BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -62,7 +63,7 @@ class _MainPageState extends State<MainPage> {
         selectedItemColor: primary500,
         unselectedItemColor: neutral300,
         selectedFontSize: 12,
-        onTap: _onItemTapped,
+        onTap: (index) => onItemTapped(index),
       ),
     );
   }

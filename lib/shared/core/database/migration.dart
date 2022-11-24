@@ -29,14 +29,6 @@ class DbMigration {
       await _migrations[m](db);
       log('migration number ${m + 1} succeeded', name: 'migrations');
     }
-
-    // Temporary dummy data
-    await db.transaction((txn) async {
-      await txn.execute('''
-        insert or ignore into habit_daily_summary (target, total_pages, date) values 
-        (5,5,date('now'))
-      ''');
-    });
   }
 
   Future<void> _migrate_1(Database db) async {

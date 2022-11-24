@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/card_start_habit.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
@@ -18,6 +19,7 @@ StateNotifierProvider<HomePageStateNotifier, HomePageState>
   (ref) {
     return HomePageStateNotifier(
       sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
+      habitDailySummaryService: ref.watch(habitDailySummaryService),
     );
   },
 );
@@ -40,7 +42,8 @@ class HomePageV2 extends StatelessWidget {
       ) {
         if (state.juzElements == null ||
             state.feedbackUrl == null ||
-            state.ayahPage == null) {
+            state.ayahPage == null ||
+            state.dailySummary == null) {
           return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
@@ -107,12 +110,13 @@ class ListSuratByJuz extends StatelessWidget {
       MediaQuery.of(context).size.width * 1 / 6;
   // Temporary value to include/exclude habit in build
   final bool isHabitEnabled = true;
-
   @override
   Widget build(BuildContext context) {
     return Consumer(
       builder: (BuildContext context, WidgetRef ref, Widget? child) {
         HomePageState state = ref.watch(homePageStateNotifier);
+
+        bool isLoggedIn = ref.watch(authenticationService).isLoggedIn;
         return Stack(
           children: <Widget>[
             Column(
@@ -143,24 +147,11 @@ class ListSuratByJuz extends StatelessWidget {
                     child: Column(
                       children: [
                         if (isHabitEnabled)
-                          const Padding(
-                            padding: EdgeInsets.fromLTRB(20, 12, 20, 30),
-                            child: Card(
-                              color: Colors.white,
-                              elevation: 1.2,
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15)),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 16, horizontal: 12),
-                                child: DailyProgressTracker(
-                                  target: 1,
-                                  dailyProgress: 1,
-                                ),
-                              ),
-                            ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 12, 20, 30),
+                            child: isLoggedIn
+                                ? _buildDailyHabitTracker(context, state)
+                                : const StartHabitCard(),
                           ),
                         ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
@@ -210,6 +201,23 @@ class ListSuratByJuz extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+
+  Widget _buildDailyHabitTracker(BuildContext context, HomePageState state) {
+    return Card(
+      color: Colors.white,
+      elevation: 1.2,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+        child: DailyProgressTracker(
+          target: state.dailySummary!.target!,
+          dailyProgress: state.dailySummary!.totalPages!,
+        ),
+      ),
     );
   }
 
