@@ -99,6 +99,7 @@ class DbMigration {
           ${HabitProgressTable.pages} integer,
           ${HabitProgressTable.habitDailySummaryID} integer not null,
           ${HabitProgressTable.description} text,
+          ${HabitProgressTable.type} text not null,
           ${HabitProgressTable.inputTime} time not null,
           ${HabitProgressTable.createdAt} default CURRENT_TIMESTAMP not null,
           ${HabitProgressTable.updatedAt} date,
