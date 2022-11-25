@@ -8,4 +8,10 @@ class HabitProgressTable {
   static const String updatedAt = 'updated_at';
   static const String habitDailySummaryID = 'habit_daily_summary_id';
   static const String inputTime = 'input_time';
+  static const String type = 'type';
+}
+
+class HabitProgressType {
+  static const String record = 'RECORD';
+  static const String manual = 'MANUAL';
 }
