@@ -2,10 +2,12 @@ import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_daily_summary.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_habit_progress.dart';
 import 'package:qurantafsir_flutter/shared/core/database/migration.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
+import 'package:qurantafsir_flutter/shared/core/models/habit_progress.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -205,11 +207,6 @@ class DbLocal {
     var dbClient = await _db;
     List<Map<String, Object?>> result = await dbClient.query(
       HabitDailySummaryTable.tableName,
-      columns: [
-        HabitDailySummaryTable.target,
-        HabitDailySummaryTable.totalPages,
-        HabitDailySummaryTable.date,
-      ],
       orderBy: '${HabitDailySummaryTable.date} DESC',
       limit: 1,
     );
@@ -275,5 +272,102 @@ class DbLocal {
     }
 
     return summaryLastSevenDay;
+  }
+
+  Future<List<HabitProgress>> getProgressHistory(
+      int habitDailySummaryId) async {
+    final dbClient = await _db;
+    List resultQuery = await dbClient.query(
+      HabitProgressTable.tableName,
+      where: "${HabitProgressTable.habitDailySummaryID} = ?",
+      whereArgs: [habitDailySummaryId],
+    );
+
+    final List<HabitProgress> result = [];
+    for (var element in resultQuery) {
+      result.add(HabitProgress.fromJson(element));
+    }
+
+    return result;
+  }
+
+  Future<int> insertProgressHistory({
+    required DateTime date,
+    required int habitDailySummaryId,
+    required String type,
+    required String uuid,
+    required int pages,
+    required String description,
+  }) async {
+    final DateFormat formatTime = DateFormat("HH:mm:ss");
+    final String formattedTime = formatTime.format(date);
+    var dbClient = await _db;
+
+    return await dbClient.insert(HabitProgressTable.tableName, {
+      HabitProgressTable.uuid: uuid,
+      HabitProgressTable.pages: pages,
+      HabitProgressTable.habitDailySummaryID: habitDailySummaryId,
+      HabitProgressTable.description: description,
+      HabitProgressTable.type: type,
+      HabitProgressTable.inputTime: formattedTime,
+    });
+  }
+
+  Future<HabitDailySummary?> getExactHabitDailySummary() async {
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String formattedDate = formatter.format(now);
+
+    var dbClient = await _db;
+    List<Map<String, Object?>> result = await dbClient.query(
+      HabitDailySummaryTable.tableName,
+      where: "${HabitDailySummaryTable.date} = ?",
+      whereArgs: [formattedDate],
+      limit: 1,
+    );
+    if (result.isEmpty) {
+      return null;
+    }
+
+    final currentDataQuery = result[0];
+
+    return HabitDailySummary.fromJson(currentDataQuery);
+  }
+
+  Future<int> insertHabitDailySummary(
+      DateTime date, int target, int totalPages) async {
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final DateFormat formatTime = DateFormat("HH:mm:ss");
+    final String formattedDate = formatter.format(date);
+    final String formattedTime = formatTime.format(date);
+    var dbClient = await _db;
+
+    return await dbClient.insert(
+      HabitDailySummaryTable.tableName,
+      {
+        HabitDailySummaryTable.target: target,
+        HabitDailySummaryTable.totalPages: totalPages,
+        HabitDailySummaryTable.date: formattedDate,
+        HabitDailySummaryTable.targetUpdatedTime: formattedTime,
+      },
+    );
+  }
+
+  Future<int> updateHabitDailySummary(
+      int id, DateTime date, int target, int totalPages) async {
+    final DateFormat formatTime = DateFormat("HH:mm:ss");
+    final String formattedTime = formatTime.format(date);
+    var dbClient = await _db;
+
+    return await dbClient.update(
+      HabitDailySummaryTable.tableName,
+      {
+        HabitDailySummaryTable.target: target,
+        HabitDailySummaryTable.totalPages: totalPages,
+        HabitDailySummaryTable.targetUpdatedTime: formattedTime,
+      },
+      where: "${HabitDailySummaryTable.columnID} = ?",
+      whereArgs: [id],
+    );
   }
 }
