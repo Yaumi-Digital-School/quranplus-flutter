@@ -308,7 +308,7 @@ class ListSuratByJuz extends StatelessWidget {
                 }
 
                 if (res.nextNavigationBarIndex != 0) {
-                  final navigationBar =
+                  final BottomNavigationBar navigationBar =
                       MainPage.globalKey.currentWidget as BottomNavigationBar;
 
                   navigationBar.onTap!(res.nextNavigationBarIndex);

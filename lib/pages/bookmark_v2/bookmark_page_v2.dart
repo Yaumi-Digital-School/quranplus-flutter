@@ -401,8 +401,8 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
     BookmarkPageStateNotifier notifier,
   ) async {
     if (onPopParam.nextNavigationBarIndex != 0) {
-      BottomNavigationBar currentNavBar =
-          MainPage.globalKey.currentState as BottomNavigationBar;
+      final BottomNavigationBar currentNavBar =
+          MainPage.globalKey.currentWidget as BottomNavigationBar;
       currentNavBar.onTap!(onPopParam.nextNavigationBarIndex);
       return;
     }
