@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/habit_progress_view.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_daily_summary.dart';
@@ -11,6 +12,8 @@ import 'package:qurantafsir_flutter/shared/core/models/habit_progress.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:uuid/uuid.dart';
+import 'package:uuid/uuid_util.dart';
 
 import 'db_habit_daily_summary.dart';
 
@@ -274,8 +277,59 @@ class DbLocal {
     return summaryLastSevenDay;
   }
 
+  Future<int> submitHabitProgressWithDailySummaryByTracking({
+    required int pages,
+    required int startPage,
+    required HabitDailySummary summary,
+  }) async {
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String formattedDate = formatter.format(now);
+    final Database dbClient = await _db;
+
+    int progressID = await dbClient.transaction<int>((txn) async {
+      late int summaryID;
+      if (summary.id == null) {
+        summaryID = await txn.insert(
+          HabitDailySummaryTable.tableName,
+          summary.toMap(),
+        );
+      } else if (summary.formattedDate != formattedDate) {
+        summaryID = await txn.insert(
+          HabitDailySummaryTable.tableName,
+          summary.toMap(),
+        );
+      } else {
+        summaryID = summary.id!;
+      }
+
+      final int endPage = startPage + pages;
+      final int progressID = await insertProgressHistory(
+        dbClient: txn,
+        uuid: const Uuid().v1(),
+        date: now,
+        description: 'Page $startPage to $endPage - $pages Pages',
+        habitDailySummaryId: summaryID,
+        pages: pages,
+        type: HabitProgressType.record,
+      );
+
+      final int totalReadPages = pages + (summary.totalPages ?? 0);
+      await txn.rawUpdate('''
+        UPDATE ${HabitDailySummaryTable.tableName}
+        SET ${HabitDailySummaryTable.totalPages} = $totalReadPages
+        WHERE ${HabitDailySummaryTable.columnID} = ?
+      ''', [summary.id]);
+
+      return progressID;
+    });
+
+    return progressID;
+  }
+
   Future<List<HabitProgress>> getProgressHistory(
-      int habitDailySummaryId) async {
+    int habitDailySummaryId,
+  ) async {
     final dbClient = await _db;
     List resultQuery = await dbClient.query(
       HabitProgressTable.tableName,
@@ -292,6 +346,7 @@ class DbLocal {
   }
 
   Future<int> insertProgressHistory({
+    required DatabaseExecutor dbClient,
     required DateTime date,
     required int habitDailySummaryId,
     required String type,
@@ -301,7 +356,6 @@ class DbLocal {
   }) async {
     final DateFormat formatTime = DateFormat("HH:mm:ss");
     final String formattedTime = formatTime.format(date);
-    var dbClient = await _db;
 
     return await dbClient.insert(HabitProgressTable.tableName, {
       HabitProgressTable.uuid: uuid,
@@ -335,7 +389,10 @@ class DbLocal {
   }
 
   Future<int> insertHabitDailySummary(
-      DateTime date, int target, int totalPages) async {
+    DateTime date,
+    int target,
+    int totalPages,
+  ) async {
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
     final DateFormat formatTime = DateFormat("HH:mm:ss");
     final String formattedDate = formatter.format(date);
@@ -354,7 +411,11 @@ class DbLocal {
   }
 
   Future<int> updateHabitDailySummary(
-      int id, DateTime date, int target, int totalPages) async {
+    int id,
+    DateTime date,
+    int target,
+    int totalPages,
+  ) async {
     final DateFormat formatTime = DateFormat("HH:mm:ss");
     final String formattedTime = formatTime.format(date);
     var dbClient = await _db;

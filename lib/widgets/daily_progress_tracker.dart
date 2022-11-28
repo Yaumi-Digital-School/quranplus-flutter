@@ -14,10 +14,12 @@ class DailyProgressTracker extends StatelessWidget {
   final int dailyProgress;
   @override
   Widget build(BuildContext context) {
-    DateTime now = DateTime.now();
-    String formattedDate = DateFormat('EEEE, d MMMM yyyy').format(now);
+    final DateTime now = DateTime.now();
+    final String formattedDate = DateFormat('EEEE, d MMMM yyyy').format(now);
 
-    int dailyProgressToInt = dailyProgress.floor();
+    final int dailyProgressToInt = dailyProgress.floor();
+    final double dailyProgressPercentage =
+        dailyProgress / target > 1 ? 1 : dailyProgress / target;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,7 +46,7 @@ class DailyProgressTracker extends StatelessWidget {
             lineHeight: 16.0,
             animationDuration: 1000,
             padding: const EdgeInsets.symmetric(horizontal: 0),
-            percent: dailyProgress / target,
+            percent: dailyProgressPercentage,
             barRadius: const Radius.circular(8),
             progressColor: darkGreen,
             backgroundColor: neutral300,

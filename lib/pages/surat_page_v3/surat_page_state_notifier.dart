@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
@@ -10,12 +11,14 @@ import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
+import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
 import 'package:qurantafsir_flutter/shared/core/services/bookmarks_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 class SuratPageState {
   SuratPageState({
@@ -27,6 +30,7 @@ class SuratPageState {
     this.readingSettings,
     this.fullPageSeparators,
     this.isBookmarkFetched = false,
+    this.isRecording = false,
   });
 
   List<QuranPage>? pages;
@@ -38,6 +42,7 @@ class SuratPageState {
   ReadingSettings? readingSettings;
   int separatorBuilderIndex = 0;
   bool isBookmarkFetched;
+  bool isRecording;
 
   SuratPageState copyWith({
     List<QuranPage>? pages,
@@ -48,6 +53,7 @@ class SuratPageState {
     List<List<String>>? latins,
     ReadingSettings? readingSettings,
     bool? isBookmarkFetched,
+    bool? isRecording,
   }) {
     separatorBuilderIndex = 0;
 
@@ -60,6 +66,7 @@ class SuratPageState {
       latins: latins ?? this.latins,
       readingSettings: readingSettings ?? this.readingSettings,
       fullPageSeparators: fullPageSeparators ?? this.fullPageSeparators,
+      isRecording: isRecording ?? this.isRecording,
     );
   }
 
@@ -85,17 +92,23 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     required SharedPreferenceService sharedPreferenceService,
     required BookmarkApi bookmarkApi,
     required BookmarksService bookmarksService,
+    required AutoScrollController scrollController,
     bool isLoggedIn = false,
   })  : _sharedPreferenceService = sharedPreferenceService,
         _isLoggedIn = isLoggedIn,
         _bookmarkApi = bookmarkApi,
         _bookmarksService = bookmarksService,
+        _scrollController = scrollController,
         super(SuratPageState());
 
+  final AutoScrollController _scrollController;
   final SharedPreferenceService _sharedPreferenceService;
   final List<int> _firstPageSurahPointer = <int>[];
   final List<int> _bookmarkList = <int>[];
   final List<int> _favoriteAyahList = <int>[];
+
+  SharedPreferenceService get sharedPreferenceService =>
+      _sharedPreferenceService;
 
   List<int> get firstPageKeys => _firstPageSurahPointer;
   final BookmarkApi _bookmarkApi;
@@ -117,6 +130,15 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   late int temp;
   bool? _isBookmarkChanged;
   bool? _isFavoriteAyahChanged;
+  bool? _isHabitDailySummaryChanged;
+
+  ValueNotifier<int> recordedPagesAsRead = ValueNotifier(0);
+  List<int> recordedPagesList = <int>[];
+  int _startPageOnRecord = 0;
+  TextEditingController habitTrackerSubmissionController =
+      TextEditingController();
+
+  ValueNotifier<bool> isTrackerVisible = ValueNotifier(true);
 
   @override
   Future<void> initStateNotifier({
@@ -147,6 +169,20 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     await _generateBaseTafsirs();
     await _generateFullPageSeparators();
 
+    _scrollController.addListener(() {
+      if (_scrollController.position.userScrollDirection ==
+              ScrollDirection.forward &&
+          !isTrackerVisible.value) {
+        isTrackerVisible.value = true;
+      }
+
+      if (_scrollController.position.userScrollDirection ==
+              ScrollDirection.reverse &&
+          isTrackerVisible.value) {
+        isTrackerVisible.value = false;
+      }
+    });
+
     state = state.copyWith(
       pages: _allPages,
       pageController: pageController,
@@ -161,12 +197,33 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     checkIsBookmarkExists(startPageInIndex + 1);
   }
 
+  void changePageOnRecording(int page) {
+    if (recordedPagesList.isEmpty) {
+      recordedPagesList.add(page);
+      recordedPagesAsRead.value += 1;
+      return;
+    }
+
+    if (recordedPagesList.contains(page)) {
+      return;
+    }
+
+    final int firstReadPage = recordedPagesList[0];
+    if (page < firstReadPage) {
+      return;
+    }
+
+    recordedPagesList.add(page);
+    recordedPagesAsRead.value += 1;
+  }
+
   bool isAyahFavorited(int ayahID) {
     return _favoriteAyahList.contains(ayahID);
   }
 
   bool get isBookmarkChanged => _isBookmarkChanged ?? false;
   bool get isFavoriteAyahChanged => _isFavoriteAyahChanged ?? false;
+  bool get isHabitDailySummaryChanged => _isHabitDailySummaryChanged ?? false;
 
   int getJuzAtStartOfPage({
     required int pageInIdx,
@@ -471,17 +528,6 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
       ),
     );
 
-    // if (connectivityResult != ConnectionState.none && _isLoggedIn) {
-    //   _toggleBookmark(
-    //     surahName: surahName,
-    //     page: page,
-    //   );
-    // }
-
-    // if (connectivityResult == ConnectionState.none) {
-    //   _bookmarksService.setIsMerged(false);
-    // }
-
     _favoriteAyahList.add(ayahID);
   }
 
@@ -510,6 +556,47 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     visibleIconBookmark.value = false;
     _bookmarkList.removeWhere((pageInList) => pageInList == page);
     _setIsBookmarkChanged();
+  }
+
+  int get habitDailyTarget => _currentSummary?.target ?? 0;
+
+  HabitDailySummary? _currentSummary;
+  void startRecording() async {
+    if ((_currentSummary?.target ?? 0) == 0) {
+      _currentSummary = await db.getCurrentDayHabitDailySummary();
+
+      recordedPagesAsRead.value = _currentSummary?.totalPages ?? 0;
+      _startPageOnRecord = currentPage.value;
+    }
+
+    state = state.copyWith(isRecording: true);
+  }
+
+  Future<bool> stopRecording() async {
+    state = state.copyWith(isRecording: false);
+    final int currentRecordedReadPages =
+        int.parse(habitTrackerSubmissionController.value.text);
+
+    if (currentRecordedReadPages > 0) {
+      await db.submitHabitProgressWithDailySummaryByTracking(
+        pages: currentRecordedReadPages,
+        startPage: _startPageOnRecord,
+        summary: _currentSummary!,
+      );
+
+      recordedPagesList.clear();
+      _isHabitDailySummaryChanged = true;
+    }
+
+    _startPageOnRecord = 0;
+    final int totalReadPages =
+        currentRecordedReadPages + (_currentSummary!.totalPages ?? 0);
+
+    if (totalReadPages > (_currentSummary!.target ?? 0)) {
+      return true;
+    }
+
+    return false;
   }
 
   void _setIsBookmarkChanged() {

@@ -34,6 +34,8 @@ const Color exit700 = Color(0xFF8A1538);
 const Color exit800 = Color(0xFF6F0D34);
 const Color exit900 = Color(0xFF5C0831);
 
+const Color red300 = Color(0xFFEC847D);
+
 const Color errorColor = Color(0xFFFF6D7E);
 
 const Color backgroundColor = Color(0xFFF8F7F3);
@@ -155,6 +157,9 @@ TextStyle numberStyle =
 TextStyle titleDrawerBold =
     GoogleFonts.poppins(color: darkGreen, fontSize: 14, fontWeight: bold);
 
+TextStyle titleDialog =
+    GoogleFonts.poppins(color: darkGreen, fontSize: 16, fontWeight: semiBold);
+
 TextStyle bodyDrawerRegular = GoogleFonts.poppins(
     color: secondaryGreen, fontSize: 14, fontWeight: regular);
 
@@ -182,3 +187,15 @@ OutlineInputBorder errorInputBorder = OutlineInputBorder(
   ),
   borderRadius: BorderRadius.circular(8.0),
 );
+
+TextStyle buildTextStyle({
+  required Color color,
+  required double fontSize,
+  required FontWeight fontWeight,
+}) {
+  return GoogleFonts.notoSans(
+    color: color,
+    fontSize: fontSize,
+    fontWeight: fontWeight,
+  );
+}

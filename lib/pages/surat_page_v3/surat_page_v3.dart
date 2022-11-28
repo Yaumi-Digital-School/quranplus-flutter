@@ -3,11 +3,16 @@ import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/post_tracking_dialog.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
+import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_icons.dart';
@@ -40,10 +45,14 @@ class SuratPageV3OnPopParam {
   SuratPageV3OnPopParam({
     this.isBookmarkChanged = false,
     this.isFavoriteAyahChanged = false,
+    this.isHabitDailySummaryChanged = false,
+    this.nextNavigationBarIndex = 0,
   });
 
   final bool isBookmarkChanged;
   final bool isFavoriteAyahChanged;
+  final bool isHabitDailySummaryChanged;
+  final int nextNavigationBarIndex;
 }
 
 class SuratPageV3 extends StatefulWidget {
@@ -63,12 +72,12 @@ class SuratPageV3 extends StatefulWidget {
 }
 
 class _SuratPageV3State extends State<SuratPageV3> {
-  late AutoScrollController firstPageScrollController;
+  late AutoScrollController scrollController;
 
   @override
   void initState() {
     super.initState();
-    firstPageScrollController = AutoScrollController();
+    scrollController = AutoScrollController();
     VisibilityDetectorController.instance.updateInterval =
         const Duration(milliseconds: 300);
 
@@ -78,7 +87,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
           Future.delayed(
             const Duration(milliseconds: 600),
             () {
-              firstPageScrollController.scrollToIndex(
+              scrollController.scrollToIndex(
                 widget.firstPagePointerIndex,
                 preferPosition: AutoScrollPosition.begin,
                 duration: const Duration(milliseconds: 200),
@@ -104,6 +113,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
             bookmarkApi: ref.watch(bookmarkApiProvider),
             bookmarksService: ref.watch(bookmarksService),
             isLoggedIn: ref.watch(authenticationService).isLoggedIn,
+            scrollController: scrollController,
           );
         },
       ),
@@ -133,6 +143,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
             final SuratPageV3OnPopParam param = SuratPageV3OnPopParam(
               isBookmarkChanged: notifier.isBookmarkChanged,
               isFavoriteAyahChanged: notifier.isFavoriteAyahChanged,
+              isHabitDailySummaryChanged: notifier.isHabitDailySummaryChanged,
             );
             Navigator.pop(context, param);
             return true;
@@ -152,6 +163,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
                     final SuratPageV3OnPopParam param = SuratPageV3OnPopParam(
                       isBookmarkChanged: notifier.isBookmarkChanged,
                       isFavoriteAyahChanged: notifier.isFavoriteAyahChanged,
+                      isHabitDailySummaryChanged:
+                          notifier.isHabitDailySummaryChanged,
                     );
                     Navigator.of(context).pop(
                       param,
@@ -253,16 +266,11 @@ class _SuratPageV3State extends State<SuratPageV3> {
             ),
             body: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: state.readingSettings!.isInFullPage
-                  ? _buildPagesInFullPage(
-                      state: state,
-                      notifier: notifier,
-                      context: context,
-                    )
-                  : _buildPages(
-                      state: state,
-                      notifier: notifier,
-                    ),
+              child: _buildPageWithTracker(
+                state: state,
+                sn: notifier,
+                context: context,
+              ),
             ),
             endDrawer: SuratPageSettingsDrawer(
               isWithLatins: state.readingSettings!.isWithLatins,
@@ -279,6 +287,57 @@ class _SuratPageV3State extends State<SuratPageV3> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildPageWithTracker({
+    required SuratPageState state,
+    required SuratPageStateNotifier sn,
+    required BuildContext context,
+  }) {
+    final Widget pages = state.readingSettings!.isInFullPage
+        ? _buildPagesInFullPage(
+            state: state,
+            notifier: sn,
+            context: context,
+          )
+        : _buildPages(
+            state: state,
+            notifier: sn,
+          );
+
+    final double bottomPadding = MediaQuery.of(context).size.height * 0.025;
+
+    return Stack(
+      children: [
+        pages,
+        ValueListenableBuilder(
+          valueListenable: sn.isTrackerVisible,
+          builder: (_, bool value, __) {
+            if (state.isRecording && value) {
+              return Positioned(
+                child: _buildPageTracker(sn),
+              );
+            }
+
+            if (!state.isRecording && value) {
+              return Positioned(
+                bottom: bottomPadding,
+                right: 24,
+                child: ButtonPrimary(
+                  label: 'Start Tracking',
+                  size: ButtonSize.small,
+                  onTap: () {
+                    sn.startRecording();
+                  },
+                ),
+              );
+            }
+
+            return const SizedBox.shrink();
+          },
+        ),
+      ],
     );
   }
 
@@ -319,14 +378,58 @@ class _SuratPageV3State extends State<SuratPageV3> {
         .toList();
 
     final double bottomPadding = MediaQuery.of(context).size.height * 0.1;
-    final double topPadding = MediaQuery.of(context).size.height * 0.05;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(11, topPadding, 11, bottomPadding),
+      padding: EdgeInsets.fromLTRB(11, 0, 11, bottomPadding),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: textInWidgets,
+      ),
+    );
+  }
+
+  Widget _buildPageTracker(
+    SuratPageStateNotifier sn,
+  ) {
+    return Container(
+      height: 24,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: const [
+          BoxShadow(
+            color: Color.fromRGBO(0, 0, 0, 0.1),
+            offset: Offset(1.0, 2.0),
+            blurRadius: 5.0,
+            spreadRadius: 1.0,
+          )
+        ],
+        color: Colors.white,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+            padding: EdgeInsets.zero,
+            onPressed: () {
+              _buildTrackerSubmissionDialog(sn);
+            },
+            icon: const Icon(
+              Icons.stop_circle_outlined,
+              size: 14.0,
+            ),
+            color: red300,
+          ),
+          ValueListenableBuilder(
+            valueListenable: sn.recordedPagesAsRead,
+            builder: (context, value, __) {
+              return Text(
+                'Stop Tracking ($value/${sn.habitDailyTarget} Page)',
+                textAlign: TextAlign.center,
+              );
+            },
+          ),
+        ],
       ),
     );
   }
@@ -391,18 +494,24 @@ class _SuratPageV3State extends State<SuratPageV3> {
       allPages.add(page);
     }
 
-    return PageView(
-      reverse: true,
-      controller: state.pageController,
-      onPageChanged: (pageIndex) {
-        int pageValue = pageIndex + 1;
-        int surahNumber = state.pages![pageIndex].verses[0].surahNumber;
-        String surahName = surahNumberToSurahNameMap[surahNumber] ?? '';
-        notifier.visibleSuratName.value = surahName;
-        notifier.currentPage.value = pageValue;
-        notifier.checkIsBookmarkExists(pageValue);
-      },
-      children: allPages,
+    return Padding(
+      padding: const EdgeInsets.only(top: 68.0),
+      child: PageView(
+        reverse: true,
+        controller: state.pageController,
+        onPageChanged: (pageIndex) {
+          int pageValue = pageIndex + 1;
+          int surahNumber = state.pages![pageIndex].verses[0].surahNumber;
+          String surahName = surahNumberToSurahNameMap[surahNumber] ?? '';
+          notifier.visibleSuratName.value = surahName;
+          notifier.currentPage.value = pageValue;
+          notifier.checkIsBookmarkExists(pageValue);
+          if (state.isRecording) {
+            notifier.changePageOnRecording(pageValue);
+          }
+        },
+        children: allPages,
+      ),
     );
   }
 
@@ -425,15 +534,21 @@ class _SuratPageV3State extends State<SuratPageV3> {
       allPages.add(page);
     }
 
-    return PageView(
-      reverse: true,
-      controller: state.pageController,
-      onPageChanged: (pageIndex) {
-        int pageValue = pageIndex + 1;
-        notifier.currentPage.value = pageValue;
-        notifier.checkIsBookmarkExists(pageValue);
-      },
-      children: allPages,
+    return Padding(
+      padding: const EdgeInsets.only(top: 34.0),
+      child: PageView(
+        reverse: true,
+        controller: state.pageController,
+        onPageChanged: (pageIndex) {
+          int pageValue = pageIndex + 1;
+          notifier.currentPage.value = pageValue;
+          notifier.checkIsBookmarkExists(pageValue);
+          if (state.isRecording) {
+            notifier.changePageOnRecording(pageValue);
+          }
+        },
+        children: allPages,
+      ),
     );
   }
 
@@ -465,9 +580,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     }
 
     return SingleChildScrollView(
-      controller: pageNumberInQuranInIndex == widget.startPageInIndex
-          ? firstPageScrollController
-          : null,
+      controller: scrollController,
       key: PageStorageKey('page$pageNumberInQuran'),
       child: Column(
         children: ayahs,
@@ -509,7 +622,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     return AutoScrollTag(
       key: key,
       controller: pageNumberInQuran - 1 == widget.startPageInIndex
-          ? firstPageScrollController
+          ? scrollController
           : AutoScrollController(),
       index: verse.id,
       child: VisibilityDetector(
@@ -685,6 +798,106 @@ class _SuratPageV3State extends State<SuratPageV3> {
           image: AssetImage(
             'images/bismillah_v2.png',
           ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _buildTrackerSubmissionDialog(
+    SuratPageStateNotifier notifier,
+  ) async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: brokenWhite,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(19),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const Text(
+                "You've finished reading....",
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 10,
+                  color: neutral900,
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              Row(
+                children: [
+                  _buildTrackerSubmissionDialogInput(notifier),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  const Text(
+                    'Pages',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 10,
+                      color: neutral600,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              ButtonSecondary(
+                label: 'Submit',
+                onTap: () async {
+                  final bool isComplete = await notifier.stopRecording();
+                  Navigator.pop(context);
+                  HabitProgressPostTrackingDialog.onSubmitPostTrackingDialog(
+                    context: context,
+                    sharedPreferenceService: notifier.sharedPreferenceService,
+                    isComplete: isComplete,
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTrackerSubmissionDialogInput(SuratPageStateNotifier notifier) {
+    notifier.habitTrackerSubmissionController.value = TextEditingValue(
+      text: notifier.recordedPagesList.length.toString(),
+    );
+
+    return SizedBox(
+      width: 60,
+      child: TextField(
+        controller: notifier.habitTrackerSubmissionController,
+        textAlign: TextAlign.center,
+        keyboardType: TextInputType.number,
+        style: const TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w500,
+          color: neutral600,
+        ),
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
+          isDense: true,
+          contentPadding: const EdgeInsets.all(7),
+          hintText: '1',
+          hintStyle: const TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w500,
+            color: neutral400,
+          ),
+          border: enabledInputBorder,
+          enabledBorder: enabledInputBorder,
+          errorBorder: errorInputBorder,
+          focusedErrorBorder: errorInputBorder,
         ),
       ),
     );

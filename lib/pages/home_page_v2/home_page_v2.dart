@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/card_start_habit.dart';
+import 'package:qurantafsir_flutter/pages/main_page.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
@@ -9,7 +11,7 @@ import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/widgets/daily_progress_tracker.dart';
-import 'package:qurantafsir_flutter/widgets/searchDialog.dart';
+import 'package:qurantafsir_flutter/widgets/search_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'home_page_state_notifier.dart';
 
@@ -90,7 +92,9 @@ class HomePageV2 extends StatelessWidget {
               backgroundColor: backgroundColor,
             ),
           ),
-          body: const ListSuratByJuz(),
+          body: ListSuratByJuz(
+            onPopFromSurahPage: notifier.initStateNotifier,
+          ),
         );
       },
     );
@@ -105,11 +109,15 @@ class HomePageV2 extends StatelessWidget {
 }
 
 class ListSuratByJuz extends StatelessWidget {
-  const ListSuratByJuz({Key? key}) : super(key: key);
+  const ListSuratByJuz({
+    Key? key,
+    required this.onPopFromSurahPage,
+  }) : super(key: key);
   double diameterButtonSearch(BuildContext context) =>
       MediaQuery.of(context).size.width * 1 / 6;
   // Temporary value to include/exclude habit in build
   final bool isHabitEnabled = true;
+  final Future<void> Function() onPopFromSurahPage;
   @override
   Widget build(BuildContext context) {
     return Consumer(
@@ -174,7 +182,9 @@ class ListSuratByJuz extends StatelessWidget {
                                   ),
                                 ),
                                 _buildListSuratByJuz(
-                                    context, state.juzElements![index]),
+                                  context,
+                                  state.juzElements![index],
+                                ),
                               ],
                             );
                           },
@@ -221,7 +231,10 @@ class ListSuratByJuz extends StatelessWidget {
     );
   }
 
-  Widget _buildListSuratByJuz(BuildContext context, JuzElement juz) {
+  Widget _buildListSuratByJuz(
+    BuildContext context,
+    JuzElement juz,
+  ) {
     final List<SuratByJuz> surats = juz.surat;
 
     return Padding(
@@ -273,11 +286,11 @@ class ListSuratByJuz extends StatelessWidget {
               style: suratFontStyle,
               textAlign: TextAlign.right,
             ),
-            onTap: () {
+            onTap: () async {
               int page = surats[index].startPageToInt;
               int startPageInIndexValue = page - 1;
 
-              Navigator.push(
+              final dynamic res = await Navigator.push(
                 context,
                 PageTransition(
                   type: PageTransitionType.fade,
@@ -287,6 +300,21 @@ class ListSuratByJuz extends StatelessWidget {
                   ),
                 ),
               );
+
+              if (res is SuratPageV3OnPopParam) {
+                if (res.isHabitDailySummaryChanged) {
+                  await onPopFromSurahPage();
+                  return;
+                }
+
+                if (res.nextNavigationBarIndex != 0) {
+                  final navigationBar =
+                      MainPage.globalKey.currentWidget as BottomNavigationBar;
+
+                  navigationBar.onTap!(res.nextNavigationBarIndex);
+                  return;
+                }
+              }
             },
           );
         },

@@ -400,6 +400,13 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
     SuratPageV3OnPopParam onPopParam,
     BookmarkPageStateNotifier notifier,
   ) async {
+    if (onPopParam.nextNavigationBarIndex != 0) {
+      BottomNavigationBar currentNavBar =
+          MainPage.globalKey.currentState as BottomNavigationBar;
+      currentNavBar.onTap!(onPopParam.nextNavigationBarIndex);
+      return;
+    }
+
     final ConnectivityResult connectivityResult =
         await Connectivity().checkConnectivity();
 

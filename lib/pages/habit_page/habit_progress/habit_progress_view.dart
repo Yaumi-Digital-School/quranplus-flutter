@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:qurantafsir_flutter/pages/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
@@ -10,8 +11,8 @@ import 'package:qurantafsir_flutter/widgets/daily_progress_tracker.dart';
 
 import 'habit_progress_state_notifier.dart';
 
-class HabitProgress extends StatelessWidget {
-  const HabitProgress({Key? key}) : super(key: key);
+class HabitProgressView extends StatelessWidget {
+  const HabitProgressView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +88,7 @@ class HabitProgress extends StatelessWidget {
                           const SizedBox(height: 16),
                           state.currentProgress != null
                               ? DailyProgressTracker(
-                                  target: state.currentProgress!.target!,
+                                  target: state.currentProgress!.target ?? 0,
                                   dailyProgress:
                                       state.currentProgress!.totalPages!)
                               : const DailyProgressTracker(
@@ -99,7 +100,15 @@ class HabitProgress extends StatelessWidget {
                               label: "Add Progress Manually", onTap: () {}),
                           const SizedBox(height: 16),
                           ButtonNeutral(
-                              label: "Add Progress by Reading", onTap: () {}),
+                            label: "Add Progress by Reading",
+                            onTap: () {
+                              final BottomNavigationBar navigationBar = MainPage
+                                  .globalKey
+                                  .currentWidget as BottomNavigationBar;
+
+                              navigationBar.onTap!(2);
+                            },
+                          ),
                         ],
                       ),
                     ),
