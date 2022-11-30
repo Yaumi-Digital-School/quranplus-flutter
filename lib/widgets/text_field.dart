@@ -17,8 +17,6 @@ class InputTotalPagesTextField extends StatelessWidget {
       height: 24,
       width: 56,
       child: TextField(
-        controller: TextEditingController(
-            text: defaultValue != null ? "$defaultValue" : "0"),
         cursorColor: Colors.black,
         textAlign: TextAlign.center,
         textAlignVertical: TextAlignVertical.center,
@@ -26,6 +24,14 @@ class InputTotalPagesTextField extends StatelessWidget {
         onChanged: onChanged,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
+          floatingLabelBehavior: FloatingLabelBehavior.never,
+          contentPadding: EdgeInsets.zero,
+          label: Center(
+            child: Text(
+              "0",
+              style: buttonMedium3.copyWith(color: neutral400),
+            ),
+          ),
           filled: true,
           fillColor: Colors.white,
           enabledBorder: OutlineInputBorder(

@@ -12,31 +12,32 @@ class ButtonSecondary extends StatelessWidget {
     required this.label,
     required this.onTap,
     this.leftIcon,
+    this.textStyle,
   }) : super(key: key);
 
   final String? leftIcon;
-
   final String label;
+  final TextStyle? textStyle;
   final Function()? onTap;
+
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            padding: const EdgeInsets.all(6.0),
-            primary: Colors.white,
-            onPrimary: primary500,
-            elevation: 1,
-            minimumSize: const Size.fromHeight(40),
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
           ),
-          onPressed: onTap,
-          child: _childButton(leftIcon, label)),
+          padding: const EdgeInsets.all(6.0),
+          primary: Colors.white,
+          onPrimary: primary500,
+          elevation: 1,
+          minimumSize: const Size.fromHeight(40),
+        ),
+        onPressed: onTap,
+        child: _childButton(leftIcon, label),
+      ),
     );
   }
 
@@ -60,7 +61,7 @@ class ButtonSecondary extends StatelessWidget {
     }
     return Text(
       label,
-      style: bodySemibold2.apply(color: primary500),
+      style: textStyle ?? bodySemibold2.apply(color: primary500),
     );
   }
 }

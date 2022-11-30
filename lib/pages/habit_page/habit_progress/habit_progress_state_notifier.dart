@@ -47,7 +47,14 @@ class HabitProgressStateNotifier extends BaseStateNotifier<HabitProgressState> {
 
   @override
   Future<void> initStateNotifier() async {
+    await fetchData();
+  }
+
+  Future<void> fetchData() async {
     try {
+      state = state.copyWith(
+        isLoading: true,
+      );
       db = DbLocal();
       DateTime now = DateTime.now();
       String formattedDate = DateFormat('MMMM yyyy').format(now);
