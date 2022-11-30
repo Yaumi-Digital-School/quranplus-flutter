@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
