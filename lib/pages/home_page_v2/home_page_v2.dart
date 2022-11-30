@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/card_start_habit.dart';
+import 'package:qurantafsir_flutter/pages/main_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
+import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/daily_progress_tracker.dart';
-import 'package:qurantafsir_flutter/widgets/searchDialog.dart';
+import 'package:qurantafsir_flutter/widgets/alert_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'home_page_state_notifier.dart';
 
@@ -213,9 +215,22 @@ class ListSuratByJuz extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-        child: DailyProgressTracker(
-          target: state.dailySummary!.target,
-          dailyProgress: state.dailySummary!.totalPages,
+        child: Column(
+          children: [
+            DailyProgressTracker(
+              target: state.dailySummary!.target,
+              dailyProgress: state.dailySummary!.totalPages,
+            ),
+            const SizedBox(height: 10),
+            ButtonSecondary(
+                label: "See Details",
+                onTap: () {
+                  final navigationBar =
+                      MainPage.globalKey.currentWidget as BottomNavigationBar;
+
+                  navigationBar.onTap!(1);
+                }),
+          ],
         ),
       ),
     );

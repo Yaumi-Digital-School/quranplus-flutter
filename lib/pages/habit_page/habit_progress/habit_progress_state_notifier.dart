@@ -5,14 +5,14 @@ import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_ser
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 
 class HabitProgressState {
-  bool? isLoading = true;
+  bool isLoading;
   bool? isError = false;
   String? currentMonth = "";
   HabitDailySummary? currentProgress;
   List<HabitDailySummary>? lastSevenDays = [];
 
   HabitProgressState({
-    this.isLoading,
+    this.isLoading = true,
     this.currentMonth,
     this.lastSevenDays,
     this.isError,

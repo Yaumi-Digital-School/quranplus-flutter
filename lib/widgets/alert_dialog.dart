@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/change_daily_target/change_daily_target_view.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/search_by_page_or_ayah.dart';
@@ -22,7 +23,7 @@ class GeneralSearchDialog {
     );
   }
 
-  static Future searchDialoggeneral(BuildContext context, Function() function) {
+  static Future searchDialogGeneral(BuildContext context, Function() function) {
     return searchDialog(
       context,
       Column(
@@ -33,7 +34,7 @@ class GeneralSearchDialog {
           SizedBox(
             height: MediaQuery.of(context).size.height / 10,
             width: MediaQuery.of(context).size.width,
-            child: Container(
+            child: SizedBox(
               width: MediaQuery.of(context).size.width * 3 / 7,
               child: const TextField(
                 enabled: true,
@@ -68,7 +69,7 @@ class GeneralSearchDialog {
   static Future searchDialogWithTabbar(
     BuildContext context,
     List<String> tabBar,
-    List<Widget> WidgetchildTabbarview,
+    List<Widget> widgetChildTabBarView,
   ) {
     return searchDialog(
       context,
@@ -91,7 +92,7 @@ class GeneralSearchDialog {
               child: Column(
                 children: [
                   Container(
-                    margin: EdgeInsets.all(5.0),
+                    margin: const EdgeInsets.all(5.0),
                     height: 34,
                     child: TabBar(
                         unselectedLabelColor: primary500,
@@ -110,13 +111,32 @@ class GeneralSearchDialog {
                 height: 125,
                 child: TabBarView(
                   physics: const NeverScrollableScrollPhysics(),
-                  children: WidgetchildTabbarview,
+                  children: widgetChildTabBarView,
                 ),
               ),
             )
           ],
         ),
       ),
+    );
+  }
+}
+
+class Alert {
+  static Future searchDialog(BuildContext context, Widget widgetChild) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: brokenWhite,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
+          content: SizedBox(
+            height: 245,
+            width: 321,
+            child: widgetChild,
+          ),
+        );
+      },
     );
   }
 }

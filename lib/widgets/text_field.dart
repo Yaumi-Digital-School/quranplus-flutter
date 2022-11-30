@@ -17,6 +17,8 @@ class InputTotalPagesTextField extends StatelessWidget {
       height: 24,
       width: 56,
       child: TextField(
+        controller: TextEditingController(
+            text: defaultValue != null ? defaultValue.toString() : ""),
         cursorColor: Colors.black,
         textAlign: TextAlign.center,
         textAlignVertical: TextAlignVertical.center,
