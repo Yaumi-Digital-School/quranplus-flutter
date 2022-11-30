@@ -253,11 +253,31 @@ class DbLocal {
       orderBy: "${HabitDailySummaryTable.date} ASC",
     );
 
+    final queryBeforeSixDay = await dbClient.query(
+      HabitDailySummaryTable.tableName,
+      columns: [
+        HabitDailySummaryTable.date,
+      ],
+      where: '${HabitDailySummaryTable.date} < ?',
+      whereArgs: [formattedSixDayBefore],
+      limit: 1,
+    );
+
+    late DateTime firstDay;
+
+    if (queryBeforeSixDay.isNotEmpty) {
+      firstDay = sixDayBefore;
+    } else {
+      firstDay = result.isEmpty
+          ? cleanDate
+          : DateTime.parse(result[0][HabitDailySummaryTable.date]);
+    }
+
     // init
     List<HabitDailySummary> summaryLastSevenDay = [
       for (int index = 0; index < 7; index++)
         HabitDailySummary(
-          date: sixDayBefore.add(Duration(days: index)),
+          date: firstDay.add(Duration(days: index)),
           totalPages: 0,
           target: 1,
         )
@@ -267,7 +287,7 @@ class DbLocal {
       final elementDate = element[HabitDailySummaryTable.date];
       final parsedElementDate =
           DateUtils.stringToDate(elementDate, DateFormatType.yyyyMMdd);
-      final difference = parsedElementDate.difference(sixDayBefore).inDays;
+      final difference = parsedElementDate.difference(firstDay).inDays;
       summaryLastSevenDay[difference] = HabitDailySummary.fromJson(element);
     }
 

@@ -9,10 +9,16 @@ import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/daily_progress_tracker.dart';
 
 import 'habit_progress_state_notifier.dart';
+import 'widgets/add_daily_progress_manual/add_daily_progress_manual_view.dart';
 
-class HabitProgress extends StatelessWidget {
-  const HabitProgress({Key? key}) : super(key: key);
+class HabitProgressView extends StatefulWidget {
+  const HabitProgressView({Key? key}) : super(key: key);
 
+  @override
+  State<HabitProgressView> createState() => _HabitProgressState();
+}
+
+class _HabitProgressState extends State<HabitProgressView> {
   @override
   Widget build(BuildContext context) {
     return StateNotifierConnector<HabitProgressStateNotifier,
@@ -87,16 +93,20 @@ class HabitProgress extends StatelessWidget {
                           const SizedBox(height: 16),
                           state.currentProgress != null
                               ? DailyProgressTracker(
-                                  target: state.currentProgress!.target!,
+                                  target: state.currentProgress!.target,
                                   dailyProgress:
-                                      state.currentProgress!.totalPages!)
+                                      state.currentProgress!.totalPages)
                               : const DailyProgressTracker(
                                   target: 1, dailyProgress: 0),
                           const SizedBox(height: 24),
                           ButtonNeutral(label: "Change Target", onTap: () {}),
                           const SizedBox(height: 16),
                           ButtonNeutral(
-                              label: "Add Progress Manually", onTap: () {}),
+                              label: "Add Progress Manually",
+                              onTap: () {
+                                _showDialogAddDailyProgress(
+                                    state.currentProgress!, notifier);
+                              }),
                           const SizedBox(height: 16),
                           ButtonNeutral(
                               label: "Add Progress by Reading", onTap: () {}),
@@ -123,14 +133,15 @@ class HabitProgress extends StatelessWidget {
   }
 
   Widget _buildProgressDailyItem(HabitDailySummary item) {
-    final nameOfDay = DateFormat('EEEE').format(item.date!).substring(0, 3);
-    final numberOfDay = DateFormat('d').format(item.date!);
+    final nameOfDay = DateFormat('EEEE').format(item.date).substring(0, 3);
+    final numberOfDay = DateFormat('d').format(item.date);
     final now = DateTime.now();
-    final isToday = now.difference(item.date!).inDays == 0;
+    final cleanDate = DateTime(now.year, now.month, now.day);
+    final isToday = cleanDate.difference(item.date).inDays == 0;
     double progress = 0;
 
-    if (item.target != null && item.totalPages != null && item.target != 0) {
-      progress = item.totalPages! / item.target!;
+    if (item.target != 0) {
+      progress = item.totalPages / item.target;
     }
 
     return Expanded(
@@ -165,5 +176,27 @@ class HabitProgress extends StatelessWidget {
     return Row(
       children: rowChildren,
     );
+  }
+
+  void _showDialogAddDailyProgress(HabitDailySummary currentProgress,
+      HabitProgressStateNotifier habitProgressStateNotifier) async {
+    final isRefresh = await showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              backgroundColor: brokenWhite,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: AddDailyProgressManualView(
+                habitDailySummary: currentProgress,
+              ),
+            );
+          },
+        ) ??
+        false;
+    if (isRefresh) {
+      await habitProgressStateNotifier.fetchData();
+    }
   }
 }

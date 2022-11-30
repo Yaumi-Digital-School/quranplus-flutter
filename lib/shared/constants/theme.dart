@@ -161,6 +161,15 @@ TextStyle bodyDrawerRegular = GoogleFonts.poppins(
 TextStyle bodyLatin1 =
     GoogleFonts.notoSans(color: neutral600, fontSize: 12, fontWeight: regular);
 
+TextStyle regular10 =
+    GoogleFonts.notoSans(color: neutral900, fontSize: 8, fontWeight: regular);
+
+TextStyle regular8 =
+    GoogleFonts.notoSans(color: neutral900, fontSize: 8, fontWeight: regular);
+
+TextStyle semiBold10 =
+    GoogleFonts.notoSans(color: neutral900, fontSize: 10, fontWeight: semiBold);
+
 BoxShadow shadowPrimary = BoxShadow(
     color: Colors.grey.withOpacity(0.5),
     spreadRadius: 5,

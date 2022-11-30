@@ -214,8 +214,8 @@ class ListSuratByJuz extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
         child: DailyProgressTracker(
-          target: state.dailySummary!.target!,
-          dailyProgress: state.dailySummary!.totalPages!,
+          target: state.dailySummary!.target,
+          dailyProgress: state.dailySummary!.totalPages,
         ),
       ),
     );

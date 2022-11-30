@@ -1,4 +1,3 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 
@@ -7,22 +6,37 @@ class HabitDailySummary {
     required this.target,
     required this.totalPages,
     required this.date,
+    this.id,
+    this.targetUpdatedTime,
+    this.createdAt,
+    this.updatedAt,
   });
-  @JsonKey(name: 'target')
-  int? target;
-  @JsonKey(name: 'total_pages')
-  int? totalPages;
-  final DateTime? date;
 
-  factory HabitDailySummary.fromJson(Map<String, dynamic> json) =>
-      HabitDailySummary(
-        target: json[HabitDailySummaryTable.target],
-        totalPages: json[HabitDailySummaryTable.totalPages],
-        date: DateUtils.stringToDate(
-          json[HabitDailySummaryTable.date],
-          DateFormatType.yyyyMMdd,
-        ),
-      );
+  final int target;
+  final int totalPages;
+  final DateTime date;
+  final int? id;
+  final String? targetUpdatedTime;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+
+  factory HabitDailySummary.fromJson(Map<String, dynamic> json) {
+    final createdAtString = json[HabitDailySummaryTable.createdAt];
+    final updateAtString = json[HabitDailySummaryTable.updatedAt];
+    return HabitDailySummary(
+      target: json[HabitDailySummaryTable.target],
+      totalPages: json[HabitDailySummaryTable.totalPages],
+      date: DateUtils.stringToDate(
+        json[HabitDailySummaryTable.date],
+        DateFormatType.yyyyMMdd,
+      ),
+      id: json[HabitDailySummaryTable.columnID],
+      targetUpdatedTime: json[HabitDailySummaryTable.targetUpdatedTime],
+      createdAt:
+          createdAtString == null ? null : DateTime.parse(createdAtString),
+      updatedAt: updateAtString == null ? null : DateTime.parse(updateAtString),
+    );
+  }
 
   Map<String, dynamic> toMap() {
     final Map<String, dynamic> map = <String, dynamic>{};
