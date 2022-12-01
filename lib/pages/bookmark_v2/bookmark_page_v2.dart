@@ -244,8 +244,10 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
             PageTransition(
               type: PageTransitionType.fade,
               child: SuratPageV3(
-                startPageInIndex: favoriteAyah.page - 1,
-                firstPagePointerIndex: favoriteAyah.ayahHashCode,
+                param: SuratPageV3Param(
+                  startPageInIndex: favoriteAyah.page - 1,
+                  firstPagePointerIndex: favoriteAyah.ayahHashCode,
+                ),
               ),
             ),
           );
@@ -380,7 +382,9 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
             PageTransition(
               type: PageTransitionType.fade,
               child: SuratPageV3(
-                startPageInIndex: bookmark.page - 1,
+                param: SuratPageV3Param(
+                  startPageInIndex: bookmark.page - 1,
+                ),
               ),
             ),
           );

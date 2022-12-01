@@ -4,10 +4,15 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/post_tracking_dialog.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/pre_tracking_animation.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
+import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_icons.dart';
@@ -46,15 +51,25 @@ class SuratPageV3OnPopParam {
   final bool isFavoriteAyahChanged;
 }
 
-class SuratPageV3 extends StatefulWidget {
-  const SuratPageV3({
-    Key? key,
+class SuratPageV3Param {
+  SuratPageV3Param({
     required this.startPageInIndex,
     this.firstPagePointerIndex = 0,
-  }) : super(key: key);
+    this.isStartTracking = false,
+  });
 
   final int startPageInIndex;
   final int firstPagePointerIndex;
+  final bool isStartTracking;
+}
+
+class SuratPageV3 extends StatefulWidget {
+  const SuratPageV3({
+    Key? key,
+    required this.param,
+  }) : super(key: key);
+
+  final SuratPageV3Param param;
 
   @override
   State<StatefulWidget> createState() {
@@ -63,23 +78,23 @@ class SuratPageV3 extends StatefulWidget {
 }
 
 class _SuratPageV3State extends State<SuratPageV3> {
-  late AutoScrollController firstPageScrollController;
+  late AutoScrollController scrollController;
 
   @override
   void initState() {
     super.initState();
-    firstPageScrollController = AutoScrollController();
+    scrollController = AutoScrollController();
     VisibilityDetectorController.instance.updateInterval =
         const Duration(milliseconds: 300);
 
-    if (widget.firstPagePointerIndex != 0) {
+    if (widget.param.firstPagePointerIndex != 0) {
       WidgetsBinding.instance?.addPostFrameCallback(
         (_) {
           Future.delayed(
             const Duration(milliseconds: 600),
             () {
-              firstPageScrollController.scrollToIndex(
-                widget.firstPagePointerIndex,
+              scrollController.scrollToIndex(
+                widget.param.firstPagePointerIndex,
                 preferPosition: AutoScrollPosition.begin,
                 duration: const Duration(milliseconds: 200),
               );
@@ -99,15 +114,23 @@ class _SuratPageV3State extends State<SuratPageV3> {
           StateNotifierProvider<SuratPageStateNotifier, SuratPageState>(
         (ref) {
           return SuratPageStateNotifier(
-            startPageInIndex: widget.startPageInIndex,
+            startPageInIndex: widget.param.startPageInIndex,
             sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
             bookmarkApi: ref.watch(bookmarkApiProvider),
             bookmarksService: ref.watch(bookmarksService),
+            authenticationService: ref.watch(authenticationService),
+            scrollController: scrollController,
             isLoggedIn: ref.watch(authenticationService).isLoggedIn,
           );
         },
       ),
       onStateNotifierReady: (notifier) async {
+        if (widget.param.isStartTracking) {
+          Future.delayed(Duration.zero, () {
+            _startTracking(context, notifier);
+          });
+        }
+
         final ConnectivityResult connectivityResult =
             await Connectivity().checkConnectivity();
         await notifier.initStateNotifier(
@@ -253,16 +276,11 @@ class _SuratPageV3State extends State<SuratPageV3> {
             ),
             body: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: state.readingSettings!.isInFullPage
-                  ? _buildPagesInFullPage(
-                      state: state,
-                      notifier: notifier,
-                      context: context,
-                    )
-                  : _buildPages(
-                      state: state,
-                      notifier: notifier,
-                    ),
+              child: _buildPageWithTracker(
+                context: context,
+                sn: notifier,
+                state: state,
+              ),
             ),
             endDrawer: SuratPageSettingsDrawer(
               isWithLatins: state.readingSettings!.isWithLatins,
@@ -280,6 +298,87 @@ class _SuratPageV3State extends State<SuratPageV3> {
         );
       },
     );
+  }
+
+  Widget _buildPageWithTracker({
+    required SuratPageState state,
+    required SuratPageStateNotifier sn,
+    required BuildContext context,
+  }) {
+    final Widget pages = state.readingSettings!.isInFullPage
+        ? _buildPagesInFullPage(
+            state: state,
+            notifier: sn,
+            context: context,
+          )
+        : _buildPages(
+            state: state,
+            notifier: sn,
+          );
+
+    final double bottomPadding = MediaQuery.of(context).size.height * 0.025;
+
+    return Stack(
+      children: [
+        pages,
+        ValueListenableBuilder(
+          valueListenable: sn.isTrackerVisible,
+          builder: (_, bool value, __) {
+            if (state.isRecording && value) {
+              return Positioned(
+                child: _buildPageTracker(sn),
+              );
+            }
+
+            if (!state.isRecording && value) {
+              return Positioned(
+                bottom: bottomPadding,
+                right: 24,
+                child: ButtonPrimary(
+                  label: 'Start Tracking',
+                  size: ButtonSize.small,
+                  onTap: () {
+                    if (!sn.isLoggedIn) {
+                      sn.forceLoginToEnableHabit(
+                        context,
+                        RoutePaths.routeSurahPage,
+                        <String, dynamic>{
+                          'startPageInIndex': sn.currentPage.value,
+                          'isStartTracking': true,
+                        },
+                      );
+                      return;
+                    }
+
+                    _startTracking(context, sn);
+                  },
+                ),
+              );
+            }
+
+            return const SizedBox.shrink();
+          },
+        ),
+      ],
+    );
+  }
+
+  Future<void> _startTracking(
+    BuildContext context,
+    SuratPageStateNotifier notifier,
+  ) async {
+    const Duration _duration = Duration(milliseconds: 3000);
+    Navigator.push(
+      context,
+      PageTransition(
+        type: PageTransitionType.fade,
+        child: const PreHabitTrackingAnimation(),
+      ),
+    );
+    Timer(_duration, () {
+      Navigator.pop(context);
+      notifier.startRecording();
+    });
   }
 
   Widget _buildPageInFullPage({
@@ -327,6 +426,51 @@ class _SuratPageV3State extends State<SuratPageV3> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: textInWidgets,
+      ),
+    );
+  }
+
+  Widget _buildPageTracker(
+    SuratPageStateNotifier sn,
+  ) {
+    return Container(
+      height: 24,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: const [
+          BoxShadow(
+            color: Color.fromRGBO(0, 0, 0, 0.1),
+            offset: Offset(1.0, 2.0),
+            blurRadius: 5.0,
+            spreadRadius: 1.0,
+          )
+        ],
+        color: Colors.white,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+            padding: EdgeInsets.zero,
+            onPressed: () {
+              _buildTrackerSubmissionDialog(sn);
+            },
+            icon: const Icon(
+              Icons.stop_circle_outlined,
+              size: 14.0,
+            ),
+            color: red300,
+          ),
+          ValueListenableBuilder(
+            valueListenable: sn.recordedPagesAsRead,
+            builder: (context, value, __) {
+              return Text(
+                'Stop Tracking ($value/${sn.habitDailyTarget} Page)',
+                textAlign: TextAlign.center,
+              );
+            },
+          ),
+        ],
       ),
     );
   }
@@ -401,6 +545,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
         notifier.visibleSuratName.value = surahName;
         notifier.currentPage.value = pageValue;
         notifier.checkIsBookmarkExists(pageValue);
+        notifier.changePageOnRecording(pageValue);
       },
       children: allPages,
     );
@@ -432,6 +577,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
         int pageValue = pageIndex + 1;
         notifier.currentPage.value = pageValue;
         notifier.checkIsBookmarkExists(pageValue);
+        notifier.changePageOnRecording(pageValue);
       },
       children: allPages,
     );
@@ -443,8 +589,6 @@ class _SuratPageV3State extends State<SuratPageV3> {
     required SuratPageState state,
     required SuratPageStateNotifier notifier,
   }) {
-    final int pageNumberInQuranInIndex = pageNumberInQuran - 1;
-
     List<Widget> ayahs = <Widget>[];
     for (int i = 0; i < quranPageObject.verses.length; i++) {
       bool useDivider = i != quranPageObject.verses.length - 1;
@@ -465,9 +609,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     }
 
     return SingleChildScrollView(
-      controller: pageNumberInQuranInIndex == widget.startPageInIndex
-          ? firstPageScrollController
-          : null,
+      controller: scrollController,
       key: PageStorageKey('page$pageNumberInQuran'),
       child: Column(
         children: ayahs,
@@ -508,8 +650,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
 
     return AutoScrollTag(
       key: key,
-      controller: pageNumberInQuran - 1 == widget.startPageInIndex
-          ? firstPageScrollController
+      controller: pageNumberInQuran - 1 == widget.param.startPageInIndex
+          ? scrollController
           : AutoScrollController(),
       index: verse.id,
       child: VisibilityDetector(
@@ -685,6 +827,106 @@ class _SuratPageV3State extends State<SuratPageV3> {
           image: AssetImage(
             'images/bismillah_v2.png',
           ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _buildTrackerSubmissionDialog(
+    SuratPageStateNotifier notifier,
+  ) async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: brokenWhite,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(19),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const Text(
+                "You've finished reading....",
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 10,
+                  color: neutral900,
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              Row(
+                children: [
+                  _buildTrackerSubmissionDialogInput(notifier),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  const Text(
+                    'Pages',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 10,
+                      color: neutral600,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              ButtonSecondary(
+                label: 'Submit',
+                onTap: () async {
+                  final bool isComplete = await notifier.stopRecording();
+                  Navigator.pop(context);
+                  HabitProgressPostTrackingDialog.onSubmitPostTrackingDialog(
+                    context: context,
+                    sharedPreferenceService: notifier.sharedPreferenceService,
+                    isComplete: isComplete,
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTrackerSubmissionDialogInput(SuratPageStateNotifier notifier) {
+    notifier.habitTrackerSubmissionController.value = TextEditingValue(
+      text: notifier.recordedPagesList.length.toString(),
+    );
+
+    return SizedBox(
+      width: 60,
+      child: TextField(
+        controller: notifier.habitTrackerSubmissionController,
+        textAlign: TextAlign.center,
+        keyboardType: TextInputType.number,
+        style: const TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w500,
+          color: neutral600,
+        ),
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
+          isDense: true,
+          contentPadding: const EdgeInsets.all(7),
+          hintText: '1',
+          hintStyle: const TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w500,
+            color: neutral400,
+          ),
+          border: enabledInputBorder,
+          enabledBorder: enabledInputBorder,
+          errorBorder: errorInputBorder,
+          focusedErrorBorder: errorInputBorder,
         ),
       ),
     );

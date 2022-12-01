@@ -5,6 +5,7 @@ import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/card_start_habit.
 import 'package:qurantafsir_flutter/pages/main_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
+import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
@@ -292,14 +293,12 @@ class ListSuratByJuz extends StatelessWidget {
               int page = surats[index].startPageToInt;
               int startPageInIndexValue = page - 1;
 
-              Navigator.push(
+              Navigator.pushNamed(
                 context,
-                PageTransition(
-                  type: PageTransitionType.fade,
-                  child: SuratPageV3(
-                    startPageInIndex: startPageInIndexValue,
-                    firstPagePointerIndex: surats[index].startPageID,
-                  ),
+                RoutePaths.routeSurahPage,
+                arguments: SuratPageV3Param(
+                  startPageInIndex: startPageInIndexValue,
+                  firstPagePointerIndex: surats[index].startPageID,
                 ),
               );
             },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/change_daily_target/change_daily_target_view.dart';
+import 'package:qurantafsir_flutter/pages/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
@@ -117,7 +118,13 @@ class _HabitProgressState extends State<HabitProgressView> {
                         ),
                         const SizedBox(height: 16),
                         ButtonNeutral(
-                            label: "Add Progress by Reading", onTap: () {}),
+                          label: "Add Progress by Reading",
+                          onTap: () {
+                            final BottomNavigationBar navbar = MainPage
+                                .globalKey.currentWidget as BottomNavigationBar;
+                            navbar.onTap!(2);
+                          },
+                        ),
                       ],
                     ),
                   ),

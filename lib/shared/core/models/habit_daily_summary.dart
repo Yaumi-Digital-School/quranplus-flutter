@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 
@@ -59,5 +60,12 @@ class HabitDailySummary {
         DateFormatType.yyyyMMdd,
       ),
     );
+  }
+
+  String get formattedDate {
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String formattedDate = formatter.format(date);
+
+    return formattedDate;
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,6 +10,7 @@ class SharedPreferenceService {
   final String _readingSettingsKey = 'reading-settings';
   final String _apiTokenKey = "api-token";
   final String _usernameKey = "username-token";
+  final String _forceLoginParam = "force-login-param";
 
   Future<void> init() async {
     _sharedPreferences = await SharedPreferences.getInstance();
@@ -57,5 +59,25 @@ class SharedPreferenceService {
   Future<bool> removeUsername() async {
     var isRemoved = await _sharedPreferences.remove(_usernameKey);
     return isRemoved;
+  }
+
+  Future<void> setForceLoginParam(ForceLoginParam param) async {
+    final String encodedParam = json.encode(param.toJson());
+    await _sharedPreferences.setString(_forceLoginParam, encodedParam);
+  }
+
+  Future<void> removeForceLoginParam() async {
+    await _sharedPreferences.remove(_forceLoginParam);
+  }
+
+  Future<ForceLoginParam?> getForceLoginParam() async {
+    final String res = _sharedPreferences.getString(_forceLoginParam) ?? '';
+    if (res.isEmpty) {
+      return null;
+    }
+
+    return ForceLoginParam.fromJson(
+      json.decode(res),
+    );
   }
 }

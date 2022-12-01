@@ -1,4 +1,5 @@
 import 'package:qurantafsir_flutter/shared/core/apis/model/user_response.dart';
+import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/user.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
@@ -132,5 +133,13 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
 
   Future<void> _removeUsername() async {
     await _sharedPreferenceService.removeUsername();
+  }
+
+  Future<ForceLoginParam?> getForceLoginInformation() async {
+    final ForceLoginParam? forceLoginInfo =
+        await _sharedPreferenceService.getForceLoginParam();
+    await _sharedPreferenceService.removeForceLoginParam();
+
+    return forceLoginInfo;
   }
 }

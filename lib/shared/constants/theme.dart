@@ -36,6 +36,8 @@ const Color exit900 = Color(0xFF5C0831);
 
 const Color errorColor = Color(0xFFFF6D7E);
 
+const Color red300 = Color(0xFFEC847D);
+
 const Color backgroundColor = Color(0xFFF8F7F3);
 const Color backgroundTextTafsir = Color(0xFFF0F0F0);
 
@@ -169,6 +171,18 @@ TextStyle regular8 =
 
 TextStyle semiBold10 =
     GoogleFonts.notoSans(color: neutral900, fontSize: 10, fontWeight: semiBold);
+
+TextStyle buildTextStyle({
+  required Color color,
+  required double fontSize,
+  required FontWeight fontWeight,
+}) {
+  return GoogleFonts.notoSans(
+    color: color,
+    fontSize: fontSize,
+    fontWeight: fontWeight,
+  );
+}
 
 BoxShadow shadowPrimary = BoxShadow(
     color: Colors.grey.withOpacity(0.5),
