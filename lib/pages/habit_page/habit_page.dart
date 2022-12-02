@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
+import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
@@ -96,7 +97,7 @@ class HabitPage extends StatelessWidget {
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult != ConnectivityResult.none) {
         notifier.signInWithGoogle(() {
-          Navigator.of(context).pushReplacementNamed(AppConstants.routeMain);
+          Navigator.of(context).pushReplacementNamed(RoutePaths.routeMain);
           ref.read(dioServiceProvider.notifier).state = DioService(
             baseUrl: EnvConstants.baseUrl!,
             accessToken:

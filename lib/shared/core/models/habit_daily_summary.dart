@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 
@@ -39,8 +40,14 @@ class HabitDailySummary {
   }
 
   Map<String, dynamic> toMap() {
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String formattedDate = formatter.format(date);
+
     final Map<String, dynamic> map = <String, dynamic>{};
     map[HabitDailySummaryTable.target] = target;
+    map[HabitDailySummaryTable.totalPages] = totalPages;
+    map[HabitDailySummaryTable.date] = formattedDate;
+    map[HabitDailySummaryTable.targetUpdatedTime] = targetUpdatedTime;
     map[HabitDailySummaryTable.totalPages] = totalPages;
     return map;
   }
@@ -59,5 +66,12 @@ class HabitDailySummary {
         DateFormatType.yyyyMMdd,
       ),
     );
+  }
+
+  String get formattedDate {
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String formattedDate = formatter.format(date);
+
+    return formattedDate;
   }
 }

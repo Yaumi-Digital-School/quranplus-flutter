@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/account_page/account_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
+import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
+import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
@@ -100,7 +103,11 @@ class SettingsPage extends StatelessWidget {
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult != ConnectivityResult.none) {
         notifier.signInWithGoogle(() {
-          Navigator.of(context).pushReplacementNamed(AppConstants.routeMain);
+          navigateAfterLogin(
+            context: context,
+            notifier: notifier,
+          );
+
           ref.read(dioServiceProvider.notifier).state = DioService(
             baseUrl: EnvConstants.baseUrl!,
             accessToken:
@@ -217,6 +224,38 @@ class SettingsPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void navigateAfterLogin({
+    required BuildContext context,
+    required SettingsPageStateNotifier notifier,
+  }) async {
+    final ForceLoginParam? param = await notifier.getForceLoginInformation();
+    if (param == null) {
+      Navigator.of(context).pushReplacementNamed(
+        RoutePaths.routeMain,
+      );
+      return;
+    }
+
+    Map<String, dynamic> routeArgs = param.arguments ?? <String, dynamic>{};
+    Object? routeParams;
+
+    switch (param.nextPath) {
+      case RoutePaths.routeSurahPage:
+        routeParams = SuratPageV3Param(
+          startPageInIndex: routeArgs['startPageInIndex'],
+          isStartTracking: routeArgs['isStartTracking'],
+        );
+        break;
+      default:
+    }
+
+    Navigator.pushNamed(
+      context,
+      param.nextPath ?? '',
+      arguments: routeParams,
     );
   }
 }

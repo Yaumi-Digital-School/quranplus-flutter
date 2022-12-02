@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:qurantafsir_flutter/pages/main_page.dart';
+import 'package:qurantafsir_flutter/pages/settings_page/settings_page.dart';
 import 'package:qurantafsir_flutter/pages/splash_page.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/pre_tracking_animation.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
+import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -56,11 +60,39 @@ class MyApp extends StatelessWidget {
           title: AppConstants.appName,
           theme: ThemeData(
               primarySwatch: Colors.blue, backgroundColor: backgroundColor),
-          initialRoute: AppConstants.routeSplash,
+          initialRoute: RoutePaths.routeSplash,
           navigatorObservers: <NavigatorObserver>[observer],
-          routes: {
-            AppConstants.routeSplash: (context) => const SplashPage(),
-            AppConstants.routeMain: (context) => const MainPage()
+          onGenerateRoute: (RouteSettings settings) {
+            late Widget selectedRouteWidget;
+            switch (settings.name) {
+              case RoutePaths.routeSplash:
+                selectedRouteWidget = const SplashPage();
+                break;
+              case RoutePaths.routeMain:
+                selectedRouteWidget = const MainPage();
+                break;
+              case RoutePaths.routeSettings:
+                selectedRouteWidget = SettingsPage();
+                break;
+              case RoutePaths.routeSurahPage:
+                final args = settings.arguments is SuratPageV3Param
+                    ? settings.arguments as SuratPageV3Param
+                    : SuratPageV3Param(startPageInIndex: 0);
+                selectedRouteWidget = SuratPageV3(param: args);
+                break;
+              default:
+                selectedRouteWidget = const Scaffold(
+                  body: Center(
+                    child: Text('No route defined'),
+                  ),
+                );
+            }
+
+            return MaterialPageRoute(
+              builder: (context) {
+                return selectedRouteWidget;
+              },
+            );
           },
         );
       },

@@ -253,7 +253,9 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
         PageTransition(
           type: PageTransitionType.fade,
           child: SuratPageV3(
-            startPageInIndex: startPageInIndexValue,
+            param: SuratPageV3Param(
+              startPageInIndex: startPageInIndexValue,
+            ),
           ),
         ),
       );
@@ -362,8 +364,10 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
           PageTransition(
             type: PageTransitionType.fade,
             child: SuratPageV3(
-              startPageInIndex: startPageInIndexValue,
-              firstPagePointerIndex: selectedAyahID,
+              param: SuratPageV3Param(
+                startPageInIndex: startPageInIndexValue,
+                firstPagePointerIndex: selectedAyahID,
+              ),
             ),
           ),
         );

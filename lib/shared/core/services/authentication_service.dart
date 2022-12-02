@@ -1,15 +1,24 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:qurantafsir_flutter/pages/main_page.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/user_api.dart';
+import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/user.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/user_response.dart';
+import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:retrofit/retrofit.dart';
 
 class AuthenticationService {
   AuthenticationService({
     required this.userApi,
-  });
+    required SharedPreferenceService sharedPreferenceService,
+  }) : _sharedPreferenceService = sharedPreferenceService;
 
   final UserApi userApi;
+  final SharedPreferenceService _sharedPreferenceService;
   bool _isLoggedIn = false;
   late GoogleSignIn _googleSignIn;
 
@@ -97,5 +106,27 @@ class AuthenticationService {
     } catch (error) {
       throw Exception('updateUserProfile error: ' + error.toString());
     }
+  }
+
+  void forceLoginAndSaveRedirectTo({
+    required BuildContext context,
+    required String redirectTo,
+    required Map<String, dynamic> arguments,
+  }) {
+    _sharedPreferenceService.setForceLoginParam(
+      ForceLoginParam(
+        nextPath: redirectTo,
+        arguments: arguments,
+      ),
+    );
+
+    Navigator.pop(
+      context,
+    );
+
+    final BottomNavigationBar navbar =
+        MainPage.globalKey.currentWidget as BottomNavigationBar;
+
+    navbar.onTap!(3);
   }
 }

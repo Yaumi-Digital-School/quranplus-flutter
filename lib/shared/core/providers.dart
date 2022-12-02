@@ -46,9 +46,12 @@ final Provider<UserApi> userApiProvider =
 final Provider<AuthenticationService> authenticationService =
     Provider<AuthenticationService>((ref) {
   final UserApi userApi = ref.watch(userApiProvider);
+  final SharedPreferenceService sharedPreferenceService =
+      ref.watch(sharedPreferenceServiceProvider);
 
   return AuthenticationService(
     userApi: userApi,
+    sharedPreferenceService: sharedPreferenceService,
   );
 });
 
