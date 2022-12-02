@@ -84,7 +84,7 @@ class RegistrationView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    IconPath.iconCollaborate,
+                    IconPath.iconTargetArrow,
                     width: 24,
                   ),
                   const SizedBox(width: 16),
@@ -92,11 +92,34 @@ class RegistrationView extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Contribute to Quran Tafsir',
-                            style: captionSemiBold1),
+                        Row(
+                          children: [
+                            Text('Build reading habit and set',
+                                style: captionSemiBold1),
+                            SizedBox(width: 5),
+                            Container(
+                              decoration: BoxDecoration(
+                                  color: darkGreen,
+                                  borderRadius: BorderRadius.circular(4)),
+                              height: 13,
+                              width: 26,
+                              child: Center(
+                                child: Text('New',
+                                    style: TextStyle(
+                                        fontSize: 8,
+                                        color: Colors.white,
+                                        fontWeight: bold)),
+                              ),
+                            )
+                          ],
+                        ),
+                        Text(
+                          'target',
+                          style: captionSemiBold1,
+                        ),
                         const SizedBox(width: 8),
                         Text(
-                            'When signed in, you can contribute to the development of this App by giving us feedback and experience using Quran Tafsir',
+                            'Add your daily qur’an reading progress manually or record it and set your own target',
                             style: captionRegular2),
                       ],
                     ),
