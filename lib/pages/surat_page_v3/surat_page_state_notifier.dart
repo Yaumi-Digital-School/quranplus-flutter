@@ -143,6 +143,8 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
       TextEditingController();
 
   ValueNotifier<bool> isTrackerVisible = ValueNotifier(true);
+  double _scrollDownOffset = 0;
+  double _scrollUpOffset = 0;
 
   @override
   Future<void> initStateNotifier({
@@ -172,19 +174,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     await _generateBaseTafsirs();
     await _generateFullPageSeparators();
 
-    _scrollController.addListener(() {
-      if (_scrollController.position.userScrollDirection ==
-              ScrollDirection.forward &&
-          !isTrackerVisible.value) {
-        isTrackerVisible.value = true;
-      }
-
-      if (_scrollController.position.userScrollDirection ==
-              ScrollDirection.reverse &&
-          isTrackerVisible.value) {
-        isTrackerVisible.value = false;
-      }
-    });
+    _scrollController.addListener(() => _listenOnScrollChanges());
 
     state = state.copyWith(
       pages: _allPages,
@@ -198,6 +188,33 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     );
 
     checkIsBookmarkExists(startPageInIndex + 1);
+  }
+
+  void _listenOnScrollChanges() {
+    final double currentOffset = _scrollController.offset;
+    final bool onScrollUpChecking = (_scrollUpOffset - currentOffset >= 150) &&
+        _scrollController.position.userScrollDirection ==
+            ScrollDirection.forward;
+    final bool onScrollDownChecking =
+        (currentOffset - _scrollDownOffset >= 150) &&
+            _scrollController.position.userScrollDirection ==
+                ScrollDirection.reverse;
+
+    if (onScrollUpChecking) {
+      if (!isTrackerVisible.value) {
+        isTrackerVisible.value = true;
+      }
+
+      _scrollDownOffset = currentOffset;
+    }
+
+    if (onScrollDownChecking) {
+      if (isTrackerVisible.value) {
+        isTrackerVisible.value = false;
+      }
+
+      _scrollUpOffset = currentOffset;
+    }
   }
 
   void changePageOnRecording(int page) {
@@ -593,9 +610,9 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
 
     _startPageOnRecord = 0;
     final int totalReadPages =
-        currentRecordedReadPages + (_currentSummary!.totalPages ?? 0);
+        currentRecordedReadPages + (_currentSummary!.totalPages);
 
-    if (totalReadPages > (_currentSummary!.target ?? 0)) {
+    if (totalReadPages > (_currentSummary!.target)) {
       return true;
     }
 

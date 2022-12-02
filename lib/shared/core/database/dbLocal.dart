@@ -332,7 +332,7 @@ class DbLocal {
         type: HabitProgressType.record,
       );
 
-      final int totalReadPages = pages + (summary.totalPages ?? 0);
+      final int totalReadPages = pages + (summary.totalPages);
       await txn.rawUpdate('''
         UPDATE ${HabitDailySummaryTable.tableName}
         SET ${HabitDailySummaryTable.totalPages} = $totalReadPages

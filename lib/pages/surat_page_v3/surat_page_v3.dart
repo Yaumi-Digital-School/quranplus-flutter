@@ -367,7 +367,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     BuildContext context,
     SuratPageStateNotifier notifier,
   ) async {
-    const Duration _duration = Duration(milliseconds: 3000);
+    const Duration _duration = Duration(milliseconds: 6000);
     Navigator.push(
       context,
       PageTransition(
@@ -433,44 +433,44 @@ class _SuratPageV3State extends State<SuratPageV3> {
   Widget _buildPageTracker(
     SuratPageStateNotifier sn,
   ) {
-    return Container(
-      height: 24,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: const [
-          BoxShadow(
-            color: Color.fromRGBO(0, 0, 0, 0.1),
-            offset: Offset(1.0, 2.0),
-            blurRadius: 5.0,
-            spreadRadius: 1.0,
-          )
-        ],
-        color: Colors.white,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          IconButton(
-            padding: EdgeInsets.zero,
-            onPressed: () {
-              _buildTrackerSubmissionDialog(sn);
-            },
-            icon: const Icon(
+    return GestureDetector(
+      onTap: () => _buildTrackerSubmissionDialog(sn),
+      child: Container(
+        height: 24,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: const [
+            BoxShadow(
+              color: Color.fromRGBO(0, 0, 0, 0.1),
+              offset: Offset(1.0, 2.0),
+              blurRadius: 5.0,
+              spreadRadius: 1.0,
+            )
+          ],
+          color: Colors.white,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
               Icons.stop_circle_outlined,
               size: 14.0,
+              color: red300,
             ),
-            color: red300,
-          ),
-          ValueListenableBuilder(
-            valueListenable: sn.recordedPagesAsRead,
-            builder: (context, value, __) {
-              return Text(
-                'Stop Tracking ($value/${sn.habitDailyTarget} Page)',
-                textAlign: TextAlign.center,
-              );
-            },
-          ),
-        ],
+            const SizedBox(
+              width: 9,
+            ),
+            ValueListenableBuilder(
+              valueListenable: sn.recordedPagesAsRead,
+              builder: (context, value, __) {
+                return Text(
+                  'Stop Tracking ($value/${sn.habitDailyTarget} Page)',
+                  textAlign: TextAlign.center,
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -546,6 +546,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
         notifier.currentPage.value = pageValue;
         notifier.checkIsBookmarkExists(pageValue);
         notifier.changePageOnRecording(pageValue);
+        notifier.isTrackerVisible.value = true;
       },
       children: allPages,
     );
@@ -578,6 +579,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
         notifier.currentPage.value = pageValue;
         notifier.checkIsBookmarkExists(pageValue);
         notifier.changePageOnRecording(pageValue);
+        notifier.isTrackerVisible.value = true;
       },
       children: allPages,
     );
@@ -608,11 +610,15 @@ class _SuratPageV3State extends State<SuratPageV3> {
       ayahs.add(w);
     }
 
-    return SingleChildScrollView(
-      controller: scrollController,
-      key: PageStorageKey('page$pageNumberInQuran'),
-      child: Column(
-        children: ayahs,
+    return Padding(
+      padding:
+          state.isRecording ? const EdgeInsets.only(top: 20) : EdgeInsets.zero,
+      child: SingleChildScrollView(
+        controller: scrollController,
+        key: PageStorageKey('page$pageNumberInQuran'),
+        child: Column(
+          children: ayahs,
+        ),
       ),
     );
   }

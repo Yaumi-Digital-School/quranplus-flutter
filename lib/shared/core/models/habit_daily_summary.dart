@@ -40,8 +40,14 @@ class HabitDailySummary {
   }
 
   Map<String, dynamic> toMap() {
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String formattedDate = formatter.format(date);
+
     final Map<String, dynamic> map = <String, dynamic>{};
     map[HabitDailySummaryTable.target] = target;
+    map[HabitDailySummaryTable.totalPages] = totalPages;
+    map[HabitDailySummaryTable.date] = formattedDate;
+    map[HabitDailySummaryTable.targetUpdatedTime] = targetUpdatedTime;
     map[HabitDailySummaryTable.totalPages] = totalPages;
     return map;
   }
