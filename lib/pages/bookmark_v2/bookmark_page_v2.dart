@@ -23,120 +23,130 @@ class BookmarkPageV2 extends StatefulWidget {
 class _BookmarkPageV2State extends State<BookmarkPageV2> {
   @override
   Widget build(BuildContext context) {
-    return StateNotifierConnector<BookmarkPageStateNotifier, BookmarkPageState>(
-      stateNotifierProvider:
-          StateNotifierProvider<BookmarkPageStateNotifier, BookmarkPageState>(
-        (ref) {
-          return BookmarkPageStateNotifier(
-            isLoggedIn: ref.watch(authenticationService).isLoggedIn,
-            bookmarksService: ref.watch(bookmarksService),
-            favoriteAyahsService: ref.watch(favoriteAyahsService),
+    return WillPopScope(
+      onWillPop: () async {
+        final navigationBar =
+            MainPage.globalKey.currentWidget as BottomNavigationBar;
+        navigationBar.onTap!(0);
+        return false;
+      },
+      child:
+          StateNotifierConnector<BookmarkPageStateNotifier, BookmarkPageState>(
+        stateNotifierProvider:
+            StateNotifierProvider<BookmarkPageStateNotifier, BookmarkPageState>(
+          (ref) {
+            return BookmarkPageStateNotifier(
+              isLoggedIn: ref.watch(authenticationService).isLoggedIn,
+              bookmarksService: ref.watch(bookmarksService),
+              favoriteAyahsService: ref.watch(favoriteAyahsService),
+            );
+          },
+        ),
+        onStateNotifierReady: (notifier) async {
+          final ConnectivityResult connectivity =
+              await Connectivity().checkConnectivity();
+
+          await notifier.initStateNotifier(
+            connectivityResult: connectivity,
           );
         },
-      ),
-      onStateNotifierReady: (notifier) async {
-        final ConnectivityResult connectivity =
-            await Connectivity().checkConnectivity();
-
-        await notifier.initStateNotifier(
-          connectivityResult: connectivity,
-        );
-      },
-      builder: (
-        BuildContext context,
-        BookmarkPageState state,
-        BookmarkPageStateNotifier notifier,
-        WidgetRef ref,
-      ) {
-        return DefaultTabController(
-          length: 2,
-          child: Scaffold(
-            appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(54.0),
-              child: AppBar(
-                elevation: 0.7,
-                foregroundColor: Colors.black,
-                centerTitle: true,
-                title: const Text(
-                  "Bookmark",
-                  style: TextStyle(fontSize: 16),
-                ),
-                backgroundColor: backgroundColor,
-                leading: IconButton(
-                  onPressed: () => Navigator.push(context,
-                      MaterialPageRoute(builder: (context) {
-                    return const MainPage();
-                  })),
-                  icon: const Icon(
-                    Icons.arrow_back_ios,
-                    size: 16,
-                    color: Colors.black,
+        builder: (
+          BuildContext context,
+          BookmarkPageState state,
+          BookmarkPageStateNotifier notifier,
+          WidgetRef ref,
+        ) {
+          return DefaultTabController(
+            length: 2,
+            child: Scaffold(
+              appBar: PreferredSize(
+                preferredSize: const Size.fromHeight(54.0),
+                child: AppBar(
+                  elevation: 0.7,
+                  foregroundColor: Colors.black,
+                  centerTitle: true,
+                  title: const Text(
+                    "Bookmark",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  backgroundColor: backgroundColor,
+                  leading: IconButton(
+                    onPressed: () => Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return const MainPage();
+                    })),
+                    icon: const Icon(
+                      Icons.arrow_back_ios,
+                      size: 16,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
               ),
-            ),
-            body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 7,
-                  ),
-                  Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: neutral100,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: const <BoxShadow>[
-                        BoxShadow(
-                          color: neutral300,
-                          blurRadius: 9.0,
-                          spreadRadius: 0.9,
-                        )
-                      ],
+              body: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 7,
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: TabBar(
-                        unselectedLabelColor: primary500,
-                        indicator: BoxDecoration(
-                          color: primary500,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        tabs: const <Widget>[
-                          Tab(
-                            text: 'Bookmark',
+                    Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: neutral100,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: const <BoxShadow>[
+                          BoxShadow(
+                            color: neutral300,
+                            blurRadius: 9.0,
+                            spreadRadius: 0.9,
+                          )
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: TabBar(
+                          unselectedLabelColor: primary500,
+                          indicator: BoxDecoration(
+                            color: primary500,
+                            borderRadius: BorderRadius.circular(20),
                           ),
-                          Tab(
-                            text: 'Favorite',
+                          tabs: const <Widget>[
+                            Tab(
+                              text: 'Bookmark',
+                            ),
+                            Tab(
+                              text: 'Favorite',
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 7,
+                    ),
+                    Expanded(
+                      child: TabBarView(
+                        children: <Widget>[
+                          _buildBookmarkSection(
+                            notifier: notifier,
+                            state: state,
+                          ),
+                          _buildFavoriteSection(
+                            notifier: notifier,
+                            state: state,
                           ),
                         ],
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 7,
-                  ),
-                  Expanded(
-                    child: TabBarView(
-                      children: <Widget>[
-                        _buildBookmarkSection(
-                          notifier: notifier,
-                          state: state,
-                        ),
-                        _buildFavoriteSection(
-                          notifier: notifier,
-                          state: state,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/change_daily_target/change_daily_target_view.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/search_by_page_or_ayah.dart';

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:qurantafsir_flutter/pages/main_page.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/animation_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';

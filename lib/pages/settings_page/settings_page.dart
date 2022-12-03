@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/account_page/account_page.dart';
+import 'package:qurantafsir_flutter/pages/main_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
-import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
@@ -25,72 +25,81 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StateNotifierConnector<SettingsPageStateNotifier, SettingsPageState>(
-      stateNotifierProvider:
-          StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>(
-              (StateNotifierProviderRef<SettingsPageStateNotifier,
-                      SettingsPageState>
-                  ref) {
-        return SettingsPageStateNotifier(
-          repository: ref.watch(authenticationService),
-          sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
-        );
-      }),
-      onStateNotifierReady: (notifier) async =>
-          await notifier.initStateNotifier(),
-      builder: (
-        BuildContext context,
-        SettingsPageState state,
-        SettingsPageStateNotifier notifier,
-        WidgetRef ref,
-      ) {
-        if (state.isLoading) {
-          return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
+    return WillPopScope(
+      onWillPop: () async {
+        final navigationBar =
+            MainPage.globalKey.currentWidget as BottomNavigationBar;
+        navigationBar.onTap!(0);
+        return false;
+      },
+      child:
+          StateNotifierConnector<SettingsPageStateNotifier, SettingsPageState>(
+        stateNotifierProvider:
+            StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>(
+                (StateNotifierProviderRef<SettingsPageStateNotifier,
+                        SettingsPageState>
+                    ref) {
+          return SettingsPageStateNotifier(
+            repository: ref.watch(authenticationService),
+            sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
+          );
+        }),
+        onStateNotifierReady: (notifier) async =>
+            await notifier.initStateNotifier(),
+        builder: (
+          BuildContext context,
+          SettingsPageState state,
+          SettingsPageStateNotifier notifier,
+          WidgetRef ref,
+        ) {
+          if (state.isLoading) {
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+
+          return Scaffold(
+            appBar: PreferredSize(
+              preferredSize: const Size.fromHeight(54.0),
+              child: AppBar(
+                elevation: 0.7,
+                foregroundColor: Colors.black,
+                centerTitle: true,
+                title: const Text(
+                  'Settings',
+                  style: TextStyle(fontSize: 16),
+                ),
+                backgroundColor: backgroundColor,
+              ),
+            ),
+            body: SingleChildScrollView(
+              child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: state.authenticationStatus ==
+                          AuthenticationStatus.authenticated
+                      ? _buildUserView(
+                          context,
+                          state,
+                          notifier,
+                          ref,
+                        )
+                      : RegistrationView(
+                          nextWidget: ButtonSecondary(
+                            label: 'Sign In with Google',
+                            onTap: _onTapButtonSignIn(
+                              context,
+                              notifier,
+                              ref,
+                            ),
+                            leftIcon: IconPath.iconGoogle,
+                          ),
+                        )),
             ),
           );
-        }
-
-        return Scaffold(
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(54.0),
-            child: AppBar(
-              elevation: 0.7,
-              foregroundColor: Colors.black,
-              centerTitle: true,
-              title: const Text(
-                'Settings',
-                style: TextStyle(fontSize: 16),
-              ),
-              backgroundColor: backgroundColor,
-            ),
-          ),
-          body: SingleChildScrollView(
-            child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: state.authenticationStatus ==
-                        AuthenticationStatus.authenticated
-                    ? _buildUserView(
-                        context,
-                        state,
-                        notifier,
-                        ref,
-                      )
-                    : RegistrationView(
-                        nextWidget: ButtonSecondary(
-                          label: 'Sign In with Google',
-                          onTap: _onTapButtonSignIn(
-                            context,
-                            notifier,
-                            ref,
-                          ),
-                          leftIcon: IconPath.iconGoogle,
-                        ),
-                      )),
-          ),
-        );
-      },
+        },
+      ),
     );
   }
 

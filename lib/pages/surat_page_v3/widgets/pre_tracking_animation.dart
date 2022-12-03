@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:lottie/lottie.dart';
 import 'package:qurantafsir_flutter/shared/constants/animation_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
