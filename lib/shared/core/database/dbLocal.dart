@@ -303,19 +303,22 @@ class DbLocal {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
     final String formattedDate = formatter.format(now);
+    final String currentTimestampWithTz = DateUtils.formatISOTime(now);
     final Database dbClient = await _db;
 
     int progressID = await dbClient.transaction<int>((txn) async {
       late int summaryID;
-      if (summary.id == null) {
-        summaryID = await txn.insert(
-          HabitDailySummaryTable.tableName,
-          summary.toMap(),
+      if (summary.id == null || summary.formattedDate != formattedDate) {
+        final HabitDailySummary newSummary = HabitDailySummary(
+          target: summary.target,
+          totalPages: summary.totalPages,
+          date: summary.date,
+          targetUpdatedTime: currentTimestampWithTz,
         );
-      } else if (summary.formattedDate != formattedDate) {
+
         summaryID = await txn.insert(
           HabitDailySummaryTable.tableName,
-          summary.toMap(),
+          newSummary.toMap(),
         );
       } else {
         summaryID = summary.id!;
@@ -410,9 +413,8 @@ class DbLocal {
   Future<int> insertHabitDailySummary(
       DateTime date, int target, int totalPages) async {
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
-    final DateFormat formatTime = DateFormat("HH:mm:ss");
     final String formattedDate = formatter.format(date);
-    final String formattedTime = formatTime.format(date);
+    final String currentTimestampWithTz = DateUtils.formatISOTime(date);
     var dbClient = await _db;
 
     return await dbClient.insert(
@@ -421,15 +423,15 @@ class DbLocal {
         HabitDailySummaryTable.target: target,
         HabitDailySummaryTable.totalPages: totalPages,
         HabitDailySummaryTable.date: formattedDate,
-        HabitDailySummaryTable.targetUpdatedTime: formattedTime,
+        HabitDailySummaryTable.targetUpdatedTime: currentTimestampWithTz,
       },
     );
   }
 
   Future<int> updateHabitDailySummary(
       int id, DateTime date, int target, int totalPages) async {
-    final DateFormat formatTime = DateFormat("HH:mm:ss");
-    final String formattedTime = formatTime.format(date);
+    final String currentTimestampWithTz = DateUtils.formatISOTime(date);
+
     var dbClient = await _db;
 
     return await dbClient.update(
@@ -437,7 +439,8 @@ class DbLocal {
       {
         HabitDailySummaryTable.target: target,
         HabitDailySummaryTable.totalPages: totalPages,
-        HabitDailySummaryTable.targetUpdatedTime: formattedTime,
+        HabitDailySummaryTable.targetUpdatedTime: currentTimestampWithTz,
+        HabitDailySummaryTable.updatedAt: currentTimestampWithTz,
       },
       where: "${HabitDailySummaryTable.columnID} = ?",
       whereArgs: [id],
