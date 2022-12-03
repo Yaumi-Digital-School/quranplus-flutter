@@ -13,4 +13,5 @@ class IconPath {
   static String iconNoWifi = 'images/icon_no_wifi.png';
   static String iconRefresh = 'images/icon_refresh.png';
   static String iconChecklistCheck = 'images/icon_checklist_check.png';
+  static String iconTargetArrow = 'images/Icon_target_arrow.png';
 }
