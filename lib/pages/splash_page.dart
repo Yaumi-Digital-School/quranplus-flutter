@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 
 class SplashPage extends StatefulWidget {

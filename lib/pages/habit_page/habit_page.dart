@@ -2,8 +2,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_state_notifier.dart';
+import 'package:qurantafsir_flutter/pages/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
-import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
@@ -24,67 +24,77 @@ class HabitPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StateNotifierConnector<HabitPageStateNotifier, HabitPageState>(
-      stateNotifierProvider:
-          StateNotifierProvider<HabitPageStateNotifier, HabitPageState>(
-        (StateNotifierProviderRef<HabitPageStateNotifier, HabitPageState> ref) {
-          return HabitPageStateNotifier(
-            repository: ref.watch(authenticationService),
-            sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
-          );
+    return WillPopScope(
+      onWillPop: () async {
+        final navigationBar =
+            MainPage.globalKey.currentWidget as BottomNavigationBar;
+        navigationBar.onTap!(0);
+        return false;
+      },
+      child: StateNotifierConnector<HabitPageStateNotifier, HabitPageState>(
+        stateNotifierProvider:
+            StateNotifierProvider<HabitPageStateNotifier, HabitPageState>(
+          (StateNotifierProviderRef<HabitPageStateNotifier, HabitPageState>
+              ref) {
+            return HabitPageStateNotifier(
+              repository: ref.watch(authenticationService),
+              sharedPreferenceService:
+                  ref.watch(sharedPreferenceServiceProvider),
+            );
 
-          // ignore: dead_code
-        },
-      ),
-      onStateNotifierReady: (notifier) async =>
-          await notifier.initStateNotifier(),
-      builder: (
-        BuildContext context,
-        HabitPageState state,
-        HabitPageStateNotifier notifier,
-        WidgetRef ref,
-      ) {
-        if (state.isLoading) {
-          return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-        return Scaffold(
-            appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(54.0),
-              child: AppBar(
-                elevation: 0.7,
-                foregroundColor: Colors.black,
-                centerTitle: true,
-                title: const Text(
-                  'Habit',
-                  style: TextStyle(fontSize: 16),
-                ),
-                backgroundColor: backgroundColor,
+            // ignore: dead_code
+          },
+        ),
+        onStateNotifierReady: (notifier) async =>
+            await notifier.initStateNotifier(),
+        builder: (
+          BuildContext context,
+          HabitPageState state,
+          HabitPageStateNotifier notifier,
+          WidgetRef ref,
+        ) {
+          if (state.isLoading) {
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
               ),
-            ),
-            body: SingleChildScrollView(
-              child: state.authenticationStatus ==
-                      AuthenticationStatus.authenticated
-                  ? const HabitProgressView()
-                  : Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: RegistrationView(
-                        nextWidget: ButtonSecondary(
-                          label: 'Sign In with Google',
-                          onTap: _onTapButtonSignIn(
-                            context,
-                            notifier,
-                            ref,
+            );
+          }
+          return Scaffold(
+              appBar: PreferredSize(
+                preferredSize: const Size.fromHeight(54.0),
+                child: AppBar(
+                  elevation: 0.7,
+                  foregroundColor: Colors.black,
+                  centerTitle: true,
+                  title: const Text(
+                    'Habit',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  backgroundColor: backgroundColor,
+                ),
+              ),
+              body: SingleChildScrollView(
+                child: state.authenticationStatus ==
+                        AuthenticationStatus.authenticated
+                    ? const HabitProgressView()
+                    : Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: RegistrationView(
+                          nextWidget: ButtonSecondary(
+                            label: 'Sign In with Google',
+                            onTap: _onTapButtonSignIn(
+                              context,
+                              notifier,
+                              ref,
+                            ),
+                            leftIcon: IconPath.iconGoogle,
                           ),
-                          leftIcon: IconPath.iconGoogle,
                         ),
                       ),
-                    ),
-            ));
-      },
+              ));
+        },
+      ),
     );
   }
 

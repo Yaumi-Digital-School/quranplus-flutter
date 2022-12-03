@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:qurantafsir_flutter/pages/main_page.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/user_api.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/user.dart';

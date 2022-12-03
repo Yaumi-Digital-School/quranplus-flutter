@@ -5,7 +5,6 @@ import 'package:qurantafsir_flutter/pages/main_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page.dart';
 import 'package:qurantafsir_flutter/pages/splash_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/pre_tracking_animation.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
@@ -60,7 +59,6 @@ class MyApp extends StatelessWidget {
           title: AppConstants.appName,
           theme: ThemeData(
               primarySwatch: Colors.blue, backgroundColor: backgroundColor),
-          initialRoute: RoutePaths.routeSplash,
           navigatorObservers: <NavigatorObserver>[observer],
           onGenerateRoute: (RouteSettings settings) {
             late Widget selectedRouteWidget;

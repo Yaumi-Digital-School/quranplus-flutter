@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/card_start_habit.dart';
 import 'package:qurantafsir_flutter/pages/main_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
