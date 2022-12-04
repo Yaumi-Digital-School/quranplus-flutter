@@ -48,7 +48,6 @@ class HabitDailySummary {
     map[HabitDailySummaryTable.totalPages] = totalPages;
     map[HabitDailySummaryTable.date] = formattedDate;
     map[HabitDailySummaryTable.targetUpdatedTime] = targetUpdatedTime;
-    map[HabitDailySummaryTable.totalPages] = totalPages;
     return map;
   }
 
