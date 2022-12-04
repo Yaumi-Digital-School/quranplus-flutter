@@ -92,7 +92,9 @@ class HomePageV2 extends StatelessWidget {
               backgroundColor: backgroundColor,
             ),
           ),
-          body: const ListSuratByJuz(),
+          body: ListSuratByJuz(
+            notifier: notifier,
+          ),
         );
       },
     );
@@ -107,7 +109,12 @@ class HomePageV2 extends StatelessWidget {
 }
 
 class ListSuratByJuz extends StatelessWidget {
-  const ListSuratByJuz({Key? key}) : super(key: key);
+  const ListSuratByJuz({
+    Key? key,
+    required this.notifier,
+  }) : super(key: key);
+
+  final HomePageStateNotifier notifier;
   double diameterButtonSearch(BuildContext context) =>
       MediaQuery.of(context).size.width * 1 / 6;
   // Temporary value to include/exclude habit in build
@@ -176,7 +183,10 @@ class ListSuratByJuz extends StatelessWidget {
                                   ),
                                 ),
                                 _buildListSuratByJuz(
-                                    context, state.juzElements![index]),
+                                  context: context,
+                                  juz: state.juzElements![index],
+                                  notifier: notifier,
+                                ),
                               ],
                             );
                           },
@@ -236,7 +246,11 @@ class ListSuratByJuz extends StatelessWidget {
     );
   }
 
-  Widget _buildListSuratByJuz(BuildContext context, JuzElement juz) {
+  Widget _buildListSuratByJuz({
+    required BuildContext context,
+    required JuzElement juz,
+    required HomePageStateNotifier notifier,
+  }) {
     final List<SuratByJuz> surats = juz.surat;
 
     return Padding(
@@ -288,11 +302,11 @@ class ListSuratByJuz extends StatelessWidget {
               style: suratFontStyle,
               textAlign: TextAlign.right,
             ),
-            onTap: () {
+            onTap: () async {
               int page = surats[index].startPageToInt;
               int startPageInIndexValue = page - 1;
 
-              Navigator.pushNamed(
+              final dynamic param = await Navigator.pushNamed(
                 context,
                 RoutePaths.routeSurahPage,
                 arguments: SuratPageV3Param(
@@ -300,6 +314,12 @@ class ListSuratByJuz extends StatelessWidget {
                   firstPagePointerIndex: surats[index].startPageID,
                 ),
               );
+
+              if (param != null && param is SuratPageV3OnPopParam) {
+                if (param.isHabitDailySummaryChanged) {
+                  notifier.getCurrentHabitDailySummaryListLocal();
+                }
+              }
             },
           );
         },

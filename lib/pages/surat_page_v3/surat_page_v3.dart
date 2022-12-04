@@ -45,10 +45,12 @@ class SuratPageV3OnPopParam {
   SuratPageV3OnPopParam({
     this.isBookmarkChanged = false,
     this.isFavoriteAyahChanged = false,
+    this.isHabitDailySummaryChanged = false,
   });
 
   final bool isBookmarkChanged;
   final bool isFavoriteAyahChanged;
+  final bool isHabitDailySummaryChanged;
 }
 
 class SuratPageV3Param {
@@ -152,14 +154,10 @@ class _SuratPageV3State extends State<SuratPageV3> {
         }
 
         return WillPopScope(
-          onWillPop: () async {
-            final SuratPageV3OnPopParam param = SuratPageV3OnPopParam(
-              isBookmarkChanged: notifier.isBookmarkChanged,
-              isFavoriteAyahChanged: notifier.isFavoriteAyahChanged,
-            );
-            Navigator.pop(context, param);
-            return true;
-          },
+          onWillPop: () async => _onTapBack(
+            notifier: notifier,
+            state: state,
+          ),
           child: Scaffold(
             key: _scaffoldKey,
             appBar: PreferredSize(
@@ -171,15 +169,10 @@ class _SuratPageV3State extends State<SuratPageV3> {
                     color: Colors.black,
                     size: 30,
                   ),
-                  onPressed: () {
-                    final SuratPageV3OnPopParam param = SuratPageV3OnPopParam(
-                      isBookmarkChanged: notifier.isBookmarkChanged,
-                      isFavoriteAyahChanged: notifier.isFavoriteAyahChanged,
-                    );
-                    Navigator.of(context).pop(
-                      param,
-                    );
-                  },
+                  onPressed: () async => _onTapBack(
+                    notifier: notifier,
+                    state: state,
+                  ),
                 ),
                 automaticallyImplyLeading: false,
                 elevation: 2.5,
@@ -298,6 +291,28 @@ class _SuratPageV3State extends State<SuratPageV3> {
         );
       },
     );
+  }
+
+  bool _onTapBack({
+    required SuratPageStateNotifier notifier,
+    required SuratPageState state,
+  }) {
+    if (!state.isRecording) {
+      final SuratPageV3OnPopParam param = SuratPageV3OnPopParam(
+        isBookmarkChanged: notifier.isBookmarkChanged,
+        isFavoriteAyahChanged: notifier.isFavoriteAyahChanged,
+        isHabitDailySummaryChanged: notifier.isHabitDailySummaryChanged,
+      );
+      Navigator.pop(context, param);
+      return true;
+    }
+
+    _buildTrackerSubmissionDialog(
+      notifier,
+      isFromTapBack: true,
+    );
+
+    return true;
   }
 
   Widget _buildPageWithTracker({
@@ -839,9 +854,10 @@ class _SuratPageV3State extends State<SuratPageV3> {
   }
 
   Future<void> _buildTrackerSubmissionDialog(
-    SuratPageStateNotifier notifier,
-  ) async {
-    showDialog(
+    SuratPageStateNotifier notifier, {
+    bool isFromTapBack = false,
+  }) async {
+    showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -853,9 +869,11 @@ class _SuratPageV3State extends State<SuratPageV3> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              const Text(
-                "You've finished reading....",
-                style: TextStyle(
+              Text(
+                isFromTapBack
+                    ? 'Please submit your reading progress before back to the Homepage'
+                    : "You've finished reading....",
+                style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 10,
                   color: neutral900,
@@ -888,6 +906,16 @@ class _SuratPageV3State extends State<SuratPageV3> {
                 onTap: () async {
                   final bool isComplete = await notifier.stopRecording();
                   Navigator.pop(context);
+
+                  if (isFromTapBack) {
+                    HabitProgressPostTrackingDialog.onTapBackTrackingDialog(
+                      context: context,
+                      sharedPreferenceService: notifier.sharedPreferenceService,
+                      isComplete: isComplete,
+                    );
+                    return true;
+                  }
+
                   HabitProgressPostTrackingDialog.onSubmitPostTrackingDialog(
                     context: context,
                     sharedPreferenceService: notifier.sharedPreferenceService,

@@ -13,17 +13,22 @@ class ButtonSecondary extends StatelessWidget {
     required this.onTap,
     this.leftIcon,
     this.textStyle,
+    this.size = ButtonSize.regular,
   }) : super(key: key);
 
   final String? leftIcon;
   final String label;
   final TextStyle? textStyle;
   final Function()? onTap;
+  final ButtonSize size;
 
   @override
   Widget build(BuildContext context) {
+    final double width = size == ButtonSize.regular ? double.infinity : 130;
+    final double labelFontSize = size == ButtonSize.regular ? 14 : 12;
+
     return SizedBox(
-      width: double.infinity,
+      width: width,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
@@ -36,12 +41,12 @@ class ButtonSecondary extends StatelessWidget {
           minimumSize: const Size.fromHeight(40),
         ),
         onPressed: onTap,
-        child: _childButton(leftIcon, label),
+        child: _childButton(leftIcon, label, labelFontSize),
       ),
     );
   }
 
-  Widget _childButton(String? leftIcon, String label) {
+  Widget _childButton(String? leftIcon, String label, double labelFontSize) {
     if (leftIcon != null) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -54,14 +59,23 @@ class ButtonSecondary extends StatelessWidget {
           ),
           Text(
             label,
-            style: bodySemibold2.apply(color: primary500),
+            style: bodySemibold2
+                .apply(
+                  color: primary500,
+                )
+                .copyWith(
+                  fontSize: labelFontSize,
+                ),
           )
         ],
       );
     }
     return Text(
       label,
-      style: textStyle ?? bodySemibold2.apply(color: primary500),
+      style: textStyle ??
+          bodySemibold2.apply(color: primary500).copyWith(
+                fontSize: labelFontSize,
+              ),
     );
   }
 }
@@ -72,25 +86,31 @@ class ButtonNeutral extends StatelessWidget {
     required this.label,
     required this.onTap,
     this.textStyle,
+    this.size = ButtonSize.regular,
   }) : super(key: key);
 
   final String label;
   final Function()? onTap;
   final TextStyle? textStyle;
+  final ButtonSize size;
 
   @override
   Widget build(
     BuildContext context,
   ) {
+    final double width = size == ButtonSize.regular ? double.infinity : 100;
+    final double labelFontSize = size == ButtonSize.regular ? 14 : 12;
+
     return SizedBox(
-      width: double.infinity,
+      width: width,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-              side: const BorderSide(color: darkGreen, width: 1)),
+            borderRadius: BorderRadius.circular(10),
+            side: const BorderSide(color: darkGreen, width: 1),
+          ),
           padding: const EdgeInsets.all(6.0),
-          primary: Colors.white,
+          primary: Colors.transparent,
           onPrimary: primary500,
           elevation: 0,
           minimumSize: const Size.fromHeight(40),
@@ -98,7 +118,11 @@ class ButtonNeutral extends StatelessWidget {
         onPressed: onTap,
         child: Text(
           label,
-          style: textStyle ?? bodySemibold2.copyWith(color: darkGreen),
+          style: textStyle ??
+              bodySemibold2.copyWith(
+                color: darkGreen,
+                fontSize: labelFontSize,
+              ),
         ),
       ),
     );

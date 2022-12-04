@@ -76,12 +76,20 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
         .getCurrentDayHabitDailySummaryListLocal();
 
     state = state.copyWith(
-        token: _token,
-        name: _name,
-        juzElements: _juzElements,
-        feedbackUrl: _feedbackUrl ?? '',
-        ayahPage: _ayahPage,
-        dailySummary: _dailySummary);
+      token: _token,
+      name: _name,
+      juzElements: _juzElements,
+      feedbackUrl: _feedbackUrl ?? '',
+      ayahPage: _ayahPage,
+      dailySummary: _dailySummary,
+    );
+  }
+
+  Future<void> getCurrentHabitDailySummaryListLocal() async {
+    _dailySummary = await _habitDailySummaryService
+        .getCurrentDayHabitDailySummaryListLocal();
+
+    state = state.copyWith(dailySummary: _dailySummary);
   }
 
   Future<void> _getVerseToAyahPage() async {
