@@ -57,26 +57,6 @@ class HabitProgressStateNotifier extends BaseStateNotifier<HabitProgressState> {
         isLoading: true,
       );
       db = DbLocal();
-      // Temporary, mock untuk testing endpoint
-      // await db.upsertHabitDailySummaryOnSync(
-      //   response: <HabitSyncResponseItem>[
-      //     HabitSyncResponseItem(
-      //       target: 15,
-      //       totalPages: 6,
-      //       date: '2022-12-04',
-      //       targetUpdatedAt: '2022-12-04T12:00:23+0700',
-      //       habitProgresses: <HabitSyncResponseProgressItem>[
-      //         HabitSyncResponseProgressItem(
-      //           uuid: 'c76c3e2d-889f-42b4-9605-e4c238b92174',
-      //           pages: 6,
-      //           description: 'keren',
-      //           inputTime: '12:00:23',
-      //           type: 'RECORD',
-      //         ),
-      //       ],
-      //     ),
-      //   ],
-      // );
       DateTime now = DateTime.now();
       String formattedDate = DateFormat('MMMM yyyy').format(now);
       final List<HabitDailySummary> listHabit = await db.getLastSevenDays(now);
