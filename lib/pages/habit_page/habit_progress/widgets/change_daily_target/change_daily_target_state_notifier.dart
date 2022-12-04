@@ -69,12 +69,19 @@ class ChangeDailyTargetStateNotifier
       final currentDay = DateTime.now();
 
       if (_habitDailySummary.id != null) {
-        await db.updateHabitDailySummary(_habitDailySummary.id!, currentDay,
-            totalPagesTarget, _habitDailySummary.totalPages);
+        await db.updateHabitDailySummary(
+          id: _habitDailySummary.id!,
+          date: currentDay,
+          target: totalPagesTarget,
+          totalPages: _habitDailySummary.totalPages,
+        );
       }
       if (_habitDailySummary.id == null) {
         await db.insertHabitDailySummary(
-            currentDay, totalPagesTarget, _habitDailySummary.totalPages);
+          date: currentDay,
+          target: totalPagesTarget,
+          totalPages: _habitDailySummary.totalPages,
+        );
       }
 
       state = state.copyWith(

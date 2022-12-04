@@ -1,23 +1,23 @@
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_progress.dart';
 
 class HabitProgress {
-  final int columnID;
+  final int? columnID;
   final String uuid;
   final int pages;
   final String description;
-  final DateTime createdAt;
+  final DateTime? createdAt;
   final DateTime? updatedAt;
   final int habitDailySummaryID;
   final String inputTime;
   final String type;
 
   const HabitProgress({
-    required this.columnID,
+    this.columnID,
     required this.uuid,
     required this.pages,
     required this.description,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
     required this.habitDailySummaryID,
     required this.inputTime,
     required this.type,
