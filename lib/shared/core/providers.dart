@@ -73,9 +73,14 @@ final Provider<BookmarksService> bookmarksService =
 });
 
 final Provider<HabitDailySummaryService> habitDailySummaryService =
-    Provider<HabitDailySummaryService>((ref) {
-  return HabitDailySummaryService();
-});
+    Provider<HabitDailySummaryService>(
+  (ref) {
+    final SharedPreferenceService sharedPreferenceService =
+        ref.watch(sharedPreferenceServiceProvider);
+    return HabitDailySummaryService(
+        sharedPreferenceService: sharedPreferenceService);
+  },
+);
 
 final Provider<FavoriteAyahsService> favoriteAyahsService =
     Provider<FavoriteAyahsService>((ref) {
