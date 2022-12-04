@@ -44,6 +44,7 @@ class HabitDailySummary {
     final String formattedDate = formatter.format(date);
 
     final Map<String, dynamic> map = <String, dynamic>{};
+    map[HabitDailySummaryTable.columnID] = id;
     map[HabitDailySummaryTable.target] = target;
     map[HabitDailySummaryTable.totalPages] = totalPages;
     map[HabitDailySummaryTable.date] = formattedDate;

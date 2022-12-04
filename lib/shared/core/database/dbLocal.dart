@@ -235,6 +235,34 @@ class DbLocal {
     return HabitDailySummary.fromJson(currentDataQuery);
   }
 
+  Future<HabitDailySummary?> getHabitDailySummaryByParams({
+    DatabaseExecutor? dbClient,
+    String? date,
+  }) async {
+    String whereClause = '';
+    List<String> whereArgs = <String>[];
+
+    if (date != null) {
+      whereClause += 'date(${HabitDailySummaryTable.date}) = date(?)';
+      whereArgs.add(date);
+    }
+
+    dbClient ??= await _db;
+    List<Map<String, Object?>> result = await dbClient.query(
+      HabitDailySummaryTable.tableName,
+      where: whereClause,
+      whereArgs: whereArgs,
+      orderBy: '${HabitDailySummaryTable.date} DESC',
+      limit: 1,
+    );
+
+    if (result.isEmpty) {
+      return null;
+    }
+
+    return HabitDailySummary.fromJson(result[0]);
+  }
+
   Future<List<HabitDailySummary>> getLastSevenDays(DateTime date) async {
     DateFormat dateFormat = DateFormat("yyyy-MM-dd");
     final cleanDate = DateTime(date.year, date.month, date.day);
@@ -412,14 +440,18 @@ class DbLocal {
     return HabitDailySummary.fromJson(currentDataQuery);
   }
 
-  Future<int> insertHabitDailySummary(
-      DateTime date, int target, int totalPages) async {
+  Future<int> insertHabitDailySummary({
+    DatabaseExecutor? db,
+    required DateTime date,
+    required int target,
+    required int totalPages,
+  }) async {
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
     final String formattedDate = formatter.format(date);
     final String currentTimestampWithTz = DateUtils.formatISOTime(date);
-    var dbClient = await _db;
+    db ??= await _db;
 
-    return await dbClient.insert(
+    return await db.insert(
       HabitDailySummaryTable.tableName,
       {
         HabitDailySummaryTable.target: target,
@@ -430,23 +462,95 @@ class DbLocal {
     );
   }
 
-  Future<int> updateHabitDailySummary(
-      int id, DateTime date, int target, int totalPages) async {
-    final String currentTimestampWithTz = DateUtils.formatISOTime(date);
+  Future<int> updateHabitDailySummary({
+    DatabaseExecutor? db,
+    required int id,
+    required DateTime date,
+    required int target,
+    required int totalPages,
+  }) async {
+    final String targetUpdatedTimeWithTz = DateUtils.formatISOTime(date);
+    final DateTime now = DateTime.now();
+    final String nowWithTz = DateUtils.formatISOTime(now);
+    db ??= await _db;
 
-    var dbClient = await _db;
-
-    return await dbClient.update(
+    return await db.update(
       HabitDailySummaryTable.tableName,
       {
         HabitDailySummaryTable.target: target,
         HabitDailySummaryTable.totalPages: totalPages,
-        HabitDailySummaryTable.targetUpdatedTime: currentTimestampWithTz,
-        HabitDailySummaryTable.updatedAt: currentTimestampWithTz,
+        HabitDailySummaryTable.targetUpdatedTime: targetUpdatedTimeWithTz,
+        HabitDailySummaryTable.updatedAt: nowWithTz,
       },
       where: "${HabitDailySummaryTable.columnID} = ?",
       whereArgs: [id],
     );
+  }
+
+  Future<void> upsertHabitDailySummaryOnSync({
+    required List<HabitSyncResponseItem> response,
+  }) async {
+    List<HabitProgress> progressToBeCreated = <HabitProgress>[];
+    Database dbClient = await _db;
+    await dbClient.transaction((txn) async {
+      for (HabitSyncResponseItem item in response) {
+        late int selectedID;
+        final HabitDailySummary? data = await getHabitDailySummaryByParams(
+          dbClient: txn,
+          date: item.date,
+        );
+
+        if (data != null) {
+          selectedID = data.id!;
+          await updateHabitDailySummary(
+            db: txn,
+            id: selectedID,
+            date: DateTime.parse(item.targetUpdatedAt),
+            target: item.target,
+            totalPages: item.totalPages,
+          );
+        } else {
+          selectedID = await insertHabitDailySummary(
+            db: txn,
+            date: DateTime.parse(item.date),
+            target: item.target,
+            totalPages: item.totalPages,
+          );
+        }
+
+        for (HabitSyncResponseProgressItem progressItem
+            in item.habitProgresses) {
+          final HabitProgress progress = HabitProgress(
+            uuid: progressItem.uuid,
+            pages: progressItem.pages,
+            description: progressItem.description,
+            habitDailySummaryID: selectedID,
+            inputTime: progressItem.inputTime,
+            type: progressItem.type,
+          );
+
+          progressToBeCreated.add(progress);
+        }
+      }
+
+      for (HabitProgress progress in progressToBeCreated) {
+        await txn.rawInsert(
+          '''
+            INSERT OR IGNORE INTO ${HabitProgressTable.tableName} 
+            (${HabitProgressTable.uuid}, ${HabitProgressTable.description}, ${HabitProgressTable.habitDailySummaryID}, ${HabitProgressTable.inputTime}, ${HabitProgressTable.type}, ${HabitProgressTable.pages})
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''',
+          [
+            progress.uuid,
+            progress.description,
+            progress.habitDailySummaryID,
+            progress.inputTime,
+            progress.type,
+            progress.pages,
+          ],
+        );
+      }
+    });
   }
 
   Future<List<HabitSyncRequestDailySummaryItem>> getLocalDbToSync(

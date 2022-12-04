@@ -84,15 +84,18 @@ class AddDailyProgressManualStateNotifier
       if (_habitDailySummary.id != null) {
         id = _habitDailySummary.id!;
         await db.updateHabitDailySummary(
-          id,
-          currentDay,
-          _habitDailySummary.target,
-          totalPages + _habitDailySummary.totalPages,
+          id: id,
+          date: currentDay,
+          target: _habitDailySummary.target,
+          totalPages: totalPages + _habitDailySummary.totalPages,
         );
       }
       if (_habitDailySummary.id == null) {
         id = await db.insertHabitDailySummary(
-            currentDay, _habitDailySummary.target, totalPages);
+          date: currentDay,
+          target: _habitDailySummary.target,
+          totalPages: totalPages,
+        );
       }
       var uuid = const Uuid();
       var v1 = uuid.v1();
