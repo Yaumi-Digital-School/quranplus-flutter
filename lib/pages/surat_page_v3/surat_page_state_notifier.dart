@@ -612,7 +612,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     final int totalReadPages =
         currentRecordedReadPages + (_currentSummary!.totalPages);
 
-    if (totalReadPages > (_currentSummary!.target)) {
+    if (totalReadPages >= (_currentSummary!.target)) {
       return true;
     }
 
