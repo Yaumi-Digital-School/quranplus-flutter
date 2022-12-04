@@ -8,6 +8,8 @@ import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_progress.dart';
+import 'package:qurantafsir_flutter/shared/core/models/habit_sync.dart';
+import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -445,5 +447,62 @@ class DbLocal {
       where: "${HabitDailySummaryTable.columnID} = ?",
       whereArgs: [id],
     );
+  }
+
+  Future<List<HabitSyncRequestDailySummaryItem>> getLocalDbToSync(
+      SharedPreferenceService sharedPreferenceService) async {
+    try {
+      final lastSync = sharedPreferenceService.getLastSync();
+      final lastSyncDate = lastSync.isEmpty ? "2022-01-01" : lastSync;
+      var dbClient = await _db;
+
+      final resultQueryHabitDaily = await dbClient.rawQuery(
+        '''
+            SELECT ${HabitDailySummaryTable.target},
+             ${HabitDailySummaryTable.date},
+             ${HabitDailySummaryTable.targetUpdatedTime},
+             ${HabitDailySummaryTable.columnID}
+             FROM ${HabitDailySummaryTable.tableName}
+             WHERE datetime(${HabitDailySummaryTable.updatedAt}) > datetime($lastSyncDate)
+             ORDER BY  ${HabitDailySummaryTable.date} ASC;
+       ''',
+      );
+      final List<HabitSyncRequestDailySummaryItem> result = [];
+
+      for (var element in resultQueryHabitDaily) {
+        final habitProgress = await getHabitProgressToSync(
+            element[HabitDailySummaryTable.columnID] as int, lastSyncDate);
+        result.add(HabitSyncRequestDailySummaryItem(
+          date: element[HabitDailySummaryTable.date] as String,
+          progresses: habitProgress,
+          target: element[HabitDailySummaryTable.target] as int,
+          targetUpdatedAt:
+              element[HabitDailySummaryTable.targetUpdatedTime] as String,
+        ));
+      }
+      return result;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Future<List<HabitSyncRequestProgressItem>> getHabitProgressToSync(
+      int id, String lastSyncDate) async {
+    var dbClient = await _db;
+    final resultQueryHabitProgress = await dbClient.rawQuery(
+      '''SELECT 
+         ${HabitProgressTable.uuid},
+         ${HabitProgressTable.pages},
+         ${HabitProgressTable.description},
+         ${HabitProgressTable.inputTime}
+         FROM ${HabitProgressTable.tableName}
+         WHERE datetime(${HabitProgressTable.createdAt}) > datetime($lastSyncDate)
+      ''',
+    );
+    final List<HabitSyncRequestProgressItem> result = [];
+    for (var element in resultQueryHabitProgress) {
+      result.add(HabitSyncRequestProgressItem.fromJson(element));
+    }
+    return result;
   }
 }

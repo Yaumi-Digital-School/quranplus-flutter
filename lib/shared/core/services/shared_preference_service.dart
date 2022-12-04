@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
+import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferenceService {
@@ -11,6 +12,7 @@ class SharedPreferenceService {
   final String _apiTokenKey = "api-token";
   final String _usernameKey = "username-token";
   final String _forceLoginParam = "force-login-param";
+  final String _lastSync = "last-sync";
 
   Future<void> init() async {
     _sharedPreferences = await SharedPreferences.getInstance();
@@ -37,6 +39,15 @@ class SharedPreferenceService {
 
   Future<void> setApiToken(String? token) async {
     _sharedPreferences.setString(_apiTokenKey, token ?? '');
+  }
+
+  Future<void> setLastSync(DateTime date) async {
+    final formattedLastSync = DateUtils.formatISOTime(date);
+    await _sharedPreferences.setString(_lastSync, formattedLastSync);
+  }
+
+  String getLastSync() {
+    return _sharedPreferences.getString(_lastSync) ?? '';
   }
 
   String getApiToken() {
