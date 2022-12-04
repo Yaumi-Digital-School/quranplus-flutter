@@ -65,6 +65,7 @@ class HabitPage extends StatelessWidget {
                 preferredSize: const Size.fromHeight(54.0),
                 child: AppBar(
                   elevation: 0.7,
+                  automaticallyImplyLeading: false,
                   foregroundColor: Colors.black,
                   centerTitle: true,
                   title: const Text(
