@@ -368,7 +368,8 @@ class DbLocal {
       final int totalReadPages = pages + (summary.totalPages);
       await txn.rawUpdate('''
         UPDATE ${HabitDailySummaryTable.tableName}
-        SET ${HabitDailySummaryTable.totalPages} = $totalReadPages
+        SET ${HabitDailySummaryTable.totalPages} = $totalReadPages,
+            ${HabitDailySummaryTable.updatedAt} = '$currentTimestampWithTz'
         WHERE ${HabitDailySummaryTable.columnID} = ?
       ''', [summaryID]);
 
@@ -567,23 +568,29 @@ class DbLocal {
              ${HabitDailySummaryTable.targetUpdatedTime},
              ${HabitDailySummaryTable.columnID}
              FROM ${HabitDailySummaryTable.tableName}
-             WHERE datetime(${HabitDailySummaryTable.updatedAt}) > datetime($lastSyncDate)
-             ORDER BY  ${HabitDailySummaryTable.date} ASC;
+             WHERE datetime(${HabitDailySummaryTable.updatedAt}) > datetime('$lastSyncDate')
+             ORDER BY ${HabitDailySummaryTable.date} ASC;
        ''',
       );
       final List<HabitSyncRequestDailySummaryItem> result = [];
 
       for (var element in resultQueryHabitDaily) {
         final habitProgress = await getHabitProgressToSync(
-            element[HabitDailySummaryTable.columnID] as int, lastSyncDate);
-        result.add(HabitSyncRequestDailySummaryItem(
-          date: element[HabitDailySummaryTable.date] as String,
-          progresses: habitProgress,
-          target: element[HabitDailySummaryTable.target] as int,
-          targetUpdatedAt:
-              element[HabitDailySummaryTable.targetUpdatedTime] as String,
-        ));
+          element[HabitDailySummaryTable.columnID] as int,
+          lastSyncDate,
+        );
+
+        result.add(
+          HabitSyncRequestDailySummaryItem(
+            date: element[HabitDailySummaryTable.date] as String,
+            progresses: habitProgress,
+            target: element[HabitDailySummaryTable.target] as int,
+            targetUpdatedAt:
+                element[HabitDailySummaryTable.targetUpdatedTime] as String,
+          ),
+        );
       }
+
       return result;
     } catch (e) {
       return [];
@@ -598,15 +605,25 @@ class DbLocal {
          ${HabitProgressTable.uuid},
          ${HabitProgressTable.pages},
          ${HabitProgressTable.description},
-         ${HabitProgressTable.inputTime}
+         ${HabitProgressTable.inputTime},
+         ${HabitProgressTable.type}
          FROM ${HabitProgressTable.tableName}
-         WHERE datetime(${HabitProgressTable.createdAt}) > datetime($lastSyncDate)
+         WHERE datetime(${HabitProgressTable.createdAt}) > datetime('$lastSyncDate')
       ''',
     );
+
     final List<HabitSyncRequestProgressItem> result = [];
     for (var element in resultQueryHabitProgress) {
       result.add(HabitSyncRequestProgressItem.fromJson(element));
     }
     return result;
+  }
+
+  Future<void> clearTableHabit() async {
+    final Database db = await _db;
+    await db.transaction((txn) async {
+      await txn.delete(HabitProgressTable.tableName);
+      await txn.delete(HabitDailySummaryTable.tableName);
+    });
   }
 }

@@ -123,6 +123,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
             authenticationService: ref.watch(authenticationService),
             scrollController: scrollController,
             isLoggedIn: ref.watch(authenticationService).isLoggedIn,
+            habitDailySummaryService: ref.watch(habitDailySummaryService),
           );
         },
       ),

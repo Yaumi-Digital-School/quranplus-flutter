@@ -50,6 +50,10 @@ class SharedPreferenceService {
     return _sharedPreferences.getString(_lastSync) ?? '';
   }
 
+  Future<bool> removeLastSync() async {
+    return await _sharedPreferences.remove(_lastSync);
+  }
+
   String getApiToken() {
     return _sharedPreferences.getString(_apiTokenKey) ?? '';
   }
