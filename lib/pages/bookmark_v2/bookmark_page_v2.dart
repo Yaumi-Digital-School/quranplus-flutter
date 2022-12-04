@@ -70,17 +70,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                     style: TextStyle(fontSize: 16),
                   ),
                   backgroundColor: backgroundColor,
-                  leading: IconButton(
-                    onPressed: () => Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return const MainPage();
-                    })),
-                    icon: const Icon(
-                      Icons.arrow_back_ios,
-                      size: 16,
-                      color: Colors.black,
-                    ),
-                  ),
+                  automaticallyImplyLeading: false,
                 ),
               ),
               body: Padding(
