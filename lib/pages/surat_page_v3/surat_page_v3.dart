@@ -593,9 +593,10 @@ class _SuratPageV3State extends State<SuratPageV3> {
       onPageChanged: (pageIndex) {
         int initPage = widget.param.startPageInIndex + 1;
         int pageValue = pageIndex + 1;
-        notifier.currentPage.value = pageValue;
-        notifier.checkIsBookmarkExists(pageValue);
         notifier.changePageOnRecording(pageValue, initPage);
+        notifier.checkIsBookmarkExists(pageValue);
+
+        notifier.currentPage.value = pageValue;
         notifier.isTrackerVisible.value = true;
       },
       children: allPages,
@@ -936,7 +937,6 @@ class _SuratPageV3State extends State<SuratPageV3> {
     notifier.habitTrackerSubmissionController.value = TextEditingValue(
       text: notifier.recordedPagesList.length.toString(),
     );
-
     return SizedBox(
       width: 60,
       child: TextField(

@@ -219,11 +219,11 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
 
   void changePageOnRecording(int page, int startPage) {
     if (recordedPagesList.isEmpty) {
-      recordedPagesList.add(startPage);
-
       if (page > startPage) {
         recordedPagesAsRead.value += 1;
+        recordedPagesList.add(startPage);
       }
+
       return;
     }
 
@@ -236,7 +236,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
       return;
     }
 
-    recordedPagesList.add(page);
+    recordedPagesList.add(page - 1);
     recordedPagesAsRead.value += 1;
   }
 
