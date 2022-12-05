@@ -81,7 +81,7 @@ class DbMigration {
           ${HabitDailySummaryTable.date} date not null,
           ${HabitDailySummaryTable.targetUpdatedTime} time,
           ${HabitDailySummaryTable.createdAt} default CURRENT_TIMESTAMP not null,
-          ${HabitDailySummaryTable.updatedAt} date
+          ${HabitDailySummaryTable.updatedAt} default CURRENT_TIMESTAMP not null
         )
       ''');
       await txn.execute('''
@@ -94,7 +94,7 @@ class DbMigration {
           ${HabitProgressTable.type} text not null,
           ${HabitProgressTable.inputTime} time not null,
           ${HabitProgressTable.createdAt} default CURRENT_TIMESTAMP not null,
-          ${HabitProgressTable.updatedAt} date,
+          ${HabitProgressTable.updatedAt} default CURRENT_TIMESTAMP not null,
           CONSTRAINT habit_progress_uuid UNIQUE (${HabitProgressTable.uuid}),
           CONSTRAINT fk_habit_daily_summary_id
             FOREIGN KEY (habit_daily_summary_id)

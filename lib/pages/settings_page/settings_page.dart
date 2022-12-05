@@ -237,7 +237,7 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  void navigateAfterLogin({
+  Future<void> navigateAfterLogin({
     required BuildContext context,
     required SettingsPageStateNotifier notifier,
   }) async {

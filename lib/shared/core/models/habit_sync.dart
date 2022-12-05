@@ -10,13 +10,23 @@ class HabitSyncRequest {
   });
 
   final String? lastSync;
-  @JsonKey(name: 'habit_daily_summaries')
+  @JsonKey(name: 'habit_daily_summaries', toJson: _Helper.dailySummariesToJson)
   final List<HabitSyncRequestDailySummaryItem> dailySummaries;
 
   factory HabitSyncRequest.fromJson(Map<String, dynamic> json) =>
       _$HabitSyncRequestFromJson(json);
 
   Map<String, dynamic> toJson() => _$HabitSyncRequestToJson(this);
+}
+
+class _Helper {
+  static List<Map<String, dynamic>> dailySummariesToJson(
+          List<HabitSyncRequestDailySummaryItem> dailySummaries) =>
+      dailySummaries.map((e) => e.toJson()).toList();
+
+  static List<Map<String, dynamic>> progressesToJson(
+          List<HabitSyncRequestProgressItem> progresses) =>
+      progresses.map((e) => e.toJson()).toList();
 }
 
 @JsonSerializable()
@@ -32,6 +42,7 @@ class HabitSyncRequestDailySummaryItem {
   final int target;
   @JsonKey(name: 'target_updated_at')
   final String targetUpdatedAt;
+  @JsonKey(toJson: _Helper.progressesToJson)
   final List<HabitSyncRequestProgressItem> progresses;
 
   factory HabitSyncRequestDailySummaryItem.fromJson(
@@ -49,6 +60,7 @@ class HabitSyncRequestProgressItem {
     required this.pages,
     required this.inputTime,
     required this.description,
+    required this.type,
   });
 
   final String uuid;
@@ -56,6 +68,7 @@ class HabitSyncRequestProgressItem {
   @JsonKey(name: 'input_time')
   final String inputTime;
   final String description;
+  final String type;
 
   factory HabitSyncRequestProgressItem.fromJson(Map<String, dynamic> json) =>
       _$HabitSyncRequestProgressItemFromJson(json);

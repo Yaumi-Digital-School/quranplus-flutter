@@ -16,6 +16,7 @@ import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/bookmarks_service.dart';
+import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 import 'package:retrofit/retrofit.dart';
@@ -92,6 +93,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     required this.startPageInIndex,
     required SharedPreferenceService sharedPreferenceService,
     required AuthenticationService authenticationService,
+    required HabitDailySummaryService habitDailySummaryService,
     required BookmarkApi bookmarkApi,
     required BookmarksService bookmarksService,
     required AutoScrollController scrollController,
@@ -102,10 +104,12 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
         _bookmarksService = bookmarksService,
         _scrollController = scrollController,
         _authenticationService = authenticationService,
+        _habitDailySummaryService = habitDailySummaryService,
         super(SuratPageState());
 
   final AutoScrollController _scrollController;
   final SharedPreferenceService _sharedPreferenceService;
+  final HabitDailySummaryService _habitDailySummaryService;
   final List<int> _firstPageSurahPointer = <int>[];
   final List<int> _bookmarkList = <int>[];
   final List<int> _favoriteAyahList = <int>[];
@@ -606,6 +610,8 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
         startPage: _startPageOnRecord,
         summary: _currentSummary!,
       );
+
+      await _habitDailySummaryService.syncHabit();
 
       recordedPagesList.clear();
       _isHabitDailySummaryChanged = true;
