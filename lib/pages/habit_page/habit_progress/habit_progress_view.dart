@@ -31,7 +31,8 @@ class _HabitProgressState extends State<HabitProgressView> {
                 HabitProgressState>
             ref) {
           return HabitProgressStateNotifier(
-              habitDailySummaryService: ref.watch(habitDailySummaryService));
+            habitDailySummaryService: ref.watch(habitDailySummaryService),
+          );
         },
       ),
       onStateNotifierReady: (notifier) async =>

@@ -77,8 +77,12 @@ final Provider<HabitDailySummaryService> habitDailySummaryService =
   (ref) {
     final SharedPreferenceService sharedPreferenceService =
         ref.watch(sharedPreferenceServiceProvider);
+    final HabitApi habitApi = ref.watch(habitApiProvider);
+
     return HabitDailySummaryService(
-        sharedPreferenceService: sharedPreferenceService);
+      sharedPreferenceService: sharedPreferenceService,
+      habitApi: habitApi,
+    );
   },
 );
 

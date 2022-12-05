@@ -1,4 +1,5 @@
 import 'package:qurantafsir_flutter/shared/core/apis/model/user_response.dart';
+import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/user.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
@@ -47,6 +48,7 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
 
   final AuthenticationService _repository;
   final SharedPreferenceService _sharedPreferenceService;
+  final DbLocal _db = DbLocal();
 
   @override
   Future<void> initStateNotifier() async {
@@ -117,6 +119,8 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
     await _repository.signOut();
     await _removeToken();
     await _removeUsername();
+    await _db.clearTableHabit();
+    await _sharedPreferenceService.removeLastSync();
 
     state = state.copyWith(
       authenticationStatus: AuthenticationStatus.unauthenticated,

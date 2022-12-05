@@ -59,9 +59,11 @@ class HabitProgressStateNotifier extends BaseStateNotifier<HabitProgressState> {
       db = DbLocal();
       DateTime now = DateTime.now();
       String formattedDate = DateFormat('MMMM yyyy').format(now);
+      await _habitDailyService.syncHabit();
       final List<HabitDailySummary> listHabit = await db.getLastSevenDays(now);
       final HabitDailySummary currentProgress =
           await _habitDailyService.getCurrentDayHabitDailySummaryListLocal();
+
       state = state.copyWith(
         isLoading: false,
         currentMonth: formattedDate,

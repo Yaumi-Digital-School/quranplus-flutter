@@ -61,39 +61,40 @@ class HabitPage extends StatelessWidget {
             );
           }
           return Scaffold(
-              appBar: PreferredSize(
-                preferredSize: const Size.fromHeight(54.0),
-                child: AppBar(
-                  elevation: 0.7,
-                  automaticallyImplyLeading: false,
-                  foregroundColor: Colors.black,
-                  centerTitle: true,
-                  title: const Text(
-                    'Habit',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  backgroundColor: backgroundColor,
+            appBar: PreferredSize(
+              preferredSize: const Size.fromHeight(54.0),
+              child: AppBar(
+                elevation: 0.7,
+                automaticallyImplyLeading: false,
+                foregroundColor: Colors.black,
+                centerTitle: true,
+                title: const Text(
+                  'Habit',
+                  style: TextStyle(fontSize: 16),
                 ),
+                backgroundColor: backgroundColor,
               ),
-              body: SingleChildScrollView(
-                child: state.authenticationStatus ==
-                        AuthenticationStatus.authenticated
+            ),
+            body:
+                state.authenticationStatus == AuthenticationStatus.authenticated
                     ? const HabitProgressView()
-                    : Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: RegistrationView(
-                          nextWidget: ButtonSecondary(
-                            label: 'Sign In with Google',
-                            onTap: _onTapButtonSignIn(
-                              context,
-                              notifier,
-                              ref,
+                    : SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: RegistrationView(
+                            nextWidget: ButtonSecondary(
+                              label: 'Sign In with Google',
+                              onTap: _onTapButtonSignIn(
+                                context,
+                                notifier,
+                                ref,
+                              ),
+                              leftIcon: IconPath.iconGoogle,
                             ),
-                            leftIcon: IconPath.iconGoogle,
                           ),
                         ),
                       ),
-              ));
+          );
         },
       ),
     );
