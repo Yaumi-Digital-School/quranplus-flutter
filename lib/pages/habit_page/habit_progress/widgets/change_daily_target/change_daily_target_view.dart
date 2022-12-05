@@ -100,16 +100,17 @@ class _ChangeDailyTargetViewState extends State<ChangeDailyTargetView> {
                         ),
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Text(
-                        '1 juz means 20 pages',
-                        style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: regular,
-                            color: neutral600),
+                    if (typeTarget == 'Juz')
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(
+                          '1 juz means 20 pages',
+                          style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: regular,
+                              color: neutral600),
+                        ),
                       ),
-                    ),
                     Text(
                       'Changing this will only apply to today and future targets',
                       style: TextStyle(
