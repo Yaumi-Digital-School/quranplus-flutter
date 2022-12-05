@@ -7,12 +7,14 @@ class ChangeDailyTargetState {
   bool isError;
   bool isSuccessSubmit;
   HabitDailySummary currentProgress;
+  String targetType;
 
   ChangeDailyTargetState({
     required this.currentProgress,
     this.isLoading = true,
     this.isError = false,
     this.isSuccessSubmit = false,
+    this.targetType = '',
   });
 
   ChangeDailyTargetState copyWith({
@@ -20,12 +22,14 @@ class ChangeDailyTargetState {
     bool? isError,
     HabitDailySummary? currentProgress,
     bool? isSuccessSubmit,
+    String? targetType,
   }) {
     return ChangeDailyTargetState(
       isLoading: isLoading ?? this.isLoading,
       isError: isError ?? this.isError,
       currentProgress: currentProgress ?? this.currentProgress,
       isSuccessSubmit: isSuccessSubmit ?? this.isSuccessSubmit,
+      targetType: targetType ?? this.targetType,
     );
   }
 }
@@ -56,6 +60,10 @@ class ChangeDailyTargetStateNotifier
         isError: true,
       );
     }
+  }
+
+  void changeTargetType(String type) {
+    state = state.copyWith(targetType: type);
   }
 
   Future<void> changeDailyTarget(int target, String type) async {
