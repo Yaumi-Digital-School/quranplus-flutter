@@ -95,22 +95,24 @@ class _ChangeDailyTargetViewState extends State<ChangeDailyTargetView> {
                         const SizedBox(width: 8),
                         DropDownListChangeTarget(
                           onChanged: (type) {
+                            notifier.changeTargetType(type);
                             typeTarget = type;
                           },
                         ),
                       ],
                     ),
-                    if (typeTarget == 'Juz')
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Text(
-                          '1 juz means 20 pages',
-                          style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: regular,
-                              color: neutral600),
+                    const SizedBox(height: 8),
+                    if (state.targetType == 'Juz') ...<Widget>[
+                      Text(
+                        '1 juz means 20 pages',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: regular,
+                          color: neutral600,
                         ),
                       ),
+                      const SizedBox(height: 8),
+                    ],
                     Text(
                       'Changing this will only apply to today and future targets',
                       style: TextStyle(
