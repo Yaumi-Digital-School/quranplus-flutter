@@ -54,7 +54,7 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.yaumi.qurantafsir.id"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         minSdkVersion 19
