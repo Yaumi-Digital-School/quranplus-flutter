@@ -556,12 +556,13 @@ class _SuratPageV3State extends State<SuratPageV3> {
       controller: state.pageController,
       onPageChanged: (pageIndex) {
         int pageValue = pageIndex + 1;
+        int initPage = widget.param.startPageInIndex + 1;
         int surahNumber = state.pages![pageIndex].verses[0].surahNumber;
         String surahName = surahNumberToSurahNameMap[surahNumber] ?? '';
         notifier.visibleSuratName.value = surahName;
         notifier.currentPage.value = pageValue;
         notifier.checkIsBookmarkExists(pageValue);
-        notifier.changePageOnRecording(pageValue);
+        notifier.changePageOnRecording(pageValue, initPage);
         notifier.isTrackerVisible.value = true;
       },
       children: allPages,
@@ -591,10 +592,12 @@ class _SuratPageV3State extends State<SuratPageV3> {
       reverse: true,
       controller: state.pageController,
       onPageChanged: (pageIndex) {
+        int initPage = widget.param.startPageInIndex + 1;
         int pageValue = pageIndex + 1;
-        notifier.currentPage.value = pageValue;
+        notifier.changePageOnRecording(pageValue, initPage);
         notifier.checkIsBookmarkExists(pageValue);
-        notifier.changePageOnRecording(pageValue);
+
+        notifier.currentPage.value = pageValue;
         notifier.isTrackerVisible.value = true;
       },
       children: allPages,
@@ -935,7 +938,6 @@ class _SuratPageV3State extends State<SuratPageV3> {
     notifier.habitTrackerSubmissionController.value = TextEditingValue(
       text: notifier.recordedPagesList.length.toString(),
     );
-
     return SizedBox(
       width: 60,
       child: TextField(

@@ -21,7 +21,7 @@ class ChangeDailyTargetView extends StatefulWidget {
 }
 
 class _ChangeDailyTargetViewState extends State<ChangeDailyTargetView> {
-  String inputUser = "";
+  String inputUser = "1";
   String typeTarget = "Pages";
 
   @override
@@ -87,7 +87,7 @@ class _ChangeDailyTargetViewState extends State<ChangeDailyTargetView> {
                     Row(
                       children: [
                         InputTotalPagesTextField(
-                          defaultValue: 1,
+                          defaultValue: int.parse(inputUser),
                           onChanged: (value) {
                             inputUser = value;
                           },
@@ -128,6 +128,7 @@ class _ChangeDailyTargetViewState extends State<ChangeDailyTargetView> {
                             typeTarget,
                           );
                         }
+
                         Navigator.pop(context, true);
                       },
                     ),
