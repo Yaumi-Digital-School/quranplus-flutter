@@ -67,6 +67,9 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     ConnectivityResult connectivityResult =
         await Connectivity().checkConnectivity();
     _getUsername();
+    if (connectivityResult != ConnectivityResult.none) {
+      _feedbackUrl = (await _fetchLink()).url ?? '';
+    }
     await _getJuzElements();
     await _getVerseToAyahPage();
     _dailySummary = await _habitDailySummaryService
@@ -81,13 +84,10 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
       dailySummary: _dailySummary,
     );
 
-    if (connectivityResult != ConnectivityResult.none) {
-      _feedbackUrl = (await _fetchLink()).url ?? '';
-      if (_name?.isNotEmpty ?? false) {
-        _habitDailySummaryService.syncHabit(
-          connectivityResult: connectivityResult,
-        );
-      }
+    if (_name?.isNotEmpty ?? false) {
+      _habitDailySummaryService.syncHabit(
+        connectivityResult: connectivityResult,
+      );
     }
   }
 
