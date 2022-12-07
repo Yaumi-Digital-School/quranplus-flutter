@@ -222,33 +222,25 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   }
 
   void changePageOnRecording(int page, int startPage) {
-    print(startPage);
     if (recordedPagesList.isEmpty) {
       if (page > startPage) {
         recordedPagesAsRead.value += 1;
         recordedPagesList.add(startPage);
-        print("halo");
       }
-      print("hai");
-
       return;
     }
 
     if (recordedPagesList.contains(page - 1)) {
-      print("hola");
       return;
     }
 
     final int firstReadPage = recordedPagesList[0];
     if (page <= firstReadPage) {
-      print("loha");
       return;
     }
 
-    print("selamat");
     recordedPagesList.add(page - 1);
     recordedPagesAsRead.value += 1;
-    print(recordedPagesList);
   }
 
   bool isAyahFavorited(int ayahID) {
