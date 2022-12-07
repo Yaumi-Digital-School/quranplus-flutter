@@ -221,26 +221,26 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     }
   }
 
-  void changePageOnRecording(int page, int startPage) {
+  void changePageOnRecording(int page) {
+    final int addedPage = page - 1;
+    if (addedPage < _startPageOnRecord) {
+      return;
+    }
+
     if (recordedPagesList.isEmpty) {
-      if (page > startPage) {
+      if (_startPageOnRecord > 0) {
+        recordedPagesList.add(addedPage);
         recordedPagesAsRead.value += 1;
-        recordedPagesList.add(startPage);
       }
 
       return;
     }
 
-    if (recordedPagesList.contains(page)) {
+    if (recordedPagesList.contains(addedPage)) {
       return;
     }
 
-    final int firstReadPage = recordedPagesList[0];
-    if (page < firstReadPage) {
-      return;
-    }
-
-    recordedPagesList.add(page - 1);
+    recordedPagesList.add(addedPage);
     recordedPagesAsRead.value += 1;
   }
 
@@ -589,12 +589,10 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
 
   HabitDailySummary? _currentSummary;
   Future<void> startRecording() async {
-    if ((_currentSummary?.target ?? 0) == 0) {
-      _currentSummary = await db.getCurrentDayHabitDailySummary();
+    _currentSummary = await db.getCurrentDayHabitDailySummary();
 
-      recordedPagesAsRead.value = _currentSummary?.totalPages ?? 0;
-      _startPageOnRecord = currentPage.value;
-    }
+    recordedPagesAsRead.value = _currentSummary?.totalPages ?? 0;
+    _startPageOnRecord = currentPage.value;
 
     state = state.copyWith(isRecording: true);
   }
