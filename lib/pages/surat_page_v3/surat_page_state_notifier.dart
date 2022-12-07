@@ -609,8 +609,6 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
         summary: _currentSummary!,
       );
 
-      await _habitDailySummaryService.syncHabit();
-
       recordedPagesList.clear();
       _isHabitDailySummaryChanged = true;
     }
@@ -618,6 +616,8 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     _startPageOnRecord = 0;
     final int totalReadPages =
         currentRecordedReadPages + (_currentSummary!.totalPages);
+
+    _habitDailySummaryService.syncHabit();
 
     if (totalReadPages >= (_currentSummary!.target)) {
       return true;
