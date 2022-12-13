@@ -588,6 +588,7 @@ class DbLocal {
              ${HabitDailySummaryTable.columnID}
              FROM ${HabitDailySummaryTable.tableName}
              WHERE datetime(${HabitDailySummaryTable.updatedAt}) > datetime('$lastSyncDate')
+             AND (JULIANDAY('now') - JULIANDAY(${HabitDailySummaryTable.updatedAt})) <= 7
              ORDER BY ${HabitDailySummaryTable.date} ASC;
        ''',
       );
@@ -630,6 +631,7 @@ class DbLocal {
          ${HabitProgressTable.type}
          FROM ${HabitProgressTable.tableName}
          WHERE datetime(${HabitProgressTable.createdAt}) > datetime('$lastSyncDate')
+         AND (JULIANDAY('now') - JULIANDAY(${HabitProgressTable.createdAt})) <= 7
       ''',
     );
 
