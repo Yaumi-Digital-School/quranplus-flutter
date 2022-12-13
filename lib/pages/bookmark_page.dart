@@ -38,10 +38,11 @@ class _BookmarkPageState extends State<BookmarkPage> {
         ),
       ),
       body: ListView.builder(
-          itemCount: listBookmark.length,
-          itemBuilder: (context, index) {
-            return _buildListBookmark(context, listBookmark[index]);
-          }),
+        itemCount: listBookmark.length,
+        itemBuilder: (context, index) {
+          return _buildListBookmark(context, listBookmark[index]);
+        },
+      ),
     );
   }
 
@@ -55,16 +56,23 @@ class _BookmarkPageState extends State<BookmarkPage> {
           height: 34,
           width: 30,
           decoration: const BoxDecoration(
-              // shape: BoxShape.circle,
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                    color: Color.fromRGBO(0, 0, 0, 0.1),
-                    offset: Offset(1.0, 2.0),
-                    blurRadius: 5.0,
-                    spreadRadius: 1.0)
-              ],
-              borderRadius: BorderRadius.all(Radius.circular(20))),
+            // shape: BoxShape.circle,
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Color.fromRGBO(
+                  0,
+                  0,
+                  0,
+                  0.1,
+                ),
+                offset: Offset(1.0, 2.0),
+                blurRadius: 5.0,
+                spreadRadius: 1.0,
+              ),
+            ],
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
           child: Text(
             listayatID.toString(),
             style: bodyMedium3,
@@ -106,7 +114,8 @@ class _BookmarkPageState extends State<BookmarkPage> {
                       child: Column(
                         children: [
                           Text(
-                              "Yakin ingin Menghapus Data berikut ? \n Surat : ")
+                            "Yakin ingin Menghapus Data berikut ? \n Surat : ",
+                          ),
                         ],
                       ),
                     ),
@@ -115,11 +124,12 @@ class _BookmarkPageState extends State<BookmarkPage> {
                     //jika tidak maka tutup dialog
                     actions: [
                       TextButton(
-                          onPressed: () {
-                            // _deleteBookmark(bookmark.number, listayatID, index);
-                            // Navigator.pop(context);
-                          },
-                          child: Text("Ya")),
+                        onPressed: () {
+                          // _deleteBookmark(bookmark.number, listayatID, index);
+                          // Navigator.pop(context);
+                        },
+                        child: Text("Ya"),
+                      ),
                       TextButton(
                         child: Text('Tidak'),
                         onPressed: () {
@@ -130,7 +140,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
                   );
                   showDialog(context: context, builder: (context) => hapus);
                 },
-              )
+              ),
             ],
           ),
         ),

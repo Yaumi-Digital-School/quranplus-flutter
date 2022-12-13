@@ -18,6 +18,7 @@ class HabitDailySummaryService {
 
   Future<HabitDailySummary> getCurrentDayHabitDailySummaryListLocal() async {
     final HabitDailySummary result = await _db.getCurrentDayHabitDailySummary();
+
     return result;
   }
 
@@ -62,6 +63,7 @@ class HabitDailySummaryService {
         response: response.data,
       );
     } catch (e) {
+      // ignore: avoid_print
       print(e);
     }
   }

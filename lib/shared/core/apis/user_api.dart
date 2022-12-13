@@ -14,9 +14,12 @@ abstract class UserApi {
 
   @GET('/api/my-profile')
   Future<HttpResponse<UserResponse>> getUserProfile(
-      @Header("x-access-token") String token);
+    @Header("x-access-token") String token,
+  );
 
   @PUT('/api/user')
   Future<HttpResponse<UserResponse>> updateUserProfile(
-      @Header("x-access-token") String token, @Body() User user);
+    @Header("x-access-token") String token,
+    @Body() User user,
+  );
 }

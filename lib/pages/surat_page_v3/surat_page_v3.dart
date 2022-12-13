@@ -29,7 +29,6 @@ enum AyahFontSize {
   regular,
 }
 
-//! Apakah sabi untuk dihapus extension ini?
 extension AyahFontSizeExt on AyahFontSize {
   SuratPageState get value {
     switch (this) {
@@ -226,7 +225,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
                   ValueListenableBuilder(
                     valueListenable: notifier.visibleIconBookmark,
                     builder: (context, value, __) {
-                      if (notifier.visibleIconBookmark.value == true) {
+                      if (notifier.visibleIconBookmark.value) {
                         return IconButton(
                           icon: const Icon(Icons.bookmark_outlined),
                           onPressed: () async {
@@ -305,6 +304,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
         isHabitDailySummaryChanged: notifier.isHabitDailySummaryChanged,
       );
       Navigator.pop(context, param);
+
       return true;
     }
 
@@ -363,6 +363,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
                           'isStartTracking': true,
                         },
                       );
+
                       return;
                     }
 
@@ -437,7 +438,12 @@ class _SuratPageV3State extends State<SuratPageV3> {
     final double topPadding = MediaQuery.of(context).size.height * 0.05;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(11, topPadding, 11, bottomPadding),
+      padding: EdgeInsets.fromLTRB(
+        11,
+        topPadding,
+        11,
+        bottomPadding,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -453,15 +459,20 @@ class _SuratPageV3State extends State<SuratPageV3> {
       onTap: () => _buildTrackerSubmissionDialog(sn),
       child: Container(
         height: 24,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: const [
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          boxShadow: [
             BoxShadow(
-              color: Color.fromRGBO(0, 0, 0, 0.1),
+              color: Color.fromRGBO(
+                0,
+                0,
+                0,
+                0.1,
+              ),
               offset: Offset(1.0, 2.0),
               blurRadius: 5.0,
               spreadRadius: 1.0,
-            )
+            ),
           ],
           color: Colors.white,
         ),
@@ -628,15 +639,13 @@ class _SuratPageV3State extends State<SuratPageV3> {
       ayahs.add(w);
     }
 
-    return Padding(
+    return SingleChildScrollView(
       padding:
           state.isRecording ? const EdgeInsets.only(top: 20) : EdgeInsets.zero,
-      child: SingleChildScrollView(
-        controller: scrollController,
-        key: PageStorageKey('page$pageNumberInQuran'),
-        child: Column(
-          children: ayahs,
-        ),
+      controller: scrollController,
+      key: PageStorageKey('page$pageNumberInQuran'),
+      child: Column(
+        children: ayahs,
       ),
     );
   }
@@ -762,9 +771,12 @@ class _SuratPageV3State extends State<SuratPageV3> {
                 padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: Text(latin,
-                      style: bodyLatin1.merge(TextStyle(
-                          fontSize: state.readingSettings?.valueFontSize))),
+                  child: Text(
+                    latin,
+                    style: bodyLatin1.merge(
+                      TextStyle(fontSize: state.readingSettings?.valueFontSize),
+                    ),
+                  ),
                 ),
               ),
             if (isWithTranslations)
@@ -776,8 +788,9 @@ class _SuratPageV3State extends State<SuratPageV3> {
                     translation,
                     style: bodyRegular3.merge(
                       TextStyle(
-                          height: 1.5,
-                          fontSize: state.readingSettings?.valueFontSize),
+                        height: 1.5,
+                        fontSize: state.readingSettings?.valueFontSize,
+                      ),
                     ),
                   ),
                 ),
@@ -786,8 +799,9 @@ class _SuratPageV3State extends State<SuratPageV3> {
               Container(
                 margin: const EdgeInsets.all(16),
                 decoration: const BoxDecoration(
-                    color: backgroundTextTafsir,
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                  color: backgroundTextTafsir,
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -801,8 +815,9 @@ class _SuratPageV3State extends State<SuratPageV3> {
                           tafsir,
                           style: bodyRegular3.merge(
                             TextStyle(
-                                height: 1.5,
-                                fontSize: state.readingSettings?.valueFontSize),
+                              height: 1.5,
+                              fontSize: state.readingSettings?.valueFontSize,
+                            ),
                           ),
                         ),
                       ),
@@ -812,9 +827,10 @@ class _SuratPageV3State extends State<SuratPageV3> {
                         child: Text(
                           'Tafsir Ringkasan Kemenag',
                           style: bodyRegular3.copyWith(
-                              color: neutral900.withOpacity(0.5)),
+                            color: neutral900.withOpacity(0.5),
+                          ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -865,8 +881,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
       builder: (context) {
         return AlertDialog(
           backgroundColor: brokenWhite,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(19),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(19)),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -916,6 +932,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
                       sharedPreferenceService: notifier.sharedPreferenceService,
                       isComplete: isComplete,
                     );
+
                     return true;
                   }
 
@@ -937,6 +954,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     notifier.habitTrackerSubmissionController.value = TextEditingValue(
       text: notifier.recordedPagesList.length.toString(),
     );
+
     return SizedBox(
       width: 60,
       child: TextField(

@@ -31,8 +31,8 @@ class ButtonSecondary extends StatelessWidget {
       width: width,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
           padding: const EdgeInsets.all(6.0),
           primary: Colors.white,
@@ -66,10 +66,11 @@ class ButtonSecondary extends StatelessWidget {
                 .copyWith(
                   fontSize: labelFontSize,
                 ),
-          )
+          ),
         ],
       );
     }
+
     return Text(
       label,
       style: textStyle ??
@@ -105,9 +106,9 @@ class ButtonNeutral extends StatelessWidget {
       width: width,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-            side: const BorderSide(color: darkGreen, width: 1),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            side: BorderSide(color: darkGreen, width: 1),
           ),
           padding: const EdgeInsets.all(6.0),
           primary: Colors.transparent,
@@ -152,8 +153,8 @@ class ButtonPrimary extends StatelessWidget {
       width: width,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
           padding: const EdgeInsets.all(6.0),
           primary: darkGreen,

@@ -25,10 +25,12 @@ class HomePage extends StatelessWidget {
                   width: 65,
                   height: 24,
                   decoration: const BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage(
-                    'images/logo.png',
-                  ))),
+                    image: DecorationImage(
+                      image: AssetImage(
+                        'images/logo.png',
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -53,23 +55,23 @@ class _ListSuratState extends State<ListSurat> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<String>(
-        future:
-            DefaultAssetBundle.of(context).loadString(AppConstants.jsonSurat),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final List<Surat> surats =
-                quranFromJson(snapshot.requireData).surat;
-            return ListView.builder(
-              shrinkWrap: true,
-              itemCount: surats.length,
-              itemBuilder: (context, index) {
-                return _buildListSurat(context, surats[index]);
-              },
-            );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        });
+      future: DefaultAssetBundle.of(context).loadString(AppConstants.jsonSurat),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final List<Surat> surats = quranFromJson(snapshot.requireData).surat;
+
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: surats.length,
+            itemBuilder: (context, index) {
+              return _buildListSurat(context, surats[index]);
+            },
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
+    );
   }
 
   Widget _buildListSurat(BuildContext context, Surat surat) {
@@ -82,16 +84,23 @@ class _ListSuratState extends State<ListSurat> {
           height: 34,
           width: 30,
           decoration: const BoxDecoration(
-              // shape: BoxShape.circle,
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                    color: Color.fromRGBO(0, 0, 0, 0.1),
-                    offset: Offset(1.0, 2.0),
-                    blurRadius: 5.0,
-                    spreadRadius: 1.0)
-              ],
-              borderRadius: BorderRadius.all(Radius.circular(20))),
+            // shape: BoxShape.circle,
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Color.fromRGBO(
+                  0,
+                  0,
+                  0,
+                  0.1,
+                ),
+                offset: Offset(1.0, 2.0),
+                blurRadius: 5.0,
+                spreadRadius: 1.0,
+              ),
+            ],
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
           child: Text(
             surat.number,
             style: bodyMedium3,
@@ -114,7 +123,7 @@ class _ListSuratState extends State<ListSurat> {
               "(${surat.numberOfAyah} ayat)",
               style: caption1,
               overflow: TextOverflow.ellipsis,
-            )
+            ),
           ],
         ),
         trailing:

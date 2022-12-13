@@ -22,6 +22,7 @@ class DailyProgressTracker extends StatelessWidget {
     if (progress > 1) {
       progress = 1;
     }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[

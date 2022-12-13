@@ -76,7 +76,8 @@ class AuthenticationService {
       var data = response.data.data;
       if (data == null) {
         throw Exception(
-            'getUserProfile error: ' + response.data.errorMessage.toString());
+          'getUserProfile error: ' + response.data.errorMessage.toString(),
+        );
       }
 
       return data;

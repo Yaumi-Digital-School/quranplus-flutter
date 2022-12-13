@@ -178,43 +178,57 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             GestureDetector(
-                onTap: () => widget.onTapMinus(widget.fontSize),
-                child: _buildButtonFontSize(
-                    neutral200, Icons.remove, secondaryGreen300)),
+              onTap: () => widget.onTapMinus(widget.fontSize),
+              child: _buildButtonFontSize(
+                neutral200,
+                Icons.remove,
+                secondaryGreen300,
+              ),
+            ),
             Text(
               '${widget.fontSize}x',
               style: const TextStyle(
-                  color: neutral700, fontSize: 14, fontWeight: FontWeight.w600),
+                color: neutral700,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             GestureDetector(
-                onTap: () => widget.onTapAdd(widget.fontSize),
-                child: _buildButtonFontSize(brokenWhite, Icons.add, darkGreen))
+              onTap: () => widget.onTapAdd(widget.fontSize),
+              child: _buildButtonFontSize(brokenWhite, Icons.add, darkGreen),
+            ),
           ],
-        )
+        ),
       ],
     );
   }
 
   Widget _buildButtonFontSize(
-      Color colorButton, IconData iconButton, Color colorIcon) {
+    Color colorButton,
+    IconData iconButton,
+    Color colorIcon,
+  ) {
     return Container(
       height: 44,
       width: 44,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: colorButton,
-          boxShadow: [
-            BoxShadow(
-                color: const Color(0xff000000).withOpacity(0.1),
-                blurRadius: 6,
-                spreadRadius: 0,
-                offset: const Offset(0, 0.9))
-          ]),
+        borderRadius: const BorderRadius.all(Radius.circular(20)),
+        color: colorButton,
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xff000000).withOpacity(0.1),
+            blurRadius: 6,
+            spreadRadius: 0,
+            offset: const Offset(0, 0.9),
+          ),
+        ],
+      ),
       child: Center(
-          child: Icon(
-        iconButton,
-        color: colorIcon,
-      )),
+        child: Icon(
+          iconButton,
+          color: colorIcon,
+        ),
+      ),
     );
   }
 }

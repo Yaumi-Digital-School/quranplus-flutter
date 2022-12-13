@@ -57,15 +57,15 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
         children: <Widget>[
           Container(
             height: 44,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: neutral100,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: const <BoxShadow>[
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+              boxShadow: <BoxShadow>[
                 BoxShadow(
                   color: neutral300,
                   blurRadius: 9.0,
                   spreadRadius: 0.9,
-                )
+                ),
               ],
             ),
             child: Column(
@@ -73,13 +73,13 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
                 Container(
                   margin: const EdgeInsets.all(5.0),
                   height: 34,
-                  child: TabBar(
+                  child: const TabBar(
                     unselectedLabelColor: primary500,
                     indicator: BoxDecoration(
                       color: primary500,
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
-                    tabs: const <Widget>[
+                    tabs: <Widget>[
                       Tab(
                         text: 'Page',
                       ),
@@ -101,11 +101,11 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
                   _tabViewSearchPage(context),
                   _tabViewSearchSurahAndAyah(
                     context: context,
-                  )
+                  ),
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -146,6 +146,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
                 final int newValueInInt = int.parse(newValue.text);
                 if (newValueInInt > maxPageQuran) {
                   selectedPageOnSelectPage = maxPageQuran;
+
                   return TextEditingValue(
                     text: maxPageQuran.toString(),
                   );
@@ -153,6 +154,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
 
                 if (newValueInInt < minPageQuran) {
                   selectedPageOnSelectPage = minPageQuran;
+
                   return TextEditingValue(
                     text: minPageQuran.toString(),
                   );
@@ -190,6 +192,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
                 itemCount: options.length,
                 itemBuilder: (BuildContext context, int index) {
                   final String option = options.elementAt(index);
+
                   return GestureDetector(
                     onTap: () {
                       // temporary change
@@ -297,7 +300,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
                   Text(
                     isSurahNotFound ? "Surah not found" : "",
                     style: bodyRegular1.copyWith(fontSize: 8, color: exit500),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -333,7 +336,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
                         : "",
                     style:
                         bodyRegular1.copyWith(fontSize: 8, color: neutral500),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -347,7 +350,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
           onTap: _onPressedSearchSurahAndAyah(
             isSearchByAyahDisabled,
           ),
-        )
+        ),
       ],
     );
   }
@@ -383,6 +386,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
       optionsBuilder: (TextEditingValue textEditingValue) {
         final list = listOfSurahs.where((String option) {
           final String optionInLower = option.toLowerCase();
+
           return optionInLower.contains(textEditingValue.text.toLowerCase());
         });
 
@@ -461,6 +465,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
                 itemCount: options.length,
                 itemBuilder: (BuildContext context, int index) {
                   final String surahName = options.elementAt(index);
+
                   return GestureDetector(
                     onTap: () {
                       // temporary change
@@ -510,6 +515,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
       optionsBuilder: (TextEditingValue textEditingValue) {
         return ayahOptions.where((String option) {
           final String optionAsPage = option.split(':')[0];
+
           return optionAsPage.contains(textEditingValue.text.toLowerCase());
         });
       },
@@ -532,6 +538,7 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
             final ayah = ayahOptions.firstWhere(
               (element) {
                 final ayahNumber = element.split(":");
+
                 return ayahNumber[0] == value;
               },
             );

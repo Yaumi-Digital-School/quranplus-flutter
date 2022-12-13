@@ -24,6 +24,7 @@ class HabitDailySummary {
   factory HabitDailySummary.fromJson(Map<String, dynamic> json) {
     final createdAtString = json[HabitDailySummaryTable.createdAt];
     final updateAtString = json[HabitDailySummaryTable.updatedAt];
+
     return HabitDailySummary(
       target: json[HabitDailySummaryTable.target],
       totalPages: json[HabitDailySummaryTable.totalPages],
@@ -49,6 +50,7 @@ class HabitDailySummary {
     map[HabitDailySummaryTable.totalPages] = totalPages;
     map[HabitDailySummaryTable.date] = formattedDate;
     map[HabitDailySummaryTable.targetUpdatedTime] = targetUpdatedTime;
+
     return map;
   }
 

@@ -10,6 +10,7 @@ class FavoriteAyahsService {
 
   Future<List<FavoriteAyahs>> getFavoriteAyahListLocal() async {
     final List<FavoriteAyahs> result = await _db.getAllFavoriteAyahs();
+
     return result;
   }
 

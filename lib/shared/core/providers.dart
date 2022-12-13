@@ -25,11 +25,13 @@ final StateProvider<DioService> dioServiceProvider =
 final Provider<SharedPreferenceService> sharedPreferenceServiceProvider =
     Provider<SharedPreferenceService>((ref) {
   final SharedPreferenceService service = SharedPreferenceService();
+
   return service;
 });
 
 final Provider<BookmarkApi> bookmarkApiProvider = Provider<BookmarkApi>((ref) {
   final DioService dioService = ref.watch(dioServiceProvider);
+
   return BookmarkApi(
     dioService.getDioWithAccessToken(),
   );
@@ -37,6 +39,7 @@ final Provider<BookmarkApi> bookmarkApiProvider = Provider<BookmarkApi>((ref) {
 
 final Provider<HabitApi> habitApiProvider = Provider<HabitApi>((ref) {
   final DioService dioService = ref.watch(dioServiceProvider);
+
   return HabitApi(
     dioService.getDioWithAccessToken(),
   );
@@ -96,10 +99,10 @@ final Provider<FavoriteAyahsService> favoriteAyahsService =
 final StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>
     settingsPageProvider =
     StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>(
-        (StateNotifierProviderRef<SettingsPageStateNotifier, SettingsPageState>
-            ref) {
-  return SettingsPageStateNotifier(
-    repository: ref.watch(authenticationService),
-    sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
-  );
-});
+  (StateNotifierProviderRef<SettingsPageStateNotifier, SettingsPageState> ref) {
+    return SettingsPageStateNotifier(
+      repository: ref.watch(authenticationService),
+      sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
+    );
+  },
+);

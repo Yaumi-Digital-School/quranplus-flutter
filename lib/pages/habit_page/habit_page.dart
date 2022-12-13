@@ -29,6 +29,7 @@ class HabitPage extends StatelessWidget {
         final navigationBar =
             MainPage.globalKey.currentWidget as BottomNavigationBar;
         navigationBar.onTap!(0);
+
         return false;
       },
       child: StateNotifierConnector<HabitPageStateNotifier, HabitPageState>(
@@ -60,6 +61,7 @@ class HabitPage extends StatelessWidget {
               ),
             );
           }
+
           return Scaffold(
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(54.0),
@@ -108,26 +110,31 @@ class HabitPage extends StatelessWidget {
     return () async {
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult != ConnectivityResult.none) {
-        notifier.signInWithGoogle(() {
-          Navigator.of(context).pushReplacementNamed(RoutePaths.routeMain);
-          ref.read(dioServiceProvider.notifier).state = DioService(
-            baseUrl: EnvConstants.baseUrl!,
-            accessToken:
-                ref.read(sharedPreferenceServiceProvider).getApiToken(),
-          );
-          ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
-        }, () {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              const SnackBar(
-                content: Text('Sign in Gagal'),
-              ),
+        notifier.signInWithGoogle(
+          () {
+            Navigator.of(context).pushReplacementNamed(RoutePaths.routeMain);
+            ref.read(dioServiceProvider.notifier).state = DioService(
+              baseUrl: EnvConstants.baseUrl!,
+              accessToken:
+                  ref.read(sharedPreferenceServiceProvider).getApiToken(),
             );
-        });
+            ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
+          },
+          () {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                const SnackBar(
+                  content: Text('Sign in Gagal'),
+                ),
+              );
+          },
+        );
       } else {
         _generalBottomSheet.showNoInternetBottomSheet(
-            context, () => Navigator.pop(context));
+          context,
+          () => Navigator.pop(context),
+        );
       }
     };
   }

@@ -32,14 +32,24 @@ class StartHabitCard extends StatelessWidget {
             width: double.infinity,
             height: 140,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(12, 17, 12, 7),
+              padding: const EdgeInsets.fromLTRB(
+                12,
+                17,
+                12,
+                7,
+              ),
               child: Column(
                 children: <Widget>[
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(7.0, 7.0, 7.0, 6.0),
+                        padding: const EdgeInsets.fromLTRB(
+                          7.0,
+                          7.0,
+                          7.0,
+                          6.0,
+                        ),
                         child: Text(
                           'New! Habit Feature',
                           style: TextStyle(fontSize: 15, fontWeight: semiBold),
@@ -80,8 +90,8 @@ class StartHabitCard extends StatelessWidget {
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
                           primary: Colors.white,
                           onPrimary: primary500,
@@ -89,7 +99,7 @@ class StartHabitCard extends StatelessWidget {
                         ),
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),

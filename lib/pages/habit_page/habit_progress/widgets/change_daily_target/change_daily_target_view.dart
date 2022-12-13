@@ -34,7 +34,8 @@ class _ChangeDailyTargetViewState extends State<ChangeDailyTargetView> {
                 ChangeDailyTargetState>
             ref) {
           return ChangeDailyTargetStateNotifier(
-              habitDailySummary: widget.habitDailySummary);
+            habitDailySummary: widget.habitDailySummary,
+          );
         },
       ),
       onStateNotifierReady: (notifier) async =>
@@ -116,7 +117,10 @@ class _ChangeDailyTargetViewState extends State<ChangeDailyTargetView> {
                     Text(
                       'Changing this will only apply to today and future targets',
                       style: TextStyle(
-                          fontSize: 10, fontWeight: regular, color: neutral600),
+                        fontSize: 10,
+                        fontWeight: regular,
+                        color: neutral600,
+                      ),
                     ),
                     const SizedBox(height: 13),
                     ButtonSecondary(
@@ -161,11 +165,11 @@ class DropDownListChangeTargetState extends State<DropDownListChangeTarget> {
     return Container(
       height: 24,
       padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
-      decoration: ShapeDecoration(
+      decoration: const ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          side: const BorderSide(color: neutral500, width: 0.5),
-          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(color: neutral500, width: 0.5),
+          borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
       ),
       child: DropdownButtonHideUnderline(

@@ -21,10 +21,12 @@ class LoginPage extends StatelessWidget {
               width: 130,
               height: 48,
               decoration: const BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(
-                'images/logo.png',
-              ))),
+                image: DecorationImage(
+                  image: AssetImage(
+                    'images/logo.png',
+                  ),
+                ),
+              ),
             ),
             SizedBox(height: defaultMargin),
             SizedBox(
@@ -32,28 +34,40 @@ class LoginPage extends StatelessWidget {
               width: 270.0,
               child: Container(
                 decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(24.0),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(24.0),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color.fromRGBO(
+                        0,
+                        0,
+                        0,
+                        0.1,
+                      ),
+                      offset: Offset(1.0, 2.0),
+                      blurRadius: 5.0,
+                      spreadRadius: 1.0,
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Color.fromRGBO(0, 0, 0, 0.1),
-                          offset: Offset(1.0, 2.0),
-                          blurRadius: 5.0,
-                          spreadRadius: 1.0)
-                    ]),
+                  ],
+                ),
                 child: Stack(
                   children: <Widget>[
                     Center(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Image.asset('images/icon_google.png',
-                              width: 24, height: 24),
+                          Image.asset(
+                            'images/icon_google.png',
+                            width: 24,
+                            height: 24,
+                          ),
                           const SizedBox(width: 16.0),
-                          Text("Sign in with Google",
-                              style: buttonMedium1.copyWith(color: primary500)),
+                          Text(
+                            "Sign in with Google",
+                            style: buttonMedium1.copyWith(color: primary500),
+                          ),
                         ],
                       ),
                     ),
@@ -61,17 +75,19 @@ class LoginPage extends StatelessWidget {
                       child: Material(
                         type: MaterialType.transparency,
                         child: InkWell(onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return const HomePage();
-                          }));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) {
+                              return const HomePage();
+                            }),
+                          );
                         }),
                       ),
                     ),
                   ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

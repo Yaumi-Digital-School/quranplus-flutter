@@ -30,20 +30,23 @@ class SettingsPage extends StatelessWidget {
         final navigationBar =
             MainPage.globalKey.currentWidget as BottomNavigationBar;
         navigationBar.onTap!(0);
+
         return false;
       },
       child:
           StateNotifierConnector<SettingsPageStateNotifier, SettingsPageState>(
         stateNotifierProvider:
             StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>(
-                (StateNotifierProviderRef<SettingsPageStateNotifier,
-                        SettingsPageState>
-                    ref) {
-          return SettingsPageStateNotifier(
-            repository: ref.watch(authenticationService),
-            sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
-          );
-        }),
+          (StateNotifierProviderRef<SettingsPageStateNotifier,
+                  SettingsPageState>
+              ref) {
+            return SettingsPageStateNotifier(
+              repository: ref.watch(authenticationService),
+              sharedPreferenceService:
+                  ref.watch(sharedPreferenceServiceProvider),
+            );
+          },
+        ),
         onStateNotifierReady: (notifier) async =>
             await notifier.initStateNotifier(),
         builder: (
@@ -77,26 +80,27 @@ class SettingsPage extends StatelessWidget {
             ),
             body: SingleChildScrollView(
               child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: state.authenticationStatus ==
-                          AuthenticationStatus.authenticated
-                      ? _buildUserView(
-                          context,
-                          state,
-                          notifier,
-                          ref,
-                        )
-                      : RegistrationView(
-                          nextWidget: ButtonSecondary(
-                            label: 'Sign In with Google',
-                            onTap: _onTapButtonSignIn(
-                              context,
-                              notifier,
-                              ref,
-                            ),
-                            leftIcon: IconPath.iconGoogle,
+                padding: const EdgeInsets.all(16),
+                child: state.authenticationStatus ==
+                        AuthenticationStatus.authenticated
+                    ? _buildUserView(
+                        context,
+                        state,
+                        notifier,
+                        ref,
+                      )
+                    : RegistrationView(
+                        nextWidget: ButtonSecondary(
+                          label: 'Sign In with Google',
+                          onTap: _onTapButtonSignIn(
+                            context,
+                            notifier,
+                            ref,
                           ),
-                        )),
+                          leftIcon: IconPath.iconGoogle,
+                        ),
+                      ),
+              ),
             ),
           );
         },
@@ -112,30 +116,35 @@ class SettingsPage extends StatelessWidget {
     return () async {
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult != ConnectivityResult.none) {
-        notifier.signInWithGoogle(() {
-          navigateAfterLogin(
-            context: context,
-            notifier: notifier,
-          );
-
-          ref.read(dioServiceProvider.notifier).state = DioService(
-            baseUrl: EnvConstants.baseUrl!,
-            accessToken:
-                ref.read(sharedPreferenceServiceProvider).getApiToken(),
-          );
-          ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
-        }, () {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              const SnackBar(
-                content: Text('Sign in Gagal'),
-              ),
+        notifier.signInWithGoogle(
+          () {
+            navigateAfterLogin(
+              context: context,
+              notifier: notifier,
             );
-        });
+
+            ref.read(dioServiceProvider.notifier).state = DioService(
+              baseUrl: EnvConstants.baseUrl!,
+              accessToken:
+                  ref.read(sharedPreferenceServiceProvider).getApiToken(),
+            );
+            ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
+          },
+          () {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                const SnackBar(
+                  content: Text('Sign in Gagal'),
+                ),
+              );
+          },
+        );
       } else {
         _generalBottomSheet.showNoInternetBottomSheet(
-            context, () => Navigator.pop(context));
+          context,
+          () => Navigator.pop(context),
+        );
       }
     };
   }
@@ -159,7 +168,9 @@ class SettingsPage extends StatelessWidget {
               }));
             } else {
               _generalBottomSheet.showNoInternetBottomSheet(
-                  context, () => Navigator.pop(context));
+                context,
+                () => Navigator.pop(context),
+              );
             }
           },
           child: _buildImageButton(
@@ -188,7 +199,9 @@ class SettingsPage extends StatelessWidget {
               });
             } else {
               _generalBottomSheet.showNoInternetBottomSheet(
-                  context, () => Navigator.pop(context));
+                context,
+                () => Navigator.pop(context),
+              );
             }
           },
           child: _buildImageButton(
@@ -246,6 +259,7 @@ class SettingsPage extends StatelessWidget {
       Navigator.of(context).pushReplacementNamed(
         RoutePaths.routeMain,
       );
+
       return;
     }
 

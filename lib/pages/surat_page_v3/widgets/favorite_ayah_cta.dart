@@ -35,7 +35,12 @@ class _FavoriteAyahCTAState extends State<FavoriteAyahCTA> {
         });
       },
       child: Container(
-        padding: const EdgeInsets.fromLTRB(18, 18, 0, 18),
+        padding: const EdgeInsets.fromLTRB(
+          18,
+          18,
+          0,
+          18,
+        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[

@@ -29,6 +29,7 @@ class _AddDailyProgressManualViewState
     final totalPages = widget.habitDailySummary.totalPages;
     final formattedDate =
         DateFormat("EEEE, dd MMMM yyyy").format(widget.habitDailySummary.date);
+
     return StateNotifierConnector<AddDailyProgressManualStateNotifier,
         AddDailyProgressManualState>(
       stateNotifierProvider: StateNotifierProvider<
@@ -37,7 +38,8 @@ class _AddDailyProgressManualViewState
                 AddDailyProgressManualState>
             ref) {
           return AddDailyProgressManualStateNotifier(
-              habitDailySummary: widget.habitDailySummary);
+            habitDailySummary: widget.habitDailySummary,
+          );
         },
       ),
       onStateNotifierReady: (notifier) async =>
@@ -103,7 +105,7 @@ class _AddDailyProgressManualViewState
                         Text(
                           "Pages",
                           style: regular10.copyWith(color: neutral600),
-                        )
+                        ),
                       ],
                     ),
                     const SizedBox(height: 32),
@@ -117,7 +119,7 @@ class _AddDailyProgressManualViewState
                         }
                         Navigator.pop(context, true);
                       },
-                    )
+                    ),
                   ],
                 ),
         );
@@ -149,6 +151,7 @@ class _AddDailyProgressManualViewState
       );
       result.add(content);
     }
+
     return result;
   }
 }

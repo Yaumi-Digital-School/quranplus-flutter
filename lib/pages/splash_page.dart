@@ -13,6 +13,7 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   startTime() async {
     var _duration = const Duration(milliseconds: 2500);
+
     return Timer(_duration, navigationPage);
   }
 
@@ -34,10 +35,12 @@ class _SplashPageState extends State<SplashPage> {
           width: 130,
           height: 48,
           decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage(
-            'images/logo.png',
-          ))),
+            image: DecorationImage(
+              image: AssetImage(
+                'images/logo.png',
+              ),
+            ),
+          ),
         ),
       ),
     );

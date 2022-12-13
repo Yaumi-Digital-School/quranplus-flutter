@@ -13,7 +13,8 @@ class Juz {
 
   factory Juz.fromJson(Map<String, dynamic> json) => Juz(
         juz: List<JuzElement>.from(
-            json["juz"].map((x) => JuzElement.fromJson(x))),
+          json["juz"].map((x) => JuzElement.fromJson(x)),
+        ),
       );
 
   Map<String, dynamic> toJson() => {
@@ -36,7 +37,8 @@ class JuzElement {
         number: json["number"],
         name: json["name"],
         surat: List<SuratByJuz>.from(
-            json["surat"].map((x) => SuratByJuz.fromJson(x))),
+          json["surat"].map((x) => SuratByJuz.fromJson(x)),
+        ),
       );
 
   Map<String, dynamic> toJson() => {
