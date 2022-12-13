@@ -34,12 +34,14 @@ class DbLocal {
       return _database!;
     }
     _database = await _initDb();
+
     return _database!;
   }
 
   Future<Database> _initDb() async {
     String databasePath = await getDatabasesPath();
     String path = join(databasePath, 'bookmarks.db');
+
     return await openDatabase(
       path,
       version: _currentVersion,
@@ -76,7 +78,9 @@ class DbLocal {
     await db.transaction((txn) async {
       for (Bookmarks bookmark in bookmarks) {
         await txn.insert(
-            BookmarksTable.tableName, bookmark.toMapAfterMergeToServer());
+          BookmarksTable.tableName,
+          bookmark.toMapAfterMergeToServer(),
+        );
       }
     });
   }
@@ -84,6 +88,7 @@ class DbLocal {
   //insert ke database
   Future<int?> saveBookmark(Bookmarks bookmark) async {
     var dbClient = await _db;
+
     return await dbClient.insert(BookmarksTable.tableName, bookmark.toMap());
   }
 
@@ -106,24 +111,31 @@ class DbLocal {
 
   Future<int?> deleteBookmark(startPage) async {
     var dbClient = await _db;
-    return await dbClient.delete(BookmarksTable.tableName,
-        where: '${BookmarksTable.columnPage} = ?', whereArgs: [startPage]);
+
+    return await dbClient.delete(
+      BookmarksTable.tableName,
+      where: '${BookmarksTable.columnPage} = ?',
+      whereArgs: [startPage],
+    );
   }
 
   Future<bool?> oneBookmark(startPage) async {
     var dbClient = await _db;
-    List<Map> maps = await dbClient.query(BookmarksTable.tableName,
-        columns: [
-          BookmarksTable.columnId,
-          BookmarksTable.columnSurahName,
-          BookmarksTable.columnPage,
-          BookmarksTable.columnCreatedAt,
-        ],
-        where: '${BookmarksTable.columnPage} = ?',
-        whereArgs: [startPage]);
+    List<Map> maps = await dbClient.query(
+      BookmarksTable.tableName,
+      columns: [
+        BookmarksTable.columnId,
+        BookmarksTable.columnSurahName,
+        BookmarksTable.columnPage,
+        BookmarksTable.columnCreatedAt,
+      ],
+      where: '${BookmarksTable.columnPage} = ?',
+      whereArgs: [startPage],
+    );
     if (maps.isNotEmpty) {
       return true;
     }
+
     return false;
   }
 
@@ -144,6 +156,7 @@ class DbLocal {
 
   Future<int> saveFavoriteAyahs(FavoriteAyahs favoriteAyahs) async {
     var dbClient = await _db;
+
     return await dbClient.insert(
       FavoriteAyahsTable.tableName,
       favoriteAyahs.toMap(),
@@ -175,6 +188,7 @@ class DbLocal {
 
   Future<int?> deleteFavoriteAyahs(int ayahID) async {
     var dbClient = await _db;
+
     return await dbClient.delete(
       FavoriteAyahsTable.tableName,
       where: '${FavoriteAyahsTable.ayahHashCode} = ?',
@@ -311,7 +325,7 @@ class DbLocal {
           date: firstDay.add(Duration(days: index)),
           totalPages: 0,
           target: 1,
-        )
+        ),
     ];
 
     for (var element in result) {
@@ -366,12 +380,15 @@ class DbLocal {
       );
 
       final int totalReadPages = pages + (summary.totalPages);
-      await txn.rawUpdate('''
+      await txn.rawUpdate(
+        '''
         UPDATE ${HabitDailySummaryTable.tableName}
         SET ${HabitDailySummaryTable.totalPages} = $totalReadPages,
             ${HabitDailySummaryTable.updatedAt} = '$currentTimestampWithTz'
         WHERE ${HabitDailySummaryTable.columnID} = ?
-      ''', [summaryID]);
+      ''',
+        [summaryID],
+      );
 
       return progressID;
     });
@@ -380,7 +397,8 @@ class DbLocal {
   }
 
   Future<List<HabitProgress>> getProgressHistory(
-      int habitDailySummaryId) async {
+    int habitDailySummaryId,
+  ) async {
     final dbClient = await _db;
     List resultQuery = await dbClient.query(
       HabitProgressTable.tableName,
@@ -555,7 +573,8 @@ class DbLocal {
   }
 
   Future<List<HabitSyncRequestDailySummaryItem>> getLocalDbToSync(
-      SharedPreferenceService sharedPreferenceService) async {
+    SharedPreferenceService sharedPreferenceService,
+  ) async {
     try {
       final lastSync = sharedPreferenceService.getLastSync();
       final lastSyncDate = lastSync.isEmpty ? "2022-01-01" : lastSync;
@@ -598,7 +617,9 @@ class DbLocal {
   }
 
   Future<List<HabitSyncRequestProgressItem>> getHabitProgressToSync(
-      int id, String lastSyncDate) async {
+    int id,
+    String lastSyncDate,
+  ) async {
     var dbClient = await _db;
     final resultQueryHabitProgress = await dbClient.rawQuery(
       '''SELECT 
@@ -616,6 +637,7 @@ class DbLocal {
     for (var element in resultQueryHabitProgress) {
       result.add(HabitSyncRequestProgressItem.fromJson(element));
     }
+
     return result;
   }
 

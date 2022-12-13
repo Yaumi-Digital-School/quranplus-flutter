@@ -30,20 +30,22 @@ class HomePageState {
   Map<String, List<String>>? ayahPage;
   HabitDailySummary? dailySummary;
 
-  HomePageState copyWith(
-      {String? token,
-      String? name,
-      List<JuzElement>? juzElements,
-      String? feedbackUrl,
-      Map<String, List<String>>? ayahPage,
-      HabitDailySummary? dailySummary}) {
+  HomePageState copyWith({
+    String? token,
+    String? name,
+    List<JuzElement>? juzElements,
+    String? feedbackUrl,
+    Map<String, List<String>>? ayahPage,
+    HabitDailySummary? dailySummary,
+  }) {
     return HomePageState(
-        token: token ?? this.token,
-        name: name ?? this.name,
-        juzElements: juzElements ?? this.juzElements,
-        feedbackUrl: feedbackUrl ?? this.feedbackUrl,
-        ayahPage: ayahPage ?? this.ayahPage,
-        dailySummary: dailySummary ?? this.dailySummary);
+      token: token ?? this.token,
+      name: name ?? this.name,
+      juzElements: juzElements ?? this.juzElements,
+      feedbackUrl: feedbackUrl ?? this.feedbackUrl,
+      ayahPage: ayahPage ?? this.ayahPage,
+      dailySummary: dailySummary ?? this.dailySummary,
+    );
   }
 }
 
@@ -108,6 +110,7 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     _token = _sharedPreferenceService.getApiToken();
     if (_token == null || _token!.isEmpty) {
       _name = '';
+
       return;
     }
 

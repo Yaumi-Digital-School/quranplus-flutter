@@ -22,9 +22,9 @@ class BookmarksService {
 
     _listBookmark.clear();
 
-    bookmarkFromDb!.forEach((bookmark) {
+    for (var bookmark in bookmarkFromDb!) {
       _listBookmark.add(Bookmarks.fromMap(bookmark));
-    });
+    }
 
     return _listBookmark;
   }
@@ -59,6 +59,7 @@ class BookmarksService {
       final List<Bookmarks> _serverBookmarks = await _getBookmarkList();
       await _db.bulkCreateBookmarks(_serverBookmarks);
       setIsMerged(true);
+
       return;
     }
 

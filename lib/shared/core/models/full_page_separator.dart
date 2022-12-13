@@ -15,12 +15,12 @@ class FullPageSeparatorList {
 
   factory FullPageSeparatorList.fromArray(List<dynamic> arr) {
     List<FullPageSeparator> separators = <FullPageSeparator>[];
-    arr.forEach((dynamic element) {
+    for (var element in arr) {
       Map<String, dynamic> v = element as Map<String, dynamic>;
       FullPageSeparator separator = FullPageSeparator.fromJson(v);
 
       separators.add(separator);
-    });
+    }
 
     return FullPageSeparatorList(separators: separators);
   }

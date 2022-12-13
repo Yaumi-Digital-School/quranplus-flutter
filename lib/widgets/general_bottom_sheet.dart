@@ -28,7 +28,12 @@ class GeneralBottomSheet {
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Color.fromRGBO(0, 0, 0, 0.1),
+                    color: Color.fromRGBO(
+                      0,
+                      0,
+                      0,
+                      0.1,
+                    ),
                     blurRadius: 10,
                     offset: Offset(4, 12),
                   ),
@@ -65,7 +70,9 @@ class GeneralBottomSheet {
   }
 
   Future showNoInternetBottomSheet(
-      BuildContext context, Function() onRefreshClicked) {
+    BuildContext context,
+    Function() onRefreshClicked,
+  ) {
     return showGeneralBottomSheet(
       context,
       '',

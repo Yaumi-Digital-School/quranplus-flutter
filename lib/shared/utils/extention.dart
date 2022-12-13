@@ -1,6 +1,6 @@
 extension StringExtension on String {
   String capitalize() {
-    return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
+    return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
   }
 }
 
@@ -33,7 +33,6 @@ extension NumExtension on num {
     return this != 0;
   }
 }
-
 
 /// NULLABLE EXTENTSION
 extension NullableStringExtension on String? {
@@ -72,7 +71,7 @@ extension NullableIntegerExtension on int? {
   }
 
   bool isNullOrZero() {
-    return (this == null) || (this == 0) ;
+    return (this == null) || (this == 0);
   }
 }
 
@@ -94,7 +93,7 @@ extension NullableDoubleExtension on double? {
   }
 
   bool isNullOrZero() {
-    return (this == null) || (this == 0) ;
+    return (this == null) || (this == 0);
   }
 }
 
@@ -116,6 +115,6 @@ extension NullableNumExtension on num? {
   }
 
   bool isNullOrZero() {
-    return (this == null) || (this == 0) ;
+    return (this == null) || (this == 0);
   }
 }

@@ -21,11 +21,13 @@ class HabitSyncRequest {
 
 class _Helper {
   static List<Map<String, dynamic>> dailySummariesToJson(
-          List<HabitSyncRequestDailySummaryItem> dailySummaries) =>
+    List<HabitSyncRequestDailySummaryItem> dailySummaries,
+  ) =>
       dailySummaries.map((e) => e.toJson()).toList();
 
   static List<Map<String, dynamic>> progressesToJson(
-          List<HabitSyncRequestProgressItem> progresses) =>
+    List<HabitSyncRequestProgressItem> progresses,
+  ) =>
       progresses.map((e) => e.toJson()).toList();
 }
 
@@ -46,7 +48,8 @@ class HabitSyncRequestDailySummaryItem {
   final List<HabitSyncRequestProgressItem> progresses;
 
   factory HabitSyncRequestDailySummaryItem.fromJson(
-          Map<String, dynamic> json) =>
+    Map<String, dynamic> json,
+  ) =>
       _$HabitSyncRequestDailySummaryItemFromJson(json);
 
   Map<String, dynamic> toJson() =>

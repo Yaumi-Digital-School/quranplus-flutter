@@ -43,15 +43,18 @@ class RegistrationView extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Sync Bookmark and Favorite data',
-                            style: captionSemiBold1),
+                        Text(
+                          'Sync Bookmark and Favorite data',
+                          style: captionSemiBold1,
+                        ),
                         const SizedBox(width: 8),
                         Text(
-                            'Help you synchronize dan keep your bookmark and favorite data on your device',
-                            style: captionRegular2),
+                          'Help you synchronize dan keep your bookmark and favorite data on your device',
+                          style: captionRegular2,
+                        ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
               const SizedBox(height: 24),
@@ -71,11 +74,12 @@ class RegistrationView extends StatelessWidget {
                         Text('Get the latest update', style: captionSemiBold1),
                         const SizedBox(width: 8),
                         Text(
-                            'You will be notify of the latest version of Quran Tafsir',
-                            style: captionRegular2),
+                          'You will be notify of the latest version of Quran Tafsir',
+                          style: captionRegular2,
+                        ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
               const SizedBox(height: 24),
@@ -94,23 +98,30 @@ class RegistrationView extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Text('Build reading habit and set',
-                                style: captionSemiBold1),
-                            SizedBox(width: 5),
+                            Text(
+                              'Build reading habit and set',
+                              style: captionSemiBold1,
+                            ),
+                            const SizedBox(width: 5),
                             Container(
-                              decoration: BoxDecoration(
-                                  color: darkGreen,
-                                  borderRadius: BorderRadius.circular(4)),
+                              decoration: const BoxDecoration(
+                                color: darkGreen,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4)),
+                              ),
                               height: 13,
                               width: 26,
                               child: Center(
-                                child: Text('New',
-                                    style: TextStyle(
-                                        fontSize: 8,
-                                        color: Colors.white,
-                                        fontWeight: bold)),
+                                child: Text(
+                                  'New',
+                                  style: TextStyle(
+                                    fontSize: 8,
+                                    color: Colors.white,
+                                    fontWeight: bold,
+                                  ),
+                                ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                         Text(
@@ -119,11 +130,12 @@ class RegistrationView extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                            'Add your daily qur’an reading progress manually or record it and set your own target',
-                            style: captionRegular2),
+                          'Add your daily qur’an reading progress manually or record it and set your own target',
+                          style: captionRegular2,
+                        ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ],

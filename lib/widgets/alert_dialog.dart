@@ -10,8 +10,9 @@ class GeneralSearchDialog {
       builder: (context) {
         return AlertDialog(
           backgroundColor: brokenWhite,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(19)),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(19)),
+          ),
           content: SizedBox(
             height: 205,
             width: 253,
@@ -47,7 +48,7 @@ class GeneralSearchDialog {
           ButtonSecondary(
             label: 'Search',
             onTap: function,
-          )
+          ),
         ],
       ),
     );
@@ -78,29 +79,32 @@ class GeneralSearchDialog {
           children: [
             Container(
               height: 44,
-              decoration: BoxDecoration(
-                  color: neutral100,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: const <BoxShadow>[
-                    BoxShadow(
-                      color: neutral300,
-                      blurRadius: 9.0,
-                      spreadRadius: 0.9,
-                    )
-                  ]),
+              decoration: const BoxDecoration(
+                color: neutral100,
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    color: neutral300,
+                    blurRadius: 9.0,
+                    spreadRadius: 0.9,
+                  ),
+                ],
+              ),
               child: Column(
                 children: [
                   Container(
                     margin: const EdgeInsets.all(5.0),
                     height: 34,
                     child: TabBar(
-                        unselectedLabelColor: primary500,
-                        indicator: BoxDecoration(
-                            color: primary500,
-                            borderRadius: BorderRadius.circular(20)),
-                        tabs: tabBar
-                            .map((tabName) => Tab(child: Text(tabName)))
-                            .toList()),
+                      unselectedLabelColor: primary500,
+                      indicator: const BoxDecoration(
+                        color: primary500,
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                      tabs: tabBar
+                          .map((tabName) => Tab(child: Text(tabName)))
+                          .toList(),
+                    ),
                   ),
                 ],
               ),
@@ -113,7 +117,7 @@ class GeneralSearchDialog {
                   children: widgetChildTabBarView,
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -128,7 +132,9 @@ class Alert {
       builder: (context) {
         return AlertDialog(
           backgroundColor: brokenWhite,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(9)),
+          ),
           content: SizedBox(
             height: 245,
             width: 321,

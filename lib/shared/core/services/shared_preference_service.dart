@@ -60,6 +60,7 @@ class SharedPreferenceService {
 
   Future<bool> removeApiToken() async {
     var isRemoved = await _sharedPreferences.remove(_apiTokenKey);
+
     return isRemoved;
   }
 
@@ -73,6 +74,7 @@ class SharedPreferenceService {
 
   Future<bool> removeUsername() async {
     var isRemoved = await _sharedPreferences.remove(_usernameKey);
+
     return isRemoved;
   }
 

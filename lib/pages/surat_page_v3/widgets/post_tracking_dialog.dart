@@ -19,8 +19,8 @@ class HabitProgressPostTrackingDialog {
       builder: (context) {
         return AlertDialog(
           backgroundColor: brokenWhite,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(19),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(19)),
           ),
           content: _PostSubmissionRemarks(
             sharedPreferenceService: sharedPreferenceService,
@@ -51,8 +51,8 @@ class HabitProgressPostTrackingDialog {
       builder: (context) {
         return AlertDialog(
           backgroundColor: brokenWhite,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(19),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(19)),
           ),
           content: _PostSubmissionRemarks(
             sharedPreferenceService: sharedPreferenceService,

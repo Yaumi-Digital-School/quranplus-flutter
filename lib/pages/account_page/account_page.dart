@@ -137,7 +137,7 @@ class AccountPage extends StatelessWidget {
                           '*',
                           style: subHeadingSemiBold2.apply(color: errorColor),
                         ),
-                      ]
+                      ],
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -311,7 +311,7 @@ class AccountPage extends StatelessWidget {
                           '*',
                           style: subHeadingSemiBold2.apply(color: errorColor),
                         ),
-                      ]
+                      ],
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -359,8 +359,11 @@ class AccountPage extends StatelessWidget {
                   ButtonSecondary(
                     label: 'Save',
                     onTap: _onPressedButtonSave(
-                        state.formStatus, context, notifier),
-                  )
+                      state.formStatus,
+                      context,
+                      notifier,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -370,8 +373,11 @@ class AccountPage extends StatelessWidget {
     );
   }
 
-  _onPressedButtonSave(FormStatus formStatus, BuildContext context,
-      AccountPageStateNotifier notifier) {
+  _onPressedButtonSave(
+    FormStatus formStatus,
+    BuildContext context,
+    AccountPageStateNotifier notifier,
+  ) {
     if (formStatus == FormStatus.valid) {
       return () async {
         var connectivityResult = await Connectivity().checkConnectivity();
@@ -381,9 +387,10 @@ class AccountPage extends StatelessWidget {
           });
         } else {
           _generalBottomSheet.showNoInternetBottomSheet(
-              // TODO changes to refresh action
-              context,
-              () => Navigator.pop(context));
+            // TODO changes to refresh action
+            context,
+            () => Navigator.pop(context),
+          );
         }
       };
     } else {

@@ -57,6 +57,8 @@ dependencies:
   percent_indicator: 4.0.1
   uuid: ^3.0.7
   lottie: ^1.4.2
+  dart_code_metrics: ^4.16.0
+  analyzer: ^2.8.0
 
 dev_dependencies:
   flutter_test:

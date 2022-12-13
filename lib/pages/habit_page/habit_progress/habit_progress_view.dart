@@ -48,6 +48,7 @@ class _HabitProgressState extends State<HabitProgressView> {
             child: CircularProgressIndicator(),
           );
         }
+
         return SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -60,7 +61,10 @@ class _HabitProgressState extends State<HabitProgressView> {
                 Text(
                   "Start your Reading Habit",
                   style: TextStyle(
-                      fontSize: 16, color: neutral900, fontWeight: semiBold),
+                    fontSize: 16,
+                    color: neutral900,
+                    fontWeight: semiBold,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 const Text(
@@ -79,7 +83,12 @@ class _HabitProgressState extends State<HabitProgressView> {
                     ),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                    padding: const EdgeInsets.fromLTRB(
+                      16,
+                      16,
+                      16,
+                      24,
+                    ),
                     child: Column(
                       children: [
                         Text(
@@ -98,15 +107,20 @@ class _HabitProgressState extends State<HabitProgressView> {
                             ? DailyProgressTracker(
                                 target: state.currentProgress!.target,
                                 dailyProgress:
-                                    state.currentProgress!.totalPages)
+                                    state.currentProgress!.totalPages,
+                              )
                             : const DailyProgressTracker(
-                                target: 1, dailyProgress: 0),
+                                target: 1,
+                                dailyProgress: 0,
+                              ),
                         const SizedBox(height: 24),
                         ButtonNeutral(
                           label: "Change Target",
                           onTap: () {
                             _showDialogChangeDailyTarget(
-                                state.currentProgress!, notifier);
+                              state.currentProgress!,
+                              notifier,
+                            );
                           },
                         ),
                         const SizedBox(height: 16),
@@ -114,7 +128,9 @@ class _HabitProgressState extends State<HabitProgressView> {
                           label: "Add Progress Manually",
                           onTap: () {
                             _showDialogAddDailyProgress(
-                                state.currentProgress!, notifier);
+                              state.currentProgress!,
+                              notifier,
+                            );
                           },
                         ),
                         const SizedBox(height: 16),
@@ -146,6 +162,7 @@ class _HabitProgressState extends State<HabitProgressView> {
     if (progress < 1) {
       return "images/${additionalStr}active_progress_50.png";
     }
+
     return "images/${additionalStr}active_progress_100.png";
   }
 
@@ -165,9 +182,11 @@ class _HabitProgressState extends State<HabitProgressView> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 6),
         decoration: isToday
-            ? BoxDecoration(
-                border: Border.all(color: yellowBorder, width: 1),
-                borderRadius: BorderRadius.circular(8),
+            ? const BoxDecoration(
+                border: Border.fromBorderSide(
+                  BorderSide(color: yellowBorder, width: 1),
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(8)),
               )
             : null,
         child: Column(children: [
@@ -195,15 +214,17 @@ class _HabitProgressState extends State<HabitProgressView> {
     );
   }
 
-  void _showDialogChangeDailyTarget(HabitDailySummary currentProgress,
-      HabitProgressStateNotifier habitProgressStateNotifier) async {
+  void _showDialogChangeDailyTarget(
+    HabitDailySummary currentProgress,
+    HabitProgressStateNotifier habitProgressStateNotifier,
+  ) async {
     final isRefresh = await showDialog(
           context: context,
           builder: (context) {
             return Dialog(
               backgroundColor: brokenWhite,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
               ),
               child: ChangeDailyTargetView(
                 habitDailySummary: currentProgress,
@@ -217,15 +238,17 @@ class _HabitProgressState extends State<HabitProgressView> {
     }
   }
 
-  void _showDialogAddDailyProgress(HabitDailySummary currentProgress,
-      HabitProgressStateNotifier habitProgressStateNotifier) async {
+  void _showDialogAddDailyProgress(
+    HabitDailySummary currentProgress,
+    HabitProgressStateNotifier habitProgressStateNotifier,
+  ) async {
     final isRefresh = await showDialog(
           context: context,
           builder: (context) {
             return Dialog(
               backgroundColor: brokenWhite,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
               ),
               child: AddDailyProgressManualView(
                 habitDailySummary: currentProgress,

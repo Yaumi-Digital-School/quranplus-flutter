@@ -158,7 +158,10 @@ TextStyle titleDrawerBold =
     GoogleFonts.poppins(color: darkGreen, fontSize: 14, fontWeight: bold);
 
 TextStyle bodyDrawerRegular = GoogleFonts.poppins(
-    color: secondaryGreen, fontSize: 14, fontWeight: regular);
+  color: secondaryGreen,
+  fontSize: 14,
+  fontWeight: regular,
+);
 
 TextStyle bodyLatin1 =
     GoogleFonts.notoSans(color: neutral600, fontSize: 12, fontWeight: regular);
@@ -185,23 +188,24 @@ TextStyle buildTextStyle({
 }
 
 BoxShadow shadowPrimary = BoxShadow(
-    color: Colors.grey.withOpacity(0.5),
-    spreadRadius: 5,
-    blurRadius: 7,
-    offset: const Offset(0, 3));
+  color: Colors.grey.withOpacity(0.5),
+  spreadRadius: 5,
+  blurRadius: 7,
+  offset: const Offset(0, 3),
+);
 
-OutlineInputBorder enabledInputBorder = OutlineInputBorder(
-  borderSide: const BorderSide(
+OutlineInputBorder enabledInputBorder = const OutlineInputBorder(
+  borderSide: BorderSide(
     color: neutral500,
     width: 0.5,
   ),
-  borderRadius: BorderRadius.circular(8.0),
+  borderRadius: BorderRadius.all(Radius.circular(8.0)),
 );
 
-OutlineInputBorder errorInputBorder = OutlineInputBorder(
-  borderSide: const BorderSide(
+OutlineInputBorder errorInputBorder = const OutlineInputBorder(
+  borderSide: BorderSide(
     color: errorColor,
     width: 1,
   ),
-  borderRadius: BorderRadius.circular(8.0),
+  borderRadius: BorderRadius.all(Radius.circular(8.0)),
 );

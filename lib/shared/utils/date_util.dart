@@ -21,6 +21,7 @@ class DateFormatType {
 class DateUtils {
   static DateTime stringToDate(String dateString, String format) {
     String localization = "en_US";
+
     return DateFormat(format, localization).parse(dateString);
   }
 

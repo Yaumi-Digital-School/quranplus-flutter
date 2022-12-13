@@ -28,6 +28,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
         final navigationBar =
             MainPage.globalKey.currentWidget as BottomNavigationBar;
         navigationBar.onTap!(0);
+
         return false;
       },
       child:
@@ -83,34 +84,32 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                     ),
                     Container(
                       height: 50,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: neutral100,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: const <BoxShadow>[
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        boxShadow: <BoxShadow>[
                           BoxShadow(
                             color: neutral300,
                             blurRadius: 9.0,
                             spreadRadius: 0.9,
-                          )
+                          ),
                         ],
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: TabBar(
-                          unselectedLabelColor: primary500,
-                          indicator: BoxDecoration(
-                            color: primary500,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          tabs: const <Widget>[
-                            Tab(
-                              text: 'Bookmark',
-                            ),
-                            Tab(
-                              text: 'Favorite',
-                            ),
-                          ],
+                      child: const TabBar(
+                        padding: EdgeInsets.all(4.0),
+                        unselectedLabelColor: primary500,
+                        indicator: BoxDecoration(
+                          color: primary500,
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
                         ),
+                        tabs: <Widget>[
+                          Tab(
+                            text: 'Bookmark',
+                          ),
+                          Tab(
+                            text: 'Favorite',
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(
@@ -217,10 +216,12 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
               width: 24,
               height: 24,
               decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(
-                IconPath.iconFavorite,
-              ))),
+                image: DecorationImage(
+                  image: AssetImage(
+                    IconPath.iconFavorite,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -277,10 +278,12 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
           width: 200,
           height: 200,
           decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage(
-            'images/empty_state.png',
-          ))),
+            image: DecorationImage(
+              image: AssetImage(
+                'images/empty_state.png',
+              ),
+            ),
+          ),
         ),
         const SizedBox(
           height: 50,
@@ -316,7 +319,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
               BoxShadow(
                 color: neutral300,
                 blurRadius: 9,
-              )
+              ),
             ],
           ),
           child: ButtonSecondary(
@@ -326,7 +329,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
               return const MainPage();
             })),
           ),
-        )
+        ),
       ],
     );
   }
@@ -347,8 +350,9 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
               width: 24,
               height: 24,
               decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(IconPath.iconBookmark))),
+                image:
+                    DecorationImage(image: AssetImage(IconPath.iconBookmark)),
+              ),
             ),
           ],
         ),

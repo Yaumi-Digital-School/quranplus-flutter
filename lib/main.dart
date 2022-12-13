@@ -58,7 +58,9 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: AppConstants.appName,
           theme: ThemeData(
-              primarySwatch: Colors.blue, backgroundColor: backgroundColor),
+            primarySwatch: Colors.blue,
+            backgroundColor: backgroundColor,
+          ),
           navigatorObservers: <NavigatorObserver>[observer],
           onGenerateRoute: (RouteSettings settings) {
             late Widget selectedRouteWidget;

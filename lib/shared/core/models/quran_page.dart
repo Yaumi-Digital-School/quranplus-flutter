@@ -14,12 +14,12 @@ class QuranPage {
 
   factory QuranPage.fromArray(List<dynamic> arr) {
     List<Verse> verses = <Verse>[];
-    arr.forEach((dynamic element) {
+    for (var element in arr) {
       Map<String, dynamic> v = element as Map<String, dynamic>;
       Verse verse = Verse.fromJson(v);
 
       verses.add(verse);
-    });
+    }
 
     return QuranPage(verses: verses);
   }

@@ -177,6 +177,7 @@ class AccountPageStateNotifier extends BaseStateNotifier<AccountPageState> {
     try {
       var formattedDate =
           DateFormat('d-M-yyyy').parseStrict('$dateOfMonth-$month-$year');
+
       return formattedDate.toString();
     } catch (e) {
       return '';

@@ -85,7 +85,7 @@ class HomePageV2 extends StatelessWidget {
                           IconPath.iconForm,
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -126,6 +126,7 @@ class ListSuratByJuz extends StatelessWidget {
         HomePageState state = ref.watch(homePageStateNotifier);
 
         bool isLoggedIn = ref.watch(authenticationService).isLoggedIn;
+
         return Stack(
           children: <Widget>[
             Column(
@@ -138,9 +139,15 @@ class ListSuratByJuz extends StatelessWidget {
                     color: backgroundColor,
                     boxShadow: [
                       BoxShadow(
-                          color: Color.fromRGBO(0, 0, 0, 0.08),
-                          blurRadius: 15,
-                          offset: Offset(4, 4))
+                        color: Color.fromRGBO(
+                          0,
+                          0,
+                          0,
+                          0.08,
+                        ),
+                        blurRadius: 15,
+                        offset: Offset(4, 4),
+                      ),
                     ],
                   ),
                   child: Text(
@@ -157,7 +164,12 @@ class ListSuratByJuz extends StatelessWidget {
                       children: [
                         if (isHabitEnabled)
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 12, 20, 30),
+                            padding: const EdgeInsets.fromLTRB(
+                              20,
+                              12,
+                              20,
+                              30,
+                            ),
                             child: isLoggedIn
                                 ? _buildDailyHabitTracker(context, state)
                                 : const StartHabitCard(),
@@ -175,7 +187,8 @@ class ListSuratByJuz extends StatelessWidget {
                                   decoration:
                                       const BoxDecoration(color: neutral200),
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 24),
+                                    horizontal: 24,
+                                  ),
                                   child: Text(
                                     state.juzElements![index].name,
                                     textAlign: TextAlign.start,
@@ -204,12 +217,14 @@ class ListSuratByJuz extends StatelessWidget {
                 width: diameterButtonSearch(context),
                 height: diameterButtonSearch(context),
                 decoration: const BoxDecoration(
-                    shape: BoxShape.circle, color: darkGreen),
+                  shape: BoxShape.circle,
+                  color: darkGreen,
+                ),
                 child: _ButtonSearch(
                   versePagetoAyah: state.ayahPage!,
                 ),
               ),
-            )
+            ),
           ],
         );
       },
@@ -233,13 +248,14 @@ class ListSuratByJuz extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             ButtonSecondary(
-                label: "See Details",
-                onTap: () {
-                  final navigationBar =
-                      MainPage.globalKey.currentWidget as BottomNavigationBar;
+              label: "See Details",
+              onTap: () {
+                final navigationBar =
+                    MainPage.globalKey.currentWidget as BottomNavigationBar;
 
-                  navigationBar.onTap!(1);
-                }),
+                navigationBar.onTap!(1);
+              },
+            ),
           ],
         ),
       ),
@@ -271,10 +287,16 @@ class ListSuratByJuz extends StatelessWidget {
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                      color: Color.fromRGBO(0, 0, 0, 0.1),
-                      offset: Offset(1.0, 2.0),
-                      blurRadius: 5.0,
-                      spreadRadius: 1.0)
+                    color: Color.fromRGBO(
+                      0,
+                      0,
+                      0,
+                      0.1,
+                    ),
+                    offset: Offset(1.0, 2.0),
+                    blurRadius: 5.0,
+                    spreadRadius: 1.0,
+                  ),
                 ],
                 borderRadius: BorderRadius.all(
                   Radius.circular(20),
@@ -343,6 +365,7 @@ class _ButtonSearch extends StatelessWidget {
     return Consumer(
       builder: (BuildContext context, WidgetRef ref, Widget? child) {
         HomePageState state = ref.watch(homePageStateNotifier);
+
         return IconButton(
           onPressed: () {
             GeneralSearchDialog.searchDialogByPageOrAyah(

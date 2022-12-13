@@ -476,10 +476,11 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     try {
       HttpResponse<CreateBookmarkResponse> _ =
           await _bookmarkApi.createBookmark(
-              request: CreateBookmarkRequest(
-        surahId: surahNameToSurahNumberMap[surahName],
-        page: page,
-      ));
+        request: CreateBookmarkRequest(
+          surahId: surahNameToSurahNumberMap[surahName],
+          page: page,
+        ),
+      );
     } catch (e) {
       // TODO(yumnanaruto): add logging here
     }
@@ -489,6 +490,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     final bool isExists = _bookmarkList.contains(page);
     if (isExists) {
       visibleIconBookmark.value = true;
+
       return;
     }
 

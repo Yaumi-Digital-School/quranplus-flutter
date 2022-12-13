@@ -40,12 +40,13 @@ class DbMigration {
   Future<void> _migrate_2(Database db) async {
     await db.transaction((txn) async {
       await txn.execute(
-          '''CREATE TABLE IF NOT EXISTS temp_${BookmarksTable.tableName}(
+        '''CREATE TABLE IF NOT EXISTS temp_${BookmarksTable.tableName}(
               ${BookmarksTable.columnId} INTEGER PRIMARY KEY, 
               ${BookmarksTable.columnSurahName} TEXT, 
               ${BookmarksTable.columnPage} INTEGER, 
               ${BookmarksTable.columnCreatedAt} TEXT
-            )''');
+            )''',
+      );
       await txn.execute('''
                 INSERT INTO temp_${BookmarksTable.tableName}(
                   ${BookmarksTable.columnSurahName}, 
@@ -55,7 +56,8 @@ class DbMigration {
               ''');
       await txn.execute('DROP TABLE IF EXISTS ${BookmarksTable.tableName}');
       await txn.execute(
-          'ALTER TABLE temp_${BookmarksTable.tableName} RENAME TO ${BookmarksTable.tableName}');
+        'ALTER TABLE temp_${BookmarksTable.tableName} RENAME TO ${BookmarksTable.tableName}',
+      );
     });
   }
 

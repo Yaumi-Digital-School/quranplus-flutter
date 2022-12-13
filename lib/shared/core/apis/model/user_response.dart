@@ -15,6 +15,7 @@ class UserResponse {
 
   factory UserResponse.fromJson(Map<String, dynamic> json) {
     var data = json['data'];
+
     return UserResponse(
       message: json['message'] ?? '',
       errorMessage: json['error_message'] ?? '',

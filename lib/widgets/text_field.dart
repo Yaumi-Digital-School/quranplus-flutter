@@ -18,7 +18,8 @@ class InputTotalPagesTextField extends StatelessWidget {
       width: 56,
       child: TextField(
         controller: TextEditingController(
-            text: defaultValue != null ? defaultValue.toString() : ""),
+          text: defaultValue != null ? defaultValue.toString() : "",
+        ),
         cursorColor: Colors.black,
         textAlign: TextAlign.center,
         textAlignVertical: TextAlignVertical.center,
@@ -36,17 +37,17 @@ class InputTotalPagesTextField extends StatelessWidget {
           ),
           filled: true,
           fillColor: Colors.white,
-          enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: neutral500, width: 0.5),
-            borderRadius: BorderRadius.circular(8),
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: neutral500, width: 0.5),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: neutral500, width: 0.5),
-            borderRadius: BorderRadius.circular(8),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: neutral500, width: 0.5),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
-          border: OutlineInputBorder(
-            borderSide: const BorderSide(color: neutral500, width: 0.5),
-            borderRadius: BorderRadius.circular(8),
+          border: const OutlineInputBorder(
+            borderSide: BorderSide(color: neutral500, width: 0.5),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
         ),
       ),
