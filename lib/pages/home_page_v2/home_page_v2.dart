@@ -165,10 +165,10 @@ class ListSuratByJuz extends StatelessWidget {
                         if (isHabitEnabled)
                           Padding(
                             padding: const EdgeInsets.fromLTRB(
-                              20,
-                              12,
-                              20,
-                              30,
+                              24,
+                              16,
+                              24,
+                              24,
                             ),
                             child: isLoggedIn
                                 ? _buildDailyHabitTracker(context, state)
