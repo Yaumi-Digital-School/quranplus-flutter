@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qurantafsir_flutter/pages/account_page/account_page.dart';
 import 'package:qurantafsir_flutter/pages/main_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
@@ -210,6 +211,19 @@ class SettingsPage extends StatelessWidget {
             exit500,
           ),
         ),
+        const SizedBox(
+          height: 24,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "Quran Plus Version",
+              style: bodyRegular2,
+            ),
+            const VersionApp(),
+          ],
+        ),
       ],
     );
   }
@@ -280,6 +294,45 @@ class SettingsPage extends StatelessWidget {
       context,
       param.nextPath ?? '',
       arguments: routeParams,
+    );
+  }
+}
+
+class VersionApp extends StatefulWidget {
+  const VersionApp({Key? key, this.title}) : super(key: key);
+
+  final String? title;
+
+  @override
+  State<VersionApp> createState() => _versionApp();
+}
+
+class _versionApp extends State<VersionApp> {
+  PackageInfo _packageInfo = PackageInfo(
+    appName: 'Unknown',
+    packageName: 'Unknown',
+    version: 'Unknown',
+    buildNumber: 'Unknown',
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _initPackageInfo();
+  }
+
+  Future<void> _initPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      _packageInfo = info;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      _packageInfo.version.isEmpty ? "not Set" : _packageInfo.version,
+      style: bodyRegular2,
     );
   }
 }
