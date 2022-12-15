@@ -59,6 +59,7 @@ dependencies:
   lottie: ^1.4.2
   dart_code_metrics: ^4.16.0
   analyzer: ^2.8.0
+  wakelock: ^0.6.2
 
 dev_dependencies:
   flutter_test:
