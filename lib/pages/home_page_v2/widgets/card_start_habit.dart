@@ -17,11 +17,11 @@ class StartHabitCard extends StatelessWidget {
       child: Stack(
         children: [
           Positioned(
-            top: 10,
+            top: 12,
             left: 162,
             child: SizedBox(
-              width: 210,
-              height: 130,
+              height: 95,
+              width: 200,
               child: Image(
                 fit: BoxFit.fill,
                 image: AssetImage(ImagePath.quranImage),
@@ -30,14 +30,9 @@ class StartHabitCard extends StatelessWidget {
           ),
           SizedBox(
             width: double.infinity,
-            height: 140,
+            height: 108,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                12,
-                17,
-                12,
-                7,
-              ),
+              padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
               child: Column(
                 children: <Widget>[
                   Row(
@@ -46,13 +41,13 @@ class StartHabitCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(
                           7.0,
+                          0,
                           7.0,
-                          7.0,
-                          6.0,
+                          5.0,
                         ),
                         child: Text(
                           'New! Habit Feature',
-                          style: TextStyle(fontSize: 15, fontWeight: semiBold),
+                          style: TextStyle(fontSize: 14, fontWeight: semiBold),
                         ),
                       ),
                     ],
@@ -62,45 +57,45 @@ class StartHabitCard extends StatelessWidget {
                     children: [
                       Container(
                         margin: const EdgeInsets.only(left: 7.0),
-                        width: 210,
+                        width: 165,
                         child: Text(
-                          'Build your reading habit by set  and track your daily goals',
-                          style:
-                              TextStyle(color: neutral500, fontWeight: regular),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          final navigationBar = MainPage.globalKey.currentWidget
-                              as BottomNavigationBar;
-
-                          navigationBar.onTap!(1);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 9),
-                          child: Text(
-                            'Start Now',
-                            style:
-                                TextStyle(fontSize: 12, fontWeight: semiBold),
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          primary: Colors.white,
-                          onPrimary: primary500,
-                          elevation: 1,
+                          'Build your reading habit by setting and tracking your daily goals',
+                          style: TextStyle(
+                              color: neutral700,
+                              fontWeight: medium,
+                              fontSize: 11),
                         ),
                       ),
                     ],
                   ),
                 ],
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 5,
+            right: 10,
+            child: ElevatedButton(
+              onPressed: () {
+                final navigationBar =
+                    MainPage.globalKey.currentWidget as BottomNavigationBar;
+
+                navigationBar.onTap!(1);
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 9),
+                child: Text(
+                  'Start Now',
+                  style: TextStyle(fontSize: 12, fontWeight: semiBold),
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+                primary: Colors.white,
+                onPrimary: primary500,
+                elevation: 1,
               ),
             ),
           ),
