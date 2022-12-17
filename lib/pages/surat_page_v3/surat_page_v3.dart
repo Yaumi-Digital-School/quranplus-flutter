@@ -570,21 +570,27 @@ class _SuratPageV3State extends State<SuratPageV3> {
       allPages.add(page);
     }
 
-    return PageView(
-      reverse: true,
-      controller: state.pageController,
-      onPageChanged: (pageIndex) {
-        int pageValue = pageIndex + 1;
-
-        int surahNumber = state.pages![pageIndex].verses[0].surahNumber;
-        String surahName = surahNumberToSurahNameMap[surahNumber] ?? '';
-        notifier.visibleSuratName.value = surahName;
-        notifier.currentPage.value = pageValue;
-        notifier.checkIsBookmarkExists(pageValue);
-        notifier.changePageOnRecording(pageValue);
+    return Listener(
+      onPointerDown: (event) {
+        notifier.isTrackerVisible.value = false;
+      },
+      onPointerUp: (event) {
         notifier.isTrackerVisible.value = true;
       },
-      children: allPages,
+      child: PageView(
+        reverse: true,
+        controller: state.pageController,
+        onPageChanged: (pageIndex) {
+          int pageValue = pageIndex + 1;
+          int surahNumber = state.pages![pageIndex].verses[0].surahNumber;
+          String surahName = surahNumberToSurahNameMap[surahNumber] ?? '';
+          notifier.visibleSuratName.value = surahName;
+          notifier.currentPage.value = pageValue;
+          notifier.checkIsBookmarkExists(pageValue);
+          notifier.changePageOnRecording(pageValue);
+        },
+        children: allPages,
+      ),
     );
   }
 
@@ -614,7 +620,6 @@ class _SuratPageV3State extends State<SuratPageV3> {
         int pageValue = pageIndex + 1;
         notifier.changePageOnRecording(pageValue);
         notifier.checkIsBookmarkExists(pageValue);
-
         notifier.currentPage.value = pageValue;
         notifier.isTrackerVisible.value = true;
       },
