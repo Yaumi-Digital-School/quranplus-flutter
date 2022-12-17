@@ -311,12 +311,7 @@ class VersionAppWidget extends StatefulWidget {
 }
 
 class _VersionAppWidget extends State<VersionAppWidget> {
-  PackageInfo _packageInfo = PackageInfo(
-    appName: 'Unknown',
-    packageName: 'Unknown',
-    version: 'Unknown',
-    buildNumber: 'Unknown',
-  );
+  late PackageInfo _packageInfo;
 
   @override
   void initState() {
