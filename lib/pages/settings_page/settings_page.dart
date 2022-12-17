@@ -334,7 +334,7 @@ class _VersionAppWidget extends State<VersionAppWidget> {
   @override
   Widget build(BuildContext context) {
     return Text(
-      _packageInfo.version.isEmpty ? "not Set" : _packageInfo.version,
+      _packageInfo.version.isEmpty ? "" : _packageInfo.version,
       style: bodyRegular2,
     );
   }

@@ -61,7 +61,7 @@ dependencies:
   analyzer: ^2.8.0
   wakelock: ^0.6.2
   package_info_plus: ^1.0.1
-  package_info_plus_web: ^1.0.6
+  
 
 dev_dependencies:
   flutter_test:
