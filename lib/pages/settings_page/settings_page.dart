@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qurantafsir_flutter/pages/account_page/account_page.dart';
 import 'package:qurantafsir_flutter/pages/main_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
@@ -80,7 +81,7 @@ class SettingsPage extends StatelessWidget {
             ),
             body: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(24),
                 child: state.authenticationStatus ==
                         AuthenticationStatus.authenticated
                     ? _buildUserView(
@@ -210,6 +211,22 @@ class SettingsPage extends StatelessWidget {
             exit500,
           ),
         ),
+        const SizedBox(
+          height: 24,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 24, right: 24),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Quran Plus Version",
+                style: bodyRegular2,
+              ),
+              const VersionAppWidget(),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -280,6 +297,40 @@ class SettingsPage extends StatelessWidget {
       context,
       param.nextPath ?? '',
       arguments: routeParams,
+    );
+  }
+}
+
+class VersionAppWidget extends StatefulWidget {
+  const VersionAppWidget({Key? key, this.title}) : super(key: key);
+
+  final String? title;
+
+  @override
+  State<VersionAppWidget> createState() => _VersionAppWidget();
+}
+
+class _VersionAppWidget extends State<VersionAppWidget> {
+  late PackageInfo _packageInfo;
+
+  @override
+  void initState() {
+    super.initState();
+    _initPackageInfo();
+  }
+
+  Future<void> _initPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      _packageInfo = info;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      _packageInfo.version.isEmpty ? "" : _packageInfo.version,
+      style: bodyRegular2,
     );
   }
 }
