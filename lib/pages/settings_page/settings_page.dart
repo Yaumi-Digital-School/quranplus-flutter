@@ -81,7 +81,7 @@ class SettingsPage extends StatelessWidget {
             ),
             body: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(24),
                 child: state.authenticationStatus ==
                         AuthenticationStatus.authenticated
                     ? _buildUserView(
@@ -214,15 +214,18 @@ class SettingsPage extends StatelessWidget {
         const SizedBox(
           height: 24,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "Quran Plus Version",
-              style: bodyRegular2,
-            ),
-            const VersionApp(),
-          ],
+        Padding(
+          padding: const EdgeInsets.only(left: 24, right: 24),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Quran Plus Version",
+                style: bodyRegular2,
+              ),
+              const VersionAppWidget(),
+            ],
+          ),
         ),
       ],
     );
@@ -298,16 +301,16 @@ class SettingsPage extends StatelessWidget {
   }
 }
 
-class VersionApp extends StatefulWidget {
-  const VersionApp({Key? key, this.title}) : super(key: key);
+class VersionAppWidget extends StatefulWidget {
+  const VersionAppWidget({Key? key, this.title}) : super(key: key);
 
   final String? title;
 
   @override
-  State<VersionApp> createState() => _versionApp();
+  State<VersionAppWidget> createState() => _VersionAppWidget();
 }
 
-class _versionApp extends State<VersionApp> {
+class _VersionAppWidget extends State<VersionAppWidget> {
   PackageInfo _packageInfo = PackageInfo(
     appName: 'Unknown',
     packageName: 'Unknown',
