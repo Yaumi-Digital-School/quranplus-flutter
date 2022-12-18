@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.yaumi.qurantafsir.id">
    <application
-        android:label="Quran Tafsir"
+        android:label="Quran Plus"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

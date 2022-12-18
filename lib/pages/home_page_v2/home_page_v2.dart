@@ -4,6 +4,7 @@ import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/card_start_habit.
 import 'package:qurantafsir_flutter/pages/main_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
+import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
@@ -67,12 +68,12 @@ class HomePageV2 extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Container(
-                      width: 65,
-                      height: 24,
-                      decoration: const BoxDecoration(
+                      width: 110,
+                      height: 28,
+                      decoration: BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage(
-                            'images/logo.png',
+                            ImagePath.logoQuranPlusLandscape,
                           ),
                         ),
                       ),

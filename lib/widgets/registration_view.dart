@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
+import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
 class RegistrationView extends StatelessWidget {
@@ -14,12 +15,13 @@ class RegistrationView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Image.asset(
-          'images/logo.png',
-          width: 150,
+          ImagePath.logoQuranPlusPotrait,
+          width: 83,
+          height: 100,
         ),
-        const SizedBox(height: 48),
+        const SizedBox(height: 24),
         Text('Why I must Sign in?', style: subHeadingSemiBold2),
-        const SizedBox(height: 22),
+        const SizedBox(height: 24),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 65),
           child: Column(
