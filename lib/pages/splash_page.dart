@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 
 class SplashPage extends StatefulWidget {
@@ -32,12 +33,12 @@ class _SplashPageState extends State<SplashPage> {
     return Scaffold(
       body: Center(
         child: Container(
-          width: 130,
-          height: 48,
-          decoration: const BoxDecoration(
+          width: 92,
+          height: 110,
+          decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage(
-                'images/logo.png',
+                ImagePath.logoQuranPlusPotrait,
               ),
             ),
           ),

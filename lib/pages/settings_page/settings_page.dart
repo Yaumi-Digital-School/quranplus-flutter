@@ -81,7 +81,7 @@ class SettingsPage extends StatelessWidget {
             ),
             body: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.all(16),
                 child: state.authenticationStatus ==
                         AuthenticationStatus.authenticated
                     ? _buildUserView(
