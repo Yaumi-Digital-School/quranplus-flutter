@@ -21,6 +21,7 @@ class HomePageState {
     this.feedbackUrl,
     this.ayahPage,
     this.dailySummary,
+    required this.isNeedSync,
   });
 
   String token;
@@ -29,6 +30,7 @@ class HomePageState {
   String? feedbackUrl;
   Map<String, List<String>>? ayahPage;
   HabitDailySummary? dailySummary;
+  bool isNeedSync;
 
   HomePageState copyWith({
     String? token,
@@ -37,6 +39,7 @@ class HomePageState {
     String? feedbackUrl,
     Map<String, List<String>>? ayahPage,
     HabitDailySummary? dailySummary,
+    bool? isNeedSync,
   }) {
     return HomePageState(
       token: token ?? this.token,
@@ -45,6 +48,7 @@ class HomePageState {
       feedbackUrl: feedbackUrl ?? this.feedbackUrl,
       ayahPage: ayahPage ?? this.ayahPage,
       dailySummary: dailySummary ?? this.dailySummary,
+      isNeedSync: isNeedSync ?? this.isNeedSync,
     );
   }
 }
@@ -55,7 +59,7 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     required SharedPreferenceService sharedPreferenceService,
   })  : _sharedPreferenceService = sharedPreferenceService,
         _habitDailySummaryService = habitDailySummaryService,
-        super(HomePageState());
+        super(HomePageState(isNeedSync: false));
 
   final SharedPreferenceService _sharedPreferenceService;
   final HabitDailySummaryService _habitDailySummaryService;
@@ -74,6 +78,14 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     }
     await _getJuzElements();
     await _getVerseToAyahPage();
+
+    if (_name?.isNotEmpty ?? false) {
+      await _habitDailySummaryService.syncHabit(
+        connectivityResult: connectivityResult,
+      );
+    }
+    final isNeedSync = _habitDailySummaryService.isNeedSync();
+
     _dailySummary = await _habitDailySummaryService
         .getCurrentDayHabitDailySummaryListLocal();
 
@@ -84,13 +96,8 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
       feedbackUrl: _feedbackUrl ?? '',
       ayahPage: _ayahPage,
       dailySummary: _dailySummary,
+      isNeedSync: isNeedSync,
     );
-
-    if (_name?.isNotEmpty ?? false) {
-      _habitDailySummaryService.syncHabit(
-        connectivityResult: connectivityResult,
-      );
-    }
   }
 
   Future<void> getCurrentHabitDailySummaryListLocal() async {
