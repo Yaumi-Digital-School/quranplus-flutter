@@ -8,10 +8,12 @@ class DailyProgressTracker extends StatelessWidget {
     Key? key,
     required this.target,
     required this.dailyProgress,
+    required this.isNeedSync,
   }) : super(key: key);
 
   final int target;
   final int dailyProgress;
+  final bool isNeedSync;
   @override
   Widget build(BuildContext context) {
     DateTime now = DateTime.now();
@@ -65,6 +67,14 @@ class DailyProgressTracker extends StatelessWidget {
                 TextStyle(fontSize: 12, fontWeight: regular, color: neutral600),
           ),
         ),
+        if (isNeedSync)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(
+              "*back online within 7 days to sync your data",
+              style: regular10.copyWith(color: neutral600),
+            ),
+          ),
       ],
     );
   }

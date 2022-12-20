@@ -102,16 +102,18 @@ class _HabitProgressState extends State<HabitProgressView> {
                           height: 1,
                           color: neutral300,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
                         state.currentProgress != null
                             ? DailyProgressTracker(
                                 target: state.currentProgress!.target,
                                 dailyProgress:
                                     state.currentProgress!.totalPages,
+                                isNeedSync: state.isNeedSync,
                               )
-                            : const DailyProgressTracker(
+                            : DailyProgressTracker(
                                 target: 1,
                                 dailyProgress: 0,
+                                isNeedSync: state.isNeedSync,
                               ),
                         const SizedBox(height: 24),
                         ButtonNeutral(

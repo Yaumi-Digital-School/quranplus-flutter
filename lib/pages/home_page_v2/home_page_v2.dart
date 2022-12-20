@@ -11,8 +11,8 @@ import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
-import 'package:qurantafsir_flutter/widgets/daily_progress_tracker.dart';
 import 'package:qurantafsir_flutter/widgets/alert_dialog.dart';
+import 'package:qurantafsir_flutter/widgets/daily_progress_tracker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'home_page_state_notifier.dart';
 
@@ -246,8 +246,9 @@ class ListSuratByJuz extends StatelessWidget {
             DailyProgressTracker(
               target: state.dailySummary!.target,
               dailyProgress: state.dailySummary!.totalPages,
+              isNeedSync: state.isNeedSync,
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
             ButtonSecondary(
               label: "See Details",
               onTap: () {

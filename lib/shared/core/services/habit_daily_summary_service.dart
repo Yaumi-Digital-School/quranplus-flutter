@@ -6,6 +6,8 @@ import 'package:qurantafsir_flutter/shared/core/models/habit_sync.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:retrofit/retrofit.dart';
 
+const threeHourInSeconds = 10800;
+
 class HabitDailySummaryService {
   HabitDailySummaryService({
     required this.sharedPreferenceService,
@@ -38,12 +40,19 @@ class HabitDailySummaryService {
   }) async {
     connectivityResult ??= await Connectivity().checkConnectivity();
 
-    if (connectivityResult == ConnectivityResult.none) {
-      return;
-    }
-
     try {
       final HabitSyncRequest request = await _getLocalDataRequest();
+
+      if (connectivityResult == ConnectivityResult.none) {
+        final habitNeedToSyncTimer =
+            sharedPreferenceService.getHabitNeedToSyncTimer();
+        if (habitNeedToSyncTimer == "" && request.dailySummaries.isNotEmpty) {
+          await sharedPreferenceService.setHabitNeedToSyncTimer(DateTime.now());
+        }
+
+        return;
+      }
+
       final HttpResponse<List<HabitSyncResponseItem>> response =
           await _habitApi.syncHabit(
         request: request,
@@ -53,7 +62,9 @@ class HabitDailySummaryService {
         return;
       }
 
-      sharedPreferenceService.setLastSync(DateTime.now());
+      await sharedPreferenceService.setHabitNeedToSyncTimer(null);
+
+      await sharedPreferenceService.setLastSync(DateTime.now());
 
       if (response.data.isEmpty) {
         return;
@@ -65,6 +76,26 @@ class HabitDailySummaryService {
     } catch (e) {
       // ignore: avoid_print
       print(e);
+    }
+  }
+
+  bool isNeedSync() {
+    try {
+      final habitNeedToSync = sharedPreferenceService.getHabitNeedToSyncTimer();
+      if (habitNeedToSync == "") return false;
+
+      final currentTime = DateTime.now();
+      final habitNeedToSyncTime = DateTime.parse(habitNeedToSync);
+      final differenceInSeconds =
+          currentTime.difference(habitNeedToSyncTime).inSeconds;
+
+      if (differenceInSeconds > threeHourInSeconds) {
+        return true;
+      }
+
+      return false;
+    } catch (e) {
+      return false;
     }
   }
 }

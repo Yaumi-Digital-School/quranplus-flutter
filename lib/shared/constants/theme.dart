@@ -167,7 +167,7 @@ TextStyle bodyLatin1 =
     GoogleFonts.notoSans(color: neutral600, fontSize: 12, fontWeight: regular);
 
 TextStyle regular10 =
-    GoogleFonts.notoSans(color: neutral900, fontSize: 8, fontWeight: regular);
+    GoogleFonts.notoSans(color: neutral900, fontSize: 10, fontWeight: regular);
 
 TextStyle regular8 =
     GoogleFonts.notoSans(color: neutral900, fontSize: 8, fontWeight: regular);

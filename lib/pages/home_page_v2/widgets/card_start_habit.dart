@@ -32,7 +32,12 @@ class StartHabitCard extends StatelessWidget {
             width: double.infinity,
             height: 108,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+              padding: const EdgeInsets.fromLTRB(
+                16.0,
+                16.0,
+                16.0,
+                0,
+              ),
               child: Column(
                 children: <Widget>[
                   Row(
@@ -61,9 +66,10 @@ class StartHabitCard extends StatelessWidget {
                         child: Text(
                           'Build your reading habit by setting and tracking your daily goals',
                           style: TextStyle(
-                              color: neutral700,
-                              fontWeight: medium,
-                              fontSize: 11),
+                            color: neutral700,
+                            fontWeight: medium,
+                            fontSize: 11,
+                          ),
                         ),
                       ),
                     ],
