@@ -311,7 +311,7 @@ class VersionAppWidget extends StatefulWidget {
 }
 
 class _VersionAppWidget extends State<VersionAppWidget> {
-  late PackageInfo _packageInfo;
+  PackageInfo? _packageInfo;
 
   @override
   void initState() {
@@ -320,7 +320,7 @@ class _VersionAppWidget extends State<VersionAppWidget> {
   }
 
   Future<void> _initPackageInfo() async {
-    final info = await PackageInfo.fromPlatform();
+    final PackageInfo info = await PackageInfo.fromPlatform();
     setState(() {
       _packageInfo = info;
     });
@@ -329,7 +329,7 @@ class _VersionAppWidget extends State<VersionAppWidget> {
   @override
   Widget build(BuildContext context) {
     return Text(
-      _packageInfo.version.isEmpty ? "" : _packageInfo.version,
+      _packageInfo == null ? '' : _packageInfo!.version,
       style: bodyRegular2,
     );
   }
