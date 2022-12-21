@@ -570,12 +570,9 @@ class _SuratPageV3State extends State<SuratPageV3> {
       allPages.add(page);
     }
 
-    return Listener(
-      onPointerDown: (event) {
-        notifier.isTrackerVisible.value = false;
-      },
-      onPointerUp: (event) {
-        notifier.isTrackerVisible.value = true;
+    return GestureDetector(
+      onTap: () {
+        notifier.isTrackerVisible.value = !notifier.isTrackerVisible.value;
       },
       child: PageView(
         reverse: true,
@@ -588,6 +585,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
           notifier.currentPage.value = pageValue;
           notifier.checkIsBookmarkExists(pageValue);
           notifier.changePageOnRecording(pageValue);
+          notifier.isTrackerVisible.value = true;
         },
         children: allPages,
       ),
