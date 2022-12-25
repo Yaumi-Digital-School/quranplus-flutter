@@ -64,11 +64,14 @@ class TextFieldWithDropdown extends StatelessWidget {
     required this.onSelect,
     this.label,
     this.maxOptionsInContainer = 3,
+    this.additionalInformation,
   }) : super(key: key);
 
   final List<String> options;
   final Function(String) onSelect;
   final String? label;
+  final RichText? additionalInformation;
+
   final GlobalKey textFieldKey = GlobalKey();
   final int maxOptionsInContainer;
 
@@ -168,6 +171,17 @@ class TextFieldWithDropdown extends StatelessWidget {
             );
           },
         ),
+        if (additionalInformation != null) ...[
+          const SizedBox(
+            height: 4,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              additionalInformation!,
+            ],
+          ),
+        ],
       ],
     );
   }
