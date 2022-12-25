@@ -190,6 +190,181 @@ class TextFieldWithDropdown extends StatelessWidget {
   }
 }
 
+class TextFieldWithIncrementAndDecrementButton extends StatefulWidget {
+  const TextFieldWithIncrementAndDecrementButton({
+    Key? key,
+    this.controller,
+    this.label,
+    this.minValue,
+    this.maxValue,
+    this.initialValue = 0,
+  }) : super(key: key);
+
+  final String? label;
+  final TextEditingController? controller;
+  final int? minValue;
+  final int? maxValue;
+  final int initialValue;
+
+  @override
+  State<TextFieldWithIncrementAndDecrementButton> createState() =>
+      _TextFieldWithIncrementAndDecrementButtonState();
+}
+
+class _TextFieldWithIncrementAndDecrementButtonState
+    extends State<TextFieldWithIncrementAndDecrementButton> {
+  String? label;
+  TextEditingController? controller;
+  int? minValue;
+  int? maxValue;
+  bool isIncrementDisabled = false;
+  bool isDecrementDisabled = false;
+  late int currentValue;
+
+  @override
+  void initState() {
+    label = widget.label;
+    currentValue = widget.initialValue;
+    minValue = widget.minValue;
+    maxValue = widget.maxValue;
+    controller ??= TextEditingController();
+
+    controller!.text = currentValue.toString();
+
+    super.initState();
+  }
+
+  void _onTapIncrement() {
+    currentValue++;
+
+    controller!.text = currentValue.toString();
+
+    final bool shouldDisableIncrement =
+        maxValue != null && currentValue >= maxValue!;
+    final bool shouldEnableDecrement =
+        minValue != null && currentValue > minValue!;
+    final bool shouldSetState = shouldDisableIncrement || shouldEnableDecrement;
+
+    if (shouldSetState) {
+      setState(() {
+        if (shouldEnableDecrement) {
+          isDecrementDisabled = false;
+        }
+
+        if (shouldDisableIncrement) {
+          isIncrementDisabled = true;
+        }
+      });
+    }
+  }
+
+  void _onTapDecrement() {
+    currentValue--;
+
+    controller!.text = currentValue.toString();
+
+    final bool shouldDisableDecrement =
+        minValue != null && currentValue <= minValue!;
+    final bool shouldEnableIncrement =
+        maxValue != null && currentValue < maxValue!;
+    final bool shouldSetState = shouldDisableDecrement || shouldEnableIncrement;
+
+    if (shouldSetState) {
+      setState(() {
+        if (shouldDisableDecrement) {
+          isDecrementDisabled = true;
+        }
+
+        if (shouldEnableIncrement) {
+          isIncrementDisabled = false;
+        }
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (label != null)
+          _FieldLabel(
+            label: label!,
+          ),
+        Row(
+          children: [
+            _buildSignButton(
+              icon: Icons.remove,
+              onPressed: _onTapDecrement,
+              isDisabled: isDecrementDisabled,
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            Expanded(
+              child: SizedBox(
+                height: 40,
+                child: TextFormField(
+                  controller: controller,
+                  textAlign: TextAlign.center,
+                  style: QPTextStyle.subHeading4SemiBold,
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.all(8),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: QPColors.blackSoft,
+                        width: 0.5,
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            _buildSignButton(
+              icon: Icons.add,
+              onPressed: _onTapIncrement,
+              isDisabled: isIncrementDisabled,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSignButton({
+    required IconData icon,
+    VoidCallback? onPressed,
+    bool isDisabled = false,
+  }) {
+    return SizedBox(
+      width: 40,
+      height: 40,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+          padding: const EdgeInsets.all(6.0),
+          primary: darkGreen,
+          onPrimary: Colors.white,
+          // minimumSize: const Size.fromHeight(40),
+        ),
+        onPressed: isDisabled ? null : onPressed,
+        child: Icon(
+          icon,
+          color: QPColors.whiteMassive,
+          size: 14,
+        ),
+      ),
+    );
+    // onPressed: onTap,
+  }
+}
+
 class _FieldLabel extends StatelessWidget {
   const _FieldLabel({
     Key? key,
