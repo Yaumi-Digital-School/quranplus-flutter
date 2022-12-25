@@ -152,20 +152,23 @@ class TextFieldWithDropdown extends StatelessWidget {
             FocusNode focusNode,
             Function onFieldSubmitted,
           ) {
-            return TextFormField(
-              key: textFieldKey,
-              controller: textEditingController,
-              focusNode: focusNode,
-              textAlign: TextAlign.center,
-              style: QPTextStyle.subHeading4SemiBold,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.all(8),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: QPColors.blackSoft,
-                    width: 0.5,
+            return SizedBox(
+              height: 40,
+              child: TextFormField(
+                key: textFieldKey,
+                controller: textEditingController,
+                focusNode: focusNode,
+                textAlign: TextAlign.center,
+                style: QPTextStyle.subHeading4SemiBold,
+                decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.all(8),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: QPColors.blackSoft,
+                      width: 0.5,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
                   ),
-                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
                 ),
               ),
             );
