@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
 class InputTotalPagesTextField extends StatelessWidget {
@@ -50,6 +52,159 @@ class InputTotalPagesTextField extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class TextFieldWithDropdown extends StatelessWidget {
+  TextFieldWithDropdown({
+    Key? key,
+    required this.options,
+    required this.onSelect,
+    this.label,
+    this.maxOptionsInContainer = 3,
+    this.additionalInformation,
+  }) : super(key: key);
+
+  final List<String> options;
+  final Function(String) onSelect;
+  final String? label;
+  final RichText? additionalInformation;
+
+  final GlobalKey textFieldKey = GlobalKey();
+  final int maxOptionsInContainer;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (label != null)
+          _FieldLabel(
+            label: label!,
+          ),
+        // Autocomplete(optionsBuilder: optionsBuilder),
+        Autocomplete<String>(
+          optionsBuilder: (TextEditingValue textEditingValue) {
+            if (textEditingValue.text == '') {
+              return options;
+            }
+
+            return options.where((String option) {
+              return option
+                  .toLowerCase()
+                  .contains(textEditingValue.text.toLowerCase());
+            });
+          },
+          optionsViewBuilder: (_, onSelected, options) {
+            final RenderBox textFieldBox =
+                textFieldKey.currentContext!.findRenderObject() as RenderBox;
+            final double textFieldWidth = textFieldBox.size.width;
+            final int currOptionsInContainer =
+                (options.length >= maxOptionsInContainer)
+                    ? maxOptionsInContainer
+                    : options.length;
+            final double maxContainerHeight =
+                (currOptionsInContainer * 28) + 14;
+
+            return Align(
+              alignment: Alignment.topLeft,
+              child: Material(
+                elevation: 4.0,
+                borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                child: SizedBox(
+                  height: maxContainerHeight,
+                  // width: 200,
+                  width: textFieldWidth,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                    ),
+                    itemCount: options.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final String option = options.elementAt(index);
+
+                      return GestureDetector(
+                        onTap: () {
+                          onSelect(option);
+                          onSelected(option);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 8,
+                          ),
+                          child: Text(
+                            option,
+                            style: QPTextStyle.subHeading4SemiBold,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            );
+          },
+          fieldViewBuilder: (
+            BuildContext context,
+            TextEditingController textEditingController,
+            FocusNode focusNode,
+            Function onFieldSubmitted,
+          ) {
+            return SizedBox(
+              height: 40,
+              child: TextFormField(
+                key: textFieldKey,
+                controller: textEditingController,
+                focusNode: focusNode,
+                textAlign: TextAlign.center,
+                style: QPTextStyle.subHeading4SemiBold,
+                decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.all(8),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: QPColors.blackSoft,
+                      width: 0.5,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+        if (additionalInformation != null) ...[
+          const SizedBox(
+            height: 4,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              additionalInformation!,
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _FieldLabel extends StatelessWidget {
+  const _FieldLabel({
+    Key? key,
+    required this.label,
+  }) : super(key: key);
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Text(
+        label,
+        style: QPTextStyle.subHeading4Medium,
       ),
     );
   }
