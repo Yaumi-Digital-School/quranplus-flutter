@@ -14,4 +14,5 @@ class IconPath {
   static String iconRefresh = 'images/icon_refresh.png';
   static String iconChecklistCheck = 'images/icon_checklist_check.png';
   static String iconTargetArrow = 'images/Icon_target_arrow.png';
+  static String iconIOS = 'images/icon_apple.png';
 }

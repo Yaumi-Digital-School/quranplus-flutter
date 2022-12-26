@@ -18,6 +18,7 @@ import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:qurantafsir_flutter/widgets/registration_view.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class SettingsPage extends StatelessWidget {
   SettingsPage({Key? key}) : super(key: key);
@@ -118,7 +119,7 @@ class SettingsPage extends StatelessWidget {
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult != ConnectivityResult.none) {
         notifier.signInWithGoogle(
-          () {
+          () async {
             navigateAfterLogin(
               context: context,
               notifier: notifier,

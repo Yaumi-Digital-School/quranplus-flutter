@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/main_page.dart';
-import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
+import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
@@ -84,14 +84,30 @@ class HabitPage extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(16),
                           child: RegistrationView(
-                            nextWidget: ButtonSecondary(
-                              label: 'Sign In with Google',
-                              onTap: _onTapButtonSignIn(
-                                context,
-                                notifier,
-                                ref,
-                              ),
-                              leftIcon: IconPath.iconGoogle,
+                            nextWidget: Column(
+                              children: [
+                                ButtonSecondary(
+                                  label: 'Sign In with Google',
+                                  onTap: _onTapButtonSignIn(
+                                    context,
+                                    notifier,
+                                    ref,
+                                  ),
+                                  leftIcon: IconPath.iconGoogle,
+                                ),
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                ButtonSecondary(
+                                  label: 'Sign In with Apple',
+                                  onTap: _onTapButtonSignIn(
+                                    context,
+                                    notifier,
+                                    ref,
+                                  ),
+                                  leftIcon: IconPath.iconIOS,
+                                ),
+                              ],
                             ),
                           ),
                         ),
