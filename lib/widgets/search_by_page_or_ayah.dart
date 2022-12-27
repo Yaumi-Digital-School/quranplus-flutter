@@ -570,6 +570,18 @@ class _SearchByPageOrAyahState extends State<SearchByPageOrAyah> {
           ],
           onChanged: (String ayah) {
             selectedAyah = int.parse(ayah);
+
+            if (selectedAyah > 1) {
+              final numberOfAyah = selectedAyah <= ayahOptions.length
+                  ? selectedAyah
+                  : ayahOptions.length;
+              final List<String> splittedOption =
+                  ayahOptions.elementAt(numberOfAyah - 1).split(':');
+              final String page = splittedOption[1];
+              final String ayahID = splittedOption[2];
+              selectedPageOnSelectAyah = int.parse(page);
+              selectedAyahID = int.parse(ayahID);
+            }
           },
         );
       },
