@@ -46,7 +46,7 @@ class MainPageState extends State<MainPage> {
           if (isHabitEnabled)
             BottomNavigationBarItem(
               icon: ImageIcon(
-                AssetImage(IconPath.iconChecklistCheck),
+                AssetImage(IconPath.iconHabitArrow),
               ),
               label: 'Habit',
             ),

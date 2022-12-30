@@ -51,7 +51,11 @@ class QPTextStyle {
 
   static TextStyle body3Medium = subHeading4Medium;
   static TextStyle body3SemiBold = subHeading4SemiBold;
-  static TextStyle body3Regular = subHeading4Regular;
+  static TextStyle body3Regular = baseTextStyle.copyWith(
+    fontWeight: QPFontWeight.regular,
+    fontSize: 12,
+    height: 1.6,
+  );
 
   static TextStyle button1SemiBold = subHeading3SemiBold;
   static TextStyle button1Medium = subHeading3Medium;

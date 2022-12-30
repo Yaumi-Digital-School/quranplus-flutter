@@ -71,7 +71,7 @@ class HabitPage extends StatelessWidget {
                 foregroundColor: Colors.black,
                 centerTitle: true,
                 title: const Text(
-                  'Habit',
+                  'Reading Habit Tracker',
                   style: TextStyle(fontSize: 16),
                 ),
                 backgroundColor: backgroundColor,
@@ -81,10 +81,14 @@ class HabitPage extends StatelessWidget {
                 state.authenticationStatus == AuthenticationStatus.authenticated
                     ? const HabitProgressView()
                     : SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: RegistrationView(
-                            nextWidget: ButtonSecondary(
+                        child: RegistrationView(
+                          nextWidget: Padding(
+                            padding: const EdgeInsets.only(
+                              left: 24,
+                              right: 24,
+                              bottom: 41,
+                            ),
+                            child: ButtonSecondary(
                               label: 'Sign In with Google',
                               onTap: _onTapButtonSignIn(
                                 context,

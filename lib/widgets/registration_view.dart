@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
-import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 
 class RegistrationView extends StatelessWidget {
   const RegistrationView({Key? key, required this.nextWidget})
@@ -14,21 +15,25 @@ class RegistrationView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        const SizedBox(height: 24),
         Image.asset(
           ImagePath.logoQuranPlusPotrait,
           width: 83,
           height: 100,
         ),
         const SizedBox(height: 24),
-        Text('Why I must Sign in?', style: subHeadingSemiBold2),
+        Text(
+          'Why I must Sign in?',
+          style: QPTextStyle.subHeading2SemiBold,
+        ),
         const SizedBox(height: 24),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 65),
+          padding: const EdgeInsets.all(24),
           child: Column(
             children: [
               Text(
-                'Signing in to Quran Tafsir with your Google Account can help you experience all of the benefits. Here’s what you get when you sign in:',
-                style: captionRegular2,
+                'Signing in to Quran Plus with your Google Account can help you experience all of the benefits. Here’s what you get when you sign in:',
+                style: QPTextStyle.body3Regular,
                 textAlign: TextAlign.justify,
               ),
               const SizedBox(height: 24),
@@ -47,12 +52,12 @@ class RegistrationView extends StatelessWidget {
                       children: [
                         Text(
                           'Sync Bookmark and Favorite data',
-                          style: captionSemiBold1,
+                          style: QPTextStyle.subHeading4SemiBold,
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(height: 8),
                         Text(
-                          'Help you synchronize dan keep your bookmark and favorite data on your device',
-                          style: captionRegular2,
+                          'Help you synchronize and keep your bookmark and favorite data on your device',
+                          style: QPTextStyle.body3Regular,
                         ),
                       ],
                     ),
@@ -65,32 +70,7 @@ class RegistrationView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    IconPath.iconUpdateNow,
-                    width: 24,
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Get the latest update', style: captionSemiBold1),
-                        const SizedBox(width: 8),
-                        Text(
-                          'You will be notify of the latest version of Quran Tafsir',
-                          style: captionRegular2,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    IconPath.iconTargetArrow,
+                    IconPath.iconHabitArrow,
                     width: 24,
                   ),
                   const SizedBox(width: 16),
@@ -101,39 +81,57 @@ class RegistrationView extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              'Build reading habit and set',
-                              style: captionSemiBold1,
+                              'Add progress and set target',
+                              style: QPTextStyle.subHeading4SemiBold,
                             ),
-                            const SizedBox(width: 5),
-                            Container(
-                              decoration: const BoxDecoration(
-                                color: darkGreen,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(4)),
-                              ),
-                              height: 13,
-                              width: 26,
-                              child: Center(
-                                child: Text(
-                                  'New',
-                                  style: TextStyle(
-                                    fontSize: 8,
-                                    color: Colors.white,
-                                    fontWeight: bold,
-                                  ),
-                                ),
-                              ),
+                            const SizedBox(
+                              width: 8,
                             ),
+                            _buildNewFlag(),
                           ],
                         ),
+                        const SizedBox(height: 8),
                         Text(
-                          'target',
-                          style: captionSemiBold1,
+                          'You can add your daily reading progress manually or record it and set your own reading target',
+                          style: QPTextStyle.body3Regular,
                         ),
-                        const SizedBox(width: 8),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    IconPath.iconGroupMember,
+                    width: 24,
+                  ),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              'See all members reading progress',
+                              style: QPTextStyle.subHeading4SemiBold,
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            _buildNewFlag(),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
                         Text(
-                          'Add your daily qur’an reading progress manually or record it and set your own target',
-                          style: captionRegular2,
+                          'All members progress are visible and hopefully can motivate you to reading more Qur’an and compete in goodness',
+                          style: QPTextStyle.body3Regular,
                         ),
                       ],
                     ),
@@ -143,9 +141,29 @@ class RegistrationView extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 48),
         nextWidget,
       ],
+    );
+  }
+
+  Widget _buildNewFlag() {
+    return Container(
+      decoration: const BoxDecoration(
+        color: QPColors.brandFair,
+        borderRadius: BorderRadius.all(Radius.circular(4)),
+      ),
+      height: 13,
+      width: 26,
+      child: const Center(
+        child: Text(
+          'New',
+          style: TextStyle(
+            fontSize: 8,
+            color: QPColors.whiteMassive,
+            fontWeight: QPFontWeight.bold,
+          ),
+        ),
+      ),
     );
   }
 }
