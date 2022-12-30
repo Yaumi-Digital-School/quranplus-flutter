@@ -80,18 +80,22 @@ class SettingsPage extends StatelessWidget {
               ),
             ),
             body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: state.authenticationStatus ==
-                        AuthenticationStatus.authenticated
-                    ? _buildUserView(
-                        context,
-                        state,
-                        notifier,
-                        ref,
-                      )
-                    : RegistrationView(
-                        nextWidget: ButtonSecondary(
+              child: state.authenticationStatus ==
+                      AuthenticationStatus.authenticated
+                  ? _buildUserView(
+                      context,
+                      state,
+                      notifier,
+                      ref,
+                    )
+                  : RegistrationView(
+                      nextWidget: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 24,
+                          right: 24,
+                          bottom: 41,
+                        ),
+                        child: ButtonSecondary(
                           label: 'Sign In with Google',
                           onTap: _onTapButtonSignIn(
                             context,
@@ -101,7 +105,7 @@ class SettingsPage extends StatelessWidget {
                           leftIcon: IconPath.iconGoogle,
                         ),
                       ),
-              ),
+                    ),
             ),
           );
         },
@@ -156,78 +160,81 @@ class SettingsPage extends StatelessWidget {
     SettingsPageStateNotifier notifier,
     WidgetRef ref,
   ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        TextButton(
-          style: TextButton.styleFrom(padding: EdgeInsets.zero),
-          onPressed: () async {
-            var connectivityResult = await Connectivity().checkConnectivity();
-            if (connectivityResult != ConnectivityResult.none) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return AccountPage();
-              }));
-            } else {
-              _generalBottomSheet.showNoInternetBottomSheet(
-                context,
-                () => Navigator.pop(context),
-              );
-            }
-          },
-          child: _buildImageButton(
-            'Account',
-            IconPath.iconAccounnt,
-            neutral900,
-          ),
-        ),
-        TextButton(
-          style: TextButton.styleFrom(padding: EdgeInsets.zero),
-          onPressed: () async {
-            var connectivityResult = await Connectivity().checkConnectivity();
-            if (connectivityResult != ConnectivityResult.none) {
-              notifier.signOut(() {
-                ref.read(dioServiceProvider.notifier).state = DioService(
-                  baseUrl: EnvConstants.baseUrl!,
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          TextButton(
+            style: TextButton.styleFrom(padding: EdgeInsets.zero),
+            onPressed: () async {
+              var connectivityResult = await Connectivity().checkConnectivity();
+              if (connectivityResult != ConnectivityResult.none) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return AccountPage();
+                }));
+              } else {
+                _generalBottomSheet.showNoInternetBottomSheet(
+                  context,
+                  () => Navigator.pop(context),
                 );
-
-                ScaffoldMessenger.of(context)
-                  ..hideCurrentSnackBar()
-                  ..showSnackBar(
-                    const SnackBar(
-                      content: Text('Sign out Berhasil'),
-                    ),
+              }
+            },
+            child: _buildImageButton(
+              'Account',
+              IconPath.iconAccounnt,
+              neutral900,
+            ),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(padding: EdgeInsets.zero),
+            onPressed: () async {
+              var connectivityResult = await Connectivity().checkConnectivity();
+              if (connectivityResult != ConnectivityResult.none) {
+                notifier.signOut(() {
+                  ref.read(dioServiceProvider.notifier).state = DioService(
+                    baseUrl: EnvConstants.baseUrl!,
                   );
-              });
-            } else {
-              _generalBottomSheet.showNoInternetBottomSheet(
-                context,
-                () => Navigator.pop(context),
-              );
-            }
-          },
-          child: _buildImageButton(
-            'Sign out',
-            IconPath.iconLogout,
-            exit500,
+
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(
+                      const SnackBar(
+                        content: Text('Sign out Berhasil'),
+                      ),
+                    );
+                });
+              } else {
+                _generalBottomSheet.showNoInternetBottomSheet(
+                  context,
+                  () => Navigator.pop(context),
+                );
+              }
+            },
+            child: _buildImageButton(
+              'Sign out',
+              IconPath.iconLogout,
+              exit500,
+            ),
           ),
-        ),
-        const SizedBox(
-          height: 24,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 24, right: 24),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Quran Plus Version",
-                style: bodyRegular2,
-              ),
-              const VersionAppWidget(),
-            ],
+          const SizedBox(
+            height: 24,
           ),
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.only(left: 24, right: 24),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Quran Plus Version",
+                  style: bodyRegular2,
+                ),
+                const VersionAppWidget(),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
