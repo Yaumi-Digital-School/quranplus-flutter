@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
@@ -205,6 +206,90 @@ class _FieldLabel extends StatelessWidget {
       child: Text(
         label,
         style: QPTextStyle.subHeading4Medium,
+      ),
+    );
+  }
+}
+
+class FormFieldWidget extends StatelessWidget {
+  const FormFieldWidget({
+    Key? key,
+    this.label,
+    this.additionalInformation,
+    required this.onChange,
+    this.hintTextForm,
+    this.iconForm,
+  }) : super(key: key);
+
+  final String? label;
+  final RichText? additionalInformation;
+  final Function() onChange;
+  final String? hintTextForm;
+  final Icon? iconForm;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (label != null)
+            Column(
+              children: [
+                _FieldLabel(
+                  label: label!,
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+              ],
+            ),
+          SizedBox(
+            height: 40,
+            child: TextField(
+              cursorColor: Colors.black,
+              textAlign: TextAlign.center,
+              textAlignVertical: TextAlignVertical.center,
+              style: buttonMedium3.copyWith(color: neutral400),
+              onChanged: onChange(),
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                prefixIcon: iconForm,
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+                contentPadding: EdgeInsets.zero,
+                hintText: hintTextForm,
+                hintStyle: QPTextStyle.subHeading4Regular
+                    .copyWith(color: QPColors.blackFair),
+                filled: true,
+                fillColor: Colors.white,
+                enabledBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: neutral500, width: 0.5),
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                ),
+                focusedBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: neutral500, width: 0.5),
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                ),
+                border: const OutlineInputBorder(
+                  borderSide: BorderSide(color: neutral500, width: 0.5),
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                ),
+              ),
+            ),
+          ),
+          if (additionalInformation != null) ...[
+            const SizedBox(
+              height: 12,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                additionalInformation!,
+              ],
+            ),
+          ],
+        ],
       ),
     );
   }
