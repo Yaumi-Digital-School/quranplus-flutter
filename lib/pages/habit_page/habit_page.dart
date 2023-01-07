@@ -1,9 +1,11 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/habit_progress_view.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
@@ -14,8 +16,6 @@ import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/registration_view.dart';
-
-import 'habit_progress/habit_progress_view.dart';
 
 class HabitPage extends StatelessWidget {
   HabitPage({Key? key}) : super(key: key);
@@ -77,6 +77,7 @@ class HabitPage extends StatelessWidget {
                 backgroundColor: backgroundColor,
               ),
             ),
+            backgroundColor: QPColors.whiteFair,
             body:
                 state.authenticationStatus == AuthenticationStatus.authenticated
                     ? const HabitProgressView()
