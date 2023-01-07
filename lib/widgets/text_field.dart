@@ -1,4 +1,3 @@
-import 'package:analyzer/dart/ast/ast.dart';
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
@@ -223,7 +222,7 @@ class FormFieldWidget extends StatelessWidget {
 
   final String? label;
   final RichText? additionalInformation;
-  final Function() onChange;
+  final void Function(String)? onChange;
   final String? hintTextForm;
   final Icon? iconForm;
 
@@ -252,8 +251,7 @@ class FormFieldWidget extends StatelessWidget {
               textAlign: TextAlign.center,
               textAlignVertical: TextAlignVertical.center,
               style: buttonMedium3.copyWith(color: neutral400),
-              onChanged: onChange(),
-              keyboardType: TextInputType.number,
+              onChanged: onChange,
               decoration: InputDecoration(
                 prefixIcon: iconForm,
                 floatingLabelBehavior: FloatingLabelBehavior.never,

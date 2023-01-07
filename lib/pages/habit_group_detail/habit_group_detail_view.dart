@@ -21,7 +21,12 @@ class HabitGroupDetailView extends StatelessWidget {
       onStateNotifierReady: (notifier) async {
         notifier.initStateNotifier();
       },
-      builder: (_, state, notifier, __) {
+      builder: (
+        _,
+        state,
+        notifier,
+        __,
+      ) {
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(54.0),
