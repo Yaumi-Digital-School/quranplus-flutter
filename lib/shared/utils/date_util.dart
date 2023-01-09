@@ -35,4 +35,10 @@ class DateUtils {
     return (date.toIso8601String() +
         "+${duration.inHours.toString().padLeft(2, '0')}:${(duration.inMinutes - (duration.inHours * 60)).toString().padLeft(2, '0')}");
   }
+
+  static DateTime mostRecentMonday(DateTime date) =>
+      DateTime(date.year, date.month, date.day - (date.weekday - 1));
+
+  static DateTime mostRecentSunday(DateTime date) =>
+      DateTime(date.year, date.month, date.day - date.weekday % 7);
 }
