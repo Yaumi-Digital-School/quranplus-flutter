@@ -7,6 +7,8 @@ import 'package:qurantafsir_flutter/pages/settings_page/settings_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
+import 'habit_group_detail/habit_group_detail_view.dart';
+
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
   static GlobalKey globalKey = GlobalKey<State<BottomNavigationBar>>();
@@ -22,9 +24,9 @@ class MainPageState extends State<MainPage> {
   final List<Widget> _pages = <Widget>[
     const HomePageV2(),
     // Only enable if `isHabitEnabled` true
-    HabitPage(),
+    //HabitPage(),
     // Temporary
-    // const HabitGroupDetailView(),
+    HabitGroupDetailView(),
     const BookmarkPageV2(),
     SettingsPage(),
   ];

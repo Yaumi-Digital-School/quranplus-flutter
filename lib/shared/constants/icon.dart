@@ -15,4 +15,6 @@ class IconPath {
   static String iconChecklistCheck = 'images/icon_checklist_check.png';
   static String iconHabitArrow = 'images/icon_habit_arrow.png';
   static String iconGroupMember = 'images/icon_group_member.png';
+  static String iconLeaveGroup = 'images/icon_leave_group.png';
+  static String iconInviteMember = 'images/icon_invite_member.png';
 }
