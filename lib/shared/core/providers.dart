@@ -1,6 +1,7 @@
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/habit_api.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/habit_group_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/user_api.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
@@ -41,6 +42,15 @@ final Provider<HabitApi> habitApiProvider = Provider<HabitApi>((ref) {
   final DioService dioService = ref.watch(dioServiceProvider);
 
   return HabitApi(
+    dioService.getDioWithAccessToken(),
+  );
+});
+
+final Provider<HabitGroupApi> habitGroupApiProvider =
+    Provider<HabitGroupApi>((ref) {
+  final DioService dioService = ref.watch(dioServiceProvider);
+
+  return HabitGroupApi(
     dioService.getDioWithAccessToken(),
   );
 });
