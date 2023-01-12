@@ -17,6 +17,7 @@ class HabitGroupInviteMemberBottomSheet {
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         behavior: SnackBarBehavior.floating,
+        backgroundColor: QPColors.blackFair,
         content: Text('Group link successfully copied'),
       ));
     }
@@ -30,21 +31,24 @@ class HabitGroupInviteMemberBottomSheet {
             "Invite Member",
             style: QPTextStyle.subHeading2SemiBold,
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 8),
           Text(
             "Copy this link and send it to the people you want to join  ",
             style: QPTextStyle.body3Regular,
           ),
           Text(
-            "Group Ngaji Alfatanah",
+            "Group Ngaji Alfatonah",
             style: QPTextStyle.body3SemiBold,
           ),
           const SizedBox(height: 24),
           TextField(
             readOnly: true,
+            style: QPTextStyle.subHeading3Regular,
             controller: _textController,
             decoration: InputDecoration(
-              border: InputBorder.none,
+              border: UnderlineInputBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
               filled: true,
               fillColor: QPColors.whiteRoot,
               suffixIconColor: QPColors.blackHeavy,
@@ -54,7 +58,7 @@ class HabitGroupInviteMemberBottomSheet {
               ),
             ),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 53),
         ],
       ),
     );
