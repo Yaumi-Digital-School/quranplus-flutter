@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
+import 'package:qurantafsir_flutter/widgets/snackbar.dart';
 
 class HabitGroupInviteMemberBottomSheet {
   static void showModalCreateGroup({
@@ -15,11 +16,10 @@ class HabitGroupInviteMemberBottomSheet {
     Future<void> _copyToClipboard() async {
       await Clipboard.setData(ClipboardData(text: _textController.text));
       Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: QPColors.blackFair,
-        content: Text('Group link successfully copied'),
-      ));
+      GeneralSnackBar.showModalSnackBar(
+        context: context,
+        text: "Group link successfully copied",
+      );
     }
 
     GeneralBottomSheet.showBaseBottomSheet(
@@ -46,8 +46,12 @@ class HabitGroupInviteMemberBottomSheet {
             style: QPTextStyle.subHeading3Regular,
             controller: _textController,
             decoration: InputDecoration(
-              border: UnderlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(
+                  width: 0,
+                  style: BorderStyle.none,
+                ),
               ),
               filled: true,
               fillColor: QPColors.whiteRoot,

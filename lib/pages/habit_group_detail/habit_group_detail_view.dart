@@ -100,7 +100,7 @@ class HabitGroupDetailView extends StatelessWidget {
                         ),
                       ),
                     ],
-                    onSelected: (item) => SelectedItem(context, item),
+                    onSelected: (item) => _selectedItem(context, item),
                   ),
                 ),
               ],
@@ -110,14 +110,16 @@ class HabitGroupDetailView extends StatelessWidget {
       },
     );
   }
-}
 
-void SelectedItem(BuildContext context, item) {
-  switch (item) {
-    case 0:
-      HabitGroupInviteMemberBottomSheet.showModalCreateGroup(context: context);
-      break;
-    case 1:
-      break;
+  void _selectedItem(BuildContext context, item) {
+    switch (item) {
+      case 0:
+        HabitGroupInviteMemberBottomSheet.showModalCreateGroup(
+          context: context,
+        );
+        break;
+      case 1:
+        break;
+    }
   }
 }
