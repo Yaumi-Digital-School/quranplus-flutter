@@ -8,8 +8,10 @@ part 'habit_group_api.g.dart';
 abstract class HabitGroupApi {
   factory HabitGroupApi(Dio dio, {String baseUrl}) = _HabitGroupApi;
 
-  @POST('/api/habit/group')
-  Future<HttpResponse<List<GetHabitGroupsResponse>>> getAllGroups();
+  @GET('/api/habit/group')
+  Future<HttpResponse<List<GetHabitGroupsResponse>>> getAllGroups({
+    @Queries() required GetHabitGroupsParam param,
+  });
 
   @POST('/api/habit/group/create')
   Future<HttpResponse<CreateHabitGroupResponse>> createGroup({

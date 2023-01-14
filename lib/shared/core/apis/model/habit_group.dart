@@ -17,6 +17,24 @@ class GetHabitGroupsResponse {
 }
 
 @JsonSerializable()
+class GetHabitGroupsParam {
+  GetHabitGroupsParam({
+    required this.startDate,
+    required this.endDate,
+  });
+
+  @JsonKey(name: 'start_date')
+  final String startDate;
+  @JsonKey(name: 'end_date')
+  final String endDate;
+
+  factory GetHabitGroupsParam.fromJson(Map<String, dynamic> json) =>
+      _$GetHabitGroupsParamFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GetHabitGroupsParamToJson(this);
+}
+
+@JsonSerializable()
 class CreateHabitGroupRequest {
   CreateHabitGroupRequest({
     required this.name,

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/habit_group_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
@@ -45,10 +44,11 @@ class HabitGroupStateNotifier extends BaseStateNotifier<HabitGroupState> {
 
   @override
   Future<void> initStateNotifier() async {
-    await fetchData();
+    await _getAllGroups();
   }
 
   Future<void> createGroup(String groupName) async {
+    state = state.copyWith(isLoading: true);
     final HttpResponse<CreateHabitGroupResponse> request =
         await _habitGroupApi.createGroup(
       request: CreateHabitGroupRequest(
@@ -61,13 +61,21 @@ class HabitGroupStateNotifier extends BaseStateNotifier<HabitGroupState> {
       return;
     }
 
-    await fetchData();
+    await _getAllGroups();
   }
 
-  Future<void> fetchData() async {
+  Future<void> _getAllGroups() async {
+    final String firstDayOfTheWeek = DateUtils.getFirstDayOfTheWeekFromToday();
+    final String lastDayOfTheWeek = DateUtils.getLastDayOfTheWeekFromToday();
+
     try {
-      state = state.copyWith(isLoading: true);
-      Future.delayed(const Duration(milliseconds: 500));
+      await _habitGroupApi.getAllGroups(
+        param: GetHabitGroupsParam(
+          startDate: firstDayOfTheWeek,
+          endDate: lastDayOfTheWeek,
+        ),
+      );
+
       state = state.copyWith(isLoading: false);
     } on SocketException catch (_) {
       state = state.copyWith(hasInternet: false);

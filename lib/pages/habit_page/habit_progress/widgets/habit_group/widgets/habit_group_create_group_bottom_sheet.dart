@@ -42,8 +42,8 @@ class HabitGroupCreateGroupBottomSheet {
           const SizedBox(height: 40),
           ButtonSecondary(
             label: "Create Group",
-            onTap: () async {
-              await onSubmit(groupName);
+            onTap: () {
+              onSubmit(groupName);
               Navigator.pop(context);
             },
           ),
