@@ -8,7 +8,7 @@ import 'package:qurantafsir_flutter/widgets/text_field.dart';
 class HabitGroupCreateGroupBottomSheet {
   static void showModalCreateGroup({
     required BuildContext context,
-    required void Function(String) onSubmit,
+    required Function(String) onSubmit,
   }) {
     String groupName = "";
     GeneralBottomSheet.showBaseBottomSheet(
@@ -42,6 +42,7 @@ class HabitGroupCreateGroupBottomSheet {
             label: "Create Group",
             onTap: () {
               onSubmit(groupName);
+              Navigator.pop(context);
             },
           ),
         ],

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/habit_group/habit_group_create_group_bottom_sheet.dart';
+import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/habit_group/widgets/habit_group_create_group_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 
 class HabitGroupEmptyGroupView extends StatelessWidget {
-  const HabitGroupEmptyGroupView({Key? key}) : super(key: key);
+  const HabitGroupEmptyGroupView({
+    Key? key,
+    required this.onSubmitCreateGroup,
+  }) : super(key: key);
+
+  final Future<void> Function(String) onSubmitCreateGroup;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +36,7 @@ class HabitGroupEmptyGroupView extends StatelessWidget {
       onTap: () {
         HabitGroupCreateGroupBottomSheet.showModalCreateGroup(
           context: context,
-          onSubmit: (value) {},
+          onSubmit: onSubmitCreateGroup,
         );
       },
       child: Container(

@@ -1,6 +1,10 @@
 import 'dart:io';
 
+import 'package:qurantafsir_flutter/shared/core/apis/habit_group_api.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
+import 'package:retrofit/retrofit.dart';
 
 class HabitGroupState {
   List<dynamic> listGroup;
@@ -31,17 +35,50 @@ class HabitGroupState {
 }
 
 class HabitGroupStateNotifier extends BaseStateNotifier<HabitGroupState> {
-  HabitGroupStateNotifier() : super(HabitGroupState());
+  HabitGroupStateNotifier({
+    required HabitGroupApi habitGroupApi,
+  })  : _habitGroupApi = habitGroupApi,
+        super(HabitGroupState());
+
+  final HabitGroupApi _habitGroupApi;
 
   @override
-  initStateNotifier() async {
-    await fetchData();
+  Future<void> initStateNotifier() async {
+    await _getAllGroups();
   }
 
-  Future<void> fetchData() async {
+  Future<void> createGroup(String groupName) async {
+    state = state.copyWith(isLoading: true);
+    final HttpResponse<CreateHabitGroupResponse> request =
+        await _habitGroupApi.createGroup(
+      request: CreateHabitGroupRequest(
+        name: groupName,
+        date: DateUtils.getCurrentDateInString(),
+      ),
+    );
+
+    if (request.response.statusCode != 200) {
+      state = state.copyWith(isSuccessLoad: false);
+
+      return;
+    }
+
+    await _getAllGroups();
+  }
+
+  Future<void> _getAllGroups() async {
+    final String firstDayOfTheWeek = DateUtils.getFirstDayOfTheWeekFromToday();
+    final String lastDayOfTheWeek = DateUtils.getLastDayOfTheWeekFromToday();
+
     try {
-      Future.delayed(const Duration(milliseconds: 500));
-      state = state.copyWith(isLoading: false, listGroup: ["hehe"]);
+      await _habitGroupApi.getAllGroups(
+        param: GetHabitGroupsParam(
+          startDate: firstDayOfTheWeek,
+          endDate: lastDayOfTheWeek,
+        ),
+      );
+
+      state = state.copyWith(isLoading: false);
     } on SocketException catch (_) {
       state = state.copyWith(hasInternet: false);
     } catch (e) {
