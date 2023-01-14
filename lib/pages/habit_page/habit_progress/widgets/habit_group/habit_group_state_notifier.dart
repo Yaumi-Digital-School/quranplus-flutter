@@ -58,6 +58,8 @@ class HabitGroupStateNotifier extends BaseStateNotifier<HabitGroupState> {
     );
 
     if (request.response.statusCode != 200) {
+      state = state.copyWith(isSuccessLoad: false);
+
       return;
     }
 
