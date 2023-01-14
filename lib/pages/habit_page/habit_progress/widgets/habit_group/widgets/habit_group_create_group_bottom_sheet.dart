@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
@@ -8,7 +10,7 @@ import 'package:qurantafsir_flutter/widgets/text_field.dart';
 class HabitGroupCreateGroupBottomSheet {
   static void showModalCreateGroup({
     required BuildContext context,
-    required void Function(String) onSubmit,
+    required Function(String) onSubmit,
   }) {
     String groupName = "";
     GeneralBottomSheet.showBaseBottomSheet(
@@ -40,8 +42,9 @@ class HabitGroupCreateGroupBottomSheet {
           const SizedBox(height: 40),
           ButtonSecondary(
             label: "Create Group",
-            onTap: () {
-              onSubmit(groupName);
+            onTap: () async {
+              await onSubmit(groupName);
+              Navigator.pop(context);
             },
           ),
         ],

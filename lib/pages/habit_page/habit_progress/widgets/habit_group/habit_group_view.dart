@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/habit_group/habit_group_empty_group_view.dart';
-import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/habit_group/habit_group_list_view.dart';
+import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/habit_group/widgets/habit_group_empty_group_view.dart';
+import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/habit_group/widgets/habit_group_list_view.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 
-import 'habit_group_create_group_bottom_sheet.dart';
+import 'widgets/habit_group_create_group_bottom_sheet.dart';
 import 'habit_group_state_notifier.dart';
 
 class HabitGroupView extends StatelessWidget {
@@ -18,7 +19,9 @@ class HabitGroupView extends StatelessWidget {
           StateNotifierProvider<HabitGroupStateNotifier, HabitGroupState>(
         (StateNotifierProviderRef<HabitGroupStateNotifier, HabitGroupState>
             ref) {
-          return HabitGroupStateNotifier();
+          return HabitGroupStateNotifier(
+            habitGroupApi: ref.watch(habitGroupApiProvider),
+          );
         },
       ),
       onStateNotifierReady: (notifier) async =>
@@ -47,7 +50,10 @@ class HabitGroupView extends StatelessWidget {
                   ),
                   child: state.listGroup.isNotEmpty
                       ? HabitGroupListView(listGroup: state.listGroup)
-                      : const HabitGroupEmptyGroupView(),
+                      : HabitGroupEmptyGroupView(
+                          onSubmitCreateGroup: (String value) =>
+                              notifier.createGroup(value),
+                        ),
                 ),
               ],
             ),
@@ -66,7 +72,7 @@ class HabitGroupView extends StatelessWidget {
                   onPressed: () {
                     HabitGroupCreateGroupBottomSheet.showModalCreateGroup(
                       context: context,
-                      onSubmit: (value) {},
+                      onSubmit: (String value) => notifier.createGroup(value),
                     );
                   },
                 ),

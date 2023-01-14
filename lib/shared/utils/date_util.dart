@@ -41,4 +41,12 @@ class DateUtils {
 
   static DateTime mostRecentSunday(DateTime date) =>
       DateTime(date.year, date.month, date.day - date.weekday % 7);
+
+  static String getCurrentDateInString() {
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String formattedDate = formatter.format(now);
+
+    return formattedDate;
+  }
 }
