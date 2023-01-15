@@ -46,11 +46,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
     return Consumer(
       builder: (context, ref, child) {
         final SharedPreferenceService sp =
             ref.watch(sharedPreferenceServiceProvider);
         final AuthenticationService ur = ref.watch(authenticationService);
+
         if (sp.getApiToken().isNotEmpty) {
           ur.setIsLoggedIn(true);
         }
@@ -63,11 +66,14 @@ class MyApp extends StatelessWidget {
             backgroundColor: backgroundColor,
           ),
           navigatorObservers: <NavigatorObserver>[observer],
+          navigatorKey: navigatorKey,
           onGenerateRoute: (RouteSettings settings) {
             late Widget selectedRouteWidget;
             switch (settings.name) {
               case RoutePaths.routeSplash:
-                selectedRouteWidget = const SplashPage();
+                selectedRouteWidget = SplashPage(
+                  navigatorKey: navigatorKey,
+                );
                 break;
               case RoutePaths.routeMain:
                 selectedRouteWidget = const MainPage();

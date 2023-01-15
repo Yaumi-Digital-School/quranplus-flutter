@@ -189,3 +189,30 @@ class GetHabitGroupMemberPersonalSummaryItem {
   ) =>
       _$GetHabitGroupMemberPersonalSummaryItemFromJson(json);
 }
+
+@JsonSerializable()
+class JoinHabitGroupRequest {
+  JoinHabitGroupRequest({
+    required this.date,
+  });
+
+  final String date;
+
+  factory JoinHabitGroupRequest.fromJson(Map<String, dynamic> json) =>
+      _$JoinHabitGroupRequestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$JoinHabitGroupRequestToJson(this);
+}
+
+class JoinHabitGroupResponse {
+  final bool successJoin;
+  JoinHabitGroupResponse({required this.successJoin});
+
+  factory JoinHabitGroupResponse.fromJson(dynamic success) {
+    if (success is bool) {
+      return JoinHabitGroupResponse(successJoin: success);
+    }
+
+    return JoinHabitGroupResponse(successJoin: false);
+  }
+}

@@ -10,6 +10,7 @@ import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart'
 import 'package:qurantafsir_flutter/shared/core/models/habit_group_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
+import 'package:qurantafsir_flutter/shared/utils/dynamic_link_helper.dart';
 import 'package:qurantafsir_flutter/widgets/habit_group_overview.dart';
 import 'package:qurantafsir_flutter/widgets/habit_personal_weekly_overview.dart';
 
@@ -244,11 +245,19 @@ class HabitGroupDetailView extends StatelessWidget {
   void _selectedItem(BuildContext context, item) {
     switch (item) {
       case 0:
-        HabitGroupBottomSheet.showModalInviteMemberGroup(context: context);
+        _showModalInviteGroup(context);
         break;
       case 1:
         HabitGroupBottomSheet.showModalLeaveGroup(context: context);
         break;
     }
+  }
+
+  void _showModalInviteGroup(BuildContext context) async {
+    final uri = await DynamicLinkHelper().createDynamicLinkInvite(id: param.id);
+    HabitGroupBottomSheet.showModalInviteMemberGroup(
+      context: context,
+      url: uri.toString(),
+    );
   }
 }
