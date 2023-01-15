@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
-import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
+import 'package:qurantafsir_flutter/shared/core/models/habit_group_summary.dart';
 
 class HabitGroupOverviewWidget extends StatelessWidget {
   HabitGroupOverviewWidget({
@@ -16,7 +16,7 @@ class HabitGroupOverviewWidget extends StatelessWidget {
 
   final String groupName;
   final int totalMembers;
-  final List<HabitDailySummary> sevenDaysInformation;
+  final List<HabitGroupSummary> sevenDaysInformation;
   final VoidCallback onTapGroupDetailCTA;
   final DateTime now = DateTime.now();
   final int numberOfDaysInAWeek = 7;
@@ -43,8 +43,8 @@ class HabitGroupOverviewWidget extends StatelessWidget {
   }
 
   String _buildUrlStar({
-    int totalPages = 0,
-    int target = 0,
+    int memberCount = 0,
+    int completeCount = 0,
     bool isInactive = false,
   }) {
     if (isInactive) {
@@ -53,8 +53,8 @@ class HabitGroupOverviewWidget extends StatelessWidget {
 
     double progress = 0;
 
-    if (target != 0) {
-      progress = totalPages / target;
+    if (memberCount != 0) {
+      progress = completeCount / memberCount;
     }
 
     if (progress == 0) {
@@ -68,7 +68,7 @@ class HabitGroupOverviewWidget extends StatelessWidget {
     return ImagePath.activeProgressFull;
   }
 
-  Widget _buildDailyRecapInformation(HabitDailySummary item) {
+  Widget _buildDailyRecapInformation(HabitGroupSummary item) {
     final String nameOfDay =
         DateFormat('EEEE').format(item.date).substring(0, 3);
     final DateTime cleanDate = DateTime(now.year, now.month, now.day);
@@ -109,8 +109,8 @@ class HabitGroupOverviewWidget extends StatelessWidget {
               ),
               Image.asset(
                 _buildUrlStar(
-                  totalPages: item.totalPages,
-                  target: item.target,
+                  completeCount: item.completeCount,
+                  memberCount: item.memberCount,
                   isInactive: isAfterToday,
                 ),
               ),
@@ -137,7 +137,7 @@ class HabitGroupOverviewWidget extends StatelessWidget {
   Widget _buildGroupOverviewInformationSection() {
     List<Widget> items = <Widget>[];
     for (int i = 0; i < numberOfDaysInAWeek; i++) {
-      HabitDailySummary item = sevenDaysInformation[i];
+      HabitGroupSummary item = sevenDaysInformation[i];
       items.add(
         _buildDailyRecapInformation(item),
       );
@@ -170,7 +170,7 @@ class HabitGroupOverviewWidget extends StatelessWidget {
 
   Widget _buildGroupDetailNavigationCTA() {
     return GestureDetector(
-      onTap: () => onTapGroupDetailCTA,
+      onTap: onTapGroupDetailCTA,
       child: Padding(
         padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
         child: Column(

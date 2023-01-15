@@ -36,9 +36,38 @@ class DateUtils {
         "+${duration.inHours.toString().padLeft(2, '0')}:${(duration.inMinutes - (duration.inHours * 60)).toString().padLeft(2, '0')}");
   }
 
-  static DateTime mostRecentMonday(DateTime date) =>
-      DateTime(date.year, date.month, date.day - (date.weekday - 1));
+  static DateTime firstDayOfTheWeek(DateTime date) => DateTime(
+        date.year,
+        date.month,
+        date.day - (date.weekday - 1),
+      );
 
-  static DateTime mostRecentSunday(DateTime date) =>
-      DateTime(date.year, date.month, date.day - date.weekday % 7);
+  static DateTime lastDayOfTheWeek(DateTime date) => date.add(
+        Duration(days: DateTime.daysPerWeek - date.weekday),
+      );
+
+  static String getFirstDayOfTheWeekFromToday() {
+    final DateTime mostRecentMondayFromToday =
+        firstDayOfTheWeek(DateTime.now());
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String formattedDate = formatter.format(mostRecentMondayFromToday);
+
+    return formattedDate;
+  }
+
+  static String getLastDayOfTheWeekFromToday() {
+    final DateTime mostRecentSundayFromToday = lastDayOfTheWeek(DateTime.now());
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String formattedDate = formatter.format(mostRecentSundayFromToday);
+
+    return formattedDate;
+  }
+
+  static String getCurrentDateInString() {
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String formattedDate = formatter.format(now);
+
+    return formattedDate;
+  }
 }

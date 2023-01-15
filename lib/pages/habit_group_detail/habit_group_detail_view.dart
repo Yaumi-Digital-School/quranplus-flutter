@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/widgets/group_detall_bottomsheet.dart';
@@ -7,15 +6,24 @@ import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
-import 'package:qurantafsir_flutter/widgets/button.dart';
-import 'package:qurantafsir_flutter/widgets/text_field.dart';
 
-import '../../widgets/general_bottom_sheet.dart';
+class HabitGroupDetailViewParam {
+  HabitGroupDetailViewParam({
+    required this.id,
+    required this.groupName,
+  });
 
-final GeneralBottomSheet _generalBottomSheet = GeneralBottomSheet();
+  final int id;
+  final String groupName;
+}
 
 class HabitGroupDetailView extends StatelessWidget {
-  const HabitGroupDetailView({Key? key}) : super(key: key);
+  const HabitGroupDetailView({
+    Key? key,
+    required this.param,
+  }) : super(key: key);
+
+  final HabitGroupDetailViewParam param;
 
   @override
   Widget build(BuildContext context) {
@@ -47,14 +55,14 @@ class HabitGroupDetailView extends StatelessWidget {
                   size: 30,
                 ),
                 onPressed: () {
-                  // Navigator.pop(context);
+                  Navigator.pop(context);
                 },
               ),
               automaticallyImplyLeading: false,
               elevation: 0.7,
               centerTitle: true,
               title: Text(
-                'Temporary Nama Group',
+                param.groupName,
                 style: QPTextStyle.subHeading2SemiBold,
               ),
               backgroundColor: QPColors.whiteFair,
@@ -62,7 +70,7 @@ class HabitGroupDetailView extends StatelessWidget {
                 Theme(
                   data: Theme.of(context).copyWith(
                     textTheme: const TextTheme().apply(bodyColor: Colors.black),
-                    iconTheme: IconThemeData(
+                    iconTheme: const IconThemeData(
                       color: Colors.black,
                     ),
                   ),
