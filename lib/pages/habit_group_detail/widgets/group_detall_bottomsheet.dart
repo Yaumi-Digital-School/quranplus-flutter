@@ -101,14 +101,14 @@ class HabitGroupBottomSheet {
                 onTap: () {
                   Navigator.pop(context);
                 },
-                size: ButtonSize.small,
+                size: ButtonSize.regular,
                 textStyle: QPTextStyle.button1SemiBold
                     .copyWith(color: QPColors.whiteMassive),
               ),
               ButtonSecondary(
                 label: 'Leave',
                 onTap: () {},
-                size: ButtonSize.small,
+                size: ButtonSize.regular,
                 textStyle: QPTextStyle.button1SemiBold
                     .copyWith(color: QPColors.brandFair),
               ),
