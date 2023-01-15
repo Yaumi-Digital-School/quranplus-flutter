@@ -24,7 +24,7 @@ class ButtonSecondary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double width = size == ButtonSize.regular ? double.infinity : 150;
+    final double width = size == ButtonSize.regular ? double.infinity : 170;
     final double labelFontSize = size == ButtonSize.regular ? 14 : 12;
 
     return SizedBox(
@@ -99,7 +99,7 @@ class ButtonNeutral extends StatelessWidget {
   Widget build(
     BuildContext context,
   ) {
-    final double width = size == ButtonSize.regular ? double.infinity : 155;
+    final double width = size == ButtonSize.regular ? double.infinity : 170;
     final double labelFontSize = size == ButtonSize.regular ? 14 : 12;
 
     return SizedBox(
@@ -148,7 +148,7 @@ class ButtonPrimary extends StatelessWidget {
   Widget build(
     BuildContext context,
   ) {
-    final double width = size == ButtonSize.regular ? double.infinity : 155;
+    final double width = size == ButtonSize.regular ? double.infinity : 170;
     final double labelFontSize = size == ButtonSize.regular ? 14 : 12;
 
     return SizedBox(
