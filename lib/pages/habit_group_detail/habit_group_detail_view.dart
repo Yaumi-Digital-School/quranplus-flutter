@@ -5,7 +5,13 @@ import 'package:qurantafsir_flutter/pages/habit_group_detail/widgets/group_detal
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
+import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
+import 'package:qurantafsir_flutter/shared/core/models/habit_group_summary.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
+import 'package:qurantafsir_flutter/widgets/habit_group_overview.dart';
+import 'package:qurantafsir_flutter/widgets/habit_personal_weekly_overview.dart';
 
 class HabitGroupDetailViewParam {
   HabitGroupDetailViewParam({
@@ -32,7 +38,10 @@ class HabitGroupDetailView extends StatelessWidget {
       stateNotifierProvider: StateNotifierProvider<
           HabitGroupDetailStateNotifier, HabitGroupDetailState>(
         (ref) {
-          return HabitGroupDetailStateNotifier();
+          return HabitGroupDetailStateNotifier(
+            habitGroupApi: ref.watch(habitGroupApiProvider),
+            groupId: param.id,
+          );
         },
       ),
       onStateNotifierReady: (notifier) async {
@@ -44,6 +53,14 @@ class HabitGroupDetailView extends StatelessWidget {
         notifier,
         __,
       ) {
+        if (state.isLoading) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(54.0),
@@ -114,8 +131,110 @@ class HabitGroupDetailView extends StatelessWidget {
               ],
             ),
           ),
+          body: Padding(
+            padding: const EdgeInsets.only(
+              right: 24,
+              left: 24,
+              top: 24,
+            ),
+            child: Column(
+              children: [
+                _buildGroupSummary(state, notifier),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: state.memberSummaries!.length,
+                  itemBuilder: (context, index) {
+                    final GetHabitGroupMemberPersonalItemResponse item =
+                        state.memberSummaries![index];
+
+                    // TODO : remove if BE is fixed
+                    // final List<HabitDailySummary> dailySummaries = item
+                    //     .summaries
+                    //     .map((e) => HabitDailySummary
+                    //         .fromGetHabitGroupMemberPersonalSummaryItem(e))
+                    //     .toList();
+
+                    List<HabitDailySummary> dailySummaries =
+                        <HabitDailySummary>[
+                      HabitDailySummary(
+                        target: 5,
+                        totalPages: 5,
+                        date: DateTime(2023, 1, 9),
+                      ),
+                      HabitDailySummary(
+                        target: 5,
+                        totalPages: 5,
+                        date: DateTime(2023, 1, 10),
+                      ),
+                      HabitDailySummary(
+                        target: 5,
+                        totalPages: 5,
+                        date: DateTime(2023, 1, 11),
+                      ),
+                      HabitDailySummary(
+                        target: 5,
+                        totalPages: 5,
+                        date: DateTime(2023, 1, 12),
+                      ),
+                      HabitDailySummary(
+                        target: 5,
+                        totalPages: 5,
+                        date: DateTime(2023, 1, 13),
+                      ),
+                      HabitDailySummary(
+                        target: 5,
+                        totalPages: 5,
+                        date: DateTime(2023, 1, 14),
+                      ),
+                      HabitDailySummary(
+                        target: 5,
+                        totalPages: 5,
+                        date: DateTime(2023, 1, 15),
+                      ),
+                    ];
+
+                    final String name =
+                        index == 0 ? 'Your Progress' : item.name;
+
+                    return HabitPersonalWeeklyOverviewWidget(
+                      selectedIdx: state.selectedSummaryIdx,
+                      sevenDaysPersonalInfo: dailySummaries,
+                      type: HabitPersonalWeeklyOverviewType
+                          .withPersonalInformation,
+                      name: name,
+                      isAdmin: item.isAdmin,
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
         );
       },
+    );
+  }
+
+  Widget _buildGroupSummary(
+    HabitGroupDetailState state,
+    HabitGroupDetailStateNotifier notifier,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'All Member Completion',
+          style: QPTextStyle.subHeading2SemiBold,
+        ),
+        const SizedBox(height: 16),
+        HabitGroupOverviewWidget(
+          type: HabitGroupOverviewType.withCurrentMonthInfo,
+          sevenDaysInformation:
+              state.groupSummaries?.reversed.toList() ?? <HabitGroupSummary>[],
+          selectedIdx: state.selectedSummaryIdx,
+          onTapSummary: notifier.onTapGroupCompletionSummaryData,
+        ),
+        const SizedBox(height: 24),
+      ],
     );
   }
 

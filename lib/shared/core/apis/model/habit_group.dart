@@ -86,3 +86,106 @@ class CreateHabitGroupResponse {
   factory CreateHabitGroupResponse.fromJson(Map<String, dynamic> json) =>
       _$CreateHabitGroupResponseFromJson(json);
 }
+
+@JsonSerializable()
+class GetHabitGroupCompletionsItemResponse {
+  GetHabitGroupCompletionsItemResponse({
+    required this.date,
+    required this.completeCount,
+    required this.memberCount,
+  });
+
+  final String date;
+  @JsonKey(name: 'complete_count')
+  final int completeCount;
+  @JsonKey(name: 'member_count')
+  final int memberCount;
+
+  factory GetHabitGroupCompletionsItemResponse.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$GetHabitGroupCompletionsItemResponseFromJson(json);
+}
+
+@JsonSerializable()
+class GetHabitGroupCompletionsParam {
+  GetHabitGroupCompletionsParam({
+    required this.startDate,
+    required this.endDate,
+  });
+
+  @JsonKey(name: 'start_date')
+  final String startDate;
+  @JsonKey(name: 'end_date')
+  final String endDate;
+
+  factory GetHabitGroupCompletionsParam.fromJson(Map<String, dynamic> json) =>
+      _$GetHabitGroupCompletionsParamFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GetHabitGroupCompletionsParamToJson(this);
+}
+
+@JsonSerializable()
+class GetHabitGroupMemberSummariesParam {
+  GetHabitGroupMemberSummariesParam({
+    required this.startDate,
+    required this.endDate,
+  });
+
+  @JsonKey(name: 'start_date')
+  final String startDate;
+  @JsonKey(name: 'end_date')
+  final String endDate;
+
+  factory GetHabitGroupMemberSummariesParam.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$GetHabitGroupMemberSummariesParamFromJson(json);
+
+  Map<String, dynamic> toJson() =>
+      _$GetHabitGroupMemberSummariesParamToJson(this);
+}
+
+@JsonSerializable()
+class GetHabitGroupMemberPersonalItemResponse {
+  GetHabitGroupMemberPersonalItemResponse({
+    required this.userId,
+    required this.joinDate,
+    required this.name,
+    required this.isAdmin,
+    required this.summaries,
+  });
+
+  @JsonKey(name: 'user_id')
+  final int userId;
+  @JsonKey(name: 'join_date')
+  final String joinDate;
+  final String name;
+  @JsonKey(name: 'is_admin')
+  final bool isAdmin;
+  final List<GetHabitGroupMemberPersonalSummaryItem> summaries;
+
+  factory GetHabitGroupMemberPersonalItemResponse.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$GetHabitGroupMemberPersonalItemResponseFromJson(json);
+}
+
+@JsonSerializable()
+class GetHabitGroupMemberPersonalSummaryItem {
+  GetHabitGroupMemberPersonalSummaryItem({
+    required this.date,
+    required this.target,
+    required this.totalPages,
+  });
+
+  final String date;
+  final int target;
+  @JsonKey(name: 'total_pages')
+  final int totalPages;
+
+  factory GetHabitGroupMemberPersonalSummaryItem.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$GetHabitGroupMemberPersonalSummaryItemFromJson(json);
+}

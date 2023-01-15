@@ -20,4 +20,14 @@ class HabitGroupSummary {
       completeCount: item.completeCount,
     );
   }
+
+  factory HabitGroupSummary.fromGetGroupCompletionsItem(
+    GetHabitGroupCompletionsItemResponse item,
+  ) {
+    return HabitGroupSummary(
+      date: DateTime.parse(item.date),
+      memberCount: item.memberCount,
+      completeCount: item.completeCount,
+    );
+  }
 }
