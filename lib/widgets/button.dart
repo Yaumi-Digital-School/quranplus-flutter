@@ -24,7 +24,7 @@ class ButtonSecondary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double width = size == ButtonSize.regular ? double.infinity : 130;
+    final double width = size == ButtonSize.regular ? double.infinity : 170;
     final double labelFontSize = size == ButtonSize.regular ? 14 : 12;
 
     return SizedBox(
@@ -99,7 +99,7 @@ class ButtonNeutral extends StatelessWidget {
   Widget build(
     BuildContext context,
   ) {
-    final double width = size == ButtonSize.regular ? double.infinity : 100;
+    final double width = size == ButtonSize.regular ? double.infinity : 170;
     final double labelFontSize = size == ButtonSize.regular ? 14 : 12;
 
     return SizedBox(
@@ -136,18 +136,20 @@ class ButtonPrimary extends StatelessWidget {
     required this.label,
     required this.onTap,
     this.size = ButtonSize.regular,
+    this.textStyle,
   }) : super(key: key);
 
   final String label;
   final Function()? onTap;
   final ButtonSize size;
+  final TextStyle? textStyle;
 
   @override
   Widget build(
     BuildContext context,
   ) {
-    final double width = size == ButtonSize.regular ? double.infinity : 100;
-    final double labelFontSzie = size == ButtonSize.regular ? 14 : 12;
+    final double width = size == ButtonSize.regular ? double.infinity : 170;
+    final double labelFontSize = size == ButtonSize.regular ? 14 : 12;
 
     return SizedBox(
       width: width,
@@ -164,7 +166,11 @@ class ButtonPrimary extends StatelessWidget {
         onPressed: onTap,
         child: Text(
           label,
-          style: TextStyle(fontSize: labelFontSzie),
+          style: textStyle ??
+              bodySemibold2.copyWith(
+                color: darkGreen,
+                fontSize: labelFontSize,
+              ),
         ),
       ),
     );
