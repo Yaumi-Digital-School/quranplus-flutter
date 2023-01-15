@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_state_notifier.dart';
-import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_grup_invite_member.dart';
+import 'package:qurantafsir_flutter/pages/habit_group_detail/widgets/group_detall_bottomsheet.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
@@ -122,11 +122,10 @@ class HabitGroupDetailView extends StatelessWidget {
   void _selectedItem(BuildContext context, item) {
     switch (item) {
       case 0:
-        HabitGroupInviteMemberBottomSheet.showModalCreateGroup(
-          context: context,
-        );
+        HabitGroupBottomSheet.showModalInviteMemberGroup(context: context);
         break;
       case 1:
+        HabitGroupBottomSheet.showModalLeaveGroup(context: context);
         break;
     }
   }
