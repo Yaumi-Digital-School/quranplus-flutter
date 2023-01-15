@@ -40,22 +40,18 @@ class HabitGroupView extends StatelessWidget {
 
         return Stack(
           children: [
-            ListView(
-              shrinkWrap: true,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 32,
-                  ),
-                  child: state.listGroup.isNotEmpty
-                      ? HabitGroupListView(listGroup: state.listGroup)
-                      : HabitGroupEmptyGroupView(
-                          onSubmitCreateGroup: (String value) =>
-                              notifier.createGroup(value),
-                        ),
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.only(
+                right: 24,
+                left: 24,
+                top: 32,
+              ),
+              child: state.listGroup.isNotEmpty
+                  ? HabitGroupListView(listGroup: state.listGroup)
+                  : HabitGroupEmptyGroupView(
+                      onSubmitCreateGroup: (String value) =>
+                          notifier.createGroup(value),
+                    ),
             ),
             if (state.listGroup.isNotEmpty)
               Positioned(

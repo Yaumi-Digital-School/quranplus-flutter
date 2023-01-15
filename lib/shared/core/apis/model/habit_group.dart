@@ -3,17 +3,40 @@ import 'package:json_annotation/json_annotation.dart';
 part 'habit_group.g.dart';
 
 @JsonSerializable()
-class GetHabitGroupsResponse {
-  GetHabitGroupsResponse({
+class GetHabitGroupsItem {
+  GetHabitGroupsItem({
     required this.id,
     required this.name,
+    required this.currentMemberCount,
+    required this.completions,
   });
 
   final int id;
   final String name;
+  @JsonKey(name: 'current_member_count')
+  final int currentMemberCount;
+  final List<GetHabitGroupsCompletionItem> completions;
 
-  factory GetHabitGroupsResponse.fromJson(Map<String, dynamic> json) =>
-      _$GetHabitGroupsResponseFromJson(json);
+  factory GetHabitGroupsItem.fromJson(Map<String, dynamic> json) =>
+      _$GetHabitGroupsItemFromJson(json);
+}
+
+@JsonSerializable()
+class GetHabitGroupsCompletionItem {
+  GetHabitGroupsCompletionItem({
+    required this.date,
+    required this.completeCount,
+    required this.memberCount,
+  });
+
+  final String date;
+  @JsonKey(name: 'complete_count')
+  final int completeCount;
+  @JsonKey(name: 'member_count')
+  final int memberCount;
+
+  factory GetHabitGroupsCompletionItem.fromJson(Map<String, dynamic> json) =>
+      _$GetHabitGroupsCompletionItemFromJson(json);
 }
 
 @JsonSerializable()

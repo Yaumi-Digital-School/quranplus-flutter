@@ -9,7 +9,7 @@ abstract class HabitGroupApi {
   factory HabitGroupApi(Dio dio, {String baseUrl}) = _HabitGroupApi;
 
   @GET('/api/habit/group')
-  Future<HttpResponse<List<GetHabitGroupsResponse>>> getAllGroups({
+  Future<HttpResponse<List<GetHabitGroupsItem>>> getAllGroups({
     @Queries() required GetHabitGroupsParam param,
   });
 

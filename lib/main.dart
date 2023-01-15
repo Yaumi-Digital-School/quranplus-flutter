@@ -82,7 +82,10 @@ class MyApp extends StatelessWidget {
                 selectedRouteWidget = SuratPageV3(param: args);
                 break;
               case RoutePaths.routeHabitGroupDetail:
-                selectedRouteWidget = const HabitGroupDetailView();
+                final args = settings.arguments is HabitGroupDetailViewParam
+                    ? settings.arguments as HabitGroupDetailViewParam
+                    : HabitGroupDetailViewParam(id: 0, groupName: '');
+                selectedRouteWidget = HabitGroupDetailView(param: args);
                 break;
               default:
                 selectedRouteWidget = const Scaffold(
