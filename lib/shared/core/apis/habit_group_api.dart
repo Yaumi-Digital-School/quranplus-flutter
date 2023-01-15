@@ -31,4 +31,10 @@ abstract class HabitGroupApi {
     @Path('group_id') required int groupId,
     @Queries() required GetHabitGroupMemberSummariesParam param,
   });
+
+  @POST('/api/habit/group/{group_id}/join')
+  Future<HttpResponse<bool>> joinGroup({
+    @Path('group_id') required int groupId,
+    @Body() required JoinHabitGroupRequest request,
+  });
 }

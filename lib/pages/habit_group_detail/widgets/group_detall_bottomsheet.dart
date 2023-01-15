@@ -10,9 +10,10 @@ import 'package:qurantafsir_flutter/widgets/snackbar.dart';
 class HabitGroupBottomSheet {
   static void showModalInviteMemberGroup({
     required BuildContext context,
+    required String url,
   }) {
     final TextEditingController _textController =
-        TextEditingController(text: "Https://@gmail.com");
+        TextEditingController(text: url);
 
     // This function is triggered when the copy icon is pressed
     Future<void> _copyToClipboard() async {
@@ -48,9 +49,9 @@ class HabitGroupBottomSheet {
             style: QPTextStyle.subHeading3Regular,
             controller: _textController,
             decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                borderSide: BorderSide(
                   width: 0,
                   style: BorderStyle.none,
                 ),
