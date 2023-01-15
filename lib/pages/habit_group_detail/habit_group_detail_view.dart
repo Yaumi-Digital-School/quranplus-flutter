@@ -196,13 +196,16 @@ class HabitGroupDetailView extends StatelessWidget {
                     final String name =
                         index == 0 ? 'Your Progress' : item.name;
 
-                    return HabitPersonalWeeklyOverviewWidget(
-                      selectedIdx: state.selectedSummaryIdx,
-                      sevenDaysPersonalInfo: dailySummaries,
-                      type: HabitPersonalWeeklyOverviewType
-                          .withPersonalInformation,
-                      name: name,
-                      isAdmin: item.isAdmin,
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: HabitPersonalWeeklyOverviewWidget(
+                        selectedIdx: state.selectedSummaryIdx,
+                        sevenDaysPersonalInfo: dailySummaries,
+                        type: HabitPersonalWeeklyOverviewType
+                            .withPersonalInformation,
+                        name: name,
+                        isAdmin: item.isAdmin,
+                      ),
                     );
                   },
                 ),
