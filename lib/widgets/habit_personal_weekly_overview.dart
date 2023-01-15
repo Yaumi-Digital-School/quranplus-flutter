@@ -5,13 +5,13 @@ import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 
-enum HabitWeeklyOverviewType {
+enum HabitPersonalWeeklyOverviewType {
   withPersonalInformation,
   withCurrentMonthInformation,
 }
 
-class HabitWeeklyOverviewWidget extends StatefulWidget {
-  const HabitWeeklyOverviewWidget({
+class HabitPersonalWeeklyOverviewWidget extends StatefulWidget {
+  const HabitPersonalWeeklyOverviewWidget({
     Key? key,
     required this.sevenDaysPersonalInfo,
     required this.type,
@@ -22,29 +22,28 @@ class HabitWeeklyOverviewWidget extends StatefulWidget {
   }) : super(key: key);
 
   final List<HabitDailySummary> sevenDaysPersonalInfo;
-  final HabitWeeklyOverviewType type;
+  final HabitPersonalWeeklyOverviewType type;
   final String? name;
   final VoidCallback? onTapDailySummary;
   final int? selectedIdx;
   final bool isAdmin;
 
   @override
-  State<HabitWeeklyOverviewWidget> createState() =>
-      _HabitWeeklyOverviewWidgetState();
+  State<HabitPersonalWeeklyOverviewWidget> createState() =>
+      _HabitPersonalWeeklyOverviewWidgetState();
 }
 
-class _HabitWeeklyOverviewWidgetState extends State<HabitWeeklyOverviewWidget> {
+class _HabitPersonalWeeklyOverviewWidgetState
+    extends State<HabitPersonalWeeklyOverviewWidget> {
   String? dateInformation;
-  int? selectedPersonalInformationIdx;
   late DateTime cleanDateNow;
 
   @override
   void initState() {
-    if (widget.type == HabitWeeklyOverviewType.withCurrentMonthInformation) {
+    if (widget.type ==
+        HabitPersonalWeeklyOverviewType.withCurrentMonthInformation) {
       dateInformation = DateFormat('MMMM yyyy').format(DateTime.now());
     }
-
-    selectedPersonalInformationIdx = widget.selectedIdx;
 
     final DateTime now = DateTime.now();
     cleanDateNow = DateTime(now.year, now.month, now.day);
@@ -96,7 +95,8 @@ class _HabitWeeklyOverviewWidgetState extends State<HabitWeeklyOverviewWidget> {
   }
 
   Widget _buildDetailInformation() {
-    if (widget.type == HabitWeeklyOverviewType.withCurrentMonthInformation &&
+    if (widget.type ==
+            HabitPersonalWeeklyOverviewType.withCurrentMonthInformation &&
         dateInformation != null) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -107,7 +107,8 @@ class _HabitWeeklyOverviewWidgetState extends State<HabitWeeklyOverviewWidget> {
       );
     }
 
-    if (widget.type == HabitWeeklyOverviewType.withPersonalInformation &&
+    if (widget.type ==
+            HabitPersonalWeeklyOverviewType.withPersonalInformation &&
         widget.name != null) {
       return Padding(
         padding: const EdgeInsets.only(
@@ -141,6 +142,7 @@ class _HabitWeeklyOverviewWidgetState extends State<HabitWeeklyOverviewWidget> {
   }
 
   Widget _buildDailyRecapInformation(HabitDailySummary item, int idxInList) {
+    final int? selectedPersonalInformationIdx = widget.selectedIdx;
     final String nameOfDay =
         DateFormat('EEEE').format(item.date).substring(0, 3);
     final String numberOfDay = DateFormat('d').format(item.date);
@@ -187,13 +189,6 @@ class _HabitWeeklyOverviewWidgetState extends State<HabitWeeklyOverviewWidget> {
         GestureDetector(
           onTap: () {
             if (!isAfterToday) {
-              if (widget.type ==
-                  HabitWeeklyOverviewType.withCurrentMonthInformation) {
-                setState(() {
-                  selectedPersonalInformationIdx = idxInList;
-                });
-              }
-
               if (widget.onTapDailySummary != null) {
                 widget.onTapDailySummary!();
               }
@@ -270,5 +265,10 @@ class _HabitWeeklyOverviewWidgetState extends State<HabitWeeklyOverviewWidget> {
     }
 
     return ImagePath.activeProgressFull;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

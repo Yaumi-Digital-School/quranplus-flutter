@@ -17,4 +17,18 @@ abstract class HabitGroupApi {
   Future<HttpResponse<CreateHabitGroupResponse>> createGroup({
     @Body() required CreateHabitGroupRequest request,
   });
+
+  @GET('/api/habit/group/{group_id}/completions')
+  Future<HttpResponse<List<GetHabitGroupCompletionsItemResponse>>>
+      getHabitGroupCompletions({
+    @Path('group_id') required int groupId,
+    @Queries() required GetHabitGroupCompletionsParam param,
+  });
+
+  @GET('/api/habit/group/{group_id}/members/summaries')
+  Future<HttpResponse<List<GetHabitGroupMemberPersonalItemResponse>>>
+      getHabitGroupMemberSummaries({
+    @Path('group_id') required int groupId,
+    @Queries() required GetHabitGroupMemberSummariesParam param,
+  });
 }
