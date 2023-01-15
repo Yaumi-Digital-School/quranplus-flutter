@@ -7,7 +7,7 @@ import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 import 'package:retrofit/retrofit.dart';
 
 class HabitGroupState {
-  List<dynamic> listGroup;
+  List<GetHabitGroupsItem> listGroup;
   bool isLoading;
   bool hasInternet;
   bool isSuccessLoad;
@@ -20,7 +20,7 @@ class HabitGroupState {
   });
 
   HabitGroupState copyWith({
-    List<dynamic>? listGroup,
+    List<GetHabitGroupsItem>? listGroup,
     bool? isLoading,
     bool? hasInternet,
     bool? isSuccessLoad,
@@ -71,14 +71,24 @@ class HabitGroupStateNotifier extends BaseStateNotifier<HabitGroupState> {
     final String lastDayOfTheWeek = DateUtils.getLastDayOfTheWeekFromToday();
 
     try {
-      await _habitGroupApi.getAllGroups(
+      final HttpResponse<List<GetHabitGroupsItem>> request =
+          await _habitGroupApi.getAllGroups(
         param: GetHabitGroupsParam(
           startDate: firstDayOfTheWeek,
           endDate: lastDayOfTheWeek,
         ),
       );
 
-      state = state.copyWith(isLoading: false);
+      if (request.response.statusCode == 200) {
+        state = state.copyWith(
+          isLoading: false,
+          listGroup: request.data,
+        );
+
+        return;
+      }
+
+      state = state.copyWith(isSuccessLoad: false);
     } on SocketException catch (_) {
       state = state.copyWith(hasInternet: false);
     } catch (e) {
