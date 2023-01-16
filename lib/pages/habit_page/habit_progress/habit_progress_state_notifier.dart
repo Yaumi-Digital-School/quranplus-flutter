@@ -5,6 +5,18 @@ enum HabitProgressTab {
   group,
 }
 
+extension HabitProgressTabIndex on HabitProgressTab {
+  int get index {
+    switch (this) {
+      case HabitProgressTab.group:
+        return 1;
+      case HabitProgressTab.personal:
+      default:
+        return 0;
+    }
+  }
+}
+
 class HabitProgressState {
   final HabitProgressTab habitProgressTab;
 
@@ -18,10 +30,13 @@ class HabitProgressState {
 }
 
 class HabitProgressStateNotifier extends BaseStateNotifier<HabitProgressState> {
-  HabitProgressStateNotifier()
-      : super(const HabitProgressState(
-          habitProgressTab: HabitProgressTab.personal,
+  HabitProgressStateNotifier({
+    this.initialTab = HabitProgressTab.personal,
+  }) : super(HabitProgressState(
+          habitProgressTab: initialTab,
         ));
+
+  HabitProgressTab initialTab;
 
   @override
   initStateNotifier() {}

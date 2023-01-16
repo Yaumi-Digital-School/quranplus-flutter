@@ -3,19 +3,33 @@ import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_v2.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_page.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/home_page_v2.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page.dart';
-
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
-  static GlobalKey globalKey = GlobalKey<State<BottomNavigationBar>>();
-  @override
-  State<MainPage> createState() => MainPageState();
+class MainPageParam {
+  MainPageParam({
+    this.initialSelectedIdx = 0,
+  });
+
+  final int initialSelectedIdx;
 }
 
-class MainPageState extends State<MainPage> {
-  int _selectedIndex = 0;
+class MainPage extends StatefulWidget {
+  const MainPage({
+    Key? key,
+    this.param,
+  }) : super(key: key);
+
+  final MainPageParam? param;
+
+  static GlobalKey globalKey = GlobalKey<State<BottomNavigationBar>>();
+
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  late int _selectedIndex;
   // Temporary value to include/exclude habit in build
   bool isHabitEnabled = true;
 
@@ -29,6 +43,18 @@ class MainPageState extends State<MainPage> {
     const BookmarkPageV2(),
     SettingsPage(),
   ];
+
+  // MainPageParam? param;
+
+  @override
+  void initState() {
+    _selectedIndex = 0;
+    if (widget.param?.initialSelectedIdx != null) {
+      _selectedIndex = widget.param!.initialSelectedIdx;
+    }
+
+    super.initState();
+  }
 
   void onItemTapped(int index) {
     setState(() {

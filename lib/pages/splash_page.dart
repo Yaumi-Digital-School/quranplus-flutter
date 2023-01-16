@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
+import 'package:qurantafsir_flutter/shared/core/services/deep_link_service.dart';
 
 class SplashPage extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
@@ -16,8 +18,9 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   final _completer = Completer();
-  startTime() async {
-    Future.delayed(const Duration(seconds: 5), () {
+
+  startTime() {
+    Future.delayed(const Duration(milliseconds: 2500), () {
       if (!_completer.isCompleted) {
         Navigator.of(context).pushReplacementNamed(RoutePaths.routeMain);
         _completer.complete();
@@ -47,9 +50,11 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final deepLink = ref.watch(deepLinkService);
-
+        final DeepLinkService deepLink = ref.watch(deepLinkService);
         deepLink.init(widget.navigatorKey);
+
+        final AuthenticationService auth = ref.watch(authenticationService);
+        auth.initRepository();
 
         return Scaffold(
           body: Center(

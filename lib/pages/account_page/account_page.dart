@@ -28,7 +28,7 @@ class AccountPage extends StatelessWidget {
           );
         },
       ),
-      onStateNotifierReady: (notifier) async =>
+      onStateNotifierReady: (notifier, ref) async =>
           await notifier.initStateNotifier(),
       builder: (
         BuildContext context,

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_state_notifier.dart';
-import 'package:qurantafsir_flutter/pages/main_page.dart';
+import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
@@ -43,7 +43,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
             );
           },
         ),
-        onStateNotifierReady: (notifier) async {
+        onStateNotifierReady: (notifier, ref) async {
           final ConnectivityResult connectivity =
               await Connectivity().checkConnectivity();
 

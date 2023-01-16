@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/habit_progress_view.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_state_notifier.dart';
-import 'package:qurantafsir_flutter/pages/main_page.dart';
+import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
-import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
-import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
@@ -46,7 +44,7 @@ class HabitPage extends StatelessWidget {
             // ignore: dead_code
           },
         ),
-        onStateNotifierReady: (notifier) async =>
+        onStateNotifierReady: (notifier, ref) async =>
             await notifier.initStateNotifier(),
         builder: (
           BuildContext context,
@@ -116,14 +114,9 @@ class HabitPage extends StatelessWidget {
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult != ConnectivityResult.none) {
         notifier.signInWithGoogle(
+          ref,
           () {
             Navigator.of(context).pushReplacementNamed(RoutePaths.routeMain);
-            ref.read(dioServiceProvider.notifier).state = DioService(
-              baseUrl: EnvConstants.baseUrl!,
-              accessToken:
-                  ref.read(sharedPreferenceServiceProvider).getApiToken(),
-            );
-            ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
           },
           () {
             ScaffoldMessenger.of(context)

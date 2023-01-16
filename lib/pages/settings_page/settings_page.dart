@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qurantafsir_flutter/pages/account_page/account_page.dart';
-import 'package:qurantafsir_flutter/pages/main_page.dart';
+import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
@@ -48,7 +48,7 @@ class SettingsPage extends StatelessWidget {
             );
           },
         ),
-        onStateNotifierReady: (notifier) async =>
+        onStateNotifierReady: (notifier, ref) async =>
             await notifier.initStateNotifier(),
         builder: (
           BuildContext context,
@@ -122,18 +122,12 @@ class SettingsPage extends StatelessWidget {
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult != ConnectivityResult.none) {
         notifier.signInWithGoogle(
+          ref,
           () {
             navigateAfterLogin(
               context: context,
               notifier: notifier,
             );
-
-            ref.read(dioServiceProvider.notifier).state = DioService(
-              baseUrl: EnvConstants.baseUrl!,
-              accessToken:
-                  ref.read(sharedPreferenceServiceProvider).getApiToken(),
-            );
-            ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
           },
           () {
             ScaffoldMessenger.of(context)

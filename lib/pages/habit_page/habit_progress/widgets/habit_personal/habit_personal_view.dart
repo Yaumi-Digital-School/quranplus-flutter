@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/add_daily_progress_manual/add_daily_progress_manual_view.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/change_daily_target/change_daily_target_view.dart';
-import 'package:qurantafsir_flutter/pages/main_page.dart';
+import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
@@ -35,7 +35,7 @@ class _HabitPersonalState extends State<HabitPersonalView> {
           );
         },
       ),
-      onStateNotifierReady: (notifier) async =>
+      onStateNotifierReady: (notifier, ref) async =>
           await notifier.initStateNotifier(),
       builder: (
         BuildContext context,

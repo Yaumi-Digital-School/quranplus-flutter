@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_view.dart';
-import 'package:qurantafsir_flutter/pages/main_page.dart';
+import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page.dart';
 import 'package:qurantafsir_flutter/pages/splash_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
@@ -76,7 +76,13 @@ class MyApp extends StatelessWidget {
                 );
                 break;
               case RoutePaths.routeMain:
-                selectedRouteWidget = const MainPage();
+                final args = settings.arguments != null &&
+                        settings.arguments is MainPageParam
+                    ? settings.arguments as MainPageParam
+                    : null;
+                selectedRouteWidget = MainPage(
+                  param: args,
+                );
                 break;
               case RoutePaths.routeSettings:
                 selectedRouteWidget = SettingsPage();
