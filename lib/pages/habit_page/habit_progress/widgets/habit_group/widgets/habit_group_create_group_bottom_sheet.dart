@@ -10,7 +10,9 @@ class HabitGroupCreateGroupBottomSheet {
     required BuildContext context,
     required Function(String) onSubmit,
   }) {
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     String groupName = "";
+
     GeneralBottomSheet.showBaseBottomSheet(
       context: context,
       widgetChild: Column(
@@ -26,21 +28,35 @@ class HabitGroupCreateGroupBottomSheet {
             style: QPTextStyle.subHeading4Medium,
           ),
           const SizedBox(height: 8),
-          FormFieldWidget(
-            hintTextForm: "Input your group name",
-            iconForm: const Icon(
-              Icons.keyboard_outlined,
-              size: 24,
-              color: QPColors.blackFair,
+          Form(
+            key: _formKey,
+            child: FormFieldWidget(
+              hintTextForm: "Input your group name",
+              iconForm: const Icon(
+                Icons.keyboard_outlined,
+                size: 24,
+                color: QPColors.blackFair,
+              ),
+              validator: (value) {
+                if (value?.isEmpty ?? true) {
+                  return "Group name can't be empty!";
+                }
+
+                return null;
+              },
+              onChange: (String value) {
+                groupName = value;
+              },
             ),
-            onChange: (String value) {
-              groupName = value;
-            },
           ),
           const SizedBox(height: 40),
           ButtonSecondary(
-            label: "Create Group",
+            label: "Save",
             onTap: () {
+              if (!_formKey.currentState!.validate()) {
+                return;
+              }
+
               onSubmit(groupName);
               Navigator.pop(context);
             },

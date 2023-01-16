@@ -6,11 +6,14 @@ import 'package:qurantafsir_flutter/shared/core/models/habit_group_summary.dart'
 import 'package:qurantafsir_flutter/widgets/habit_group_overview.dart';
 
 class HabitGroupListView extends StatelessWidget {
-  final List<GetHabitGroupsItem> listGroup;
   const HabitGroupListView({
     required this.listGroup,
+    this.onEditedGroupName,
     Key? key,
   }) : super(key: key);
+
+  final List<GetHabitGroupsItem> listGroup;
+  final Future<void> Function()? onEditedGroupName;
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +37,8 @@ class HabitGroupListView extends StatelessWidget {
             totalMembers: item.currentMemberCount,
             groupName: item.name,
             sevenDaysInformation: sevenDaysInformation,
-            onTapGroupDetailCTA: () {
-              Navigator.pushNamed(
+            onTapGroupDetailCTA: () async {
+              final res = await Navigator.pushNamed(
                 context,
                 RoutePaths.routeHabitGroupDetail,
                 arguments: HabitGroupDetailViewParam(
@@ -43,6 +46,10 @@ class HabitGroupListView extends StatelessWidget {
                   groupName: item.name,
                 ),
               );
+
+              if (res is bool && res && onEditedGroupName != null) {
+                await onEditedGroupName!();
+              }
             },
           ),
         );
