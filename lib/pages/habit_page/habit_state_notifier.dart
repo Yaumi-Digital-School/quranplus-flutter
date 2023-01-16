@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/user_response.dart';
 import 'package:qurantafsir_flutter/shared/core/models/user.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
@@ -10,13 +11,11 @@ class HabitPageState {
   HabitPageState({
     this.authenticationStatus,
     this.resultStatus = ResultStatus.pure,
-    this.token = '',
     this.user = User.empty,
   });
 
   AuthenticationStatus? authenticationStatus;
   ResultStatus resultStatus;
-  String token;
   User user;
 
   HabitPageState copyWith({
@@ -28,7 +27,6 @@ class HabitPageState {
     return HabitPageState(
       authenticationStatus: authenticationStatus ?? this.authenticationStatus,
       resultStatus: resultStatus ?? this.resultStatus,
-      token: token ?? this.token,
       user: user ?? this.user,
     );
   }
@@ -49,7 +47,6 @@ class HabitPageStateNotifier extends BaseStateNotifier<HabitPageState> {
 
   @override
   Future<void> initStateNotifier() async {
-    await _repository.initRepository();
     _getToken();
   }
 
@@ -68,35 +65,30 @@ class HabitPageStateNotifier extends BaseStateNotifier<HabitPageState> {
     }
   }
 
-  Future<void> _setToken(String token) async {
-    await _sharedPreferenceService.setApiToken(token);
-  }
-
   Future<void> signInWithGoogle(
+    WidgetRef ref,
     Function() onSuccess,
     Function() onError,
   ) async {
     state = state.copyWith(resultStatus: ResultStatus.inProgress);
 
     try {
-      UserResponse user = await _repository.signInWithGoogle();
+      final bool isSuccess = await _repository.signInWithGoogle(ref);
 
-      if ((user.token ?? '').isEmpty) {
+      if (!isSuccess) {
         state = state.copyWith(
           authenticationStatus: AuthenticationStatus.unknown,
           resultStatus: ResultStatus.canceled,
         );
-      } else {
-        await _setToken(user.token!);
-        await _setUsername(user.data!.name);
 
-        state = state.copyWith(
-          authenticationStatus: AuthenticationStatus.authenticated,
-          resultStatus: ResultStatus.success,
-          token: user.token!,
-        );
-        onSuccess.call();
+        return;
       }
+
+      state = state.copyWith(
+        authenticationStatus: AuthenticationStatus.authenticated,
+        resultStatus: ResultStatus.success,
+      );
+      onSuccess.call();
     } catch (_) {
       state = state.copyWith(
         authenticationStatus: AuthenticationStatus.unauthenticated,
@@ -104,9 +96,5 @@ class HabitPageStateNotifier extends BaseStateNotifier<HabitPageState> {
       );
       onError.call();
     }
-  }
-
-  Future<void> _setUsername(String name) async {
-    await _sharedPreferenceService.setUsername(name);
   }
 }

@@ -1,3 +1,5 @@
+import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
+import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/habit_api.dart';
@@ -107,11 +109,24 @@ final Provider<FavoriteAyahsService> favoriteAyahsService =
   return FavoriteAyahsService();
 });
 
+Provider<MainPageProvider> mainPageProvider = Provider<MainPageProvider>(
+  (ref) => MainPageProvider(),
+);
+
 final Provider<DeepLinkService> deepLinkService =
     Provider<DeepLinkService>((ref) {
   final HabitGroupApi habitGroupApi = ref.watch(habitGroupApiProvider);
+  final AuthenticationService auth = ref.watch(authenticationService);
+  final SharedPreferenceService sharedPref =
+      ref.watch(sharedPreferenceServiceProvider);
+  final MainPageProvider mainPage = ref.watch(mainPageProvider);
 
-  return DeepLinkService(habitGroupApi: habitGroupApi);
+  return DeepLinkService(
+    habitGroupApi: habitGroupApi,
+    authenticationService: auth,
+    sharedPreferenceService: sharedPref,
+    mainPageProvider: mainPage,
+  );
 });
 
 final StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>

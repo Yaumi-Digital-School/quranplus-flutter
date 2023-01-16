@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:qurantafsir_flutter/pages/main_page.dart';
+import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/user_api.dart';
+import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/user.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/user_response.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -32,7 +36,7 @@ class AuthenticationService {
     ]);
   }
 
-  Future<UserResponse> signInWithGoogle() async {
+  Future<bool> signInWithGoogle(WidgetRef ref) async {
     try {
       final googleUser = await _googleSignIn.signIn();
 
@@ -53,11 +57,28 @@ class AuthenticationService {
       }
 
       setIsLoggedIn(true);
+      await _setToken(response.data.token!);
+      await _setUsername(response.data.data!.name);
 
-      return response.data;
+      ref.read(dioServiceProvider.notifier).state = DioService(
+        baseUrl: EnvConstants.baseUrl!,
+        accessToken: _sharedPreferenceService.getApiToken(),
+      );
+
+      ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
+
+      return token.isNotEmpty;
     } catch (error) {
       throw Exception('SignIn error: ' + error.toString());
     }
+  }
+
+  Future<void> _setUsername(String name) async {
+    await _sharedPreferenceService.setUsername(name);
+  }
+
+  Future<void> _setToken(String token) async {
+    await _sharedPreferenceService.setApiToken(token);
   }
 
   Future<void> signOut() async {

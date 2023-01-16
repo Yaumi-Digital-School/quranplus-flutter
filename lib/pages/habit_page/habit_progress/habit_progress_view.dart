@@ -4,6 +4,7 @@ import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/habi
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/habit_personal/habit_personal_view.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 
 import 'habit_progress_state_notifier.dart';
@@ -20,10 +21,14 @@ class HabitProgressView extends StatelessWidget {
         (StateNotifierProviderRef<HabitProgressStateNotifier,
                 HabitProgressState>
             ref) {
-          return HabitProgressStateNotifier();
+          return HabitProgressStateNotifier(
+            initialTab: ref
+                .read(mainPageProvider)
+                .getAndResetHabitGroupProgressSelectedTab(),
+          );
         },
       ),
-      onStateNotifierReady: (notifier) async =>
+      onStateNotifierReady: (notifier, ref) async =>
           await notifier.initStateNotifier(),
       builder: (
         BuildContext context,

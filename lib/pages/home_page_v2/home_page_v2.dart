@@ -1,47 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_view.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/card_start_habit.dart';
-import 'package:qurantafsir_flutter/pages/main_page.dart';
+import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
+import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
+import 'package:qurantafsir_flutter/shared/utils/date_util.dart' as date_util;
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/alert_dialog.dart';
 import 'package:qurantafsir_flutter/widgets/daily_progress_tracker.dart';
+import 'package:qurantafsir_flutter/widgets/sign_in_bottom_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:retrofit/retrofit.dart';
 import 'home_page_state_notifier.dart';
 
-StateNotifierProvider<HomePageStateNotifier, HomePageState>
-    homePageStateNotifier =
-    StateNotifierProvider<HomePageStateNotifier, HomePageState>(
-  (ref) {
-    return HomePageStateNotifier(
-      sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
-      habitDailySummaryService: ref.watch(habitDailySummaryService),
-    );
-  },
-);
-
-class HomePageV2 extends StatelessWidget {
+class HomePageV2 extends StatefulWidget {
   const HomePageV2({Key? key}) : super(key: key);
 
   @override
+  State<HomePageV2> createState() => _HomePageV2State();
+}
+
+class _HomePageV2State extends State<HomePageV2> {
+  @override
   Widget build(BuildContext context) {
     return StateNotifierConnector<HomePageStateNotifier, HomePageState>(
-      stateNotifierProvider: homePageStateNotifier,
-      onStateNotifierReady: (notifier) async {
+      key: GlobalKey(),
+      stateNotifierProvider:
+          StateNotifierProvider<HomePageStateNotifier, HomePageState>(
+        (ref) {
+          return HomePageStateNotifier(
+            sharedPreferenceService: ref.read(sharedPreferenceServiceProvider),
+            habitDailySummaryService: ref.read(habitDailySummaryService),
+            authenticationService: ref.read(authenticationService),
+            mainPageProvider: ref.read(mainPageProvider),
+          );
+        },
+      ),
+      onStateNotifierReady: (notifier, ref) async {
         await notifier.initStateNotifier();
       },
       builder: (
         BuildContext context,
         HomePageState state,
         HomePageStateNotifier notifier,
-        _,
+        WidgetRef ref,
       ) {
         if (state.juzElements == null ||
             state.feedbackUrl == null ||
@@ -52,6 +63,58 @@ class HomePageV2 extends StatelessWidget {
               child: CircularProgressIndicator(),
             ),
           );
+        }
+
+        if (notifier.mainPageProvider
+            .getShouldShowSignInBottomSheetAndReset()) {
+          Future.delayed(Duration.zero, () {
+            SignInBottomSheet.show(
+              context: context,
+              onClose: () {
+                notifier.getAndRemoveForceLoginParam();
+              },
+              onTapSignInWithGoogle: () async {
+                final bool isSuccess =
+                    await ref.read(authenticationService).signInWithGoogle(ref);
+
+                ForceLoginParam? param =
+                    await notifier.getAndRemoveForceLoginParam();
+
+                final HttpResponse<bool> req =
+                    await ref.read(habitGroupApiProvider).joinGroup(
+                          groupId: param?.arguments?['id'] ?? 0,
+                          request: JoinHabitGroupRequest(
+                            date: date_util.DateUtils.getCurrentDateInString(),
+                          ),
+                        );
+
+                final bool shouldRedirect = isSuccess &&
+                    req.response.statusCode == 200 &&
+                    param != null;
+
+                if (shouldRedirect) {
+                  Object? args;
+                  switch (param.nextPath) {
+                    case RoutePaths.routeHabitGroupDetail:
+                      args = HabitGroupDetailViewParam(
+                        id: param.arguments?['id'],
+                        groupName: param.arguments?['groupName'],
+                      );
+                  }
+
+                  Navigator.pop(context);
+
+                  Navigator.pushNamed(
+                    context,
+                    param.nextPath ?? '',
+                    arguments: args,
+                  );
+                }
+
+                setState(() {});
+              },
+            );
+          });
         }
 
         return Scaffold(
@@ -95,6 +158,7 @@ class HomePageV2 extends StatelessWidget {
           ),
           body: ListSuratByJuz(
             notifier: notifier,
+            state: state,
           ),
         );
       },
@@ -113,9 +177,11 @@ class ListSuratByJuz extends StatelessWidget {
   const ListSuratByJuz({
     Key? key,
     required this.notifier,
+    required this.state,
   }) : super(key: key);
 
   final HomePageStateNotifier notifier;
+  final HomePageState state;
   double diameterButtonSearch(BuildContext context) =>
       MediaQuery.of(context).size.width * 1 / 6;
   // Temporary value to include/exclude habit in build
@@ -124,8 +190,6 @@ class ListSuratByJuz extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (BuildContext context, WidgetRef ref, Widget? child) {
-        HomePageState state = ref.watch(homePageStateNotifier);
-
         bool isLoggedIn = ref.watch(authenticationService).isLoggedIn;
 
         return Stack(
@@ -223,6 +287,7 @@ class ListSuratByJuz extends StatelessWidget {
                 ),
                 child: _ButtonSearch(
                   versePagetoAyah: state.ayahPage!,
+                  state: state,
                 ),
               ),
             ),
@@ -356,9 +421,11 @@ class _ButtonSearch extends StatelessWidget {
   const _ButtonSearch({
     Key? key,
     required this.versePagetoAyah,
+    required this.state,
   }) : super(key: key);
 
   final Map<String, List<String>>? versePagetoAyah;
+  final HomePageState state;
 
   @override
   Widget build(
@@ -366,8 +433,6 @@ class _ButtonSearch extends StatelessWidget {
   ) {
     return Consumer(
       builder: (BuildContext context, WidgetRef ref, Widget? child) {
-        HomePageState state = ref.watch(homePageStateNotifier);
-
         return IconButton(
           onPressed: () {
             GeneralSearchDialog.searchDialogByPageOrAyah(

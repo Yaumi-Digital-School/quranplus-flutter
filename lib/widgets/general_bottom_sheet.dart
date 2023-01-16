@@ -8,6 +8,7 @@ class GeneralBottomSheet {
     required BuildContext context,
     required Widget widgetChild,
     MainAxisSize mainAxisSize = MainAxisSize.min,
+    VoidCallback? onClose,
   }) {
     showModalBottomSheet(
       isScrollControlled: true,
@@ -47,9 +48,10 @@ class GeneralBottomSheet {
           ),
         );
       },
-    );
+    ).then((_) => onClose);
   }
 
+  @Deprecated('use showBaseBottomSheet instead')
   Future showGeneralBottomSheet(
     BuildContext context,
     String label,
