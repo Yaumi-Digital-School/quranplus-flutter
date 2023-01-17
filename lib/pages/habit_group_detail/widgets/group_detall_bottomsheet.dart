@@ -42,13 +42,18 @@ class HabitGroupBottomSheet {
             style: QPTextStyle.subHeading2SemiBold,
           ),
           const SizedBox(height: 8),
-          Text(
-            "Copy this link and send it to the people you want to join  ",
-            style: QPTextStyle.body3Regular,
-          ),
-          Text(
-            "Group Ngaji Alfatonah",
-            style: QPTextStyle.body3SemiBold,
+          RichText(
+            text: TextSpan(
+              text:
+                  'Copy this link and send it to the people you want to join ',
+              style: QPTextStyle.body3Regular,
+              children: [
+                TextSpan(
+                  text: 'Group Ngaji Alfatonah',
+                  style: QPTextStyle.body3SemiBold,
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 24),
           TextField(
@@ -81,9 +86,10 @@ class HabitGroupBottomSheet {
   static void showModalEditGroupName({
     required BuildContext context,
     required Function(String) onSubmit,
+    String currentGroupName = '',
   }) {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    String groupName = "";
+    String groupName = currentGroupName;
 
     GeneralBottomSheet.showBaseBottomSheet(
       context: context,
@@ -103,6 +109,7 @@ class HabitGroupBottomSheet {
           Form(
             key: _formKey,
             child: FormFieldWidget(
+              initialValue: groupName,
               hintTextForm: "Input your group name",
               iconForm: const Icon(
                 Icons.keyboard_outlined,
@@ -131,6 +138,11 @@ class HabitGroupBottomSheet {
 
               onSubmit(groupName);
               Navigator.pop(context);
+
+              GeneralSnackBar.showModalSnackBar(
+                context: context,
+                text: "Group name successfully saved",
+              );
             },
           ),
         ],
@@ -167,7 +179,7 @@ class HabitGroupBottomSheet {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ButtonPrimary(
-                label: 'cancel',
+                label: 'Cancel',
                 onTap: () {
                   Navigator.pop(context);
                 },
@@ -206,6 +218,54 @@ class HabitGroupBottomSheet {
                     .copyWith(color: QPColors.brandFair),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  static void showModalSuccessJoinGroup({
+    required BuildContext context,
+  }) {
+    GeneralBottomSheet.showBaseBottomSheet(
+      context: context,
+      widgetChild: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: const BoxDecoration(
+              color: QPColors.brandFair,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.check,
+              color: Colors.white,
+              size: 48,
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            "Alhamdulillah, you joined the group!",
+            style: QPTextStyle.heading1SemiBold
+                .copyWith(color: QPColors.brandFair),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+          Text(
+            "Now you can update and set your reading\nprogress and target with group members",
+            style:
+                QPTextStyle.body2Regular.copyWith(color: QPColors.neutral700),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+          ButtonSecondary(
+            label: 'Close',
+            onTap: () {
+              Navigator.pop(context);
+            },
+            textStyle:
+                QPTextStyle.button1SemiBold.copyWith(color: QPColors.brandFair),
           ),
         ],
       ),

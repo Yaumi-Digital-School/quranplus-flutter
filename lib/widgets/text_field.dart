@@ -219,6 +219,7 @@ class FormFieldWidget extends StatelessWidget {
     this.hintTextForm,
     this.iconForm,
     this.validator,
+    this.initialValue,
   }) : super(key: key);
 
   final String? label;
@@ -227,6 +228,7 @@ class FormFieldWidget extends StatelessWidget {
   final String? hintTextForm;
   final Icon? iconForm;
   final String? Function(String?)? validator;
+  final String? initialValue;
 
   @override
   Widget build(BuildContext context) {
@@ -247,6 +249,7 @@ class FormFieldWidget extends StatelessWidget {
               ],
             ),
           TextFormField(
+            initialValue: initialValue,
             validator: validator == null ? null : (value) => validator!(value),
             cursorColor: Colors.black,
             textAlign: TextAlign.center,

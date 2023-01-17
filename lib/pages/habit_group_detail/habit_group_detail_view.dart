@@ -21,19 +21,38 @@ class HabitGroupDetailViewParam {
   HabitGroupDetailViewParam({
     required this.id,
     required this.groupName,
+    this.isSuccessJoinGroup = false,
   });
 
   final int id;
   final String groupName;
+  final bool isSuccessJoinGroup;
 }
 
-class HabitGroupDetailView extends StatelessWidget {
+class HabitGroupDetailView extends StatefulWidget {
   const HabitGroupDetailView({
     Key? key,
     required this.param,
   }) : super(key: key);
 
   final HabitGroupDetailViewParam param;
+
+  @override
+  State<HabitGroupDetailView> createState() => _HabitGroupDetailViewState();
+}
+
+class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.param.isSuccessJoinGroup) {
+      WidgetsBinding.instance?.addPostFrameCallback(
+        (timeStamp) {
+          HabitGroupBottomSheet.showModalSuccessJoinGroup(context: context);
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +63,7 @@ class HabitGroupDetailView extends StatelessWidget {
         (ref) {
           return HabitGroupDetailStateNotifier(
             habitGroupApi: ref.watch(habitGroupApiProvider),
-            groupId: param.id,
+            groupId: widget.param.id,
           );
         },
       ),
@@ -87,7 +106,7 @@ class HabitGroupDetailView extends StatelessWidget {
                 elevation: 0.7,
                 centerTitle: true,
                 title: Text(
-                  param.groupName,
+                  widget.param.groupName,
                   style: QPTextStyle.subHeading2SemiBold,
                 ),
                 backgroundColor: QPColors.whiteFair,
@@ -338,7 +357,8 @@ class HabitGroupDetailView extends StatelessWidget {
   }
 
   void _showModalInviteGroup(BuildContext context) async {
-    final uri = await DynamicLinkHelper().createDynamicLinkInvite(id: param.id);
+    final uri =
+        await DynamicLinkHelper().createDynamicLinkInvite(id: widget.param.id);
     HabitGroupBottomSheet.showModalInviteMemberGroup(
       context: context,
       url: uri.toString(),
