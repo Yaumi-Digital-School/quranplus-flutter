@@ -35,13 +35,18 @@ class HabitGroupBottomSheet {
             style: QPTextStyle.subHeading2SemiBold,
           ),
           const SizedBox(height: 8),
-          Text(
-            "Copy this link and send it to the people you want to join  ",
-            style: QPTextStyle.body3Regular,
-          ),
-          Text(
-            "Group Ngaji Alfatonah",
-            style: QPTextStyle.body3SemiBold,
+          RichText(
+            text: TextSpan(
+              text:
+                  'Copy this link and send it to the people you want to join ',
+              style: QPTextStyle.body3Regular,
+              children: [
+                TextSpan(
+                  text: 'Group Ngaji Alfatonah',
+                  style: QPTextStyle.body3SemiBold,
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 24),
           TextField(
@@ -74,9 +79,10 @@ class HabitGroupBottomSheet {
   static void showModalEditGroupName({
     required BuildContext context,
     required Function(String) onSubmit,
+    String currentGroupName = '',
   }) {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    String groupName = "";
+    String groupName = currentGroupName;
 
     GeneralBottomSheet.showBaseBottomSheet(
       context: context,
@@ -96,6 +102,7 @@ class HabitGroupBottomSheet {
           Form(
             key: _formKey,
             child: FormFieldWidget(
+              initialValue: groupName,
               hintTextForm: "Input your group name",
               iconForm: const Icon(
                 Icons.keyboard_outlined,
@@ -124,6 +131,11 @@ class HabitGroupBottomSheet {
 
               onSubmit(groupName);
               Navigator.pop(context);
+
+              GeneralSnackBar.showModalSnackBar(
+                context: context,
+                text: "Group name successfully saved",
+              );
             },
           ),
         ],
@@ -157,7 +169,7 @@ class HabitGroupBottomSheet {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ButtonPrimary(
-                label: 'cancel',
+                label: 'Cancel',
                 onTap: () {
                   Navigator.pop(context);
                 },
