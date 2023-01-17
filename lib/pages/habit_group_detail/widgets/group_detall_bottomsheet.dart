@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_state_notifier.dart';
+import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/habit_progress_state_notifier.dart';
+import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/snackbar.dart';
@@ -145,6 +151,9 @@ class HabitGroupBottomSheet {
 
   static void showModalLeaveGroup({
     required BuildContext context,
+    required Future<void> Function() onTap,
+    required WidgetRef ref,
+    required HabitGroupDetailStateNotifier notifier,
   }) {
     GeneralBottomSheet.showBaseBottomSheet(
       context: context,
@@ -179,7 +188,32 @@ class HabitGroupBottomSheet {
               ),
               ButtonSecondary(
                 label: 'Leave',
-                onTap: () {},
+                onTap: () async {
+                  await onTap();
+                  Navigator.pop(context);
+                  final bool canPop = Navigator.canPop(context);
+
+                  if (canPop) {
+                    Navigator.pop(context, notifier.isLeaveGrup);
+
+                    return;
+                  }
+
+                  const HabitProgressTab selectedTabOnPop =
+                      HabitProgressTab.group;
+
+                  ref
+                      .read(mainPageProvider)
+                      .setHabitGroupProgressSelectedTab(selectedTabOnPop);
+
+                  Navigator.pushReplacementNamed(
+                    context,
+                    RoutePaths.routeMain,
+                    arguments: MainPageParam(
+                      initialSelectedIdx: selectedTabOnPop.index,
+                    ),
+                  );
+                },
                 size: ButtonSize.regular,
                 textStyle: QPTextStyle.button1SemiBold
                     .copyWith(color: QPColors.brandFair),

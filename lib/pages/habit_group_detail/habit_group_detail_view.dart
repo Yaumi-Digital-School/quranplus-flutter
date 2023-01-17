@@ -182,6 +182,7 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
                         context,
                         item,
                         notifier,
+                        ref,
                       ),
                     ),
                   ),
@@ -273,7 +274,11 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
     );
   }
 
-  bool _onTapBack(BuildContext context, WidgetRef ref, bool isGroupNameEdited) {
+  bool _onTapBack(
+    BuildContext context,
+    WidgetRef ref,
+    bool isGroupNameEdited,
+  ) {
     final bool canPop = Navigator.canPop(context);
     if (canPop) {
       Navigator.pop(context, isGroupNameEdited);
@@ -326,6 +331,7 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
     BuildContext context,
     int item,
     HabitGroupDetailStateNotifier notifier,
+    WidgetRef ref,
   ) {
     switch (item) {
       case 0:
@@ -340,7 +346,12 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
         );
         break;
       case 2:
-        HabitGroupBottomSheet.showModalLeaveGroup(context: context);
+        HabitGroupBottomSheet.showModalLeaveGroup(
+          context: context,
+          onTap: notifier.leaveGroup,
+          ref: ref,
+          notifier: notifier,
+        );
         break;
     }
   }

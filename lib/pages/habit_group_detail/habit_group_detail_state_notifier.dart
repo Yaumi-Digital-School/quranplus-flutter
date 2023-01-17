@@ -56,6 +56,8 @@ class HabitGroupDetailStateNotifier
   bool _groupNameIsEdited = false;
   bool get groupNameIsEdited => _groupNameIsEdited;
 
+  bool _isLeaveGroup = false;
+  bool get isLeaveGrup => _isLeaveGroup;
   @override
   Future<void> initStateNotifier() async {
     state = state.copyWith(isLoading: true);
@@ -140,5 +142,24 @@ class HabitGroupDetailStateNotifier
 
   void onTapGroupCompletionSummaryData(int tappedIdx) {
     state = state.copyWith(selectedSummaryIdx: tappedIdx);
+  }
+
+  Future<void> leaveGroup() async {
+    final HttpResponse<bool> request = await _habitGroupApi.leaveGroup(
+      groupId: _groupId,
+      request: LeaveHabitGroupRequest(
+        date: DateUtils.getCurrentDateInString(),
+      ),
+    );
+
+    if (request.response.statusCode != 200) {
+      state = state.copyWith(isLoading: false, isErrorOnFetching: true);
+
+      return;
+    }
+
+    if (request.data) {
+      _isLeaveGroup = true;
+    }
   }
 }
