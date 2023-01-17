@@ -47,7 +47,10 @@ class HabitGroupView extends StatelessWidget {
                 top: 32,
               ),
               child: state.listGroup.isNotEmpty
-                  ? HabitGroupListView(listGroup: state.listGroup)
+                  ? HabitGroupListView(
+                      listGroup: state.listGroup,
+                      onEditedGroupName: notifier.initStateNotifier,
+                    )
                   : HabitGroupEmptyGroupView(
                       onSubmitCreateGroup: (String value) =>
                           notifier.createGroup(value),

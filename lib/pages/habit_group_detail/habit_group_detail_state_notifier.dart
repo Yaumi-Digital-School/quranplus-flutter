@@ -53,8 +53,13 @@ class HabitGroupDetailStateNotifier
   final int _groupId;
   List<GetHabitGroupMemberPersonalItemResponse>? _memberSummaries;
 
+  bool _groupNameIsEdited = false;
+  bool get groupNameIsEdited => _groupNameIsEdited;
+
   @override
   Future<void> initStateNotifier() async {
+    state = state.copyWith(isLoading: true);
+
     await _getHabitGroupCompletions();
     await _getGroupMemberSummaries();
 
@@ -66,6 +71,8 @@ class HabitGroupDetailStateNotifier
       );
     }
   }
+
+  bool get userIsAdmin => _memberSummaries?[0].isAdmin ?? false;
 
   Future<void> _getHabitGroupCompletions() async {
     HttpResponse<List<GetHabitGroupCompletionsItemResponse>>
@@ -89,6 +96,25 @@ class HabitGroupDetailStateNotifier
           (e) => HabitGroupSummary.fromGetGroupCompletionsItem(e),
         )
         .toList();
+  }
+
+  Future<void> renameGroup(String newName) async {
+    HttpResponse<bool> request = await _habitGroupApi.renameGroup(
+      request: UpdateHabitGroupRequest(newName: newName),
+      groupId: _groupId,
+    );
+
+    if (request.response.statusCode != 200) {
+      // need new design on error fetching
+      state = state.copyWith(isLoading: false, isErrorOnFetching: true);
+
+      return;
+    }
+
+    if (request.data) {
+      _groupNameIsEdited = true;
+      await initStateNotifier();
+    }
   }
 
   Future<void> _getGroupMemberSummaries() async {

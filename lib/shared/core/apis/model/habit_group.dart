@@ -58,6 +58,21 @@ class GetHabitGroupsParam {
 }
 
 @JsonSerializable()
+class UpdateHabitGroupRequest {
+  UpdateHabitGroupRequest({
+    required this.newName,
+  });
+
+  @JsonKey(name: 'new_name')
+  final String newName;
+
+  factory UpdateHabitGroupRequest.fromJson(Map<String, dynamic> json) =>
+      _$UpdateHabitGroupRequestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UpdateHabitGroupRequestToJson(this);
+}
+
+@JsonSerializable()
 class CreateHabitGroupRequest {
   CreateHabitGroupRequest({
     required this.name,
