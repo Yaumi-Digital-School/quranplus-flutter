@@ -1,7 +1,6 @@
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_view.dart';
-import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/habit_group_api.dart';
@@ -95,6 +94,7 @@ class DeepLinkService {
         arguments: HabitGroupDetailViewParam(
           groupName: "",
           id: id,
+          isSuccessJoinGroup: response.data,
         ),
       );
     } catch (e) {
