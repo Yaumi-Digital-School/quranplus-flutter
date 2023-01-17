@@ -73,6 +73,7 @@ class HabitGroupBottomSheet {
 
   static void showModalLeaveGroup({
     required BuildContext context,
+    required Function onTap,
   }) {
     // This function is triggered when the copy icon is pressed
 
@@ -109,7 +110,10 @@ class HabitGroupBottomSheet {
               ),
               ButtonSecondary(
                 label: 'Leave',
-                onTap: () {},
+                onTap: () {
+                  onTap();
+                  Navigator.pop(context);
+                },
                 size: ButtonSize.regular,
                 textStyle: QPTextStyle.button1SemiBold
                     .copyWith(color: QPColors.brandFair),

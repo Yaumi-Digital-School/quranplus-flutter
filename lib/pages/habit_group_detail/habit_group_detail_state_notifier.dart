@@ -115,4 +115,13 @@ class HabitGroupDetailStateNotifier
   void onTapGroupCompletionSummaryData(int tappedIdx) {
     state = state.copyWith(selectedSummaryIdx: tappedIdx);
   }
+
+  Future<void> leaveGroup() async {
+    final HttpResponse<bool> request = await _habitGroupApi.LeaveGroup(
+      groupId: _groupId,
+      request: LeaveHabitGroupRequest(
+        date: DateUtils.getCurrentDateInString(),
+      ),
+    );
+  }
 }

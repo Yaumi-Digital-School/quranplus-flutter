@@ -134,7 +134,12 @@ class HabitGroupDetailView extends StatelessWidget {
                           ),
                         ),
                       ],
-                      onSelected: (item) => _selectedItem(context, item),
+                      onSelected: (item) => _selectedItem(
+                        context,
+                        item,
+                        notifier,
+                        param.id,
+                      ),
                     ),
                   ),
                 ],
@@ -274,13 +279,23 @@ class HabitGroupDetailView extends StatelessWidget {
     );
   }
 
-  void _selectedItem(BuildContext context, item) {
+  void _selectedItem(
+    BuildContext context,
+    item,
+    HabitGroupDetailStateNotifier notifier,
+    int groupId,
+  ) {
     switch (item) {
       case 0:
         _showModalInviteGroup(context);
         break;
       case 1:
-        HabitGroupBottomSheet.showModalLeaveGroup(context: context);
+        HabitGroupBottomSheet.showModalLeaveGroup(
+          context: context,
+          onTap: () {
+            notifier.leaveGroup();
+          },
+        );
         break;
     }
   }

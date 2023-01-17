@@ -216,3 +216,30 @@ class JoinHabitGroupResponse {
     return JoinHabitGroupResponse(successJoin: false);
   }
 }
+
+@JsonSerializable()
+class LeaveHabitGroupRequest {
+  LeaveHabitGroupRequest({
+    required this.date,
+  });
+
+  final String date;
+
+  factory LeaveHabitGroupRequest.fromJson(Map<String, dynamic> json) =>
+      _$LeaveHabitGroupRequestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LeaveHabitGroupRequestToJson(this);
+}
+
+class LeaveHabitGroupResponse {
+  late final bool successLeave;
+  LeaveHabitGroupResponse({required this.successLeave});
+
+  factory LeaveHabitGroupResponse.fromJson(dynamic success) {
+    if (success is bool) {
+      return LeaveHabitGroupResponse(successLeave: true);
+    }
+
+    return LeaveHabitGroupResponse(successLeave: false);
+  }
+}
