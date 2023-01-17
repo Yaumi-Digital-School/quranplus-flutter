@@ -178,4 +178,52 @@ class HabitGroupBottomSheet {
       ),
     );
   }
+
+  static void showModalSuccessJoinGroup({
+    required BuildContext context,
+  }) {
+    GeneralBottomSheet.showBaseBottomSheet(
+      context: context,
+      widgetChild: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: const BoxDecoration(
+              color: QPColors.brandFair,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.check,
+              color: Colors.white,
+              size: 48,
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            "Alhamdulillah, you joined the group!",
+            style: QPTextStyle.heading1SemiBold
+                .copyWith(color: QPColors.brandFair),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+          Text(
+            "Now you can update and set your reading\nprogress and target with group members",
+            style:
+                QPTextStyle.body2Regular.copyWith(color: QPColors.neutral700),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+          ButtonSecondary(
+            label: 'Close',
+            onTap: () {
+              Navigator.pop(context);
+            },
+            textStyle:
+                QPTextStyle.button1SemiBold.copyWith(color: QPColors.brandFair),
+          ),
+        ],
+      ),
+    );
+  }
 }
