@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_state_notifier.dart';
+import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/habit_progress_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
@@ -11,8 +12,6 @@ import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/snackbar.dart';
 import 'package:qurantafsir_flutter/widgets/text_field.dart';
-
-import '../../habit_page/habit_progress/habit_progress_state_notifier.dart';
 
 class HabitGroupBottomSheet {
   static void showModalInviteMemberGroup({
@@ -196,6 +195,8 @@ class HabitGroupBottomSheet {
 
                   if (canPop) {
                     Navigator.pop(context, notifier.isLeaveGrup);
+
+                    return;
                   }
 
                   const HabitProgressTab selectedTabOnPop =

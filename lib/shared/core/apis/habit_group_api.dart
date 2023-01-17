@@ -45,7 +45,7 @@ abstract class HabitGroupApi {
   });
 
   @POST('/api/habit/group/{group_id}/leave/')
-  Future<HttpResponse<bool>> LeaveGroup({
+  Future<HttpResponse<bool>> leaveGroup({
     @Path('group_id') required int groupId,
     @Body() required LeaveHabitGroupRequest request,
   });

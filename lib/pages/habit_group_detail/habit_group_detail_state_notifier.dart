@@ -145,7 +145,7 @@ class HabitGroupDetailStateNotifier
   }
 
   Future<void> leaveGroup() async {
-    final HttpResponse<bool> request = await _habitGroupApi.LeaveGroup(
+    final HttpResponse<bool> request = await _habitGroupApi.leaveGroup(
       groupId: _groupId,
       request: LeaveHabitGroupRequest(
         date: DateUtils.getCurrentDateInString(),
