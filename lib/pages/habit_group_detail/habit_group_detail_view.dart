@@ -67,7 +67,7 @@ class HabitGroupDetailView extends StatelessWidget {
 
         return WillPopScope(
           onWillPop: () async {
-            return _onTapBack(context, ref);
+            return _onTapBack(context, ref, notifier.groupNameIsEdited);
           },
           child: Scaffold(
             appBar: PreferredSize(
@@ -80,7 +80,7 @@ class HabitGroupDetailView extends StatelessWidget {
                     size: 30,
                   ),
                   onPressed: () {
-                    _onTapBack(context, ref);
+                    _onTapBack(context, ref, notifier.groupNameIsEdited);
                   },
                 ),
                 automaticallyImplyLeading: false,
@@ -107,7 +107,10 @@ class HabitGroupDetailView extends StatelessWidget {
                           value: 0,
                           child: Row(
                             children: [
-                              ImageIcon(AssetImage(IconPath.iconInviteMember)),
+                              ImageIcon(
+                                AssetImage(IconPath.iconInviteMember),
+                                size: 12,
+                              ),
                               const SizedBox(
                                 width: 14,
                               ),
@@ -118,11 +121,33 @@ class HabitGroupDetailView extends StatelessWidget {
                             ],
                           ),
                         ),
+                        if (notifier.userIsAdmin)
+                          PopupMenuItem<int>(
+                            value: 1,
+                            child: Row(
+                              children: [
+                                ImageIcon(
+                                  AssetImage(IconPath.iconEditSquare),
+                                  size: 12,
+                                ),
+                                const SizedBox(
+                                  width: 14,
+                                ),
+                                Text(
+                                  "Edit Group Name",
+                                  style: QPTextStyle.subHeading4SemiBold,
+                                ),
+                              ],
+                            ),
+                          ),
                         PopupMenuItem<int>(
-                          value: 1,
+                          value: 2,
                           child: Row(
                             children: [
-                              ImageIcon(AssetImage(IconPath.iconLeaveGroup)),
+                              ImageIcon(
+                                AssetImage(IconPath.iconLeaveGroup),
+                                size: 12,
+                              ),
                               const SizedBox(
                                 width: 14,
                               ),
@@ -134,11 +159,11 @@ class HabitGroupDetailView extends StatelessWidget {
                           ),
                         ),
                       ],
-                      onSelected: (item) => _selectedItem(
+                      onSelected: (int item) => _selectedItem(
                         context,
                         item,
                         notifier,
-                        param.id,
+                        ref,
                       ),
                     ),
                   ),
@@ -230,10 +255,14 @@ class HabitGroupDetailView extends StatelessWidget {
     );
   }
 
-  bool _onTapBack(BuildContext context, WidgetRef ref) {
+  bool _onTapBack(
+    BuildContext context,
+    WidgetRef ref,
+    bool isGroupNameEdited,
+  ) {
     final bool canPop = Navigator.canPop(context);
     if (canPop) {
-      Navigator.pop(context);
+      Navigator.pop(context, isGroupNameEdited);
 
       return true;
     }
@@ -281,20 +310,28 @@ class HabitGroupDetailView extends StatelessWidget {
 
   void _selectedItem(
     BuildContext context,
-    item,
+    int item,
     HabitGroupDetailStateNotifier notifier,
-    int groupId,
+    WidgetRef ref,
   ) {
     switch (item) {
       case 0:
         _showModalInviteGroup(context);
         break;
       case 1:
+        HabitGroupBottomSheet.showModalEditGroupName(
+          context: context,
+          onSubmit: (value) {
+            notifier.renameGroup(value);
+          },
+        );
+        break;
+      case 2:
         HabitGroupBottomSheet.showModalLeaveGroup(
           context: context,
-          onTap: () {
-            notifier.leaveGroup();
-          },
+          onTap: notifier.leaveGroup,
+          ref: ref,
+          notifier: notifier,
         );
         break;
     }

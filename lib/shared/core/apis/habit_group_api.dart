@@ -13,6 +13,12 @@ abstract class HabitGroupApi {
     @Queries() required GetHabitGroupsParam param,
   });
 
+  @POST('/api/habit/group/{group_id}/rename')
+  Future<HttpResponse<bool>> renameGroup({
+    @Body() required UpdateHabitGroupRequest request,
+    @Path('group_id') required int groupId,
+  });
+
   @POST('/api/habit/group/create')
   Future<HttpResponse<CreateHabitGroupResponse>> createGroup({
     @Body() required CreateHabitGroupRequest request,

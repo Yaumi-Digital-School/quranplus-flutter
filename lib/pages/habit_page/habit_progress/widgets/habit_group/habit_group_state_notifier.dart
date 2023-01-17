@@ -44,6 +44,7 @@ class HabitGroupStateNotifier extends BaseStateNotifier<HabitGroupState> {
 
   @override
   Future<void> initStateNotifier() async {
+    state = state.copyWith(isLoading: true);
     await _getAllGroups();
   }
 

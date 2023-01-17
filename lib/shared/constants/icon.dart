@@ -17,4 +17,5 @@ class IconPath {
   static String iconGroupMember = 'images/icon_group_member.png';
   static String iconLeaveGroup = 'images/icon_leave_group.png';
   static String iconInviteMember = 'images/icon_invite_member.png';
+  static String iconEditSquare = 'images/icon_edit_square.png';
 }
