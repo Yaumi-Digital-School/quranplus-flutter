@@ -87,7 +87,7 @@ class HabitGroupEmptyGroupView extends StatelessWidget {
             ),
             const SizedBox(width: 20),
             const Icon(
-              Icons.arrow_forward,
+              Icons.arrow_forward_ios,
               color: QPColors.neutral900,
               size: 18,
             ),
