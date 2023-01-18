@@ -24,11 +24,10 @@ abstract class HabitGroupApi {
     @Body() required CreateHabitGroupRequest request,
   });
 
-  @GET('/api/habit/group/{group_id}/completions')
-  Future<HttpResponse<List<GetHabitGroupCompletionsItemResponse>>>
-      getHabitGroupCompletions({
+  @GET('/api/habit/group/{group_id}')
+  Future<HttpResponse<GetHabitGroupDetailResponse>> getHabitGroupDetail({
     @Path('group_id') required int groupId,
-    @Queries() required GetHabitGroupCompletionsParam param,
+    @Queries() required GetHabitGroupDetailParam param,
   });
 
   @GET('/api/habit/group/{group_id}/members/summaries')

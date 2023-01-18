@@ -20,6 +20,7 @@ class HabitGroupOverviewWidget extends StatelessWidget {
     this.onTapSummary,
     this.selectedIdx,
     this.totalMembers = 1,
+    this.startOfEnabledDate,
   }) : super(key: key);
 
   final String? groupName;
@@ -30,6 +31,7 @@ class HabitGroupOverviewWidget extends StatelessWidget {
   final Function(int)? onTapSummary;
   final int? selectedIdx;
   final DateTime now = DateTime.now();
+  final DateTime? startOfEnabledDate;
   final int numberOfDaysInAWeek = 7;
 
   @override
@@ -60,9 +62,14 @@ class HabitGroupOverviewWidget extends StatelessWidget {
     int memberCount = 0,
     int completeCount = 0,
     bool isInactive = false,
+    bool isDisabled = false,
   }) {
     if (isInactive) {
       return ImagePath.inactiveProgressEmpty;
+    }
+
+    if (isDisabled) {
+      return ImagePath.disabledProgressEmpty;
     }
 
     double progress = 0;
@@ -82,7 +89,10 @@ class HabitGroupOverviewWidget extends StatelessWidget {
     return ImagePath.activeProgressFull;
   }
 
-  Widget _buildDailyRecapInformation(HabitGroupSummary item, int idxInList) {
+  Widget _buildDailyRecapInformation({
+    required HabitGroupSummary item,
+    required int idxInList,
+  }) {
     final String nameOfDay =
         DateFormat('EEEE').format(item.date).substring(0, 3);
     final DateTime cleanDate = DateTime(now.year, now.month, now.day);
@@ -92,6 +102,9 @@ class HabitGroupOverviewWidget extends StatelessWidget {
 
     final bool isSelected = (selectedIdx == null && isToday) ||
         (selectedIdx != null && selectedIdx == idxInList);
+
+    final bool isDisabled = (startOfEnabledDate != null &&
+        startOfEnabledDate!.difference(item.date).inDays > 0);
 
     BoxDecoration? decoration;
 
@@ -124,11 +137,20 @@ class HabitGroupOverviewWidget extends StatelessWidget {
       );
     }
 
+    TextStyle dateStyle = QPTextStyle.subHeading3SemiBold;
+    TextStyle dayStyle = QPTextStyle.description2Regular;
+    if (isDisabled) {
+      dateStyle =
+          QPTextStyle.subHeading3SemiBold.copyWith(color: QPColors.blackSoft);
+      dayStyle =
+          QPTextStyle.description2Regular.copyWith(color: QPColors.blackSoft);
+    }
+
     return Column(
       children: [
         GestureDetector(
           onTap: () {
-            if (!isAfterToday && onTapSummary != null) {
+            if (!isDisabled && !isAfterToday && onTapSummary != null) {
               onTapSummary!(idxInList);
             }
           },
@@ -139,14 +161,14 @@ class HabitGroupOverviewWidget extends StatelessWidget {
               children: [
                 Text(
                   item.date.day.toString(),
-                  style: QPTextStyle.subHeading3SemiBold,
+                  style: dateStyle,
                 ),
                 const SizedBox(
                   height: 4,
                 ),
                 Text(
                   nameOfDay,
-                  style: QPTextStyle.description2Regular,
+                  style: dayStyle,
                 ),
                 const SizedBox(
                   height: 4,
@@ -156,6 +178,7 @@ class HabitGroupOverviewWidget extends StatelessWidget {
                     completeCount: item.completeCount,
                     memberCount: item.memberCount,
                     isInactive: isAfterToday,
+                    isDisabled: isDisabled,
                   ),
                 ),
               ],
@@ -184,7 +207,10 @@ class HabitGroupOverviewWidget extends StatelessWidget {
     for (int i = 0; i < numberOfDaysInAWeek; i++) {
       HabitGroupSummary item = sevenDaysInformation[i];
       items.add(
-        _buildDailyRecapInformation(item, i),
+        _buildDailyRecapInformation(
+          item: item,
+          idxInList: i,
+        ),
       );
     }
 

@@ -96,7 +96,7 @@ class MyApp extends StatelessWidget {
               case RoutePaths.routeHabitGroupDetail:
                 final args = settings.arguments is HabitGroupDetailViewParam
                     ? settings.arguments as HabitGroupDetailViewParam
-                    : HabitGroupDetailViewParam(id: 0, groupName: '');
+                    : HabitGroupDetailViewParam(id: 0);
                 selectedRouteWidget = HabitGroupDetailView(param: args);
                 break;
               default:

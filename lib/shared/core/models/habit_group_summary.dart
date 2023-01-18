@@ -21,8 +21,8 @@ class HabitGroupSummary {
     );
   }
 
-  factory HabitGroupSummary.fromGetGroupCompletionsItem(
-    GetHabitGroupCompletionsItemResponse item,
+  factory HabitGroupSummary.fromGetGroupDetailCompletionItem(
+    GetHabitGroupDetailCompletionItem item,
   ) {
     return HabitGroupSummary(
       date: DateTime.parse(item.date),

@@ -103,8 +103,27 @@ class CreateHabitGroupResponse {
 }
 
 @JsonSerializable()
-class GetHabitGroupCompletionsItemResponse {
-  GetHabitGroupCompletionsItemResponse({
+class GetHabitGroupDetailResponse {
+  GetHabitGroupDetailResponse({
+    required this.name,
+    required this.createdAt,
+    required this.completions,
+  });
+
+  final String name;
+  @JsonKey(name: 'created_at')
+  final DateTime createdAt;
+  final List<GetHabitGroupDetailCompletionItem> completions;
+
+  factory GetHabitGroupDetailResponse.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$GetHabitGroupDetailResponseFromJson(json);
+}
+
+@JsonSerializable()
+class GetHabitGroupDetailCompletionItem {
+  GetHabitGroupDetailCompletionItem({
     required this.date,
     required this.completeCount,
     required this.memberCount,
@@ -116,15 +135,15 @@ class GetHabitGroupCompletionsItemResponse {
   @JsonKey(name: 'member_count')
   final int memberCount;
 
-  factory GetHabitGroupCompletionsItemResponse.fromJson(
+  factory GetHabitGroupDetailCompletionItem.fromJson(
     Map<String, dynamic> json,
   ) =>
-      _$GetHabitGroupCompletionsItemResponseFromJson(json);
+      _$GetHabitGroupDetailCompletionItemFromJson(json);
 }
 
 @JsonSerializable()
-class GetHabitGroupCompletionsParam {
-  GetHabitGroupCompletionsParam({
+class GetHabitGroupDetailParam {
+  GetHabitGroupDetailParam({
     required this.startDate,
     required this.endDate,
   });
@@ -134,10 +153,10 @@ class GetHabitGroupCompletionsParam {
   @JsonKey(name: 'end_date')
   final String endDate;
 
-  factory GetHabitGroupCompletionsParam.fromJson(Map<String, dynamic> json) =>
-      _$GetHabitGroupCompletionsParamFromJson(json);
+  factory GetHabitGroupDetailParam.fromJson(Map<String, dynamic> json) =>
+      _$GetHabitGroupDetailParamFromJson(json);
 
-  Map<String, dynamic> toJson() => _$GetHabitGroupCompletionsParamToJson(this);
+  Map<String, dynamic> toJson() => _$GetHabitGroupDetailParamToJson(this);
 }
 
 @JsonSerializable()
@@ -174,7 +193,7 @@ class GetHabitGroupMemberPersonalItemResponse {
   @JsonKey(name: 'user_id')
   final int userId;
   @JsonKey(name: 'join_date')
-  final String joinDate;
+  final DateTime joinDate;
   final String name;
   @JsonKey(name: 'is_admin')
   final bool isAdmin;

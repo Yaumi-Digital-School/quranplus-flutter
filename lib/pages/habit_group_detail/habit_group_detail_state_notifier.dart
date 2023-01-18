@@ -12,6 +12,7 @@ class HabitGroupDetailState {
     this.isErrorOnFetching = false,
     this.selectedSummaryIdx,
     this.memberSummaries,
+    this.groupName = '',
   });
 
   final List<HabitGroupSummary>? groupSummaries;
@@ -19,6 +20,7 @@ class HabitGroupDetailState {
   final int? selectedSummaryIdx;
   final bool isLoading;
   final bool isErrorOnFetching;
+  final String groupName;
 
   HabitGroupDetailState copyWith({
     List<HabitGroupSummary>? groupSummaries,
@@ -26,6 +28,7 @@ class HabitGroupDetailState {
     bool? isLoading,
     bool? isErrorOnFetching,
     int? selectedSummaryIdx,
+    String? groupName,
   }) {
     return HabitGroupDetailState(
       groupSummaries: groupSummaries ?? this.groupSummaries,
@@ -33,6 +36,7 @@ class HabitGroupDetailState {
       selectedSummaryIdx: selectedSummaryIdx ?? this.selectedSummaryIdx,
       isErrorOnFetching: isErrorOnFetching ?? this.isErrorOnFetching,
       memberSummaries: memberSummaries ?? this.memberSummaries,
+      groupName: groupName ?? this.groupName,
     );
   }
 }
@@ -58,11 +62,16 @@ class HabitGroupDetailStateNotifier
 
   bool _isLeaveGroup = false;
   bool get isLeaveGrup => _isLeaveGroup;
+
+  String _groupName = '';
+  DateTime? _groupCreatedAt;
+  DateTime? get groupCreatedAt => _groupCreatedAt;
+
   @override
   Future<void> initStateNotifier() async {
     state = state.copyWith(isLoading: true);
 
-    await _getHabitGroupCompletions();
+    await _getHabitGroupDetail();
     await _getGroupMemberSummaries();
 
     if (!state.isErrorOnFetching) {
@@ -70,34 +79,38 @@ class HabitGroupDetailStateNotifier
         isLoading: false,
         groupSummaries: _groupSummaries,
         memberSummaries: _memberSummaries,
+        groupName: _groupName,
       );
     }
   }
 
   bool get userIsAdmin => _memberSummaries?[0].isAdmin ?? false;
 
-  Future<void> _getHabitGroupCompletions() async {
-    HttpResponse<List<GetHabitGroupCompletionsItemResponse>>
-        habitGroupCompletions = await _habitGroupApi.getHabitGroupCompletions(
+  Future<void> _getHabitGroupDetail() async {
+    HttpResponse<GetHabitGroupDetailResponse> habitGroupDetail =
+        await _habitGroupApi.getHabitGroupDetail(
       groupId: _groupId,
-      param: GetHabitGroupCompletionsParam(
+      param: GetHabitGroupDetailParam(
         startDate: DateUtils.getFirstDayOfTheWeekFromToday(),
         endDate: DateUtils.getLastDayOfTheWeekFromToday(),
       ),
     );
 
-    if (habitGroupCompletions.response.statusCode != 200) {
+    if (habitGroupDetail.response.statusCode != 200) {
       // need new design on error fetching
       state = state.copyWith(isLoading: false, isErrorOnFetching: true);
 
       return;
     }
 
-    _groupSummaries = habitGroupCompletions.data
+    _groupSummaries = habitGroupDetail.data.completions
         .map(
-          (e) => HabitGroupSummary.fromGetGroupCompletionsItem(e),
+          (e) => HabitGroupSummary.fromGetGroupDetailCompletionItem(e),
         )
         .toList();
+
+    _groupName = habitGroupDetail.data.name;
+    _groupCreatedAt = habitGroupDetail.data.createdAt;
   }
 
   Future<void> renameGroup(String newName) async {

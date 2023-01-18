@@ -18,12 +18,14 @@ class HabitPersonalWeeklyOverviewWidget extends StatefulWidget {
     this.onTapDailySummary,
     this.selectedIdx,
     this.name,
+    this.startEnabledProgressDate,
     this.isAdmin = false,
   }) : super(key: key);
 
   final List<HabitDailySummary> sevenDaysPersonalInfo;
   final HabitPersonalWeeklyOverviewType type;
   final String? name;
+  final DateTime? startEnabledProgressDate;
   final VoidCallback? onTapDailySummary;
   final int? selectedIdx;
   final bool isAdmin;
@@ -154,6 +156,9 @@ class _HabitPersonalWeeklyOverviewWidgetState
             (selectedPersonalInformationIdx != null &&
                 selectedPersonalInformationIdx == idxInList);
 
+    final bool isDisabled = (widget.startEnabledProgressDate != null &&
+        widget.startEnabledProgressDate!.difference(item.date).inDays > 0);
+
     BoxDecoration? decoration;
     if (isToday) {
       decoration = const BoxDecoration(
@@ -184,6 +189,15 @@ class _HabitPersonalWeeklyOverviewWidgetState
       );
     }
 
+    TextStyle dateStyle = QPTextStyle.subHeading3SemiBold;
+    TextStyle dayStyle = QPTextStyle.description2Regular;
+    if (isDisabled) {
+      dateStyle =
+          QPTextStyle.subHeading3SemiBold.copyWith(color: QPColors.blackSoft);
+      dayStyle =
+          QPTextStyle.description2Regular.copyWith(color: QPColors.blackSoft);
+    }
+
     return Column(
       children: [
         GestureDetector(
@@ -201,14 +215,14 @@ class _HabitPersonalWeeklyOverviewWidgetState
               children: [
                 Text(
                   numberOfDay,
-                  style: QPTextStyle.subHeading3SemiBold,
+                  style: dateStyle,
                 ),
                 const SizedBox(
                   height: 4,
                 ),
                 Text(
                   nameOfDay,
-                  style: QPTextStyle.description2Regular,
+                  style: dayStyle,
                 ),
                 const SizedBox(
                   height: 4,
@@ -218,6 +232,7 @@ class _HabitPersonalWeeklyOverviewWidgetState
                     totalPages: item.totalPages,
                     target: item.target,
                     isInactive: isAfterToday,
+                    isDisabled: isDisabled,
                   ),
                 ),
               ],
@@ -245,9 +260,14 @@ class _HabitPersonalWeeklyOverviewWidgetState
     int totalPages = 0,
     int target = 0,
     bool isInactive = false,
+    bool isDisabled = false,
   }) {
     if (isInactive) {
       return ImagePath.inactiveProgressEmpty;
+    }
+
+    if (isDisabled) {
+      return ImagePath.disabledProgressEmpty;
     }
 
     double progress = 0;
