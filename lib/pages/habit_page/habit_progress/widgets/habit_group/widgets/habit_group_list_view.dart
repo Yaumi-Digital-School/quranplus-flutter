@@ -42,7 +42,6 @@ class HabitGroupListView extends StatelessWidget {
             itemCount: listGroup.length,
             itemBuilder: (BuildContext context, int index) {
               final GetHabitGroupsItem item = listGroup[index];
-              // TODO : tanya luqi perlu banget reverse gini apa enggak, dari BE soalnya datanya gak sorted by tanggal ascending
               final List<HabitGroupSummary> sevenDaysInformation =
                   item.completions
                       .map(
@@ -51,8 +50,6 @@ class HabitGroupListView extends StatelessWidget {
                           element,
                         ),
                       )
-                      .toList()
-                      .reversed
                       .toList();
 
               return Padding(
@@ -67,7 +64,6 @@ class HabitGroupListView extends StatelessWidget {
                       RoutePaths.routeHabitGroupDetail,
                       arguments: HabitGroupDetailViewParam(
                         id: item.id,
-                        groupName: item.name,
                       ),
                     );
 

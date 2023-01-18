@@ -59,7 +59,6 @@ class DeepLinkService {
           nextPath: RoutePaths.routeHabitGroupDetail,
           arguments: <String, dynamic>{
             'id': id,
-            'groupName': 'test',
           },
         ),
       );
@@ -92,7 +91,6 @@ class DeepLinkService {
       _navigatorKey!.currentState!.pushReplacementNamed(
         RoutePaths.routeHabitGroupDetail,
         arguments: HabitGroupDetailViewParam(
-          groupName: "",
           id: id,
           isSuccessJoinGroup: response.data,
         ),

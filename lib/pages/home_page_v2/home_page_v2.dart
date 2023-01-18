@@ -98,7 +98,6 @@ class _HomePageV2State extends State<HomePageV2> {
                     case RoutePaths.routeHabitGroupDetail:
                       args = HabitGroupDetailViewParam(
                         id: param.arguments?['id'],
-                        groupName: param.arguments?['groupName'],
                         isSuccessJoinGroup: req.data,
                       );
                   }

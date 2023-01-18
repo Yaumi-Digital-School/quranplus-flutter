@@ -8,4 +8,5 @@ class ImagePath {
   static String inactiveProgressEmpty = 'images/inactive_progress_0.png';
   static String activeProgressHalf = 'images/active_progress_50.png';
   static String activeProgressFull = 'images/active_progress_100.png';
+  static String disabledProgressEmpty = 'images/disabled_progress_0.png';
 }

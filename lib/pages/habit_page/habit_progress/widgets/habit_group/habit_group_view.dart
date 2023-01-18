@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/habit_group/widgets/habit_group_empty_group_view.dart';
@@ -5,6 +6,7 @@ import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/habi
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
+import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 
 import 'widgets/habit_group_create_group_bottom_sheet.dart';
 import 'habit_group_state_notifier.dart';
@@ -24,8 +26,21 @@ class HabitGroupView extends StatelessWidget {
           );
         },
       ),
-      onStateNotifierReady: (notifier, ref) async =>
-          await notifier.initStateNotifier(),
+      onStateNotifierReady: (notifier, ref) async {
+        final ConnectivityResult connection =
+            await Connectivity().checkConnectivity();
+
+        if (connection == ConnectivityResult.none) {
+          await GeneralBottomSheet().showNoInternetBottomSheet(
+            context,
+            () async {
+              Navigator.pop(context);
+            },
+          );
+        }
+
+        await notifier.initStateNotifier();
+      },
       builder: (
         BuildContext context,
         HabitGroupState state,

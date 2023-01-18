@@ -20,12 +20,10 @@ import 'package:qurantafsir_flutter/widgets/habit_personal_weekly_overview.dart'
 class HabitGroupDetailViewParam {
   HabitGroupDetailViewParam({
     required this.id,
-    required this.groupName,
     this.isSuccessJoinGroup = false,
   });
 
   final int id;
-  final String groupName;
   final bool isSuccessJoinGroup;
 }
 
@@ -106,7 +104,7 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
                 elevation: 0.7,
                 centerTitle: true,
                 title: Text(
-                  widget.param.groupName,
+                  state.groupName,
                   style: QPTextStyle.subHeading2SemiBold,
                 ),
                 backgroundColor: QPColors.whiteFair,
@@ -178,12 +176,15 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
                           ),
                         ),
                       ],
-                      onSelected: (int item) => _selectedItem(
-                        context,
-                        item,
-                        notifier,
-                        ref,
-                      ),
+                      onSelected: (int item) {
+                        _selectedItem(
+                          context: context,
+                          item: item,
+                          notifier: notifier,
+                          state: state,
+                          ref: ref,
+                        );
+                      },
                     ),
                   ),
                 ],
@@ -203,60 +204,29 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
                     return _buildGroupSummary(state, notifier);
                   }
 
+                  final GetHabitGroupMemberPersonalItemResponse userData =
+                      state.memberSummaries![0];
+
                   final GetHabitGroupMemberPersonalItemResponse item =
                       state.memberSummaries![index - 1];
 
-                  // TODO : remove if BE is fixed
-                  // final List<HabitDailySummary> dailySummaries = item
-                  //     .summaries
-                  //     .map((e) => HabitDailySummary
-                  //         .fromGetHabitGroupMemberPersonalSummaryItem(e))
-                  //     .toList();
-
-                  List<HabitDailySummary> dailySummaries = <HabitDailySummary>[
-                    HabitDailySummary(
-                      target: 5,
-                      totalPages: 5,
-                      date: DateTime(2023, 1, 16),
-                    ),
-                    HabitDailySummary(
-                      target: 5,
-                      totalPages: 5,
-                      date: DateTime(2023, 1, 17),
-                    ),
-                    HabitDailySummary(
-                      target: 5,
-                      totalPages: 5,
-                      date: DateTime(2023, 1, 18),
-                    ),
-                    HabitDailySummary(
-                      target: 5,
-                      totalPages: 5,
-                      date: DateTime(2023, 1, 19),
-                    ),
-                    HabitDailySummary(
-                      target: 5,
-                      totalPages: 5,
-                      date: DateTime(2023, 1, 20),
-                    ),
-                    HabitDailySummary(
-                      target: 5,
-                      totalPages: 5,
-                      date: DateTime(2023, 1, 21),
-                    ),
-                    HabitDailySummary(
-                      target: 5,
-                      totalPages: 5,
-                      date: DateTime(2023, 1, 22),
-                    ),
-                  ];
+                  final List<HabitDailySummary> dailySummaries = item.summaries
+                      .map((e) => HabitDailySummary
+                          .fromGetHabitGroupMemberPersonalSummaryItem(e))
+                      .toList();
 
                   final String name =
                       index - 1 == 0 ? 'Your Progress' : item.name;
 
+                  final DateTime startEnabledProgressDate =
+                      item.joinDate.difference(userData.joinDate).inDays > 0
+                          ? item.joinDate
+                          : userData.joinDate;
+
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 16.0),
                     child: HabitPersonalWeeklyOverviewWidget(
+                      startEnabledProgressDate: startEnabledProgressDate,
                       selectedIdx: state.selectedSummaryIdx,
                       sevenDaysPersonalInfo: dailySummaries,
                       type: HabitPersonalWeeklyOverviewType
@@ -307,6 +277,9 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
     HabitGroupDetailState state,
     HabitGroupDetailStateNotifier notifier,
   ) {
+    final GetHabitGroupMemberPersonalItemResponse userData =
+        state.memberSummaries![0];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -318,21 +291,23 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
         HabitGroupOverviewWidget(
           type: HabitGroupOverviewType.withCurrentMonthInfo,
           sevenDaysInformation:
-              state.groupSummaries?.reversed.toList() ?? <HabitGroupSummary>[],
+              state.groupSummaries?.toList() ?? <HabitGroupSummary>[],
           selectedIdx: state.selectedSummaryIdx,
           onTapSummary: notifier.onTapGroupCompletionSummaryData,
+          startOfEnabledDate: userData.joinDate,
         ),
         const SizedBox(height: 24),
       ],
     );
   }
 
-  void _selectedItem(
-    BuildContext context,
-    int item,
-    HabitGroupDetailStateNotifier notifier,
-    WidgetRef ref,
-  ) {
+  void _selectedItem({
+    required BuildContext context,
+    required int item,
+    required HabitGroupDetailStateNotifier notifier,
+    required HabitGroupDetailState state,
+    required WidgetRef ref,
+  }) {
     switch (item) {
       case 0:
         _showModalInviteGroup(context);
@@ -340,6 +315,7 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
       case 1:
         HabitGroupBottomSheet.showModalEditGroupName(
           context: context,
+          currentGroupName: state.groupName,
           onSubmit: (value) {
             notifier.renameGroup(value);
           },
