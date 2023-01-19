@@ -121,7 +121,9 @@ class HabitGroupOverviewWidget extends StatelessWidget {
       );
     }
 
-    if (isBeforeToday && type == HabitGroupOverviewType.withCurrentMonthInfo) {
+    if (!isDisabled &&
+        isBeforeToday &&
+        type == HabitGroupOverviewType.withCurrentMonthInfo) {
       decoration = BoxDecoration(
         color: QPColors.whiteFair,
         border: isSelected
@@ -156,7 +158,8 @@ class HabitGroupOverviewWidget extends StatelessWidget {
           },
           child: Container(
             decoration: decoration,
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            width: 37,
             child: Column(
               children: [
                 Text(

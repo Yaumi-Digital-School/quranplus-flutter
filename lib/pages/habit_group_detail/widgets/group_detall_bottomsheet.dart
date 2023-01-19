@@ -17,6 +17,7 @@ class HabitGroupBottomSheet {
   static void showModalInviteMemberGroup({
     required BuildContext context,
     required String url,
+    required String currentGroupName,
   }) {
     final TextEditingController _textController =
         TextEditingController(text: url);
@@ -48,7 +49,7 @@ class HabitGroupBottomSheet {
               style: QPTextStyle.body3Regular,
               children: [
                 TextSpan(
-                  text: 'Group Ngaji Alfatonah',
+                  text: currentGroupName,
                   style: QPTextStyle.body3SemiBold,
                 ),
               ],
