@@ -310,7 +310,10 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
   }) {
     switch (item) {
       case 0:
-        _showModalInviteGroup(context);
+        _showModalInviteGroup(
+          context,
+          state,
+        );
         break;
       case 1:
         HabitGroupBottomSheet.showModalEditGroupName(
@@ -332,12 +335,16 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
     }
   }
 
-  void _showModalInviteGroup(BuildContext context) async {
+  void _showModalInviteGroup(
+    BuildContext context,
+    HabitGroupDetailState state,
+  ) async {
     final uri =
         await DynamicLinkHelper().createDynamicLinkInvite(id: widget.param.id);
     HabitGroupBottomSheet.showModalInviteMemberGroup(
       context: context,
       url: uri.toString(),
+      currentGroupName: state.groupName,
     );
   }
 }

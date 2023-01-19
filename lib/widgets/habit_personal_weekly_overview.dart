@@ -173,7 +173,7 @@ class _HabitPersonalWeeklyOverviewWidgetState
       );
     }
 
-    if (isBeforeToday) {
+    if (!isDisabled && isBeforeToday) {
       decoration = BoxDecoration(
         color: QPColors.whiteFair,
         border: isSelected
@@ -210,7 +210,8 @@ class _HabitPersonalWeeklyOverviewWidgetState
           },
           child: Container(
             decoration: decoration,
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            width: 37,
             child: Column(
               children: [
                 Text(
