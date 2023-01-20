@@ -45,8 +45,20 @@ class DeepLinkService {
           int.parse(link.queryParameters["id"]!),
         );
       }
+      // Invalid path
+      else {
+        mainPageProvider.setShouldInvalidLinkBottomSheet(true);
+        _navigatorKey!.currentState!.pushNamedAndRemoveUntil(
+          RoutePaths.routeMain,
+          (Route<dynamic> route) => false,
+        );
+      }
     } catch (e) {
-      print("group not found");
+      mainPageProvider.setShouldInvalidGroupBottomSheet(true);
+      _navigatorKey!.currentState!.pushNamedAndRemoveUntil(
+        RoutePaths.routeMain,
+        (Route<dynamic> route) => false,
+      );
     }
   }
 
