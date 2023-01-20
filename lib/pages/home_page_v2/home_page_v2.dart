@@ -6,6 +6,8 @@ import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
@@ -17,6 +19,7 @@ import 'package:qurantafsir_flutter/shared/utils/date_util.dart' as date_util;
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/alert_dialog.dart';
 import 'package:qurantafsir_flutter/widgets/daily_progress_tracker.dart';
+import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/sign_in_bottom_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:retrofit/retrofit.dart';
@@ -67,54 +70,15 @@ class _HomePageV2State extends State<HomePageV2> {
 
         if (notifier.mainPageProvider
             .getShouldShowSignInBottomSheetAndReset()) {
-          Future.delayed(Duration.zero, () {
-            SignInBottomSheet.show(
-              context: context,
-              onClose: () {
-                notifier.getAndRemoveForceLoginParam();
-              },
-              onTapSignInWithGoogle: () async {
-                final bool isSuccess =
-                    await ref.read(authenticationService).signInWithGoogle(ref);
+          _showSignInBottomSheet(notifier, ref);
+        }
 
-                ForceLoginParam? param =
-                    await notifier.getAndRemoveForceLoginParam();
+        if (notifier.mainPageProvider.getShouldSShowInvalidGroup()) {
+          _showInvalidGroupBottomSheet();
+        }
 
-                final HttpResponse<bool> req =
-                    await ref.read(habitGroupApiProvider).joinGroup(
-                          groupId: param?.arguments?['id'] ?? 0,
-                          request: JoinHabitGroupRequest(
-                            date: date_util.DateUtils.getCurrentDateInString(),
-                          ),
-                        );
-
-                final bool shouldRedirect = isSuccess &&
-                    req.response.statusCode == 200 &&
-                    param != null;
-
-                if (shouldRedirect) {
-                  Object? args;
-                  switch (param.nextPath) {
-                    case RoutePaths.routeHabitGroupDetail:
-                      args = HabitGroupDetailViewParam(
-                        id: param.arguments?['id'],
-                        isSuccessJoinGroup: req.data,
-                      );
-                  }
-
-                  Navigator.pop(context);
-
-                  Navigator.pushNamed(
-                    context,
-                    param.nextPath ?? '',
-                    arguments: args,
-                  );
-                }
-
-                setState(() {});
-              },
-            );
-          });
+        if (notifier.mainPageProvider.getShouldSShowInvalidLink()) {
+          _showInvalidLinkBottomSheet();
         }
 
         return Scaffold(
@@ -170,6 +134,117 @@ class _HomePageV2State extends State<HomePageV2> {
     if (!await launchUrl(_url)) {
       throw 'Could not launch $_url';
     }
+  }
+
+  void _showSignInBottomSheet(
+    HomePageStateNotifier notifier,
+    WidgetRef ref,
+  ) {
+    Future.delayed(Duration.zero, () {
+      SignInBottomSheet.show(
+        context: context,
+        onClose: () {
+          notifier.getAndRemoveForceLoginParam();
+        },
+        onTapSignInWithGoogle: () async {
+          final bool isSuccess =
+              await ref.read(authenticationService).signInWithGoogle(ref);
+
+          ForceLoginParam? param = await notifier.getAndRemoveForceLoginParam();
+
+          final HttpResponse<bool> req =
+              await ref.read(habitGroupApiProvider).joinGroup(
+                    groupId: param?.arguments?['id'] ?? 0,
+                    request: JoinHabitGroupRequest(
+                      date: date_util.DateUtils.getCurrentDateInString(),
+                    ),
+                  );
+
+          final bool shouldRedirect =
+              isSuccess && req.response.statusCode == 200 && param != null;
+
+          if (shouldRedirect) {
+            Object? args;
+            switch (param.nextPath) {
+              case RoutePaths.routeHabitGroupDetail:
+                args = HabitGroupDetailViewParam(
+                  id: param.arguments?['id'],
+                  isSuccessJoinGroup: req.data,
+                );
+            }
+
+            Navigator.pop(context);
+
+            Navigator.pushNamed(
+              context,
+              param.nextPath ?? '',
+              arguments: args,
+            );
+          }
+
+          setState(() {});
+        },
+      );
+    });
+  }
+
+  void _showInvalidLinkBottomSheet() {
+    Future.delayed(Duration.zero, () {
+      GeneralBottomSheet.showBaseBottomSheet(
+        context: context,
+        widgetChild: _getErrorWidget(
+          "Link not found",
+          "Make sure the link you entered is valid",
+        ),
+      );
+    });
+  }
+
+  void _showInvalidGroupBottomSheet() {
+    Future.delayed(Duration.zero, () {
+      GeneralBottomSheet.showBaseBottomSheet(
+        context: context,
+        widgetChild: _getErrorWidget(
+          "Group link not found",
+          "The group may have been deleted by the admin, try contacting the group admin",
+        ),
+      );
+    });
+  }
+
+  Widget _getErrorWidget(String title, String description) {
+    return Column(
+      children: [
+        const Icon(
+          Icons.error,
+          color: QPColors.errorFair,
+          size: 32,
+        ),
+        const SizedBox(height: 28),
+        Text(
+          title,
+          style: QPTextStyle.heading1SemiBold.copyWith(
+            color: QPColors.blackMassive,
+          ),
+        ),
+        const SizedBox(height: 24),
+        Text(
+          description,
+          style: QPTextStyle.body2Regular.copyWith(
+            color: QPColors.neutral700,
+          ),
+        ),
+        const SizedBox(height: 24),
+        ButtonSecondary(
+          label: "Close",
+          onTap: () {
+            Navigator.pop(context);
+          },
+          textStyle:
+              QPTextStyle.button2SemiBold.copyWith(color: QPColors.brandFair),
+        ),
+      ],
+    );
   }
 }
 
