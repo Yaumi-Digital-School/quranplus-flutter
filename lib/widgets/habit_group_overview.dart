@@ -36,24 +36,27 @@ class HabitGroupOverviewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: QPColors.whiteMassive,
-        border: Border.fromBorderSide(BorderSide(
-          color: QPColors.whiteRoot,
-        )),
-        borderRadius: BorderRadius.all(
-          Radius.circular(8),
+    return GestureDetector(
+      onTap: onTapGroupDetailCTA,
+      child: Container(
+        decoration: const BoxDecoration(
+          color: QPColors.whiteMassive,
+          border: Border.fromBorderSide(BorderSide(
+            color: QPColors.whiteRoot,
+          )),
+          borderRadius: BorderRadius.all(
+            Radius.circular(8),
+          ),
         ),
-      ),
-      child: Column(
-        children: [
-          if (type == HabitGroupOverviewType.withGroupDetailInfo)
-            _buildGroupDetailNavigationCTA(),
-          if (type == HabitGroupOverviewType.withCurrentMonthInfo)
-            _buildCurrentMonthInformation(),
-          _buildGroupOverviewInformationSection(),
-        ],
+        child: Column(
+          children: [
+            if (type == HabitGroupOverviewType.withGroupDetailInfo)
+              _buildGroupDetailNavigationCTA(),
+            if (type == HabitGroupOverviewType.withCurrentMonthInfo)
+              _buildCurrentMonthInformation(),
+            _buildGroupOverviewInformationSection(),
+          ],
+        ),
       ),
     );
   }
