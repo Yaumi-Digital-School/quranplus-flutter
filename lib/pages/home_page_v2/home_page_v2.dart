@@ -152,7 +152,7 @@ class _HomePageV2State extends State<HomePageV2> {
 
           ForceLoginParam? param = await notifier.getAndRemoveForceLoginParam();
 
-          final HttpResponse<bool> req =
+          final HttpResponse<dynamic> req =
               await ref.read(habitGroupApiProvider).joinGroup(
                     groupId: param?.arguments?['id'] ?? 0,
                     request: JoinHabitGroupRequest(
@@ -162,6 +162,8 @@ class _HomePageV2State extends State<HomePageV2> {
 
           final bool shouldRedirect =
               isSuccess && req.response.statusCode == 200 && param != null;
+
+          Navigator.pop(context);
 
           if (shouldRedirect) {
             Object? args;
@@ -173,13 +175,15 @@ class _HomePageV2State extends State<HomePageV2> {
                 );
             }
 
-            Navigator.pop(context);
-
             Navigator.pushNamed(
               context,
               param.nextPath ?? '',
               arguments: args,
             );
+          }
+
+          if (req.response.statusCode == 400) {
+            notifier.mainPageProvider.setShouldInvalidGroupBottomSheet(true);
           }
 
           setState(() {});
