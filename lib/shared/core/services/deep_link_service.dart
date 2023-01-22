@@ -32,9 +32,11 @@ class DeepLinkService {
     if (initLink != null) {
       await _handleDeepLink(initLink.link);
     }
-    FirebaseDynamicLinks.instance.onLink.listen((event) async {
-      await _handleDeepLink(event.link);
-    });
+    FirebaseDynamicLinks.instance.onLink.listen(
+      (event) async {
+        await _handleDeepLink(event.link);
+      },
+    );
   }
 
   Future<void> _handleDeepLink(Uri link) async {
@@ -44,20 +46,18 @@ class DeepLinkService {
         await _handleJoinGroup(
           int.parse(link.queryParameters["id"]!),
         );
+
+        return;
       }
-      // Invalid path
-      else {
-        mainPageProvider.setShouldInvalidLinkBottomSheet(true);
-        _navigatorKey!.currentState!.pushNamedAndRemoveUntil(
-          RoutePaths.routeMain,
-          (Route<dynamic> route) => false,
-        );
-      }
+
+      mainPageProvider.setShouldInvalidLinkBottomSheet(true);
+      _navigatorKey!.currentState!.pushReplacementNamed(
+        RoutePaths.routeMain,
+      );
     } catch (e) {
       mainPageProvider.setShouldInvalidGroupBottomSheet(true);
-      _navigatorKey!.currentState!.pushNamedAndRemoveUntil(
+      _navigatorKey!.currentState!.pushReplacementNamed(
         RoutePaths.routeMain,
-        (Route<dynamic> route) => false,
       );
     }
   }

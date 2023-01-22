@@ -43,13 +43,6 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
   @override
   void initState() {
     super.initState();
-    if (widget.param.isSuccessJoinGroup) {
-      WidgetsBinding.instance?.addPostFrameCallback(
-        (timeStamp) {
-          HabitGroupBottomSheet.showModalSuccessJoinGroup(context: context);
-        },
-      );
-    }
   }
 
   @override
@@ -80,6 +73,12 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
               child: CircularProgressIndicator(),
             ),
           );
+        }
+
+        if (widget.param.isSuccessJoinGroup) {
+          Future.delayed(const Duration(seconds: 1), () {
+            HabitGroupBottomSheet.showModalSuccessJoinGroup(context: context);
+          });
         }
 
         return WillPopScope(
