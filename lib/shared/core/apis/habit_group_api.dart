@@ -38,7 +38,7 @@ abstract class HabitGroupApi {
   });
 
   @POST('/api/habit/group/{group_id}/join')
-  Future<HttpResponse<bool>> joinGroup({
+  Future<HttpResponse<dynamic>> joinGroup({
     @Path('group_id') required int groupId,
     @Body() required JoinHabitGroupRequest request,
   });
