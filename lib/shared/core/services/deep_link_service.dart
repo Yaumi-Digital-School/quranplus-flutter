@@ -40,26 +40,19 @@ class DeepLinkService {
   }
 
   Future<void> _handleDeepLink(Uri link) async {
-    try {
-      if (link.path.contains("RtQw") &&
-          (link.queryParameters["id"] ?? '').isNotEmpty) {
-        await _handleJoinGroup(
-          int.parse(link.queryParameters["id"]!),
-        );
-
-        return;
-      }
-
-      mainPageProvider.setShouldInvalidLinkBottomSheet(true);
-      _navigatorKey!.currentState!.pushReplacementNamed(
-        RoutePaths.routeMain,
+    if (link.path.contains("RtQw") &&
+        (link.queryParameters["id"] ?? '').isNotEmpty) {
+      await _handleJoinGroup(
+        int.parse(link.queryParameters["id"]!),
       );
-    } catch (e) {
-      mainPageProvider.setShouldInvalidGroupBottomSheet(true);
-      _navigatorKey!.currentState!.pushReplacementNamed(
-        RoutePaths.routeMain,
-      );
+
+      return;
     }
+
+    mainPageProvider.setShouldInvalidLinkBottomSheet(true);
+    _navigatorKey!.currentState!.pushReplacementNamed(
+      RoutePaths.routeMain,
+    );
   }
 
   Future<void> _handleJoinGroup(
@@ -93,6 +86,7 @@ class DeepLinkService {
       );
 
       if (response.response.statusCode == 400) {
+        mainPageProvider.setShouldInvalidGroupBottomSheet(true);
         _navigatorKey!.currentState!.pushReplacementNamed(
           RoutePaths.routeMain,
         );
