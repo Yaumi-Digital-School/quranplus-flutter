@@ -249,6 +249,7 @@ class FormFieldWidget extends StatelessWidget {
               ],
             ),
           TextFormField(
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             initialValue: initialValue,
             validator: validator == null ? null : (value) => validator!(value),
             cursorColor: Colors.black,
