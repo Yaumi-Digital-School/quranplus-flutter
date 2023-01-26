@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
 class FavoriteAyahCTA extends StatefulWidget {
@@ -35,6 +36,7 @@ class _FavoriteAyahCTAState extends State<FavoriteAyahCTA> {
         });
       },
       child: Container(
+        color: Colors.white,
         padding: const EdgeInsets.fromLTRB(
           18,
           18,
