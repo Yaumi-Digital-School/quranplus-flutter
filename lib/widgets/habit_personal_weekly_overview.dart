@@ -26,7 +26,7 @@ class HabitPersonalWeeklyOverviewWidget extends StatefulWidget {
   final HabitPersonalWeeklyOverviewType type;
   final String? name;
   final DateTime? startEnabledProgressDate;
-  final VoidCallback? onTapDailySummary;
+  final Function(String)? onTapDailySummary;
   final int? selectedIdx;
   final bool isAdmin;
 
@@ -204,7 +204,7 @@ class _HabitPersonalWeeklyOverviewWidgetState
           onTap: () {
             if (!isAfterToday) {
               if (widget.onTapDailySummary != null) {
-                widget.onTapDailySummary!();
+                widget.onTapDailySummary!(item.date.toIso8601String());
               }
             }
           },

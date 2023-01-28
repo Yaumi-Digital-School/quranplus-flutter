@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/widgets/group_detall_bottomsheet.dart';
+import 'package:qurantafsir_flutter/pages/habit_group_detail/widgets/user_summary_bottomsheet.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/habit_progress_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
@@ -54,6 +55,7 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
         (ref) {
           return HabitGroupDetailStateNotifier(
             habitGroupApi: ref.watch(habitGroupApiProvider),
+            habitApi: ref.watch(habitApiProvider),
             groupId: widget.param.id,
           );
         },
@@ -78,6 +80,16 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
         if (widget.param.isSuccessJoinGroup) {
           Future.delayed(const Duration(seconds: 1), () {
             HabitGroupBottomSheet.showModalSuccessJoinGroup(context: context);
+          });
+        }
+
+        if (state.userSummaryResponse != null) {
+          Future.delayed(const Duration(milliseconds: 0), () {
+            UserSummaryBottomSheet.showBottomSheet(
+              context: context,
+              data: state.userSummaryResponse!,
+              isCurrentUser: state.isCurrentUser,
+            );
           });
         }
 
@@ -189,53 +201,74 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
                 ],
               ),
             ),
-            body: Padding(
-              padding: const EdgeInsets.only(
-                right: 24,
-                left: 24,
-                top: 24,
-              ),
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: state.memberSummaries!.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return _buildGroupSummary(state, notifier);
-                  }
+            body: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    right: 24,
+                    left: 24,
+                    top: 24,
+                  ),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: state.memberSummaries!.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        return _buildGroupSummary(state, notifier);
+                      }
 
-                  final GetHabitGroupMemberPersonalItemResponse userData =
-                      state.memberSummaries![0];
+                      final GetHabitGroupMemberPersonalItemResponse userData =
+                          state.memberSummaries![0];
 
-                  final GetHabitGroupMemberPersonalItemResponse item =
-                      state.memberSummaries![index - 1];
+                      final GetHabitGroupMemberPersonalItemResponse item =
+                          state.memberSummaries![index - 1];
 
-                  final List<HabitDailySummary> dailySummaries = item.summaries
-                      .map((e) => HabitDailySummary
-                          .fromGetHabitGroupMemberPersonalSummaryItem(e))
-                      .toList();
+                      final List<HabitDailySummary> dailySummaries = item
+                          .summaries
+                          .map((e) => HabitDailySummary
+                              .fromGetHabitGroupMemberPersonalSummaryItem(e))
+                          .toList();
 
-                  final String name =
-                      index - 1 == 0 ? 'Your Progress' : item.name;
+                      final String name =
+                          index - 1 == 0 ? 'Your Progress' : item.name;
 
-                  final DateTime startEnabledProgressDate =
-                      item.joinDate.difference(userData.joinDate).inDays > 0
-                          ? item.joinDate
-                          : userData.joinDate;
+                      final DateTime startEnabledProgressDate =
+                          item.joinDate.difference(userData.joinDate).inDays > 0
+                              ? item.joinDate
+                              : userData.joinDate;
 
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: HabitPersonalWeeklyOverviewWidget(
-                      startEnabledProgressDate: startEnabledProgressDate,
-                      selectedIdx: state.selectedSummaryIdx,
-                      sevenDaysPersonalInfo: dailySummaries,
-                      type: HabitPersonalWeeklyOverviewType
-                          .withPersonalInformation,
-                      name: name,
-                      isAdmin: item.isAdmin,
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: HabitPersonalWeeklyOverviewWidget(
+                          startEnabledProgressDate: startEnabledProgressDate,
+                          selectedIdx: state.selectedSummaryIdx,
+                          sevenDaysPersonalInfo: dailySummaries,
+                          type: HabitPersonalWeeklyOverviewType
+                              .withPersonalInformation,
+                          name: name,
+                          isAdmin: item.isAdmin,
+                          onTapDailySummary: (date) {
+                            notifier.onSelectUserSummary(
+                              item.userId,
+                              date,
+                              index == 1,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                if (state.isFetchUserSummary)
+                  Container(
+                    color: Colors.black.withOpacity(0.3),
+                    height: double.infinity,
+                    width: double.infinity,
+                    child: const Center(
+                      child: CircularProgressIndicator(),
                     ),
-                  );
-                },
-              ),
+                  ),
+              ],
             ),
           ),
         );
