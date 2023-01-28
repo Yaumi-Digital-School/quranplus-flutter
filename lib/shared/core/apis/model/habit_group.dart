@@ -4,7 +4,9 @@ part 'habit_group.g.dart';
 
 @JsonSerializable()
 class GetHabitGroupsItem {
-  GetHabitGroupsItem({
+  GetHabitGroupsItem(
+  {
+    required this.joinDate,
     required this.id,
     required this.name,
     required this.currentMemberCount,
@@ -13,6 +15,8 @@ class GetHabitGroupsItem {
 
   final int id;
   final String name;
+  @JsonKey(name: 'join_date')
+  final DateTime joinDate;
   @JsonKey(name: 'current_member_count')
   final int currentMemberCount;
   final List<GetHabitGroupsCompletionItem> completions;

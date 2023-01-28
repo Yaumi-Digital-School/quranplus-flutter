@@ -55,6 +55,7 @@ class HabitGroupListView extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: HabitGroupOverviewWidget(
+                  startOfEnabledDate: item.joinDate,
                   totalMembers: item.currentMemberCount,
                   groupName: item.name,
                   sevenDaysInformation: sevenDaysInformation,
