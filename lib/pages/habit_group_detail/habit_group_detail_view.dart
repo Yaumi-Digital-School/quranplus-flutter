@@ -62,6 +62,12 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
       ),
       onStateNotifierReady: (notifier, ref) async {
         await notifier.initStateNotifier();
+
+        if (widget.param.isSuccessJoinGroup) {
+          Future.delayed(const Duration(seconds: 1), () {
+            HabitGroupBottomSheet.showModalSuccessJoinGroup(context: context);
+          });
+        }
       },
       builder: (
         _,
@@ -75,12 +81,6 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
               child: CircularProgressIndicator(),
             ),
           );
-        }
-
-        if (widget.param.isSuccessJoinGroup) {
-          Future.delayed(const Duration(seconds: 1), () {
-            HabitGroupBottomSheet.showModalSuccessJoinGroup(context: context);
-          });
         }
 
         if (state.userSummaryResponse != null) {
