@@ -177,7 +177,7 @@ class HabitGroupDetailStateNotifier
   void onSelectUserSummary(int id, String date, bool isCurrentUser) async {
     try {
       state = state.copyWith(isFetchUserSummary: true);
-      final response = await _habitApi.getHabitGroupDetail(
+      final response = await _habitApi.getUserSummary(
         userId: id,
         param: UserSummaryRequest(
           date: date,

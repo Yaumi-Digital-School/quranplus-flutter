@@ -44,7 +44,7 @@ class UserSummaryBottomSheet {
         ),
         const SizedBox(height: 12),
         Text(
-          "It seems that Mufti Ramadhan has not made any progress",
+          "It seems that ${isCurrentUser ? "you have" : data.user.name + " has"} not made any progress",
           style: QPTextStyle.subHeading4Regular
               .copyWith(color: QPColors.blackFair),
         ),
@@ -150,6 +150,7 @@ class UserSummaryBottomSheet {
           const SizedBox(height: 16),
           SizedBox(
             height: 180,
+            width: double.infinity,
             child:
                 data.habitProgresses.isEmpty ? _emptyState : listProgressWidget,
           ),
