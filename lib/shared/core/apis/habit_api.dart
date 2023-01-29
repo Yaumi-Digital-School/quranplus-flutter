@@ -15,7 +15,7 @@ abstract class HabitApi {
   });
 
   @GET('/api/habit/{userId}/summary/')
-  Future<HttpResponse<UserSummaryResponse>> getHabitGroupDetail({
+  Future<HttpResponse<UserSummaryResponse>> getUserSummary({
     @Path('userId') required int userId,
     @Queries() required UserSummaryRequest param,
   });

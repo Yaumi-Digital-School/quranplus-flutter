@@ -202,10 +202,10 @@ class _HabitPersonalWeeklyOverviewWidgetState
       children: [
         GestureDetector(
           onTap: () {
-            if (!isAfterToday) {
-              if (widget.onTapDailySummary != null) {
-                widget.onTapDailySummary!(item.date.toIso8601String());
-              }
+            if (!isAfterToday &&
+                widget.onTapDailySummary != null &&
+                !isDisabled) {
+              widget.onTapDailySummary!(item.date.toIso8601String());
             }
           },
           child: Container(
