@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/model/user_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_sync.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -11,5 +12,11 @@ abstract class HabitApi {
   @POST('/api/habit/sync')
   Future<HttpResponse<List<HabitSyncResponseItem>>> syncHabit({
     @Body() required HabitSyncRequest request,
+  });
+
+  @GET('/api/habit/{userId}/summary/')
+  Future<HttpResponse<UserSummaryResponse>> getUserSummary({
+    @Path('userId') required int userId,
+    @Queries() required UserSummaryRequest param,
   });
 }

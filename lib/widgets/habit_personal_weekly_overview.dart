@@ -26,7 +26,7 @@ class HabitPersonalWeeklyOverviewWidget extends StatefulWidget {
   final HabitPersonalWeeklyOverviewType type;
   final String? name;
   final DateTime? startEnabledProgressDate;
-  final VoidCallback? onTapDailySummary;
+  final Function(String)? onTapDailySummary;
   final int? selectedIdx;
   final bool isAdmin;
 
@@ -202,10 +202,10 @@ class _HabitPersonalWeeklyOverviewWidgetState
       children: [
         GestureDetector(
           onTap: () {
-            if (!isAfterToday) {
-              if (widget.onTapDailySummary != null) {
-                widget.onTapDailySummary!();
-              }
+            if (!isAfterToday &&
+                widget.onTapDailySummary != null &&
+                !isDisabled) {
+              widget.onTapDailySummary!(item.date.toIso8601String());
             }
           },
           child: Container(
