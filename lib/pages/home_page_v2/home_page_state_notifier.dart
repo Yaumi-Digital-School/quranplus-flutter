@@ -4,11 +4,14 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
+import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/form.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/models/verse-topage.dart';
+import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
+import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 import 'package:http/http.dart' as http;
@@ -57,14 +60,19 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
   HomePageStateNotifier({
     required HabitDailySummaryService habitDailySummaryService,
     required SharedPreferenceService sharedPreferenceService,
+    required this.mainPageProvider,
+    required this.authenticationService,
   })  : _sharedPreferenceService = sharedPreferenceService,
         _habitDailySummaryService = habitDailySummaryService,
         super(HomePageState(isNeedSync: false));
 
   final SharedPreferenceService _sharedPreferenceService;
+  final AuthenticationService authenticationService;
   final HabitDailySummaryService _habitDailySummaryService;
+  final MainPageProvider mainPageProvider;
   late List<JuzElement> _juzElements;
   late Map<String, List<String>>? _ayahPage;
+  bool loginBottomSheetAlreadyBuilt = false;
   String? _token, _name, _feedbackUrl;
   HabitDailySummary? _dailySummary;
 
@@ -144,5 +152,16 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     } else {
       throw Exception('Failed to load form link');
     }
+  }
+
+  Future<ForceLoginParam?> getAndRemoveForceLoginParam() async {
+    final ForceLoginParam? res =
+        await _sharedPreferenceService.getForceLoginParam();
+
+    if (res != null) {
+      await _sharedPreferenceService.removeForceLoginParam();
+    }
+
+    return res;
   }
 }

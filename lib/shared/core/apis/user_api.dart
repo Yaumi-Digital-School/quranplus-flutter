@@ -10,7 +10,9 @@ abstract class UserApi {
   factory UserApi(Dio dio, {String baseUrl}) = _UserApi;
 
   @POST('/api/user')
-  Future<HttpResponse<UserResponse>> createUser(@Body() User user);
+  Future<HttpResponse<UserResponse>> createUser(
+    @Body() RegisterOrLoginRequest request,
+  );
 
   @GET('/api/my-profile')
   Future<HttpResponse<UserResponse>> getUserProfile(

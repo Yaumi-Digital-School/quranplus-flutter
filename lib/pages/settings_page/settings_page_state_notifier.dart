@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/user_response.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
@@ -52,7 +54,6 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
 
   @override
   Future<void> initStateNotifier() async {
-    await _repository.initRepository();
     _getToken();
   }
 
@@ -79,31 +80,34 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
     await _sharedPreferenceService.removeApiToken();
   }
 
-  Future<void> signInWithGoogle(
-    Function() onSuccess,
-    Function() onError,
-  ) async {
+  Future<void> signIn({
+    required Function() onSuccess,
+    required Function() onError,
+    required SignInType type,
+    required WidgetRef ref,
+  }) async {
     state = state.copyWith(resultStatus: ResultStatus.inProgress);
 
     try {
-      UserResponse user = await _repository.signInWithGoogle();
+      bool isSuccess = await _repository.signIn(
+        type: type,
+        ref: ref,
+      );
 
-      if ((user.token ?? '').isEmpty) {
+      if (!isSuccess) {
         state = state.copyWith(
           authenticationStatus: AuthenticationStatus.unknown,
           resultStatus: ResultStatus.canceled,
         );
-      } else {
-        await _setToken(user.token!);
-        await _setUsername(user.data!.name);
 
-        state = state.copyWith(
-          authenticationStatus: AuthenticationStatus.authenticated,
-          resultStatus: ResultStatus.success,
-          token: user.token!,
-        );
-        onSuccess.call();
+        return;
       }
+
+      state = state.copyWith(
+        authenticationStatus: AuthenticationStatus.authenticated,
+        resultStatus: ResultStatus.success,
+      );
+      onSuccess.call();
     } catch (_) {
       state = state.copyWith(
         authenticationStatus: AuthenticationStatus.unauthenticated,

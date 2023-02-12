@@ -5,6 +5,7 @@ class IconPath {
   static String iconFavorite = 'images/icon_favorite.png';
   static String iconCollaborate = 'images/icon_collaborate.png';
   static String iconGoogle = 'images/icon_google.png';
+  static String iconApple = 'images/icon_apple.png';
   static String iconAccounnt = 'images/icon_account.png';
   static String iconLogout = 'images/icon_logout.png';
   static String iconSync = 'images/icon_sync.png';
@@ -13,5 +14,9 @@ class IconPath {
   static String iconNoWifi = 'images/icon_no_wifi.png';
   static String iconRefresh = 'images/icon_refresh.png';
   static String iconChecklistCheck = 'images/icon_checklist_check.png';
-  static String iconTargetArrow = 'images/Icon_target_arrow.png';
+  static String iconHabitArrow = 'images/icon_habit_arrow.png';
+  static String iconGroupMember = 'images/icon_group_member.png';
+  static String iconLeaveGroup = 'images/icon_leave_group.png';
+  static String iconInviteMember = 'images/icon_invite_member.png';
+  static String iconEditSquare = 'images/icon_edit_square.png';
 }

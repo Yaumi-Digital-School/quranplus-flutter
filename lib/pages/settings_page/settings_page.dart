@@ -1,11 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qurantafsir_flutter/pages/account_page/account_page.dart';
-import 'package:qurantafsir_flutter/pages/main_page.dart';
+import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
-import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
+import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
+import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
@@ -48,7 +51,7 @@ class SettingsPage extends StatelessWidget {
             );
           },
         ),
-        onStateNotifierReady: (notifier) async =>
+        onStateNotifierReady: (notifier, ref) async =>
             await notifier.initStateNotifier(),
         builder: (
           BuildContext context,
@@ -80,28 +83,52 @@ class SettingsPage extends StatelessWidget {
               ),
             ),
             body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: state.authenticationStatus ==
-                        AuthenticationStatus.authenticated
-                    ? _buildUserView(
-                        context,
-                        state,
-                        notifier,
-                        ref,
-                      )
-                    : RegistrationView(
-                        nextWidget: ButtonSecondary(
-                          label: 'Sign In with Google',
-                          onTap: _onTapButtonSignIn(
-                            context,
-                            notifier,
-                            ref,
-                          ),
-                          leftIcon: IconPath.iconGoogle,
+              child: state.authenticationStatus ==
+                      AuthenticationStatus.authenticated
+                  ? _buildUserView(
+                      context,
+                      state,
+                      notifier,
+                      ref,
+                    )
+                  : RegistrationView(
+                      nextWidget: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 24,
+                          right: 24,
+                          bottom: 41,
+                        ),
+                        child: Column(
+                          children: [
+                            ButtonSecondary(
+                              label: 'Sign In with Google',
+                              onTap: _onTapButtonSignIn(
+                                context,
+                                notifier,
+                                ref,
+                                type: SignInType.google,
+                              ),
+                              leftIcon: IconPath.iconGoogle,
+                            ),
+                            if (Platform.isIOS) ...[
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              ButtonSecondary(
+                                label: 'Sign In with Apple',
+                                onTap: _onTapButtonSignIn(
+                                  context,
+                                  notifier,
+                                  ref,
+                                  type: SignInType.apple,
+                                ),
+                                leftIcon: IconPath.iconApple,
+                              ),
+                            ],
+                          ],
                         ),
                       ),
-              ),
+                    ),
             ),
           );
         },
@@ -112,18 +139,17 @@ class SettingsPage extends StatelessWidget {
   _onTapButtonSignIn(
     BuildContext context,
     SettingsPageStateNotifier notifier,
-    WidgetRef ref,
-  ) {
+    WidgetRef ref, {
+    required SignInType type,
+  }) {
     return () async {
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult != ConnectivityResult.none) {
-        notifier.signInWithGoogle(
-          () {
-            navigateAfterLogin(
-              context: context,
-              notifier: notifier,
-            );
-
+        notifier.signIn(
+          ref: ref,
+          type: type,
+          onSuccess: () {
+            Navigator.of(context).pushReplacementNamed(RoutePaths.routeMain);
             ref.read(dioServiceProvider.notifier).state = DioService(
               baseUrl: EnvConstants.baseUrl!,
               accessToken:
@@ -131,7 +157,7 @@ class SettingsPage extends StatelessWidget {
             );
             ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
           },
-          () {
+          onError: () {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(
@@ -156,78 +182,81 @@ class SettingsPage extends StatelessWidget {
     SettingsPageStateNotifier notifier,
     WidgetRef ref,
   ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        TextButton(
-          style: TextButton.styleFrom(padding: EdgeInsets.zero),
-          onPressed: () async {
-            var connectivityResult = await Connectivity().checkConnectivity();
-            if (connectivityResult != ConnectivityResult.none) {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return AccountPage();
-              }));
-            } else {
-              _generalBottomSheet.showNoInternetBottomSheet(
-                context,
-                () => Navigator.pop(context),
-              );
-            }
-          },
-          child: _buildImageButton(
-            'Account',
-            IconPath.iconAccounnt,
-            neutral900,
-          ),
-        ),
-        TextButton(
-          style: TextButton.styleFrom(padding: EdgeInsets.zero),
-          onPressed: () async {
-            var connectivityResult = await Connectivity().checkConnectivity();
-            if (connectivityResult != ConnectivityResult.none) {
-              notifier.signOut(() {
-                ref.read(dioServiceProvider.notifier).state = DioService(
-                  baseUrl: EnvConstants.baseUrl!,
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          TextButton(
+            style: TextButton.styleFrom(padding: EdgeInsets.zero),
+            onPressed: () async {
+              var connectivityResult = await Connectivity().checkConnectivity();
+              if (connectivityResult != ConnectivityResult.none) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return AccountPage();
+                }));
+              } else {
+                _generalBottomSheet.showNoInternetBottomSheet(
+                  context,
+                  () => Navigator.pop(context),
                 );
-
-                ScaffoldMessenger.of(context)
-                  ..hideCurrentSnackBar()
-                  ..showSnackBar(
-                    const SnackBar(
-                      content: Text('Sign out Berhasil'),
-                    ),
+              }
+            },
+            child: _buildImageButton(
+              'Account',
+              IconPath.iconAccounnt,
+              neutral900,
+            ),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(padding: EdgeInsets.zero),
+            onPressed: () async {
+              var connectivityResult = await Connectivity().checkConnectivity();
+              if (connectivityResult != ConnectivityResult.none) {
+                notifier.signOut(() {
+                  ref.read(dioServiceProvider.notifier).state = DioService(
+                    baseUrl: EnvConstants.baseUrl!,
                   );
-              });
-            } else {
-              _generalBottomSheet.showNoInternetBottomSheet(
-                context,
-                () => Navigator.pop(context),
-              );
-            }
-          },
-          child: _buildImageButton(
-            'Sign out',
-            IconPath.iconLogout,
-            exit500,
+
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(
+                      const SnackBar(
+                        content: Text('Sign out Berhasil'),
+                      ),
+                    );
+                });
+              } else {
+                _generalBottomSheet.showNoInternetBottomSheet(
+                  context,
+                  () => Navigator.pop(context),
+                );
+              }
+            },
+            child: _buildImageButton(
+              'Sign out',
+              IconPath.iconLogout,
+              exit500,
+            ),
           ),
-        ),
-        const SizedBox(
-          height: 24,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 24, right: 24),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Quran Plus Version",
-                style: bodyRegular2,
-              ),
-              const VersionAppWidget(),
-            ],
+          const SizedBox(
+            height: 24,
           ),
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.only(left: 24, right: 24),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Quran Plus Version",
+                  style: bodyRegular2,
+                ),
+                const VersionAppWidget(),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

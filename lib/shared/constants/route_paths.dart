@@ -5,4 +5,5 @@ class RoutePaths {
   static const String routeLogin = '/login';
   static const String routeSettings = '/settings';
   static const String routeSurahPage = '/surah-page';
+  static const String routeHabitGroupDetail = '/habit-group-detail';
 }

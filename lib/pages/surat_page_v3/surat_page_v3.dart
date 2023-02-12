@@ -134,7 +134,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
           );
         },
       ),
-      onStateNotifierReady: (notifier) async {
+      onStateNotifierReady: (notifier, ref) async {
         if (widget.param.isStartTracking) {
           Future.delayed(Duration.zero, () {
             _startTracking(context, notifier);

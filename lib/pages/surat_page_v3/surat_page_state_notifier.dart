@@ -437,7 +437,14 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
       isInFullPage: isInFullPage,
     );
 
-    state = state.copyWith(readingSettings: settings);
+    final int currentPageIndex = currentPage.value - 1;
+
+    state = state.copyWith(
+      readingSettings: settings,
+      pageController: PageController(
+        initialPage: currentPageIndex,
+      ),
+    );
     _sharedPreferenceService.setReadingSettings(settings);
   }
 

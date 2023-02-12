@@ -1,4 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'user.g.dart';
 
 class User extends Equatable {
   const User({
@@ -40,4 +43,23 @@ class User extends Equatable {
         birthDate,
         gender,
       ];
+}
+
+@JsonSerializable()
+class RegisterOrLoginRequest {
+  const RegisterOrLoginRequest({
+    this.name,
+    this.email,
+    this.appleTokenID,
+  });
+
+  final String? name;
+  final String? email;
+  @JsonKey(name: 'apple_token_id')
+  final String? appleTokenID;
+
+  factory RegisterOrLoginRequest.fromJson(Map<String, dynamic> json) =>
+      _$RegisterOrLoginRequestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RegisterOrLoginRequestToJson(this);
 }
