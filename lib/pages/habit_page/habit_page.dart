@@ -1,21 +1,22 @@
+import 'dart:io';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/habit_progress_view.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_state_notifier.dart';
-import 'package:qurantafsir_flutter/pages/main_page.dart';
-import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
+import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
+import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
+import 'package:qurantafsir_flutter/shared/constants/icon.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
-import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
-import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/registration_view.dart';
-
-import 'habit_progress/habit_progress_view.dart';
 
 class HabitPage extends StatelessWidget {
   HabitPage({Key? key}) : super(key: key);
@@ -46,7 +47,7 @@ class HabitPage extends StatelessWidget {
             // ignore: dead_code
           },
         ),
-        onStateNotifierReady: (notifier) async =>
+        onStateNotifierReady: (notifier, ref) async =>
             await notifier.initStateNotifier(),
         builder: (
           BuildContext context,
@@ -71,27 +72,52 @@ class HabitPage extends StatelessWidget {
                 foregroundColor: Colors.black,
                 centerTitle: true,
                 title: const Text(
-                  'Habit',
+                  'Reading Habit Tracker',
                   style: TextStyle(fontSize: 16),
                 ),
                 backgroundColor: backgroundColor,
               ),
             ),
+            backgroundColor: QPColors.whiteFair,
             body:
                 state.authenticationStatus == AuthenticationStatus.authenticated
                     ? const HabitProgressView()
                     : SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: RegistrationView(
-                            nextWidget: ButtonSecondary(
-                              label: 'Sign In with Google',
-                              onTap: _onTapButtonSignIn(
-                                context,
-                                notifier,
-                                ref,
-                              ),
-                              leftIcon: IconPath.iconGoogle,
+                        child: RegistrationView(
+                          nextWidget: Padding(
+                            padding: const EdgeInsets.only(
+                              left: 24,
+                              right: 24,
+                              bottom: 41,
+                            ),
+                            child: Column(
+                              children: [
+                                ButtonSecondary(
+                                  label: 'Sign In with Google',
+                                  onTap: _onTapButtonSignIn(
+                                    context,
+                                    notifier,
+                                    ref,
+                                    type: SignInType.google,
+                                  ),
+                                  leftIcon: IconPath.iconGoogle,
+                                ),
+                                if (Platform.isIOS) ...[
+                                  const SizedBox(
+                                    height: 16,
+                                  ),
+                                  ButtonSecondary(
+                                    label: 'Sign In with Apple',
+                                    onTap: _onTapButtonSignIn(
+                                      context,
+                                      notifier,
+                                      ref,
+                                      type: SignInType.apple,
+                                    ),
+                                    leftIcon: IconPath.iconApple,
+                                  ),
+                                ],
+                              ],
                             ),
                           ),
                         ),
@@ -105,22 +131,19 @@ class HabitPage extends StatelessWidget {
   _onTapButtonSignIn(
     BuildContext context,
     HabitPageStateNotifier notifier,
-    WidgetRef ref,
-  ) {
+    WidgetRef ref, {
+    required SignInType type,
+  }) {
     return () async {
       var connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult != ConnectivityResult.none) {
-        notifier.signInWithGoogle(
-          () {
+        notifier.signIn(
+          type: type,
+          ref: ref,
+          onSuccess: () {
             Navigator.of(context).pushReplacementNamed(RoutePaths.routeMain);
-            ref.read(dioServiceProvider.notifier).state = DioService(
-              baseUrl: EnvConstants.baseUrl!,
-              accessToken:
-                  ref.read(sharedPreferenceServiceProvider).getApiToken(),
-            );
-            ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
           },
-          () {
+          onError: () {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(

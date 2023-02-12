@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 
@@ -75,5 +76,15 @@ class HabitDailySummary {
     final String formattedDate = formatter.format(date);
 
     return formattedDate;
+  }
+
+  factory HabitDailySummary.fromGetHabitGroupMemberPersonalSummaryItem(
+    GetHabitGroupMemberPersonalSummaryItem item,
+  ) {
+    return HabitDailySummary(
+      target: item.target,
+      totalPages: item.totalPages,
+      date: DateTime.parse(item.date),
+    );
   }
 }

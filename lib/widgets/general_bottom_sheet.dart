@@ -1,8 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
 class GeneralBottomSheet {
+  static void showBaseBottomSheet({
+    required BuildContext context,
+    required Widget widgetChild,
+    MainAxisSize mainAxisSize = MainAxisSize.min,
+    VoidCallback? onClose,
+  }) {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      backgroundColor: QPColors.whiteFair,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(8),
+        ),
+      ),
+      context: context,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 24,
+            right: 24,
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: mainAxisSize,
+            children: [
+              const SizedBox(height: 8),
+              Center(
+                child: Container(
+                  height: 5,
+                  width: 40,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    color: QPColors.whiteRoot,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              widgetChild,
+              const SizedBox(height: 40),
+            ],
+          ),
+        );
+      },
+    ).then((_) => onClose);
+  }
+
+  @Deprecated('use showBaseBottomSheet instead')
   Future showGeneralBottomSheet(
     BuildContext context,
     String label,

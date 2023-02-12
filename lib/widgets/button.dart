@@ -4,6 +4,7 @@ import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 enum ButtonSize {
   regular,
   small,
+  extendable,
 }
 
 class ButtonSecondary extends StatelessWidget {
@@ -13,7 +14,7 @@ class ButtonSecondary extends StatelessWidget {
     required this.onTap,
     this.leftIcon,
     this.textStyle,
-    this.size = ButtonSize.regular,
+    this.size = ButtonSize.extendable,
   }) : super(key: key);
 
   final String? leftIcon;
@@ -24,7 +25,11 @@ class ButtonSecondary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double width = size == ButtonSize.regular ? double.infinity : 130;
+    final double width = size == ButtonSize.regular
+        ? 165
+        : size == ButtonSize.extendable
+            ? double.infinity
+            : 130;
     final double labelFontSize = size == ButtonSize.regular ? 14 : 12;
 
     return SizedBox(
@@ -51,8 +56,12 @@ class ButtonSecondary extends StatelessWidget {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          ImageIcon(
-            AssetImage(leftIcon),
+          Image(
+            image: AssetImage(leftIcon),
+            width: 24,
+            height: 24,
+            fit: BoxFit.scaleDown,
+            color: null,
           ),
           const SizedBox(
             width: 10.0,
@@ -87,7 +96,7 @@ class ButtonNeutral extends StatelessWidget {
     required this.label,
     required this.onTap,
     this.textStyle,
-    this.size = ButtonSize.regular,
+    this.size = ButtonSize.extendable,
   }) : super(key: key);
 
   final String label;
@@ -99,7 +108,11 @@ class ButtonNeutral extends StatelessWidget {
   Widget build(
     BuildContext context,
   ) {
-    final double width = size == ButtonSize.regular ? double.infinity : 100;
+    final double width = size == ButtonSize.regular
+        ? 165
+        : size == ButtonSize.extendable
+            ? double.infinity
+            : 100;
     final double labelFontSize = size == ButtonSize.regular ? 14 : 12;
 
     return SizedBox(
@@ -135,18 +148,24 @@ class ButtonPrimary extends StatelessWidget {
     Key? key,
     required this.label,
     required this.onTap,
-    this.size = ButtonSize.regular,
+    this.size = ButtonSize.extendable,
+    this.textStyle,
   }) : super(key: key);
 
   final String label;
   final Function()? onTap;
   final ButtonSize size;
+  final TextStyle? textStyle;
 
   @override
   Widget build(
     BuildContext context,
   ) {
-    final double width = size == ButtonSize.regular ? double.infinity : 100;
+    final double width = size == ButtonSize.regular
+        ? 165
+        : size == ButtonSize.extendable
+            ? double.infinity
+            : 100;
     final double labelFontSzie = size == ButtonSize.regular ? 14 : 12;
 
     return SizedBox(

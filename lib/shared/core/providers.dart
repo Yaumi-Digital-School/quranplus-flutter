@@ -1,9 +1,12 @@
+import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/habit_api.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/habit_group_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/user_api.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
+import 'package:qurantafsir_flutter/shared/core/services/deep_link_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/core/services/bookmarks_service.dart';
@@ -41,6 +44,15 @@ final Provider<HabitApi> habitApiProvider = Provider<HabitApi>((ref) {
   final DioService dioService = ref.watch(dioServiceProvider);
 
   return HabitApi(
+    dioService.getDioWithAccessToken(),
+  );
+});
+
+final Provider<HabitGroupApi> habitGroupApiProvider =
+    Provider<HabitGroupApi>((ref) {
+  final DioService dioService = ref.watch(dioServiceProvider);
+
+  return HabitGroupApi(
     dioService.getDioWithAccessToken(),
   );
 });
@@ -94,6 +106,26 @@ final Provider<FavoriteAyahsService> favoriteAyahsService =
   // final BookmarkApi bookmarkApi = ref.watch(bookmarkApiProvider);
 
   return FavoriteAyahsService();
+});
+
+Provider<MainPageProvider> mainPageProvider = Provider<MainPageProvider>(
+  (ref) => MainPageProvider(),
+);
+
+final Provider<DeepLinkService> deepLinkService =
+    Provider<DeepLinkService>((ref) {
+  final HabitGroupApi habitGroupApi = ref.watch(habitGroupApiProvider);
+  final AuthenticationService auth = ref.watch(authenticationService);
+  final SharedPreferenceService sharedPref =
+      ref.watch(sharedPreferenceServiceProvider);
+  final MainPageProvider mainPage = ref.watch(mainPageProvider);
+
+  return DeepLinkService(
+    habitGroupApi: habitGroupApi,
+    authenticationService: auth,
+    sharedPreferenceService: sharedPref,
+    mainPageProvider: mainPage,
+  );
 });
 
 final StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>

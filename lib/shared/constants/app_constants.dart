@@ -5,3 +5,8 @@ class AppConstants {
   static const String ayahPageJson = 'data/verse-to-page.json';
   static const String appName = 'Quran Tafsir';
 }
+
+enum SignInType {
+  google,
+  apple,
+}

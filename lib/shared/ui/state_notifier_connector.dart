@@ -19,7 +19,7 @@ class StateNotifierConnector<T extends StateNotifier<P>, P>
   ) builder;
   final StateNotifierProvider<T, P> stateNotifierProvider;
   final Widget? child;
-  final void Function(T)? onStateNotifierReady;
+  final void Function(T, WidgetRef)? onStateNotifierReady;
 
   @override
   _StateNotifierConnectorState<T, P> createState() =>
@@ -31,7 +31,7 @@ class _StateNotifierConnectorState<T extends StateNotifier<P>, P>
   @override
   void initState() {
     final T notifier = ref.read(widget.stateNotifierProvider.notifier);
-    widget.onStateNotifierReady?.call(notifier);
+    widget.onStateNotifierReady?.call(notifier, ref);
     super.initState();
   }
 

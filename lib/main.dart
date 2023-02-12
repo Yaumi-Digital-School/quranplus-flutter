@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:global_configuration/global_configuration.dart';
-import 'package:qurantafsir_flutter/pages/main_page.dart';
+import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_view.dart';
+import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page.dart';
 import 'package:qurantafsir_flutter/pages/splash_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
@@ -45,11 +46,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
     return Consumer(
       builder: (context, ref, child) {
         final SharedPreferenceService sp =
             ref.watch(sharedPreferenceServiceProvider);
         final AuthenticationService ur = ref.watch(authenticationService);
+
         if (sp.getApiToken().isNotEmpty) {
           ur.setIsLoggedIn(true);
         }
@@ -62,14 +66,23 @@ class MyApp extends StatelessWidget {
             backgroundColor: backgroundColor,
           ),
           navigatorObservers: <NavigatorObserver>[observer],
+          navigatorKey: navigatorKey,
           onGenerateRoute: (RouteSettings settings) {
             late Widget selectedRouteWidget;
             switch (settings.name) {
               case RoutePaths.routeSplash:
-                selectedRouteWidget = const SplashPage();
+                selectedRouteWidget = SplashPage(
+                  navigatorKey: navigatorKey,
+                );
                 break;
               case RoutePaths.routeMain:
-                selectedRouteWidget = const MainPage();
+                final args = settings.arguments != null &&
+                        settings.arguments is MainPageParam
+                    ? settings.arguments as MainPageParam
+                    : null;
+                selectedRouteWidget = MainPage(
+                  param: args,
+                );
                 break;
               case RoutePaths.routeSettings:
                 selectedRouteWidget = SettingsPage();
@@ -79,6 +92,12 @@ class MyApp extends StatelessWidget {
                     ? settings.arguments as SuratPageV3Param
                     : SuratPageV3Param(startPageInIndex: 0);
                 selectedRouteWidget = SuratPageV3(param: args);
+                break;
+              case RoutePaths.routeHabitGroupDetail:
+                final args = settings.arguments is HabitGroupDetailViewParam
+                    ? settings.arguments as HabitGroupDetailViewParam
+                    : HabitGroupDetailViewParam(id: 0);
+                selectedRouteWidget = HabitGroupDetailView(param: args);
                 break;
               default:
                 selectedRouteWidget = const Scaffold(
