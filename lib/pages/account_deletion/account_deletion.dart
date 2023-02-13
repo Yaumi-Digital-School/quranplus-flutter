@@ -70,6 +70,7 @@ class AccountDeletionInformationView extends StatelessWidget {
         ),
         Text(
           detail,
+          textAlign: TextAlign.justify,
           style: QPTextStyle.body3Regular.copyWith(
             color: QPColors.blackFair,
           ),
