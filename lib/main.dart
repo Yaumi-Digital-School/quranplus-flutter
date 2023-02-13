@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:global_configuration/global_configuration.dart';
+import 'package:qurantafsir_flutter/pages/account_deletion/account_deletion.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_view.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page.dart';
@@ -98,6 +99,9 @@ class MyApp extends StatelessWidget {
                     ? settings.arguments as HabitGroupDetailViewParam
                     : HabitGroupDetailViewParam(id: 0);
                 selectedRouteWidget = HabitGroupDetailView(param: args);
+                break;
+              case RoutePaths.accountDeletion:
+                selectedRouteWidget = const AccountDeletionInformationView();
                 break;
               default:
                 selectedRouteWidget = const Scaffold(

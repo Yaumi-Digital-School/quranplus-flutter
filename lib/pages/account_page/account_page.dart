@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/pages/account_page/account_page_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
@@ -362,6 +365,21 @@ class AccountPage extends StatelessWidget {
                       state.formStatus,
                       context,
                       notifier,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Center(
+                    child: GestureDetector(
+                      onTap: () => Navigator.pushNamed(
+                        context,
+                        RoutePaths.accountDeletion,
+                      ),
+                      child: Text(
+                        'How to delete my account?',
+                        style: QPTextStyle.subHeading3SemiBold.copyWith(
+                          color: QPColors.errorFair,
+                        ),
+                      ),
                     ),
                   ),
                 ],
