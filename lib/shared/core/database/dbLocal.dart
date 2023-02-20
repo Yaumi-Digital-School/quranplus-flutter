@@ -331,7 +331,7 @@ class DbLocal {
     for (var element in result) {
       final elementDate = element[HabitDailySummaryTable.date];
       final parsedElementDate =
-          DateUtils.stringToDate(elementDate, DateFormatType.yyyyMMdd);
+          DateCustomUtils.stringToDate(elementDate, DateFormatType.yyyyMMdd);
       final difference = parsedElementDate.difference(firstDay).inDays;
       summaryLastSevenDay[difference] = HabitDailySummary.fromJson(element);
     }
@@ -347,7 +347,7 @@ class DbLocal {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
     final String formattedDate = formatter.format(now);
-    final String currentTimestampWithTz = DateUtils.formatISOTime(now);
+    final String currentTimestampWithTz = DateCustomUtils.formatISOTime(now);
     final Database dbClient = await _db;
 
     int progressID = await dbClient.transaction<int>((txn) async {
@@ -467,7 +467,7 @@ class DbLocal {
   }) async {
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
     final String formattedDate = formatter.format(date);
-    final String currentTimestampWithTz = DateUtils.formatISOTime(date);
+    final String currentTimestampWithTz = DateCustomUtils.formatISOTime(date);
     db ??= await _db;
 
     return await db.insert(
@@ -488,9 +488,9 @@ class DbLocal {
     required int target,
     required int totalPages,
   }) async {
-    final String targetUpdatedTimeWithTz = DateUtils.formatISOTime(date);
+    final String targetUpdatedTimeWithTz = DateCustomUtils.formatISOTime(date);
     final DateTime now = DateTime.now();
-    final String nowWithTz = DateUtils.formatISOTime(now);
+    final String nowWithTz = DateCustomUtils.formatISOTime(now);
     db ??= await _db;
 
     return await db.update(

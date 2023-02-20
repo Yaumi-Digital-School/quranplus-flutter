@@ -3,6 +3,7 @@ import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_v2.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_page.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/home_page_v2.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page.dart';
+import 'package:qurantafsir_flutter/pages/tadabbur_surah_list_page/tadabbur_surah_list_view.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
@@ -30,21 +31,14 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   late int _selectedIndex;
-  // Temporary value to include/exclude habit in build
-  bool isHabitEnabled = true;
 
   final List<Widget> _pages = <Widget>[
     const HomePageV2(),
-    // Only enable if `isHabitEnabled` true
     HabitPage(),
-    // Temporary
-
-    // HabitGroupDetailView(),
+    const TadabburSurahListView(),
     const BookmarkPageV2(),
     SettingsPage(),
   ];
-
-  // MainPageParam? param;
 
   @override
   void initState() {
@@ -68,18 +62,22 @@ class _MainPageState extends State<MainPage> {
       body: Center(child: _pages.elementAt(_selectedIndex)),
       bottomNavigationBar: BottomNavigationBar(
         key: MainPage.globalKey,
+        type: BottomNavigationBarType.fixed,
         items: <BottomNavigationBarItem>[
           const BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
-          if (isHabitEnabled)
-            BottomNavigationBarItem(
-              icon: ImageIcon(
-                AssetImage(IconPath.iconHabitArrow),
-              ),
-              label: 'Habit',
+          BottomNavigationBarItem(
+            icon: ImageIcon(
+              AssetImage(IconPath.iconHabitArrow),
             ),
+            label: 'Habit',
+          ),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.menu_book),
+            label: 'Tadabbur',
+          ),
           const BottomNavigationBarItem(
             icon: Icon(Icons.bookmark),
             label: 'Bookmark',

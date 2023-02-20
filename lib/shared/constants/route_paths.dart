@@ -7,4 +7,5 @@ class RoutePaths {
   static const String routeSurahPage = '/surah-page';
   static const String routeHabitGroupDetail = '/habit-group-detail';
   static const String accountDeletion = '/account-deletion';
+  static const String tadabburSurahList = '/tadabbur-surah-list';
 }

@@ -7,7 +7,9 @@ import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page.dart';
 import 'package:qurantafsir_flutter/pages/splash_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
+import 'package:qurantafsir_flutter/pages/tadabbur_surah_list_page/tadabbur_surah_list_view.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -65,6 +67,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
             backgroundColor: backgroundColor,
+            scaffoldBackgroundColor: QPColors.whiteFair,
           ),
           navigatorObservers: <NavigatorObserver>[observer],
           navigatorKey: navigatorKey,
@@ -102,6 +105,9 @@ class MyApp extends StatelessWidget {
                 break;
               case RoutePaths.accountDeletion:
                 selectedRouteWidget = const AccountDeletionInformationView();
+                break;
+              case RoutePaths.tadabburSurahList:
+                selectedRouteWidget = const TadabburSurahListView();
                 break;
               default:
                 selectedRouteWidget = const Scaffold(

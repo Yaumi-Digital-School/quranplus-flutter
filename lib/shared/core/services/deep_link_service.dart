@@ -81,7 +81,7 @@ class DeepLinkService {
       final response = await habitGroupApi.joinGroup(
         groupId: id,
         request: JoinHabitGroupRequest(
-          date: custom_date_utils.DateUtils.getCurrentDateInString(),
+          date: custom_date_utils.DateCustomUtils.getCurrentDateInString(),
         ),
       );
 

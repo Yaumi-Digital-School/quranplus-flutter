@@ -177,7 +177,7 @@ class _HomePageV2State extends State<HomePageV2> {
         await ref.read(habitGroupApiProvider).joinGroup(
               groupId: param?.arguments?['id'] ?? 0,
               request: JoinHabitGroupRequest(
-                date: date_util.DateUtils.getCurrentDateInString(),
+                date: date_util.DateCustomUtils.getCurrentDateInString(),
               ),
             );
 
