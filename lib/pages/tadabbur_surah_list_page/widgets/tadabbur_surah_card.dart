@@ -73,7 +73,7 @@ class TadabburSurahCard extends StatelessWidget {
           children: [
             const Icon(
               Icons.menu_book,
-              size: 10,
+              size: 12,
             ),
             const SizedBox(
               width: 8,

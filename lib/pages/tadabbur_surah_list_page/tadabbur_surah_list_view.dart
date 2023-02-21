@@ -24,8 +24,10 @@ class TadabburSurahListView extends StatelessWidget {
           tadabburApi: ref.read(tadabburApiProvider),
         );
       }),
-      onStateNotifierReady:
-          (TadabburSurahListViewStateNotifier notifier, _) async {
+      onStateNotifierReady: (
+        TadabburSurahListViewStateNotifier notifier,
+        _,
+      ) async {
         final ConnectivityResult connectivityResult =
             await Connectivity().checkConnectivity();
         if (connectivityResult == ConnectivityResult.none) {
