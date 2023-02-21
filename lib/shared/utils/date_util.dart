@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DateFormatType {
@@ -18,7 +19,7 @@ class DateFormatType {
   static const String EEEEddMMMyyyy = "EEEE dd MMM yyyy";
 }
 
-class DateUtils {
+class DateCustomUtils {
   static DateTime stringToDate(String dateString, String format) {
     String localization = "en_US";
 
@@ -69,5 +70,23 @@ class DateUtils {
     final String formattedDate = formatter.format(now);
 
     return formattedDate;
+  }
+
+  static String getDateRangeFormatted(DateTime from) {
+    final DateTime currentTime = DateTime.now();
+
+    final Duration timeDiffInDay = DateUtils.dateOnly(currentTime).difference(
+      DateUtils.dateOnly(from),
+    );
+
+    if (timeDiffInDay < const Duration(days: 1)) {
+      return '${from.hour}:${from.minute.toString().padLeft(2, "0")}';
+    }
+
+    if (timeDiffInDay <= const Duration(days: 7)) {
+      return '${timeDiffInDay.inDays} Days Ago';
+    }
+
+    return '${from.day}-${from.month}-${from.year}';
   }
 }

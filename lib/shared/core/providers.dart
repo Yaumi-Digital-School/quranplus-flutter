@@ -1,3 +1,4 @@
+import 'package:qurantafsir_flutter/shared/core/apis/tadabbur_api.dart';
 import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
@@ -53,6 +54,14 @@ final Provider<HabitGroupApi> habitGroupApiProvider =
   final DioService dioService = ref.watch(dioServiceProvider);
 
   return HabitGroupApi(
+    dioService.getDioWithAccessToken(),
+  );
+});
+
+final Provider<TadabburApi> tadabburApiProvider = Provider<TadabburApi>((ref) {
+  final DioService dioService = ref.watch(dioServiceProvider);
+
+  return TadabburApi(
     dioService.getDioWithAccessToken(),
   );
 });

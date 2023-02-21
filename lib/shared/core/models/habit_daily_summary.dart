@@ -29,7 +29,7 @@ class HabitDailySummary {
     return HabitDailySummary(
       target: json[HabitDailySummaryTable.target],
       totalPages: json[HabitDailySummaryTable.totalPages],
-      date: DateUtils.stringToDate(
+      date: DateCustomUtils.stringToDate(
         json[HabitDailySummaryTable.date],
         DateFormatType.yyyyMMdd,
       ),
@@ -64,7 +64,7 @@ class HabitDailySummary {
     return HabitDailySummary(
       target: map[HabitDailySummaryTable.target],
       totalPages: map[HabitDailySummaryTable.totalPages],
-      date: DateUtils.stringToDate(
+      date: DateCustomUtils.stringToDate(
         map[HabitDailySummaryTable.date],
         DateFormatType.yyyyMMdd,
       ),

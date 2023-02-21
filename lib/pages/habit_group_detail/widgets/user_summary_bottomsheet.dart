@@ -17,7 +17,7 @@ class UserSummaryBottomSheet {
   }) {
     final name = isCurrentUser ? "Your Today's" : data.user.name;
     final title = "$name Progress";
-    final date = date_util_custom.DateUtils.stringToDate(
+    final date = date_util_custom.DateCustomUtils.stringToDate(
       data.date,
       DateFormatType.yyyyMMdd,
     );

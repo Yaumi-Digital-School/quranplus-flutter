@@ -108,8 +108,8 @@ class HabitGroupDetailStateNotifier
         await _habitGroupApi.getHabitGroupDetail(
       groupId: _groupId,
       param: GetHabitGroupDetailParam(
-        startDate: DateUtils.getFirstDayOfTheWeekFromToday(),
-        endDate: DateUtils.getLastDayOfTheWeekFromToday(),
+        startDate: DateCustomUtils.getFirstDayOfTheWeekFromToday(),
+        endDate: DateCustomUtils.getLastDayOfTheWeekFromToday(),
       ),
     );
 
@@ -155,8 +155,8 @@ class HabitGroupDetailStateNotifier
         await _habitGroupApi.getHabitGroupMemberSummaries(
       groupId: _groupId,
       param: GetHabitGroupMemberSummariesParam(
-        startDate: DateUtils.getFirstDayOfTheWeekFromToday(),
-        endDate: DateUtils.getLastDayOfTheWeekFromToday(),
+        startDate: DateCustomUtils.getFirstDayOfTheWeekFromToday(),
+        endDate: DateCustomUtils.getLastDayOfTheWeekFromToday(),
       ),
     );
 
@@ -198,7 +198,7 @@ class HabitGroupDetailStateNotifier
     final HttpResponse<bool> request = await _habitGroupApi.leaveGroup(
       groupId: _groupId,
       request: LeaveHabitGroupRequest(
-        date: DateUtils.getCurrentDateInString(),
+        date: DateCustomUtils.getCurrentDateInString(),
       ),
     );
 

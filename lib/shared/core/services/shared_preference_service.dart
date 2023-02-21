@@ -43,7 +43,7 @@ class SharedPreferenceService {
   }
 
   Future<void> setLastSync(DateTime date) async {
-    final formattedLastSync = DateUtils.formatISOTime(date);
+    final formattedLastSync = DateCustomUtils.formatISOTime(date);
     await _sharedPreferences.setString(_lastSync, formattedLastSync);
   }
 
@@ -53,7 +53,7 @@ class SharedPreferenceService {
 
       return;
     }
-    final formattedDate = DateUtils.formatISOTime(date);
+    final formattedDate = DateCustomUtils.formatISOTime(date);
     await _sharedPreferences.setString(_habitNeedToSyncTimer, formattedDate);
   }
 

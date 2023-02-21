@@ -54,7 +54,7 @@ class HabitGroupStateNotifier extends BaseStateNotifier<HabitGroupState> {
         await _habitGroupApi.createGroup(
       request: CreateHabitGroupRequest(
         name: groupName,
-        date: DateUtils.getCurrentDateInString(),
+        date: DateCustomUtils.getCurrentDateInString(),
       ),
     );
 
@@ -68,8 +68,10 @@ class HabitGroupStateNotifier extends BaseStateNotifier<HabitGroupState> {
   }
 
   Future<void> _getAllGroups() async {
-    final String firstDayOfTheWeek = DateUtils.getFirstDayOfTheWeekFromToday();
-    final String lastDayOfTheWeek = DateUtils.getLastDayOfTheWeekFromToday();
+    final String firstDayOfTheWeek =
+        DateCustomUtils.getFirstDayOfTheWeekFromToday();
+    final String lastDayOfTheWeek =
+        DateCustomUtils.getLastDayOfTheWeekFromToday();
 
     try {
       final HttpResponse<List<GetHabitGroupsItem>> request =
