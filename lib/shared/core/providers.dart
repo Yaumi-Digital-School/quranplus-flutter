@@ -1,4 +1,6 @@
+import 'package:qurantafsir_flutter/main.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/tadabbur_api.dart';
+import 'package:qurantafsir_flutter/shared/core/services/alice_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
@@ -19,10 +21,12 @@ final StateProvider<DioService> dioServiceProvider =
     StateProvider<DioService>((ref) {
   final SharedPreferenceService sharedPreferenceService =
       ref.watch(sharedPreferenceServiceProvider);
+  final AliceService aliceService = ref.watch(aliceServiceProvider);
 
   return DioService(
     baseUrl: EnvConstants.baseUrl ?? '',
     accessToken: sharedPreferenceService.getApiToken(),
+    aliceService: aliceService,
   );
 });
 
@@ -147,3 +151,8 @@ final StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>
     );
   },
 );
+
+final Provider<AliceService> aliceServiceProvider =
+    Provider<AliceService>((ref) {
+  return AliceService(navigatorKey);
+});

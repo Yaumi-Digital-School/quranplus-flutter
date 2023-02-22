@@ -91,6 +91,7 @@ class AuthenticationService {
       ref.read(dioServiceProvider.notifier).state = DioService(
         baseUrl: EnvConstants.baseUrl!,
         accessToken: _sharedPreferenceService.getApiToken(),
+        aliceService: ref.read(aliceServiceProvider),
       );
 
       ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
