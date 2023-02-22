@@ -19,6 +19,8 @@ import 'package:qurantafsir_flutter/shared/core/services/shared_preference_servi
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'firebase_options.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -40,7 +42,7 @@ Future<void> main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
   static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
@@ -48,80 +50,86 @@ class MyApp extends StatelessWidget {
       FirebaseAnalyticsObserver(analytics: analytics);
 
   @override
+  ConsumerState<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends ConsumerState<MyApp> {
+  @override
+  void initState() {
+    ref.read(aliceServiceProvider).init();
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+    final SharedPreferenceService sp =
+        ref.watch(sharedPreferenceServiceProvider);
+    final AuthenticationService ur = ref.watch(authenticationService);
 
-    return Consumer(
-      builder: (context, ref, child) {
-        final SharedPreferenceService sp =
-            ref.watch(sharedPreferenceServiceProvider);
-        final AuthenticationService ur = ref.watch(authenticationService);
+    if (sp.getApiToken().isNotEmpty) {
+      ur.setIsLoggedIn(true);
+    }
 
-        if (sp.getApiToken().isNotEmpty) {
-          ur.setIsLoggedIn(true);
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: AppConstants.appName,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        backgroundColor: backgroundColor,
+        scaffoldBackgroundColor: QPColors.whiteFair,
+      ),
+      navigatorObservers: <NavigatorObserver>[MyApp.observer],
+      navigatorKey: navigatorKey,
+      onGenerateRoute: (RouteSettings settings) {
+        late Widget selectedRouteWidget;
+        switch (settings.name) {
+          case RoutePaths.routeSplash:
+            selectedRouteWidget = SplashPage(
+              navigatorKey: navigatorKey,
+            );
+            break;
+          case RoutePaths.routeMain:
+            final args = settings.arguments != null &&
+                    settings.arguments is MainPageParam
+                ? settings.arguments as MainPageParam
+                : null;
+            selectedRouteWidget = MainPage(
+              param: args,
+            );
+            break;
+          case RoutePaths.routeSettings:
+            selectedRouteWidget = SettingsPage();
+            break;
+          case RoutePaths.routeSurahPage:
+            final args = settings.arguments is SuratPageV3Param
+                ? settings.arguments as SuratPageV3Param
+                : SuratPageV3Param(startPageInIndex: 0);
+            selectedRouteWidget = SuratPageV3(param: args);
+            break;
+          case RoutePaths.routeHabitGroupDetail:
+            final args = settings.arguments is HabitGroupDetailViewParam
+                ? settings.arguments as HabitGroupDetailViewParam
+                : HabitGroupDetailViewParam(id: 0);
+            selectedRouteWidget = HabitGroupDetailView(param: args);
+            break;
+          case RoutePaths.accountDeletion:
+            selectedRouteWidget = const AccountDeletionInformationView();
+            break;
+          case RoutePaths.tadabburSurahList:
+            selectedRouteWidget = const TadabburSurahListView();
+            break;
+          default:
+            selectedRouteWidget = const Scaffold(
+              body: Center(
+                child: Text('No route defined'),
+              ),
+            );
         }
 
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: AppConstants.appName,
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-            backgroundColor: backgroundColor,
-            scaffoldBackgroundColor: QPColors.whiteFair,
-          ),
-          navigatorObservers: <NavigatorObserver>[observer],
-          navigatorKey: navigatorKey,
-          onGenerateRoute: (RouteSettings settings) {
-            late Widget selectedRouteWidget;
-            switch (settings.name) {
-              case RoutePaths.routeSplash:
-                selectedRouteWidget = SplashPage(
-                  navigatorKey: navigatorKey,
-                );
-                break;
-              case RoutePaths.routeMain:
-                final args = settings.arguments != null &&
-                        settings.arguments is MainPageParam
-                    ? settings.arguments as MainPageParam
-                    : null;
-                selectedRouteWidget = MainPage(
-                  param: args,
-                );
-                break;
-              case RoutePaths.routeSettings:
-                selectedRouteWidget = SettingsPage();
-                break;
-              case RoutePaths.routeSurahPage:
-                final args = settings.arguments is SuratPageV3Param
-                    ? settings.arguments as SuratPageV3Param
-                    : SuratPageV3Param(startPageInIndex: 0);
-                selectedRouteWidget = SuratPageV3(param: args);
-                break;
-              case RoutePaths.routeHabitGroupDetail:
-                final args = settings.arguments is HabitGroupDetailViewParam
-                    ? settings.arguments as HabitGroupDetailViewParam
-                    : HabitGroupDetailViewParam(id: 0);
-                selectedRouteWidget = HabitGroupDetailView(param: args);
-                break;
-              case RoutePaths.accountDeletion:
-                selectedRouteWidget = const AccountDeletionInformationView();
-                break;
-              case RoutePaths.tadabburSurahList:
-                selectedRouteWidget = const TadabburSurahListView();
-                break;
-              default:
-                selectedRouteWidget = const Scaffold(
-                  body: Center(
-                    child: Text('No route defined'),
-                  ),
-                );
-            }
-
-            return MaterialPageRoute(
-              builder: (context) {
-                return selectedRouteWidget;
-              },
-            );
+        return MaterialPageRoute(
+          builder: (context) {
+            return selectedRouteWidget;
           },
         );
       },

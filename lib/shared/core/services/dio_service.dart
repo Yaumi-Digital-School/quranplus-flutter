@@ -2,15 +2,18 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:qurantafsir_flutter/shared/core/services/alice_service.dart';
 
 class DioService {
   DioService({
     required this.baseUrl,
+    required AliceService aliceService,
     this.accessToken,
-  });
+  }) : _aliceService = aliceService;
 
   final String baseUrl;
   final String? accessToken;
+  final AliceService _aliceService;
 
   static final CancelToken _cancelToken = CancelToken();
   final int _timeOut = 10000;
@@ -28,6 +31,7 @@ class DioService {
           responseHeader: true,
           responseBody: true,
         ),
+        _aliceService.alice.getDioInterceptor(),
       ]);
   }
 

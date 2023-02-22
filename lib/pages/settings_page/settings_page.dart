@@ -154,6 +154,7 @@ class SettingsPage extends StatelessWidget {
               baseUrl: EnvConstants.baseUrl!,
               accessToken:
                   ref.read(sharedPreferenceServiceProvider).getApiToken(),
+              aliceService: ref.read(aliceServiceProvider),
             );
             ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
           },
@@ -216,6 +217,7 @@ class SettingsPage extends StatelessWidget {
                 notifier.signOut(() {
                   ref.read(dioServiceProvider.notifier).state = DioService(
                     baseUrl: EnvConstants.baseUrl!,
+                    aliceService: ref.read(aliceServiceProvider),
                   );
 
                   ScaffoldMessenger.of(context)
