@@ -141,9 +141,9 @@ class _HabitPersonalState extends State<HabitPersonalView> {
                           ButtonNeutral(
                             label: "Add Progress by Reading",
                             onTap: () {
-                              final BottomNavigationBar navbar = MainPage
-                                  .globalKey
-                                  .currentWidget as BottomNavigationBar;
+                              final BottomNavigationBar navbar =
+                                  mainNavbarGlobalKey.currentWidget
+                                      as BottomNavigationBar;
                               navbar.onTap!(2);
                             },
                           ),

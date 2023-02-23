@@ -21,6 +21,7 @@ import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:qurantafsir_flutter/widgets/registration_view.dart';
+import 'package:qurantafsir_flutter/widgets/sign_in_bottom_sheet.dart';
 
 class SettingsPage extends StatelessWidget {
   SettingsPage({Key? key}) : super(key: key);
@@ -32,7 +33,7 @@ class SettingsPage extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async {
         final navigationBar =
-            MainPage.globalKey.currentWidget as BottomNavigationBar;
+            mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
         navigationBar.onTap!(0);
 
         return false;
@@ -148,8 +149,10 @@ class SettingsPage extends StatelessWidget {
         notifier.signIn(
           ref: ref,
           type: type,
+          onAccountDeleted: () {
+            SignInBottomSheet.showAccountDeletedInfo(context: context);
+          },
           onSuccess: () {
-            Navigator.of(context).pushReplacementNamed(RoutePaths.routeMain);
             ref.read(dioServiceProvider.notifier).state = DioService(
               baseUrl: EnvConstants.baseUrl!,
               accessToken:
@@ -157,13 +160,16 @@ class SettingsPage extends StatelessWidget {
               aliceService: ref.read(aliceServiceProvider),
             );
             ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
+            final BottomNavigationBar navbar =
+                mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
+            navbar.onTap!(0);
           },
-          onError: () {
+          onGeneralError: () {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(
                 const SnackBar(
-                  content: Text('Sign in Gagal'),
+                  content: Text('Failed to sign in'),
                 ),
               );
           },
@@ -218,6 +224,7 @@ class SettingsPage extends StatelessWidget {
                   ref.read(dioServiceProvider.notifier).state = DioService(
                     baseUrl: EnvConstants.baseUrl!,
                     aliceService: ref.read(aliceServiceProvider),
+                    accessToken: '',
                   );
 
                   ScaffoldMessenger.of(context)

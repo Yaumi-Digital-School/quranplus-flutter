@@ -375,7 +375,7 @@ class AccountPage extends StatelessWidget {
                         RoutePaths.accountDeletion,
                       ),
                       child: Text(
-                        'How to delete my account?',
+                        'Delete my account',
                         style: QPTextStyle.subHeading3SemiBold.copyWith(
                           color: QPColors.errorFair,
                         ),

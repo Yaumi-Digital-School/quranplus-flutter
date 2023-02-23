@@ -8,6 +8,67 @@ import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 
 class SignInBottomSheet {
+  static void showAccountDeletedInfo({
+    required BuildContext context,
+  }) {
+    return GeneralBottomSheet.showBaseBottomSheet(
+      context: context,
+      widgetChild: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Sorry, we can’t register your\naccount! :(',
+            textAlign: TextAlign.center,
+            style: QPTextStyle.subHeading1SemiBold,
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              text:
+                  'Your email is associated with another account. Please reach us at',
+              style: QPTextStyle.body2Regular.copyWith(
+                color: QPColors.blackHeavy,
+              ),
+              children: [
+                TextSpan(
+                  text: ' yaumi.indonesia@gmail.com ',
+                  style: QPTextStyle.body2Regular,
+                ),
+                TextSpan(
+                  text: 'and',
+                  style: QPTextStyle.body2Regular.copyWith(
+                    color: QPColors.blackHeavy,
+                  ),
+                ),
+                TextSpan(
+                  text: ' rizaherzego@gmail.com ',
+                  style: QPTextStyle.body2Regular,
+                ),
+                TextSpan(
+                  text: 'to proceed your registration with that account.',
+                  style: QPTextStyle.body2Regular.copyWith(
+                    color: QPColors.blackHeavy,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 32,
+          ),
+          ButtonPrimary(
+            label: 'OK',
+            onTap: () => Navigator.pop(context),
+            size: ButtonSize.regular,
+          ),
+        ],
+      ),
+    );
+  }
+
   static void show({
     required BuildContext context,
     required VoidCallback onTapSignInWithGoogle,

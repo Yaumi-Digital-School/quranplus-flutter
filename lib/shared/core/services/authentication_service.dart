@@ -14,6 +14,12 @@ import 'package:qurantafsir_flutter/shared/core/services/shared_preference_servi
 import 'package:retrofit/retrofit.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+enum SignInResult {
+  success,
+  failedGeneral,
+  failedAccountDeleted,
+}
+
 class AuthenticationService {
   AuthenticationService({
     required this.userApi,
@@ -38,7 +44,7 @@ class AuthenticationService {
     ]);
   }
 
-  Future<bool> signIn({
+  Future<SignInResult> signIn({
     required SignInType type,
     required WidgetRef ref,
   }) async {
@@ -49,9 +55,13 @@ class AuthenticationService {
         case SignInType.google:
           final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
+          if (googleUser == null) {
+            return SignInResult.failedGeneral;
+          }
+
           request = RegisterOrLoginRequest(
-            name: googleUser?.displayName,
-            email: googleUser?.email,
+            name: googleUser.displayName,
+            email: googleUser.email,
           );
           break;
         case SignInType.apple:
@@ -76,11 +86,19 @@ class AuthenticationService {
       HttpResponse<UserResponse> response = await userApi.createUser(request);
 
       if (response.response.statusCode != 200) {
+        _googleSignIn.signOut();
         throw Exception('SignIn failed');
+      }
+
+      if (response.data.errorMessage == 'Account has been deleted') {
+        _googleSignIn.signOut();
+
+        return SignInResult.failedAccountDeleted;
       }
 
       var token = response.data.token ?? '';
       if (token.isEmpty) {
+        _googleSignIn.signOut();
         throw Exception('SignIn failed, token is empty');
       }
 
@@ -96,7 +114,7 @@ class AuthenticationService {
 
       ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
 
-      return token.isNotEmpty;
+      return SignInResult.success;
     } catch (error) {
       throw Exception('SignIn error: ' + error.toString());
     }
@@ -173,7 +191,7 @@ class AuthenticationService {
     );
 
     final BottomNavigationBar navbar =
-        MainPage.globalKey.currentWidget as BottomNavigationBar;
+        mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
 
     navbar.onTap!(3);
   }

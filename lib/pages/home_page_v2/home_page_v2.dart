@@ -15,6 +15,7 @@ import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart' as date_util;
 import 'package:qurantafsir_flutter/widgets/button.dart';
@@ -166,10 +167,19 @@ class _HomePageV2State extends State<HomePageV2> {
     required HomePageStateNotifier notifier,
     required SignInType type,
   }) async {
-    final bool isSuccess = await ref.read(authenticationService).signIn(
+    final SignInResult result = await ref.read(authenticationService).signIn(
           ref: ref,
           type: type,
         );
+
+    if (result == SignInResult.failedAccountDeleted) {
+      Navigator.pop(context);
+      await Future.delayed(const Duration(seconds: 1), () {
+        SignInBottomSheet.showAccountDeletedInfo(context: context);
+      });
+
+      return;
+    }
 
     ForceLoginParam? param = await notifier.getAndRemoveForceLoginParam();
 
@@ -181,8 +191,9 @@ class _HomePageV2State extends State<HomePageV2> {
               ),
             );
 
-    final bool shouldRedirect =
-        isSuccess && req.response.statusCode == 200 && param != null;
+    final bool shouldRedirect = result == SignInResult.success &&
+        req.response.statusCode == 200 &&
+        param != null;
 
     Navigator.pop(context);
 
@@ -415,7 +426,7 @@ class ListSuratByJuz extends StatelessWidget {
               label: "See Details",
               onTap: () {
                 final navigationBar =
-                    MainPage.globalKey.currentWidget as BottomNavigationBar;
+                    mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
 
                 navigationBar.onTap!(1);
               },

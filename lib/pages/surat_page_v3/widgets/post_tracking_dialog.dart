@@ -31,7 +31,7 @@ class HabitProgressPostTrackingDialog {
                 Navigator.pop(context);
                 Navigator.pop(context);
                 final BottomNavigationBar navbar =
-                    MainPage.globalKey.currentWidget as BottomNavigationBar;
+                    mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
                 navbar.onTap!(1);
               },
             ),
@@ -66,8 +66,8 @@ class HabitProgressPostTrackingDialog {
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.pop(context);
-                    final BottomNavigationBar navbar =
-                        MainPage.globalKey.currentWidget as BottomNavigationBar;
+                    final BottomNavigationBar navbar = mainNavbarGlobalKey
+                        .currentWidget as BottomNavigationBar;
                     navbar.onTap!(1);
                   },
                 ),
@@ -85,8 +85,8 @@ class HabitProgressPostTrackingDialog {
                         isHabitDailySummaryChanged: true,
                       ),
                     );
-                    final BottomNavigationBar navbar =
-                        MainPage.globalKey.currentWidget as BottomNavigationBar;
+                    final BottomNavigationBar navbar = mainNavbarGlobalKey
+                        .currentWidget as BottomNavigationBar;
                     navbar.onTap!(0);
                   },
                 ),

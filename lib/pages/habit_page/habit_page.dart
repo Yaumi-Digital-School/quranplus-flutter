@@ -9,7 +9,6 @@ import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
-import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
@@ -17,6 +16,7 @@ import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/registration_view.dart';
+import 'package:qurantafsir_flutter/widgets/sign_in_bottom_sheet.dart';
 
 class HabitPage extends StatelessWidget {
   HabitPage({Key? key}) : super(key: key);
@@ -28,7 +28,7 @@ class HabitPage extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async {
         final navigationBar =
-            MainPage.globalKey.currentWidget as BottomNavigationBar;
+            mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
         navigationBar.onTap!(0);
 
         return false;
@@ -140,10 +140,15 @@ class HabitPage extends StatelessWidget {
         notifier.signIn(
           type: type,
           ref: ref,
-          onSuccess: () {
-            Navigator.of(context).pushReplacementNamed(RoutePaths.routeMain);
+          onAccountDeletedError: () {
+            SignInBottomSheet.showAccountDeletedInfo(context: context);
           },
-          onError: () {
+          onSuccess: () {
+            final BottomNavigationBar navbar =
+                mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
+            navbar.onTap!(0);
+          },
+          onGeneralError: () {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(
