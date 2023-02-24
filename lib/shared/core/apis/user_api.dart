@@ -24,4 +24,9 @@ abstract class UserApi {
     @Header("x-access-token") String token,
     @Body() User user,
   );
+
+  @DELETE('/api/user')
+  Future<HttpResponse<UserResponse>> deleteUser({
+    @Header("x-access-token") required String token,
+  });
 }

@@ -72,23 +72,26 @@ class HabitPageStateNotifier extends BaseStateNotifier<HabitPageState> {
 
   Future<void> signIn({
     required Function() onSuccess,
-    required Function() onError,
+    required Function() onAccountDeletedError,
+    required Function() onGeneralError,
     required SignInType type,
     required WidgetRef ref,
   }) async {
     state = state.copyWith(resultStatus: ResultStatus.inProgress);
 
     try {
-      bool isSuccess = await _repository.signIn(
+      final SignInResult result = await _repository.signIn(
         type: type,
         ref: ref,
       );
 
-      if (!isSuccess) {
+      if (result == SignInResult.failedAccountDeleted) {
         state = state.copyWith(
           authenticationStatus: AuthenticationStatus.unknown,
           resultStatus: ResultStatus.canceled,
         );
+
+        onAccountDeletedError.call();
 
         return;
       }
@@ -103,7 +106,7 @@ class HabitPageStateNotifier extends BaseStateNotifier<HabitPageState> {
         authenticationStatus: AuthenticationStatus.unauthenticated,
         resultStatus: ResultStatus.failure,
       );
-      onError.call();
+      onGeneralError.call();
     }
   }
 }

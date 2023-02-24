@@ -15,6 +15,8 @@ class MainPageParam {
   final int initialSelectedIdx;
 }
 
+GlobalKey mainNavbarGlobalKey = GlobalKey<State<BottomNavigationBar>>();
+
 class MainPage extends StatefulWidget {
   const MainPage({
     Key? key,
@@ -22,8 +24,6 @@ class MainPage extends StatefulWidget {
   }) : super(key: key);
 
   final MainPageParam? param;
-
-  static GlobalKey globalKey = GlobalKey<State<BottomNavigationBar>>();
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -61,7 +61,7 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       body: Center(child: _pages.elementAt(_selectedIndex)),
       bottomNavigationBar: BottomNavigationBar(
-        key: MainPage.globalKey,
+        key: mainNavbarGlobalKey,
         type: BottomNavigationBarType.fixed,
         items: <BottomNavigationBarItem>[
           const BottomNavigationBarItem(

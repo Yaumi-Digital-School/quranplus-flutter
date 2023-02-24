@@ -84,7 +84,7 @@ class StartHabitCard extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {
                 final navigationBar =
-                    MainPage.globalKey.currentWidget as BottomNavigationBar;
+                    mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
 
                 navigationBar.onTap!(1);
               },

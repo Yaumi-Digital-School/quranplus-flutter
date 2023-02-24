@@ -26,7 +26,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
     return WillPopScope(
       onWillPop: () async {
         final navigationBar =
-            MainPage.globalKey.currentWidget as BottomNavigationBar;
+            mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
         navigationBar.onTap!(0);
 
         return false;
