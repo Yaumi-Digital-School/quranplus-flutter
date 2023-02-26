@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:qurantafsir_flutter/pages/read_tadabbur/read_tadabbur_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 
 class TadabburSurahCard extends StatelessWidget {
@@ -44,7 +46,14 @@ class TadabburSurahCard extends StatelessWidget {
             Expanded(child: _buildInformation()),
             GestureDetector(
               onTap: () {
-                // TODO : Add navigate to tadabbur ayah list
+                Navigator.pushNamed(
+                  context,
+                  RoutePaths.routeReadTadabbur,
+                  arguments: ReadTadabburParam(
+                    surahId: surahID,
+                    surahName: title,
+                  ),
+                );
               },
               child: const Icon(
                 Icons.keyboard_arrow_right,

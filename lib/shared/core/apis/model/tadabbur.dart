@@ -38,3 +38,55 @@ class GetTadabburSurahListItemSurah {
   ) =>
       _$GetTadabburSurahListItemSurahFromJson(json);
 }
+
+@JsonSerializable()
+class Source {
+  final String name;
+  Source({required this.name});
+
+  factory Source.fromJson(Map<String, dynamic> json) {
+    return _$SourceFromJson(json);
+  }
+}
+
+@JsonSerializable()
+class Surah {
+  @JsonKey(name: 'indonesian_name')
+  final String indonesianName;
+
+  Surah({required this.indonesianName});
+
+  factory Surah.fromJson(Map<String, dynamic> json) {
+    return _$SurahFromJson(json);
+  }
+}
+
+@JsonSerializable()
+class TadabburItemResponse {
+  final String id;
+  final String title;
+  @JsonKey(name: 'surah_id')
+  final String surahId;
+  @JsonKey(name: 'ayah_number')
+  final String ayahNumber;
+  @JsonKey(name: 'source_type')
+  final String sourceType;
+  final DateTime createdAt;
+  final Source source;
+  final Surah surah;
+
+  TadabburItemResponse({
+    required this.ayahNumber,
+    required this.createdAt,
+    required this.id,
+    required this.source,
+    required this.sourceType,
+    required this.surah,
+    required this.surahId,
+    required this.title,
+  });
+
+  factory TadabburItemResponse.fromJson(Map<String, dynamic> json) {
+    return _$TadabburItemResponseFromJson(json);
+  }
+}

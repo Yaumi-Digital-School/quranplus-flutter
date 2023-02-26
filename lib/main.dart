@@ -18,6 +18,7 @@ import 'package:qurantafsir_flutter/shared/core/services/authentication_service.
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'firebase_options.dart';
+import 'pages/read_tadabbur/read_tadabbur_page.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -118,6 +119,14 @@ class _MyAppState extends ConsumerState<MyApp> {
             break;
           case RoutePaths.tadabburSurahList:
             selectedRouteWidget = const TadabburSurahListView();
+            break;
+          case RoutePaths.routeReadTadabbur:
+            final args = settings.arguments is ReadTadabburParam
+                ? settings.arguments as ReadTadabburParam
+                : ReadTadabburParam(surahName: "", surahId: 0);
+            selectedRouteWidget = ReadTadabburPage(
+              param: args,
+            );
             break;
           default:
             selectedRouteWidget = const Scaffold(

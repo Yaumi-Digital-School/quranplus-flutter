@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
 enum ButtonSize {
@@ -184,6 +186,57 @@ class ButtonPrimary extends StatelessWidget {
         child: Text(
           label,
           style: TextStyle(fontSize: labelFontSzie),
+        ),
+      ),
+    );
+  }
+}
+
+class ButtonBrandSoft extends StatelessWidget {
+  final String title;
+  final Widget? leftWidget;
+  final void Function()? onTap;
+
+  const ButtonBrandSoft({
+    required this.title,
+    this.leftWidget,
+    this.onTap,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: QPColors.brandSoft,
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              offset: const Offset(0, 4),
+              blurRadius: 10,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            leftWidget ??
+                const Icon(
+                  Icons.menu_book,
+                  size: 12,
+                  color: QPColors.brandFair,
+                ),
+            const SizedBox(width: 10),
+            Text(
+              title,
+              style:
+                  QPTextStyle.button2Medium.copyWith(color: QPColors.brandFair),
+            ),
+          ],
         ),
       ),
     );

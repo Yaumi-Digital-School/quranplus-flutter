@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/model/user_response.dart';
 import 'package:qurantafsir_flutter/shared/core/models/user.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
