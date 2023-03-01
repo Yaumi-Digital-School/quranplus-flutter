@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/shared/core/services/alice_service.dart';
 
 class DioService {
@@ -79,6 +80,29 @@ class DioService {
       ..options.headers.addAll(<String, dynamic>{
         HttpHeaders.contentTypeHeader: 'application/json',
         'x-access-token': accessToken,
+      })
+      ..interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (
+            RequestOptions option,
+            RequestInterceptorHandler handler,
+          ) async {
+            option.cancelToken = _cancelToken;
+
+            return handler.next(option);
+          },
+          onError: _onDioError,
+        ),
+      );
+  }
+
+  Dio getDioWithStaticAPIKey() {
+    final Dio baseDio = _makeBaseDio();
+
+    return baseDio
+      ..options.headers.addAll(<String, dynamic>{
+        HttpHeaders.contentTypeHeader: 'application/json',
+        'x-api-token': EnvConstants.apiToken,
       })
       ..interceptors.add(
         InterceptorsWrapper(
