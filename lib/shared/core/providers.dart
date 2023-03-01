@@ -66,7 +66,7 @@ final Provider<TadabburApi> tadabburApiProvider = Provider<TadabburApi>((ref) {
   final DioService dioService = ref.watch(dioServiceProvider);
 
   return TadabburApi(
-    dioService.getDioWithAccessToken(),
+    dioService.getDioWithStaticAPIKey(),
   );
 });
 
