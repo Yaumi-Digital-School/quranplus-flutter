@@ -63,14 +63,16 @@ class Surah {
 
 @JsonSerializable()
 class TadabburItemResponse {
-  final String id;
+  final int id;
   final String title;
   @JsonKey(name: 'surah_id')
-  final String surahId;
+  final int surahId;
   @JsonKey(name: 'ayah_number')
-  final String ayahNumber;
+  final int ayahNumber;
   @JsonKey(name: 'source_type')
   final String sourceType;
+  @JsonKey(name: 'source_id')
+  final int sourceId;
   final DateTime createdAt;
   final Source source;
   final Surah surah;
@@ -84,6 +86,7 @@ class TadabburItemResponse {
     required this.surah,
     required this.surahId,
     required this.title,
+    required this.sourceId,
   });
 
   factory TadabburItemResponse.fromJson(Map<String, dynamic> json) {

@@ -15,9 +15,9 @@ class TadabburAyahCard extends StatelessWidget {
 
   final String title;
   final String source;
-  final String ayahNumber;
+  final int ayahNumber;
   final DateTime createdAt;
-  final String ayahId;
+  final int ayahId;
 
   @override
   Widget build(BuildContext context) {
