@@ -3,6 +3,7 @@ import 'package:qurantafsir_flutter/shared/core/database/db_bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_progress.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur_ayah_available.dart';
 import 'package:qurantafsir_flutter/shared/core/database/migration.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
@@ -649,5 +650,45 @@ class DbLocal {
       await txn.delete(HabitProgressTable.tableName);
       await txn.delete(HabitDailySummaryTable.tableName);
     });
+  }
+
+  /*
+    TADABBUR AYAH AVAILABLE
+  */
+
+  Future<void> bulkReplaceTadabburAyahAvailables(
+    Map<int, List<int>> listOfKeyValues,
+  ) async {
+    final Database db = await _db;
+
+    String values = '';
+
+    listOfKeyValues.forEach((key, value) {
+      values += "($key, '$value'),";
+    });
+
+    values = values.substring(0, values.length - 1);
+
+    await db.transaction((txn) async {
+      await txn.delete(TadabburAyahAvailableTable.tableName);
+
+      await txn.rawInsert(
+        '''
+        INSERT INTO ${TadabburAyahAvailableTable.tableName} 
+        (${TadabburAyahAvailableTable.surahID}, ${TadabburAyahAvailableTable.listOfAyahInStr})
+        VALUES $values
+      ''',
+      );
+    });
+  }
+
+  Future<List> getTadabburAyahAvailables() async {
+    final Database db = await _db;
+
+    List resultQuery = await db.query(
+      TadabburAyahAvailableTable.tableName,
+    );
+
+    return resultQuery;
   }
 }

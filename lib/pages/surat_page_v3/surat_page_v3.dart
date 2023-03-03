@@ -5,10 +5,13 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:qurantafsir_flutter/pages/read_tadabbur/read_tadabbur_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/post_tracking_dialog.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/pre_tracking_animation.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
@@ -277,7 +280,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
             ),
             body: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: _buildPageWithTracker(
+              child: _buildPageOnReadCTA(
                 context: context,
                 sn: notifier,
                 state: state,
@@ -324,7 +327,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     return true;
   }
 
-  Widget _buildPageWithTracker({
+  Widget _buildPageOnReadCTA({
     required SuratPageState state,
     required SuratPageStateNotifier sn,
     required BuildContext context,
@@ -345,38 +348,85 @@ class _SuratPageV3State extends State<SuratPageV3> {
     return Stack(
       children: [
         pages,
-        ValueListenableBuilder(
-          valueListenable: sn.isTrackerVisible,
-          builder: (_, bool value, __) {
-            if (state.isRecording && value) {
-              return Positioned(
-                child: _buildPageTracker(sn),
-              );
-            }
+        if (state.isRecording)
+          ValueListenableBuilder(
+            valueListenable: sn.isOnReadCTAVisible,
+            builder: (_, bool value, __) {
+              if (value) {
+                return Positioned(
+                  child: _buildPageTracker(sn),
+                );
+              }
 
-            if (!state.isRecording && value) {
+              return const SizedBox.shrink();
+            },
+          ),
+        ValueListenableBuilder(
+          valueListenable: sn.isOnReadCTAVisible,
+          builder: (_, bool value, __) {
+            if (value) {
               return Positioned(
                 bottom: bottomPadding,
-                right: 24,
-                child: ButtonPrimary(
-                  label: 'Start Tracking',
-                  size: ButtonSize.small,
-                  onTap: () {
-                    if (!sn.isLoggedIn) {
-                      sn.forceLoginToEnableHabit(
-                        context,
-                        RoutePaths.routeSurahPage,
-                        <String, dynamic>{
-                          'startPageInIndex': sn.currentPage.value,
-                          'isStartTracking': true,
+                width: MediaQuery.of(context).size.width - 16,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ValueListenableBuilder(
+                        valueListenable: sn.visibleSuratName,
+                        builder: (context, String value, __) {
+                          final int surahNumber =
+                              surahNameToSurahNumberMap[value] ?? 0;
+
+                          if (sn.availableAyahTadabburs[surahNumber] != null) {
+                            return ButtonBrandSoft(
+                              leftWidget: const Icon(
+                                Icons.menu_book,
+                                size: 12,
+                                color: QPColors.brandFair,
+                              ),
+                              title: 'Tadabbur $value',
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  RoutePaths.routeReadTadabbur,
+                                  arguments: ReadTadabburParam(
+                                    surahName: value,
+                                    surahId: surahNumber,
+                                    isFromSurahPage: true,
+                                  ),
+                                );
+                              },
+                            );
+                          }
+
+                          return const SizedBox.shrink();
                         },
-                      );
+                      ),
+                      if (!state.isRecording)
+                        ButtonPrimary(
+                          label: 'Start Tracking',
+                          size: ButtonSize.small,
+                          onTap: () {
+                            if (!sn.isLoggedIn) {
+                              sn.forceLoginToEnableHabit(
+                                context,
+                                RoutePaths.routeSurahPage,
+                                <String, dynamic>{
+                                  'startPageInIndex': sn.currentPage.value,
+                                  'isStartTracking': true,
+                                },
+                              );
 
-                      return;
-                    }
+                              return;
+                            }
 
-                    _startTracking(context, sn);
-                  },
+                            _startTracking(context, sn);
+                          },
+                        ),
+                    ],
+                  ),
                 ),
               );
             }
@@ -572,7 +622,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
 
     return GestureDetector(
       onTap: () {
-        notifier.isTrackerVisible.value = !notifier.isTrackerVisible.value;
+        notifier.isOnReadCTAVisible.value = !notifier.isOnReadCTAVisible.value;
       },
       child: PageView(
         reverse: true,
@@ -585,7 +635,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
           notifier.currentPage.value = pageValue;
           notifier.checkIsBookmarkExists(pageValue);
           notifier.changePageOnRecording(pageValue);
-          notifier.isTrackerVisible.value = true;
+          notifier.isOnReadCTAVisible.value = true;
         },
         children: allPages,
       ),
@@ -619,7 +669,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
         notifier.changePageOnRecording(pageValue);
         notifier.checkIsBookmarkExists(pageValue);
         notifier.currentPage.value = pageValue;
-        notifier.isTrackerVisible.value = true;
+        notifier.isOnReadCTAVisible.value = true;
       },
       children: allPages,
     );
@@ -676,12 +726,12 @@ class _SuratPageV3State extends State<SuratPageV3> {
         notifier.visibleSuratName.value != "At-Taubah" &&
             verse.verseNumber == 1;
 
-    String translation =
-        state.translations![verse.surahNumberInIndex][verse.verseNumberInIndex];
-    String latin =
-        state.latins![verse.surahNumberInIndex][verse.verseNumberInIndex];
-    String tafsir =
-        state.tafsirs![verse.surahNumberInIndex][verse.verseNumberInIndex];
+    String? translation =
+        state.translations?[verse.surahNumberInIndex][verse.verseNumberInIndex];
+    String? latin =
+        state.latins?[verse.surahNumberInIndex][verse.verseNumberInIndex];
+    String? tafsir =
+        state.tafsirs?[verse.surahNumberInIndex][verse.verseNumberInIndex];
     bool isWithTranslations = state.readingSettings!.isWithTranslations;
     bool isWithTafsirs = state.readingSettings!.isWithTafsirs;
     bool isWithLatins = state.readingSettings!.isWithLatins;
@@ -783,7 +833,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    latin,
+                    latin!,
                     style: bodyLatin1.merge(
                       TextStyle(fontSize: state.readingSettings?.valueFontSize),
                     ),
@@ -796,7 +846,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    translation,
+                    translation!,
                     style: bodyRegular3.merge(
                       TextStyle(
                         height: 1.5,
@@ -823,7 +873,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          tafsir,
+                          tafsir!,
                           style: bodyRegular3.merge(
                             TextStyle(
                               height: 1.5,
@@ -846,9 +896,20 @@ class _SuratPageV3State extends State<SuratPageV3> {
                   ),
                 ),
               ),
+            if (notifier.availableAyahTadabburs[verse.surahNumber] != null &&
+                notifier.availableAyahTadabburs[verse.surahNumber]!
+                    .contains(verse.verseNumber))
+              Align(
+                alignment: Alignment.centerRight,
+                child: _buildIsTadabburAvailableFlag(),
+              ),
             if (useDivider)
               const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                padding: EdgeInsets.only(
+                  left: 16.0,
+                  right: 16.0,
+                  top: 16.0,
+                ),
                 child: Divider(
                   height: 10,
                   color: neutral400,
@@ -856,6 +917,33 @@ class _SuratPageV3State extends State<SuratPageV3> {
               ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildIsTadabburAvailableFlag() {
+    return Container(
+      margin: const EdgeInsets.only(right: 16),
+      padding: const EdgeInsets.all(6),
+      decoration: const BoxDecoration(
+        color: QPColors.whiteMassive,
+        borderRadius: BorderRadius.all(Radius.circular(24)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.menu_book,
+            size: 14,
+          ),
+          const SizedBox(
+            width: 4,
+          ),
+          Text(
+            'Tadabbur Available',
+            style: QPTextStyle.button3Medium,
+          ),
+        ],
       ),
     );
   }

@@ -41,11 +41,10 @@ class ButtonSecondary extends StatelessWidget {
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
-          padding: const EdgeInsets.all(6.0),
+          padding: const EdgeInsets.all(10.0),
           primary: Colors.white,
           onPrimary: primary500,
           elevation: 1,
-          minimumSize: const Size.fromHeight(40),
         ),
         onPressed: onTap,
         child: _childButton(leftIcon, label, labelFontSize),
@@ -84,6 +83,7 @@ class ButtonSecondary extends StatelessWidget {
 
     return Text(
       label,
+      textAlign: TextAlign.center,
       style: textStyle ??
           bodySemibold2.apply(color: primary500).copyWith(
                 fontSize: labelFontSize,
@@ -125,15 +125,15 @@ class ButtonNeutral extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(10)),
             side: BorderSide(color: darkGreen, width: 1),
           ),
-          padding: const EdgeInsets.all(6.0),
+          padding: const EdgeInsets.all(10.0),
           primary: Colors.transparent,
           onPrimary: primary500,
           elevation: 0,
-          minimumSize: const Size.fromHeight(40),
         ),
         onPressed: onTap,
         child: Text(
           label,
+          textAlign: TextAlign.center,
           style: textStyle ??
               bodySemibold2.copyWith(
                 color: darkGreen,
@@ -167,7 +167,7 @@ class ButtonPrimary extends StatelessWidget {
         ? 165
         : size == ButtonSize.extendable
             ? double.infinity
-            : 100;
+            : 130;
     final double labelFontSzie = size == ButtonSize.regular ? 14 : 12;
 
     return SizedBox(
@@ -177,10 +177,9 @@ class ButtonPrimary extends StatelessWidget {
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
-          padding: const EdgeInsets.all(6.0),
+          padding: const EdgeInsets.all(10.0),
           primary: darkGreen,
           onPrimary: Colors.white,
-          minimumSize: const Size.fromHeight(40),
         ),
         onPressed: onTap,
         child: Text(
@@ -224,12 +223,7 @@ class ButtonBrandSoft extends StatelessWidget {
         ),
         child: Row(
           children: [
-            leftWidget ??
-                const Icon(
-                  Icons.menu_book,
-                  size: 12,
-                  color: QPColors.brandFair,
-                ),
+            if (leftWidget != null) leftWidget!,
             const SizedBox(width: 10),
             Text(
               title,

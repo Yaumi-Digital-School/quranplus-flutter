@@ -144,7 +144,7 @@ class _HabitPersonalState extends State<HabitPersonalView> {
                               final BottomNavigationBar navbar =
                                   mainNavbarGlobalKey.currentWidget
                                       as BottomNavigationBar;
-                              navbar.onTap!(2);
+                              navbar.onTap!(3);
                             },
                           ),
                         ],

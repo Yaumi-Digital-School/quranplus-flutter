@@ -14,6 +14,7 @@ class SharedPreferenceService {
   final String _forceLoginParam = "force-login-param";
   final String _lastSync = "last-sync";
   final String _habitNeedToSyncTimer = "habit-need-to-sync-timer";
+  final String _lastSyncTadabburInformation = "last-sync-tadabbur-information";
 
   Future<void> init() async {
     _sharedPreferences = await SharedPreferences.getInstance();
@@ -55,6 +56,18 @@ class SharedPreferenceService {
     }
     final formattedDate = DateCustomUtils.formatISOTime(date);
     await _sharedPreferences.setString(_habitNeedToSyncTimer, formattedDate);
+  }
+
+  Future<void> setLastSyncTadabburInformation(DateTime date) async {
+    final formattedLastSync = DateCustomUtils.formatISOTime(date);
+    await _sharedPreferences.setString(
+      _lastSyncTadabburInformation,
+      formattedLastSync,
+    );
+  }
+
+  String getLastSyncTadabburInformation() {
+    return _sharedPreferences.getString(_lastSyncTadabburInformation) ?? '';
   }
 
   String getLastSync() {

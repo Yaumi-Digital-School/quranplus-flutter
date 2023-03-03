@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur_ayah_available.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
@@ -33,6 +34,7 @@ class SuratPageState {
     this.fullPageSeparators,
     this.isBookmarkFetched = false,
     this.isRecording = false,
+    this.isLoading = true,
   });
 
   List<QuranPage>? pages;
@@ -45,6 +47,7 @@ class SuratPageState {
   int separatorBuilderIndex = 0;
   bool isBookmarkFetched;
   bool isRecording;
+  bool isLoading;
 
   SuratPageState copyWith({
     List<QuranPage>? pages,
@@ -56,6 +59,7 @@ class SuratPageState {
     ReadingSettings? readingSettings,
     bool? isBookmarkFetched,
     bool? isRecording,
+    bool? isLoading,
   }) {
     separatorBuilderIndex = 0;
 
@@ -69,6 +73,7 @@ class SuratPageState {
       readingSettings: readingSettings ?? this.readingSettings,
       fullPageSeparators: fullPageSeparators ?? this.fullPageSeparators,
       isRecording: isRecording ?? this.isRecording,
+      isLoading: isLoading ?? this.isLoading,
     );
   }
 
@@ -77,15 +82,6 @@ class SuratPageState {
   }
 
   double get currentPage => pageController!.page!;
-
-  bool get isLoading =>
-      pages == null ||
-      translations == null ||
-      latins == null ||
-      tafsirs == null ||
-      readingSettings == null ||
-      fullPageSeparators == null ||
-      !isBookmarkFetched;
 }
 
 class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
@@ -146,9 +142,12 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   TextEditingController habitTrackerSubmissionController =
       TextEditingController();
 
-  ValueNotifier<bool> isTrackerVisible = ValueNotifier(true);
+  ValueNotifier<bool> isOnReadCTAVisible = ValueNotifier(true);
   double _scrollDownOffset = 0;
   double _scrollUpOffset = 0;
+
+  final Map<int, List<int>> _availableAyahTadabburs = {};
+  Map<int, List<int>> get availableAyahTadabburs => _availableAyahTadabburs;
 
   @override
   Future<void> initStateNotifier({
@@ -171,11 +170,22 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     );
     visibleIconBookmark = ValueNotifier(false);
 
+    await _getTadabburAyahAvailable();
+
     await _getBookmarkListFromLocal();
     await _getFavoriteListFromLocal();
-    await _generateTranslations();
-    await _generateLatins();
-    await _generateBaseTafsirs();
+    if (settings.isWithTranslations) {
+      await _generateTranslations();
+    }
+
+    if (settings.isWithLatins) {
+      await _generateLatins();
+    }
+
+    if (settings.isWithTafsirs) {
+      await _generateBaseTafsirs();
+    }
+
     await _generateFullPageSeparators();
 
     _scrollController.addListener(() => _listenOnScrollChanges());
@@ -189,9 +199,23 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
       latins: _latins,
       fullPageSeparators: _fullPageSeparators,
       isBookmarkFetched: true,
+      isLoading: false,
     );
 
     checkIsBookmarkExists(startPageInIndex + 1);
+  }
+
+  Future<void> _getTadabburAyahAvailable() async {
+    final List<dynamic> res = await db.getTadabburAyahAvailables();
+
+    for (int i = 0; i < res.length; i++) {
+      final int surahID = res[i][TadabburAyahAvailableTable.surahID];
+      final String listOfAyahInStr =
+          res[i][TadabburAyahAvailableTable.listOfAyahInStr];
+      final List<dynamic> listOfAyah = json.decode(listOfAyahInStr);
+
+      _availableAyahTadabburs[surahID] = List<int>.from(listOfAyah);
+    }
   }
 
   void _listenOnScrollChanges() {
@@ -205,16 +229,16 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
                 ScrollDirection.reverse;
 
     if (onScrollUpChecking) {
-      if (!isTrackerVisible.value) {
-        isTrackerVisible.value = true;
+      if (!isOnReadCTAVisible.value) {
+        isOnReadCTAVisible.value = true;
       }
 
       _scrollDownOffset = currentOffset;
     }
 
     if (onScrollDownChecking) {
-      if (isTrackerVisible.value) {
-        isTrackerVisible.value = false;
+      if (isOnReadCTAVisible.value) {
+        isOnReadCTAVisible.value = false;
       }
 
       _scrollUpOffset = currentOffset;
@@ -347,30 +371,53 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     return qPage;
   }
 
-  void setIsWithTranslations(bool value) {
+  Future<void> setIsWithTranslations(bool value) async {
     final ReadingSettings settings = state.readingSettings!.copyWith(
       isWithTranslations: value,
     );
-    state = state.copyWith(readingSettings: settings);
+
+    if (state.translations == null || state.translations!.isEmpty) {
+      await _generateTranslations();
+    }
+
+    state = state.copyWith(
+      readingSettings: settings,
+      translations: _translations,
+    );
+
     _sharedPreferenceService.setReadingSettings(settings);
   }
 
-  void setIsWithTafsirs(bool value) {
+  Future<void> setIsWithTafsirs(bool value) async {
     final ReadingSettings settings = state.readingSettings!.copyWith(
       isWithTafsirs: value,
     );
 
-    state = state.copyWith(readingSettings: settings);
+    if (state.tafsirs == null || state.tafsirs!.isEmpty) {
+      await _generateBaseTafsirs();
+    }
+
+    state = state.copyWith(
+      readingSettings: settings,
+      tafsirs: _tafsirs,
+    );
 
     _sharedPreferenceService.setReadingSettings(settings);
   }
 
-  void setisWithLatins(bool value) {
+  Future<void> setisWithLatins(bool value) async {
     final ReadingSettings settings = state.readingSettings!.copyWith(
       isWithLatins: value,
     );
 
-    state = state.copyWith(readingSettings: settings);
+    if (state.latins == null || state.latins!.isEmpty) {
+      await _generateLatins();
+    }
+
+    state = state.copyWith(
+      readingSettings: settings,
+      latins: _latins,
+    );
 
     _sharedPreferenceService.setReadingSettings(settings);
   }
@@ -481,8 +528,8 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     String? surahName,
   }) async {
     try {
-      HttpResponse<CreateBookmarkResponse> _ =
-          await _bookmarkApi.createBookmark(
+      Future<HttpResponse<CreateBookmarkResponse>> _ =
+          _bookmarkApi.createBookmark(
         request: CreateBookmarkRequest(
           surahId: surahNameToSurahNumberMap[surahName],
           page: page,

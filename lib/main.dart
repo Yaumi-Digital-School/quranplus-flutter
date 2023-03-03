@@ -5,7 +5,7 @@ import 'package:qurantafsir_flutter/pages/account_deletion/account_deletion_view
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_view.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page.dart';
-import 'package:qurantafsir_flutter/pages/splash_page.dart';
+import 'package:qurantafsir_flutter/pages/splash_page/splash_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/pages/tadabbur_surah_list_page/tadabbur_surah_list_view.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
@@ -86,9 +86,7 @@ class _MyAppState extends ConsumerState<MyApp> {
         late Widget selectedRouteWidget;
         switch (settings.name) {
           case RoutePaths.routeSplash:
-            selectedRouteWidget = SplashPage(
-              navigatorKey: navigatorKey,
-            );
+            selectedRouteWidget = SplashPage(navigatorKey: navigatorKey);
             break;
           case RoutePaths.routeMain:
             final args = settings.arguments != null &&
