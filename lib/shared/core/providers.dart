@@ -1,3 +1,4 @@
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:qurantafsir_flutter/main.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/tadabbur_api.dart';
 import 'package:qurantafsir_flutter/shared/core/services/alice_service.dart';
@@ -15,7 +16,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/core/services/bookmarks_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/favorite_ayahs_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
+import 'package:qurantafsir_flutter/shared/core/services/remote_config_service/remote_config_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
+import 'package:qurantafsir_flutter/shared/core/services/tadabbur_service.dart';
 
 final StateProvider<DioService> dioServiceProvider =
     StateProvider<DioService>((ref) {
@@ -155,4 +158,22 @@ final StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>
 final Provider<AliceService> aliceServiceProvider =
     Provider<AliceService>((ref) {
   return AliceService(navigatorKey);
+});
+
+final Provider<RemoteConfigService> remoteConfigService =
+    Provider<RemoteConfigService>((ref) {
+  return RemoteConfigService();
+});
+
+final Provider<TadabburService> tadabburService =
+    Provider<TadabburService>((ref) {
+  final TadabburApi tadabburApi = ref.read(tadabburApiProvider);
+  final SharedPreferenceService sp = ref.read(sharedPreferenceServiceProvider);
+  final RemoteConfigService rc = ref.read(remoteConfigService);
+
+  return TadabburService(
+    tadabburApi: tadabburApi,
+    sharedPreferenceService: sp,
+    remoteConfigService: rc,
+  );
 });

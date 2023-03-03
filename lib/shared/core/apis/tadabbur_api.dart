@@ -16,4 +16,7 @@ abstract class TadabburApi {
   Future<HttpResponse<List<TadabburItemResponse>>> getListTadabburOfSurah({
     @Path('surah_id') required int surahId,
   });
+
+  @GET('/api/tadabbur/ayah')
+  Future<HttpResponse<dynamic>> getListOfAvailableTadabburAyah();
 }

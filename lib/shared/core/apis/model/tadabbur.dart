@@ -93,3 +93,13 @@ class TadabburItemResponse {
     return _$TadabburItemResponseFromJson(json);
   }
 }
+
+class GetListOfAvailableTadabburAyah {
+  GetListOfAvailableTadabburAyah(this.result);
+
+  final Map<int, List<int>> result;
+
+  factory GetListOfAvailableTadabburAyah.fromJson(Map<int, List<int>> json) {
+    return GetListOfAvailableTadabburAyah(json);
+  }
+}

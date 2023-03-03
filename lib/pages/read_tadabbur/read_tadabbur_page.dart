@@ -121,6 +121,11 @@ class ReadTadabburPage extends StatelessWidget {
                   bottom: 40,
                   child: ButtonBrandSoft(
                     title: "Back to Surah",
+                    leftWidget: const Icon(
+                      Icons.menu_book,
+                      size: 12,
+                      color: QPColors.brandFair,
+                    ),
                     onTap: () {
                       Navigator.pop(context);
                     },

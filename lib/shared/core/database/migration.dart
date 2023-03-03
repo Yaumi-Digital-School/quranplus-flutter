@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:qurantafsir_flutter/shared/core/database/db_bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_progress.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur_ayah_available.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_daily_summary.dart';
@@ -15,6 +16,7 @@ class DbMigration {
     _migrate_2,
     _migrate_3,
     _migrate_4,
+    _migrate_5,
   ];
 
   Future<void> migrate(
@@ -107,5 +109,17 @@ class DbMigration {
         CREATE UNIQUE INDEX habit_daily_summary_date ON ${HabitDailySummaryTable.tableName}(date)
       ''');
     });
+  }
+
+  Future<void> _migrate_5(Database db) async {
+    await db.execute(
+      '''
+        CREATE table if not exists ${TadabburAyahAvailableTable.tableName}(
+          ${TadabburAyahAvailableTable.id} integer primary key autoincrement not null,
+          ${TadabburAyahAvailableTable.surahID} integer not null,
+          ${TadabburAyahAvailableTable.listOfAyahInStr} text
+        )
+      ''',
+    );
   }
 }
