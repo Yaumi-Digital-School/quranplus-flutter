@@ -94,6 +94,47 @@ class TadabburItemResponse {
   }
 }
 
+@JsonSerializable()
+class TadabburContentItem {
+  @JsonKey(name: 'content_type')
+  final String contentType;
+  final String content;
+
+  TadabburContentItem({required this.content, required this.contentType});
+
+  factory TadabburContentItem.fromJson(Map<String, dynamic> json) {
+    return _$TadabburContentItemFromJson(json);
+  }
+}
+
+@JsonSerializable()
+class TadabburContentResponse {
+  final String title;
+  @JsonKey(name: 'ayah_number')
+  final int ayahNumber;
+  final int surah;
+  @JsonKey(name: 'tadabbur_content')
+  final List<TadabburContentItem> tadabburContent;
+  @JsonKey(name: 'next_tadabbur_id')
+  final int nextTadabburId;
+  @JsonKey(name: 'previous_tadabbur_id')
+  final int previousTadabburId;
+
+  TadabburContentResponse({
+    required this.ayahNumber,
+    required this.nextTadabburId,
+    required this.previousTadabburId,
+    required this.surah,
+    required this.tadabburContent,
+    required this.title,
+  });
+
+  factory TadabburContentResponse.fromJson(Map<String, dynamic> json) {
+    return _$TadabburContentResponseFromJson(json);
+  }
+}
+
+@JsonSerializable()
 class GetListOfAvailableTadabburAyah {
   GetListOfAvailableTadabburAyah(this.result);
 

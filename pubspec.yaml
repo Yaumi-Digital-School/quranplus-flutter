@@ -64,6 +64,7 @@ dependencies:
   sign_in_with_apple: ^4.0.0
   firebase_dynamic_links: ^4.3.11
   alice: ^0.2.5
+  cached_network_image: ^3.2.0
   firebase_remote_config: ^2.0.1
 
 dev_dependencies:
