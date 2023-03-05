@@ -9,4 +9,5 @@ class RoutePaths {
   static const String accountDeletion = '/account-deletion';
   static const String tadabburSurahList = '/tadabbur-surah-list';
   static const String routeReadTadabbur = "/read-tadabbur";
+  static const String routeTadabburContent = "/tadabbur-content";
 }

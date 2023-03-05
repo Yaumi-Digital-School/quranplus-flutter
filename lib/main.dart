@@ -7,6 +7,7 @@ import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page.dart';
 import 'package:qurantafsir_flutter/pages/splash_page/splash_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
+import 'package:qurantafsir_flutter/pages/tadabbur_story/tadabur_story_page.dart';
 import 'package:qurantafsir_flutter/pages/tadabbur_surah_list_page/tadabbur_surah_list_view.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
@@ -125,6 +126,9 @@ class _MyAppState extends ConsumerState<MyApp> {
             selectedRouteWidget = ReadTadabburPage(
               param: args,
             );
+            break;
+          case RoutePaths.routeTadabburContent:
+            selectedRouteWidget = const TadabburStoryPage();
             break;
           default:
             selectedRouteWidget = const Scaffold(
