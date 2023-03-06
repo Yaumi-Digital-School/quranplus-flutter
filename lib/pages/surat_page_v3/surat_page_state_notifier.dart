@@ -207,7 +207,6 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
 
   Future<void> _getTadabburAyahAvailable() async {
     final List<dynamic> res = await db.getTadabburAyahAvailables();
-
     for (int i = 0; i < res.length; i++) {
       final int surahID = res[i][TadabburAyahAvailableTable.surahID];
       final String listOfAyahInStr =

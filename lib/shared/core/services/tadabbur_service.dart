@@ -1,3 +1,4 @@
+import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/tadabbur_api.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/services/remote_config_service/remote_config_service.dart';
@@ -46,8 +47,22 @@ class TadabburService {
       });
 
       await _db.bulkReplaceTadabburAyahAvailables(resParsed);
+      await syncTadabburSurahInformation();
 
       _sharedPreferenceService.setLastSyncTadabburInformation(curr);
+    }
+  }
+
+  Future<void> syncTadabburSurahInformation() async {
+    HttpResponse<List<GetTadabburSurahListItemResponse>> taddaburAvailable =
+        await _tadabburApi.getAvailableTadabburSurahList();
+
+    if (taddaburAvailable.response.statusCode == 200) {
+      Map<int, int> tadabburSurahMap = {
+        for (var surah in taddaburAvailable.data)
+          surah.surahID: surah.totalTadabbur,
+      };
+      await _db.bulkReplaceTadabburSurahAvailables(tadabburSurahMap);
     }
   }
 }

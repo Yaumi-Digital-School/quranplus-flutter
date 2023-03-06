@@ -1,8 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/tadabbur_api.dart';
+import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur.dart';
+
 import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/form.dart';
@@ -15,6 +21,7 @@ import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 import 'package:http/http.dart' as http;
+import 'package:retrofit/dio.dart';
 
 class HomePageState {
   HomePageState({
@@ -25,6 +32,7 @@ class HomePageState {
     this.ayahPage,
     this.dailySummary,
     required this.isNeedSync,
+    this.listTaddaburAvailables,
   });
 
   String token;
@@ -34,6 +42,7 @@ class HomePageState {
   Map<String, List<String>>? ayahPage;
   HabitDailySummary? dailySummary;
   bool isNeedSync;
+  Map<int, int>? listTaddaburAvailables;
 
   HomePageState copyWith({
     String? token,
@@ -43,6 +52,7 @@ class HomePageState {
     Map<String, List<String>>? ayahPage,
     HabitDailySummary? dailySummary,
     bool? isNeedSync,
+    Map<int, int>? listTaddaburAvailables,
   }) {
     return HomePageState(
       token: token ?? this.token,
@@ -52,17 +62,21 @@ class HomePageState {
       ayahPage: ayahPage ?? this.ayahPage,
       dailySummary: dailySummary ?? this.dailySummary,
       isNeedSync: isNeedSync ?? this.isNeedSync,
+      listTaddaburAvailables:
+          listTaddaburAvailables ?? this.listTaddaburAvailables,
     );
   }
 }
 
 class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
   HomePageStateNotifier({
+    required TadabburApi taddaburApi,
     required HabitDailySummaryService habitDailySummaryService,
     required SharedPreferenceService sharedPreferenceService,
     required this.mainPageProvider,
     required this.authenticationService,
   })  : _sharedPreferenceService = sharedPreferenceService,
+        _taddaburpApi = taddaburApi,
         _habitDailySummaryService = habitDailySummaryService,
         super(HomePageState(isNeedSync: false));
 
@@ -75,6 +89,9 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
   bool loginBottomSheetAlreadyBuilt = false;
   String? _token, _name, _feedbackUrl;
   HabitDailySummary? _dailySummary;
+  final TadabburApi _taddaburpApi;
+  late Map<int, int>? _listTaddaburAvailables;
+  DbLocal db = DbLocal();
 
   @override
   Future<void> initStateNotifier() async {
@@ -84,6 +101,7 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     if (connectivityResult != ConnectivityResult.none) {
       _feedbackUrl = (await _fetchLink()).url ?? '';
     }
+    await _getTaddaburSurahAvaliable();
     await _getJuzElements();
     await _getVerseToAyahPage();
 
@@ -105,6 +123,7 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
       ayahPage: _ayahPage,
       dailySummary: _dailySummary,
       isNeedSync: isNeedSync,
+      listTaddaburAvailables: _listTaddaburAvailables,
     );
   }
 
@@ -163,5 +182,15 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     }
 
     return res;
+  }
+
+  Future<void> _getTaddaburSurahAvaliable() async {
+    List<dynamic> taddaburSurahAvailable = await db.GetTadabburSurahAvailable();
+
+    Map<int, int>? tadabburSurahMap = {};
+    for (var surah in taddaburSurahAvailable) {
+      tadabburSurahMap[surah['id']] = surah['total_tadabbur'];
+    }
+    _listTaddaburAvailables = tadabburSurahMap;
   }
 }
