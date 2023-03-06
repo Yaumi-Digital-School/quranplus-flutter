@@ -4,6 +4,7 @@ import 'package:qurantafsir_flutter/shared/core/database/db_bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_progress.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur_ayah_available.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_daily_summary.dart';
@@ -17,6 +18,7 @@ class DbMigration {
     _migrate_3,
     _migrate_4,
     _migrate_5,
+    _migrate_6,
   ];
 
   Future<void> migrate(
@@ -121,5 +123,13 @@ class DbMigration {
         )
       ''',
     );
+  }
+
+  Future<void> _migrate_6(Database db) async {
+    await db.execute('''
+       CREATE TABLE IF NOT EXISTS ${TadabburTable.tableName}(
+         ${TadabburTable.surahID} integer not null,
+         ${TadabburTable.totalTadabbur} integer not null)
+     ''');
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_view.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/card_start_habit.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
+import 'package:qurantafsir_flutter/pages/read_tadabbur/read_tadabbur_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
@@ -12,6 +13,8 @@ import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
+
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
@@ -47,6 +50,7 @@ class _HomePageV2State extends State<HomePageV2> {
             habitDailySummaryService: ref.read(habitDailySummaryService),
             authenticationService: ref.read(authenticationService),
             mainPageProvider: ref.read(mainPageProvider),
+            taddaburApi: ref.read(tadabburApiProvider),
           );
         },
       ),
@@ -62,7 +66,8 @@ class _HomePageV2State extends State<HomePageV2> {
         if (state.juzElements == null ||
             state.feedbackUrl == null ||
             state.ayahPage == null ||
-            state.dailySummary == null) {
+            state.dailySummary == null ||
+            state.listTaddaburAvailables == null) {
           return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(),
@@ -372,6 +377,7 @@ class ListSuratByJuz extends StatelessWidget {
                                   context: context,
                                   juz: state.juzElements![index],
                                   notifier: notifier,
+                                  state: state,
                                 ),
                               ],
                             );
@@ -441,83 +447,150 @@ class ListSuratByJuz extends StatelessWidget {
     required BuildContext context,
     required JuzElement juz,
     required HomePageStateNotifier notifier,
+    required HomePageState state,
   }) {
     final List<SuratByJuz> surats = juz.surat;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.fromLTRB(
+        8,
+        0,
+        8,
+        24.0,
+      ),
       child: ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: surats.length,
         itemBuilder: (context, index) {
-          return ListTile(
-            tileColor: backgroundColor,
-            minLeadingWidth: 20,
-            leading: Container(
-              alignment: Alignment.center,
-              height: 34,
-              width: 30,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Color.fromRGBO(
-                      0,
-                      0,
-                      0,
-                      0.1,
+          String surahNumberString = surats[index].number;
+
+          int suratNumber = int.parse(surahNumberString);
+          int? totalTadabburInSurah =
+              state.listTaddaburAvailables![suratNumber];
+
+          String surahNameLatin = surats[index].nameLatin;
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                tileColor: backgroundColor,
+                minLeadingWidth: 20,
+                leading: Container(
+                  alignment: Alignment.center,
+                  height: 34,
+                  width: 30,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color.fromRGBO(
+                          0,
+                          0,
+                          0,
+                          0.1,
+                        ),
+                        offset: Offset(1.0, 2.0),
+                        blurRadius: 5.0,
+                        spreadRadius: 1.0,
+                      ),
+                    ],
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
                     ),
-                    offset: Offset(1.0, 2.0),
-                    blurRadius: 5.0,
-                    spreadRadius: 1.0,
                   ),
-                ],
-                borderRadius: BorderRadius.all(
-                  Radius.circular(20),
+                  child: Text(
+                    surahNumberString,
+                    style: numberStyle,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-              child: Text(
-                surats[index].number,
-                style: numberStyle,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            title: Text(
-              surats[index].nameLatin,
-              style: bodyMedium2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            subtitle: Text(
-              "Page ${surats[index].startPage}, Ayat ${surats[index].startAyat}",
-              style: bodyLight3,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            trailing: Text(
-              surats[index].name,
-              style: suratFontStyle,
-              textAlign: TextAlign.right,
-            ),
-            onTap: () async {
-              int page = surats[index].startPageToInt;
-              int startPageInIndexValue = page - 1;
-
-              final dynamic param = await Navigator.pushNamed(
-                context,
-                RoutePaths.routeSurahPage,
-                arguments: SuratPageV3Param(
-                  startPageInIndex: startPageInIndexValue,
-                  firstPagePointerIndex: surats[index].startPageID,
+                title: Text(
+                  surahNameLatin,
+                  style: bodyMedium2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              );
+                subtitle: Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: Text(
+                    "Page ${surats[index].startPage}, Ayat ${surats[index].startAyat}",
+                    style: bodyLight3,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                trailing: Text(
+                  surats[index].name,
+                  style: suratFontStyle,
+                  textAlign: TextAlign.right,
+                ),
+                onTap: () async {
+                  int page = surats[index].startPageToInt;
+                  int startPageInIndexValue = page - 1;
 
-              if (param != null && param is SuratPageV3OnPopParam) {
-                if (param.isHabitDailySummaryChanged) {
-                  notifier.getCurrentHabitDailySummaryListLocal();
-                }
-              }
-            },
+                  final dynamic param = await Navigator.pushNamed(
+                    context,
+                    RoutePaths.routeSurahPage,
+                    arguments: SuratPageV3Param(
+                      startPageInIndex: startPageInIndexValue,
+                      firstPagePointerIndex: surats[index].startPageID,
+                    ),
+                  );
+
+                  if (param != null && param is SuratPageV3OnPopParam) {
+                    if (param.isHabitDailySummaryChanged) {
+                      notifier.getCurrentHabitDailySummaryListLocal();
+                    }
+                  }
+                },
+              ),
+              if (state.listTaddaburAvailables!.containsKey(suratNumber))
+                Container(
+                  color: QPColors.whiteFair,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 0, left: 60),
+                    child: SizedBox(
+                      height: 30,
+                      width: 196,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          primary: Colors.white,
+                        ),
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            RoutePaths.routeReadTadabbur,
+                            arguments: ReadTadabburParam(
+                              surahName: surahNameLatin,
+                              surahId: suratNumber,
+                            ),
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.menu_book,
+                              color: QPColors.brandFair,
+                              size: 18.0,
+                            ),
+                            const SizedBox(
+                              width: 4,
+                            ),
+                            Text(
+                              "$totalTadabburInSurah Tadabbur available",
+                              style: const TextStyle(color: QPColors.brandFair),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           );
         },
       ),

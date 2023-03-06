@@ -40,6 +40,21 @@ class GetTadabburSurahListItemSurah {
 }
 
 @JsonSerializable()
+class GetListTadabburSurahAvailable {
+  GetListTadabburSurahAvailable(this.surahID, this.totalTadabbur);
+
+  @JsonKey(name: 'id')
+  final int surahID;
+  @JsonKey(name: 'total_tadabbur')
+  final int totalTadabbur;
+
+  factory GetListTadabburSurahAvailable.fromJson(
+    Map<String, dynamic> json,
+  ) =>
+      _$GetListTadabburSurahAvailableFromJson(json);
+}
+
+@JsonSerializable()
 class Source {
   final String name;
   Source({required this.name});
