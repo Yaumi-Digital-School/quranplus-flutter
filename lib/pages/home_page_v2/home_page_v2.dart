@@ -471,126 +471,130 @@ class ListSuratByJuz extends StatelessWidget {
 
           String surahNameLatin = surats[index].nameLatin;
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ListTile(
-                tileColor: backgroundColor,
-                minLeadingWidth: 20,
-                leading: Container(
-                  alignment: Alignment.center,
-                  height: 34,
-                  width: 30,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color.fromRGBO(
-                          0,
-                          0,
-                          0,
-                          0.1,
-                        ),
-                        offset: Offset(1.0, 2.0),
-                        blurRadius: 5.0,
-                        spreadRadius: 1.0,
-                      ),
-                    ],
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(20),
-                    ),
-                  ),
-                  child: Text(
-                    surahNumberString,
-                    style: numberStyle,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                title: Text(
-                  surahNameLatin,
-                  style: bodyMedium2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                subtitle: Padding(
-                  padding: const EdgeInsets.only(top: 6),
-                  child: Text(
-                    "Page ${surats[index].startPage}, Ayat ${surats[index].startAyat}",
-                    style: bodyLight3,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                trailing: Text(
-                  surats[index].name,
-                  style: suratFontStyle,
-                  textAlign: TextAlign.right,
-                ),
-                onTap: () async {
-                  int page = surats[index].startPageToInt;
-                  int startPageInIndexValue = page - 1;
+          return GestureDetector(
+            onTap: () async {
+              int page = surats[index].startPageToInt;
+              int startPageInIndexValue = page - 1;
 
-                  final dynamic param = await Navigator.pushNamed(
-                    context,
-                    RoutePaths.routeSurahPage,
-                    arguments: SuratPageV3Param(
-                      startPageInIndex: startPageInIndexValue,
-                      firstPagePointerIndex: surats[index].startPageID,
-                    ),
-                  );
+              final dynamic param = await Navigator.pushNamed(
+                context,
+                RoutePaths.routeSurahPage,
+                arguments: SuratPageV3Param(
+                  startPageInIndex: startPageInIndexValue,
+                  firstPagePointerIndex: surats[index].startPageID,
+                ),
+              );
 
-                  if (param != null && param is SuratPageV3OnPopParam) {
-                    if (param.isHabitDailySummaryChanged) {
-                      notifier.getCurrentHabitDailySummaryListLocal();
-                    }
-                  }
-                },
-              ),
-              if (state.listTaddaburAvailables!.containsKey(suratNumber))
-                Container(
-                  color: QPColors.whiteFair,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 0, left: 60),
-                    child: SizedBox(
-                      height: 30,
-                      width: 196,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
+              if (param != null && param is SuratPageV3OnPopParam) {
+                if (param.isHabitDailySummaryChanged) {
+                  notifier.getCurrentHabitDailySummaryListLocal();
+                }
+              }
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListTile(
+                  tileColor: backgroundColor,
+                  minLeadingWidth: 20,
+                  leading: Container(
+                    alignment: Alignment.center,
+                    height: 34,
+                    width: 30,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color.fromRGBO(
+                            0,
+                            0,
+                            0,
+                            0.1,
                           ),
-                          primary: Colors.white,
+                          offset: Offset(1.0, 2.0),
+                          blurRadius: 5.0,
+                          spreadRadius: 1.0,
                         ),
-                        onPressed: () {
-                          Navigator.pushNamed(
-                            context,
-                            RoutePaths.routeReadTadabbur,
-                            arguments: ReadTadabburParam(
-                              surahName: surahNameLatin,
-                              surahId: suratNumber,
+                      ],
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20),
+                      ),
+                    ),
+                    child: Text(
+                      surahNumberString,
+                      style: numberStyle,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  title: Text(
+                    surahNameLatin,
+                    style: bodyMedium2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: Text(
+                      "Page ${surats[index].startPage}, Ayat ${surats[index].startAyat}",
+                      style: bodyLight3,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  trailing: Text(
+                    surats[index].name,
+                    style: suratFontStyle,
+                    textAlign: TextAlign.right,
+                  ),
+                ),
+                if (state.listTaddaburAvailables!.containsKey(suratNumber))
+                  Container(
+                    color: QPColors.whiteFair,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 0, left: 60),
+                      child: SizedBox(
+                        height: 30,
+                        width: 196,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
                             ),
-                          );
-                        },
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.menu_book,
-                              color: QPColors.brandFair,
-                              size: 18.0,
-                            ),
-                            const SizedBox(
-                              width: 4,
-                            ),
-                            Text(
-                              "$totalTadabburInSurah Tadabbur available",
-                              style: const TextStyle(color: QPColors.brandFair),
-                            ),
-                          ],
+                            primary: Colors.white,
+                          ),
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              RoutePaths.routeReadTadabbur,
+                              arguments: ReadTadabburParam(
+                                surahName: surahNameLatin,
+                                surahId: suratNumber,
+                              ),
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.menu_book,
+                                color: QPColors.brandFair,
+                                size: 18.0,
+                              ),
+                              const SizedBox(
+                                width: 4,
+                              ),
+                              Text(
+                                "$totalTadabburInSurah Tadabbur available",
+                                style:
+                                    const TextStyle(color: QPColors.brandFair),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-            ],
+              ],
+            ),
           );
         },
       ),
