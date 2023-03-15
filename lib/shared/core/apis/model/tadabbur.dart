@@ -66,7 +66,7 @@ class Source {
 
 @JsonSerializable()
 class Surah {
-  @JsonKey(name: 'indonesian_name')
+  @JsonKey(name: 'indonesia_name')
   final String indonesianName;
 
   Surah({required this.indonesianName});

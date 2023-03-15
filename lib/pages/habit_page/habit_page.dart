@@ -144,6 +144,7 @@ class HabitPage extends StatelessWidget {
             SignInBottomSheet.showAccountDeletedInfo(context: context);
           },
           onSuccess: () {
+            ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
             final BottomNavigationBar navbar =
                 mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
             navbar.onTap!(0);

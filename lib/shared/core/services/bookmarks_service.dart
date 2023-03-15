@@ -17,7 +17,7 @@ class BookmarksService {
   void setIsMerged(bool value) => _isMerged = value;
 
   Future<List<Bookmarks>> getBookmarkFromLocal() async {
-    var bookmarkFromDb = await _db.getAllBookmark();
+    var bookmarkFromDb = await _db.getBookmarks();
     List<Bookmarks> _listBookmark = [];
 
     _listBookmark.clear();

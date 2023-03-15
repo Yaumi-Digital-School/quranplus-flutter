@@ -38,18 +38,23 @@ class TadabburService {
     HttpResponse<dynamic> response =
         await _tadabburApi.getListOfAvailableTadabburAyah();
 
-    if (response.response.statusCode == 200) {
-      final Map<String, List<dynamic>> res =
-          Map<String, List<dynamic>>.from(response.response.data);
+    try {
+      if (response.response.statusCode == 200) {
+        final Map<String, List<dynamic>> res =
+            Map<String, List<dynamic>>.from(response.response.data);
 
-      final Map<int, List<int>> resParsed = res.map((key, value) {
-        return MapEntry(int.tryParse(key) ?? 0, List<int>.from(value));
-      });
+        final Map<int, List<int>> resParsed = res.map((key, value) {
+          return MapEntry(int.tryParse(key) ?? 0, List<int>.from(value));
+        });
 
-      await _db.bulkReplaceTadabburAyahAvailables(resParsed);
-      await syncTadabburSurahInformation();
+        await _db.bulkReplaceTadabburAyahAvailables(resParsed);
+        await syncTadabburSurahInformation();
 
-      _sharedPreferenceService.setLastSyncTadabburInformation(curr);
+        _sharedPreferenceService.setLastSyncTadabburInformation(curr);
+      }
+    } catch (e) {
+      // add logger
+      return;
     }
   }
 

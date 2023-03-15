@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
+import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart';
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +16,7 @@ class SharedPreferenceService {
   final String _lastSync = "last-sync";
   final String _habitNeedToSyncTimer = "habit-need-to-sync-timer";
   final String _lastSyncTadabburInformation = "last-sync-tadabbur-information";
+  final String _lastRecordingData = "last-recording-data";
 
   Future<void> init() async {
     _sharedPreferences = await SharedPreferences.getInstance();
@@ -124,5 +126,25 @@ class SharedPreferenceService {
     return ForceLoginParam.fromJson(
       json.decode(res),
     );
+  }
+
+  Future<void> setLastRecordingData(LastRecordingData data) async {
+    final String encodedParam = json.encode(data.toJson());
+    await _sharedPreferences.setString(_lastRecordingData, encodedParam);
+  }
+
+  Future<LastRecordingData?> getLastRecordingData() async {
+    final String res = _sharedPreferences.getString(_lastRecordingData) ?? '';
+    if (res.isEmpty) {
+      return null;
+    }
+
+    return LastRecordingData.fromJson(
+      json.decode(res),
+    );
+  }
+
+  Future<void> clear() async {
+    await _sharedPreferences.clear();
   }
 }

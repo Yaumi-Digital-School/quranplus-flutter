@@ -10,10 +10,12 @@ import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur.dart';
 
 import 'package:qurantafsir_flutter/shared/core/env.dart';
+import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/form.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
+import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart';
 import 'package:qurantafsir_flutter/shared/core/models/verse-topage.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
@@ -33,6 +35,8 @@ class HomePageState {
     this.dailySummary,
     required this.isNeedSync,
     this.listTaddaburAvailables,
+    this.lastBookmark,
+    this.lastRecordingData,
   });
 
   String token;
@@ -43,6 +47,8 @@ class HomePageState {
   HabitDailySummary? dailySummary;
   bool isNeedSync;
   Map<int, int>? listTaddaburAvailables;
+  Bookmarks? lastBookmark;
+  LastRecordingData? lastRecordingData;
 
   HomePageState copyWith({
     String? token,
@@ -53,6 +59,8 @@ class HomePageState {
     HabitDailySummary? dailySummary,
     bool? isNeedSync,
     Map<int, int>? listTaddaburAvailables,
+    Bookmarks? lastBookmark,
+    LastRecordingData? lastRecordingData,
   }) {
     return HomePageState(
       token: token ?? this.token,
@@ -64,19 +72,19 @@ class HomePageState {
       isNeedSync: isNeedSync ?? this.isNeedSync,
       listTaddaburAvailables:
           listTaddaburAvailables ?? this.listTaddaburAvailables,
+      lastBookmark: lastBookmark ?? this.lastBookmark,
+      lastRecordingData: lastRecordingData ?? this.lastRecordingData,
     );
   }
 }
 
 class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
   HomePageStateNotifier({
-    required TadabburApi taddaburApi,
     required HabitDailySummaryService habitDailySummaryService,
     required SharedPreferenceService sharedPreferenceService,
     required this.mainPageProvider,
     required this.authenticationService,
   })  : _sharedPreferenceService = sharedPreferenceService,
-        _taddaburpApi = taddaburApi,
         _habitDailySummaryService = habitDailySummaryService,
         super(HomePageState(isNeedSync: false));
 
@@ -89,9 +97,10 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
   bool loginBottomSheetAlreadyBuilt = false;
   String? _token, _name, _feedbackUrl;
   HabitDailySummary? _dailySummary;
-  final TadabburApi _taddaburpApi;
   late Map<int, int>? _listTaddaburAvailables;
   DbLocal db = DbLocal();
+
+  Bookmarks? _lastBookmark;
 
   @override
   Future<void> initStateNotifier() async {
@@ -110,28 +119,52 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
         connectivityResult: connectivityResult,
       );
     }
-    final isNeedSync = _habitDailySummaryService.isNeedSync();
+    final bool isNeedSync = _habitDailySummaryService.isNeedSync();
 
     _dailySummary = await _habitDailySummaryService
         .getCurrentDayHabitDailySummaryListLocal();
 
+    await _getJuzElements();
+    await _getVerseToAyahPage();
+    _lastBookmark = await _getLastBookmark();
+    final LastRecordingData? lastRecordingData =
+        await _sharedPreferenceService.getLastRecordingData();
+
     state = state.copyWith(
-      token: _token,
-      name: _name,
       juzElements: _juzElements,
       feedbackUrl: _feedbackUrl ?? '',
       ayahPage: _ayahPage,
       dailySummary: _dailySummary,
       isNeedSync: isNeedSync,
       listTaddaburAvailables: _listTaddaburAvailables,
+      lastBookmark: _lastBookmark,
+      lastRecordingData: lastRecordingData,
     );
   }
 
-  Future<void> getCurrentHabitDailySummaryListLocal() async {
+  Future<Bookmarks?> _getLastBookmark() async {
+    final List<dynamic>? result = await db.getBookmarks(limit: 1);
+
+    if (result != null && result.isNotEmpty) {
+      return Bookmarks.fromMap(result[0]);
+    }
+
+    return null;
+  }
+
+  Future<void> refreshDataOnPopFromSurahPage() async {
     _dailySummary = await _habitDailySummaryService
         .getCurrentDayHabitDailySummaryListLocal();
 
-    state = state.copyWith(dailySummary: _dailySummary);
+    _lastBookmark = await _getLastBookmark();
+    final LastRecordingData? lastRecordingData =
+        await _sharedPreferenceService.getLastRecordingData();
+
+    state = state.copyWith(
+      dailySummary: _dailySummary,
+      lastBookmark: _lastBookmark,
+      lastRecordingData: lastRecordingData,
+    );
   }
 
   Future<void> _getVerseToAyahPage() async {

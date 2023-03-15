@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-AyahPage AyahPageFromJson(String str) => AyahPage.fromJson(json.decode(str));
+AyahPage ayahPageFromJson(String str) => AyahPage.fromJson(json.decode(str));
 
-String AyahPageToJson(AyahPage data) => json.encode(data.toJson());
+String ayahPageToJson(AyahPage data) => json.encode(data.toJson());
 
 class AyahPage {
   AyahPage({
