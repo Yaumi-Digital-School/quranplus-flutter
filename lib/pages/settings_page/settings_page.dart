@@ -152,14 +152,15 @@ class SettingsPage extends StatelessWidget {
           onAccountDeleted: () {
             SignInBottomSheet.showAccountDeletedInfo(context: context);
           },
-          onSuccess: () {
+          onSuccess: () async {
+            await ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
+
             ref.read(dioServiceProvider.notifier).state = DioService(
               baseUrl: EnvConstants.baseUrl!,
               accessToken:
                   ref.read(sharedPreferenceServiceProvider).getApiToken(),
               aliceService: ref.read(aliceServiceProvider),
             );
-            ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
             final BottomNavigationBar navbar =
                 mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
             navbar.onTap!(0);

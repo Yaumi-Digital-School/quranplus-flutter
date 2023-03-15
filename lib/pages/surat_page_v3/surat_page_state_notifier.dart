@@ -13,6 +13,7 @@ import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
+import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
@@ -551,7 +552,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   }
 
   Future<void> _getBookmarkListFromLocal() async {
-    var result = await db.getAllBookmark();
+    var result = await db.getBookmarks();
     for (var bookmark in result!) {
       _bookmarkList.add(
         Bookmarks.fromMap(bookmark).page,
@@ -662,6 +663,13 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
         pages: currentRecordedReadPages,
         startPage: _startPageOnRecord,
         summary: _currentSummary!,
+      );
+
+      await _sharedPreferenceService.setLastRecordingData(
+        LastRecordingData(
+          surahName: visibleSuratName.value,
+          page: (pageController.page ?? 0).toInt() + 1,
+        ),
       );
 
       recordedPagesList.clear();

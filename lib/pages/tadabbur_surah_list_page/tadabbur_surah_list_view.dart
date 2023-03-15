@@ -74,7 +74,7 @@ class TadabburSurahListView extends StatelessWidget {
               right: 24,
             ),
             child: ListView.builder(
-              itemCount: state.tadabburSurahList!.length,
+              itemCount: state.tadabburSurahList!.length + 1,
               itemBuilder: ((context, index) {
                 if (index == 0) {
                   return Padding(
@@ -87,7 +87,7 @@ class TadabburSurahListView extends StatelessWidget {
                 }
 
                 final GetTadabburSurahListItemResponse data =
-                    state.tadabburSurahList![index];
+                    state.tadabburSurahList![index - 1];
 
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 16),
