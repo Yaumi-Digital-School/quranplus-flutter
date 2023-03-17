@@ -128,7 +128,10 @@ class _MyAppState extends ConsumerState<MyApp> {
             );
             break;
           case RoutePaths.routeTadabburContent:
-            selectedRouteWidget = const TadabburStoryPage();
+            final args = settings.arguments as TadabburStoryPageParams;
+            selectedRouteWidget = TadabburStoryPage(
+              params: args,
+            );
             break;
           default:
             selectedRouteWidget = const Scaffold(

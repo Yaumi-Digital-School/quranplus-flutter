@@ -106,7 +106,8 @@ class ReadTadabburPage extends StatelessWidget {
                               title: item.title,
                               source: item.source.name,
                               createdAt: item.createdAt,
-                              ayahId: item.id,
+                              tadabburId: item.id,
+                              surahNumber: item.surahId,
                             ),
                           );
                         }).toList(),
