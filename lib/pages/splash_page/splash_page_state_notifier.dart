@@ -34,13 +34,14 @@ class SplashPageStateNotifier extends BaseStateNotifier<SplashPageState> {
   @override
   Future<void> initStateNotifier() async {
     final Connectivity conn = Connectivity();
+    final ConnectivityResult res = await conn.checkConnectivity();
 
     await _deepLinkService.init(navigatorKey);
     await _authenticationService.initRepository();
-    await _remoteConfigService.init();
 
-    if (await conn.checkConnectivity() != ConnectionState.none) {
+    if (res != ConnectivityResult.none) {
       await _tadabburService.syncTadabburPerAyahInformations();
+      await _remoteConfigService.init();
     }
   }
 }
