@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 
 class TadabburAyahCard extends StatelessWidget {
@@ -35,12 +36,12 @@ class TadabburAyahCard extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: _buildInformation(),
+        child: _buildInformation(context),
       ),
     );
   }
 
-  Widget _buildInformation() {
+  Widget _buildInformation(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -69,7 +70,10 @@ class TadabburAyahCard extends StatelessWidget {
             const Spacer(),
             GestureDetector(
               onTap: () {
-                // TODO : Add navigate to tadabbur content
+                Navigator.pushNamed(
+                  context,
+                  RoutePaths.routeTadabburContent,
+                );
               },
               child: const Icon(
                 Icons.keyboard_arrow_right,
