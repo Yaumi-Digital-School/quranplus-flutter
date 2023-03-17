@@ -166,7 +166,7 @@ class _BookmarkPageState extends State<BookmarkPage> {
   //mengambil semua data Bookmarks
   Future<void> _getAllBookmark() async {
     //list menampung data dari database
-    var list = await db.getAllBookmark();
+    var list = await db.getBookmarks();
 
     // List<BookmarksV2> listbook = [];
     // Map<String, dynamic> map = await json.decode(await getJson());

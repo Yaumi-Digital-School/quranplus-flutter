@@ -98,9 +98,11 @@ class DbLocal {
   }
 
   //read database
-  Future<List?> getAllBookmark() async {
-    var dbClient = await _db;
-    var result = await dbClient.query(
+  Future<List?> getBookmarks({
+    int? limit,
+  }) async {
+    final Database dbClient = await _db;
+    final List<Map<String, Object?>> result = await dbClient.query(
       BookmarksTable.tableName,
       columns: [
         BookmarksTable.columnId,
@@ -109,6 +111,7 @@ class DbLocal {
         BookmarksTable.columnCreatedAt,
       ],
       orderBy: "datetime(${BookmarksTable.columnCreatedAt}) DESC",
+      limit: limit,
     );
 
     return result.toList();

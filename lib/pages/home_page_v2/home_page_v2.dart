@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_view.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/card_start_habit.dart';
+import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/daily_progress_tracker_detail_card/daily_progress_tracker_detail_card.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/read_tadabbur/read_tadabbur_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
@@ -13,7 +14,6 @@ import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
 
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
@@ -26,6 +26,7 @@ import 'package:qurantafsir_flutter/widgets/alert_dialog.dart';
 import 'package:qurantafsir_flutter/widgets/daily_progress_tracker.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/sign_in_bottom_sheet.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:retrofit/retrofit.dart';
 import 'home_page_state_notifier.dart';
@@ -50,7 +51,6 @@ class _HomePageV2State extends State<HomePageV2> {
             habitDailySummaryService: ref.read(habitDailySummaryService),
             authenticationService: ref.read(authenticationService),
             mainPageProvider: ref.read(mainPageProvider),
-            taddaburApi: ref.read(tadabburApiProvider),
           );
         },
       ),
@@ -63,18 +63,6 @@ class _HomePageV2State extends State<HomePageV2> {
         HomePageStateNotifier notifier,
         WidgetRef ref,
       ) {
-        if (state.juzElements == null ||
-            state.feedbackUrl == null ||
-            state.ayahPage == null ||
-            state.dailySummary == null ||
-            state.listTaddaburAvailables == null) {
-          return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-
         if (notifier.mainPageProvider
             .getShouldShowSignInBottomSheetAndReset()) {
           _showSignInBottomSheet(notifier, ref);
@@ -129,7 +117,7 @@ class _HomePageV2State extends State<HomePageV2> {
           ),
           body: ListSuratByJuz(
             notifier: notifier,
-            state: state,
+            parentState: state,
           ),
         );
       },
@@ -290,15 +278,15 @@ class ListSuratByJuz extends StatelessWidget {
   const ListSuratByJuz({
     Key? key,
     required this.notifier,
-    required this.state,
+    required this.parentState,
   }) : super(key: key);
 
   final HomePageStateNotifier notifier;
-  final HomePageState state;
+  final HomePageState parentState;
+
   double diameterButtonSearch(BuildContext context) =>
       MediaQuery.of(context).size.width * 1 / 6;
-  // Temporary value to include/exclude habit in build
-  final bool isHabitEnabled = true;
+
   @override
   Widget build(BuildContext context) {
     return Consumer(
@@ -329,8 +317,8 @@ class ListSuratByJuz extends StatelessWidget {
                     ],
                   ),
                   child: Text(
-                    state.name.isNotEmpty
-                        ? 'Assalamu’alaikum, ${state.name}'
+                    parentState.name.isNotEmpty
+                        ? 'Assalamu’alaikum, ${parentState.name}'
                         : 'Assalamu’alaikum',
                     textAlign: TextAlign.start,
                     style: captionSemiBold1,
@@ -340,49 +328,25 @@ class ListSuratByJuz extends StatelessWidget {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        if (isHabitEnabled)
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                              24,
-                              16,
-                              24,
-                              24,
-                            ),
-                            child: isLoggedIn
-                                ? _buildDailyHabitTracker(context, state)
-                                : const StartHabitCard(),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            24,
+                            16,
+                            24,
+                            24,
                           ),
-                        ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: state.juzElements!.length,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: <Widget>[
-                                Container(
-                                  height: 42,
-                                  alignment: Alignment.centerLeft,
-                                  decoration:
-                                      const BoxDecoration(color: neutral200),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 24,
-                                  ),
-                                  child: Text(
-                                    state.juzElements![index].name,
-                                    textAlign: TextAlign.start,
-                                    style: bodyRegular1,
-                                  ),
-                                ),
-                                _buildListSuratByJuz(
-                                  context: context,
-                                  juz: state.juzElements![index],
-                                  notifier: notifier,
-                                  state: state,
-                                ),
-                              ],
-                            );
-                          },
+                          child: _buildHabitInformationCard(
+                            context,
+                            isLoggedIn,
+                            parentState,
+                            notifier,
+                          ),
                         ),
+                        if (parentState.juzElements == null ||
+                            parentState.listTaddaburAvailables == null)
+                          const _ListSurahByJuzSkeleton(),
+                        if (parentState.juzElements != null)
+                          _buildSurahByJuzContainer(),
                       ],
                     ),
                   ),
@@ -400,14 +364,41 @@ class ListSuratByJuz extends StatelessWidget {
                   color: darkGreen,
                 ),
                 child: _ButtonSearch(
-                  versePagetoAyah: state.ayahPage!,
-                  state: state,
+                  versePagetoAyah: parentState.ayahPage,
+                  state: parentState,
                 ),
               ),
             ),
           ],
         );
       },
+    );
+  }
+
+  Widget _buildHabitInformationCard(
+    BuildContext context,
+    bool isLoggedIn,
+    HomePageState state,
+    HomePageStateNotifier notifier,
+  ) {
+    if (state.dailySummary == null) {
+      return const DailyProgressTrackerSkeleton();
+    }
+
+    if (!isLoggedIn) {
+      return const StartHabitCard();
+    }
+
+    if (isLoggedIn && state.dailySummary!.totalPages <= 0) {
+      return _buildDailyHabitTracker(context, state);
+    }
+
+    return DailyProgressTrackerDetailCard(
+      dailySummary: state.dailySummary!,
+      isNeedSync: state.isNeedSync,
+      lastBookmark: state.lastBookmark,
+      lastTrackedData: state.lastRecordingData,
+      onRefreshParentWidget: notifier.refreshDataOnPopFromSurahPage,
     );
   }
 
@@ -443,6 +434,39 @@ class ListSuratByJuz extends StatelessWidget {
     );
   }
 
+  Widget _buildSurahByJuzContainer() {
+    return ListView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: parentState.juzElements!.length,
+      itemBuilder: (context, index) {
+        return Column(
+          children: <Widget>[
+            Container(
+              height: 42,
+              alignment: Alignment.centerLeft,
+              decoration: const BoxDecoration(color: neutral200),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24,
+              ),
+              child: Text(
+                parentState.juzElements![index].name,
+                textAlign: TextAlign.start,
+                style: bodyRegular1,
+              ),
+            ),
+            _buildListSuratByJuz(
+              context: context,
+              juz: parentState.juzElements![index],
+              notifier: notifier,
+              state: parentState,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildListSuratByJuz({
     required BuildContext context,
     required JuzElement juz,
@@ -451,153 +475,123 @@ class ListSuratByJuz extends StatelessWidget {
   }) {
     final List<SuratByJuz> surats = juz.surat;
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        8,
-        0,
-        8,
-        24.0,
-      ),
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: surats.length,
-        itemBuilder: (context, index) {
-          String surahNumberString = surats[index].number;
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: surats.length,
+      itemBuilder: (context, index) {
+        String surahNumberString = surats[index].number;
 
-          int suratNumber = int.parse(surahNumberString);
-          int? totalTadabburInSurah =
-              state.listTaddaburAvailables![suratNumber];
+        int suratNumber = int.parse(surahNumberString);
+        int? totalTadabburInSurah = state.listTaddaburAvailables![suratNumber];
 
-          String surahNameLatin = surats[index].nameLatin;
+        String surahNameLatin = surats[index].nameLatin;
 
-          return GestureDetector(
-            onTap: () async {
-              int page = surats[index].startPageToInt;
-              int startPageInIndexValue = page - 1;
+        final bool hasTadabbur =
+            state.listTaddaburAvailables!.containsKey(suratNumber);
 
-              final dynamic param = await Navigator.pushNamed(
-                context,
-                RoutePaths.routeSurahPage,
-                arguments: SuratPageV3Param(
-                  startPageInIndex: startPageInIndexValue,
-                  firstPagePointerIndex: surats[index].startPageID,
-                ),
-              );
+        return GestureDetector(
+          onTap: () async {
+            int page = surats[index].startPageToInt;
+            int startPageInIndexValue = page - 1;
 
-              if (param != null && param is SuratPageV3OnPopParam) {
-                if (param.isHabitDailySummaryChanged) {
-                  notifier.getCurrentHabitDailySummaryListLocal();
-                }
-              }
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ListTile(
-                  tileColor: backgroundColor,
-                  minLeadingWidth: 20,
-                  leading: Container(
-                    alignment: Alignment.center,
-                    height: 34,
-                    width: 30,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color.fromRGBO(
-                            0,
-                            0,
-                            0,
-                            0.1,
-                          ),
-                          offset: Offset(1.0, 2.0),
-                          blurRadius: 5.0,
-                          spreadRadius: 1.0,
+            final dynamic param = await Navigator.pushNamed(
+              context,
+              RoutePaths.routeSurahPage,
+              arguments: SuratPageV3Param(
+                startPageInIndex: startPageInIndexValue,
+                firstPagePointerIndex: surats[index].startPageID,
+              ),
+            );
+
+            if (param != null && param is SuratPageV3OnPopParam) {
+              notifier.refreshDataOnPopFromSurahPage();
+            }
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                tileColor: backgroundColor,
+                minLeadingWidth: 20,
+                leading: Container(
+                  alignment: Alignment.center,
+                  height: 34,
+                  width: 30,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color.fromRGBO(
+                          0,
+                          0,
+                          0,
+                          0.1,
                         ),
-                      ],
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(20),
+                        offset: Offset(1.0, 2.0),
+                        blurRadius: 5.0,
+                        spreadRadius: 1.0,
                       ),
-                    ),
-                    child: Text(
-                      surahNumberString,
-                      style: numberStyle,
-                      overflow: TextOverflow.ellipsis,
+                    ],
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
                     ),
                   ),
-                  title: Text(
-                    surahNameLatin,
-                    style: bodyMedium2,
+                  child: Text(
+                    surahNumberString,
+                    style: numberStyle,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  subtitle: Padding(
-                    padding: const EdgeInsets.only(top: 6),
-                    child: Text(
-                      "Page ${surats[index].startPage}, Ayat ${surats[index].startAyat}",
-                      style: bodyLight3,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  trailing: Text(
-                    surats[index].name,
-                    style: suratFontStyle,
-                    textAlign: TextAlign.right,
+                ),
+                title: Text(
+                  surahNameLatin,
+                  style: bodyMedium2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                subtitle: Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: Text(
+                    "Page ${surats[index].startPage}, Ayat ${surats[index].startAyat}",
+                    style: bodyLight3,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                if (state.listTaddaburAvailables!.containsKey(suratNumber))
-                  Container(
-                    color: QPColors.whiteFair,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 0, left: 60),
-                      child: SizedBox(
-                        height: 30,
-                        width: 196,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                            ),
-                            primary: Colors.white,
+                trailing: Text(
+                  surats[index].name,
+                  style: suratFontStyle,
+                  textAlign: TextAlign.right,
+                ),
+              ),
+              if (hasTadabbur)
+                Container(
+                  color: QPColors.whiteFair,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 0, left: 60),
+                    child: ButtonPill(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          RoutePaths.routeReadTadabbur,
+                          arguments: ReadTadabburParam(
+                            surahName: surahNameLatin,
+                            surahId: suratNumber,
                           ),
-                          onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              RoutePaths.routeReadTadabbur,
-                              arguments: ReadTadabburParam(
-                                surahName: surahNameLatin,
-                                surahId: suratNumber,
-                              ),
-                            );
-                          },
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.menu_book,
-                                color: QPColors.brandFair,
-                                size: 18.0,
-                              ),
-                              const SizedBox(
-                                width: 4,
-                              ),
-                              Text(
-                                "$totalTadabburInSurah Tadabbur available",
-                                style:
-                                    const TextStyle(color: QPColors.brandFair),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                        );
+                      },
+                      label: "$totalTadabburInSurah Tadabbur available",
+                      icon: Icons.menu_book,
                     ),
                   ),
-              ],
-            ),
-          );
-        },
-      ),
+                ),
+              if (index == surats.length - 1 && hasTadabbur)
+                const SizedBox(
+                  height: 24,
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -632,6 +626,83 @@ class _ButtonSearch extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _ListSurahByJuzSkeleton extends StatelessWidget {
+  const _ListSurahByJuzSkeleton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Shimmer.fromColors(
+        baseColor: const Color.fromARGB(
+          255,
+          236,
+          233,
+          233,
+        ),
+        highlightColor: const Color.fromARGB(
+          255,
+          224,
+          218,
+          218,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                height: 100,
+                color: Colors.white,
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              Container(
+                width: double.infinity,
+                height: 100,
+                color: Colors.white,
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              Container(
+                width: double.infinity,
+                height: 100,
+                color: Colors.white,
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              Container(
+                width: double.infinity,
+                height: 100,
+                color: Colors.white,
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              Container(
+                width: double.infinity,
+                height: 100,
+                color: Colors.white,
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              Container(
+                width: double.infinity,
+                height: 100,
+                color: Colors.white,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

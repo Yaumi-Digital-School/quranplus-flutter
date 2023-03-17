@@ -66,6 +66,7 @@ dependencies:
   alice: ^0.2.5
   cached_network_image: ^3.2.0
   firebase_remote_config: ^2.0.1
+  shimmer: ^2.0.0
 
 dev_dependencies:
   flutter_test:

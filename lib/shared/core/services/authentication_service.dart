@@ -131,6 +131,7 @@ class AuthenticationService {
   Future<void> signOut() async {
     _googleSignIn.signOut();
     setIsLoggedIn(false);
+    _sharedPreferenceService.clear();
   }
 
   Future<User> getUserProfile(String token) async {
