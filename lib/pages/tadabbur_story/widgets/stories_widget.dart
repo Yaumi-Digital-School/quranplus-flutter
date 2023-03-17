@@ -5,20 +5,22 @@ import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class StoriesWidget extends StatefulWidget {
-  final List<TadabburContentItem> stories;
-  final String surahName;
-  final int ayahNumber;
-  final int nextTadabburId;
-  final int previousTadabburId;
-
   const StoriesWidget({
     required this.surahName,
     required this.ayahNumber,
-    required this.nextTadabburId,
-    required this.previousTadabburId,
     required this.stories,
+    required this.title,
+    this.previousTadabburId,
+    this.nextTadabburId,
     Key? key,
   }) : super(key: key);
+
+  final List<TadabburContentItem> stories;
+  final String surahName;
+  final int ayahNumber;
+  final String title;
+  final int? previousTadabburId;
+  final int? nextTadabburId;
 
   @override
   State<StoriesWidget> createState() => _StoriesWidgetState();
@@ -76,7 +78,7 @@ class _StoriesWidgetState extends State<StoriesWidget> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          "The Beginning of The Story",
+                          widget.title,
                           style: QPTextStyle.button1SemiBold.copyWith(
                             color: QPColors.blackHeavy,
                           ),
@@ -110,10 +112,12 @@ class _StoriesWidgetState extends State<StoriesWidget> {
                       ),
                       decoration: BoxDecoration(
                         border: index == _currentIndex
-                            ? const Border.fromBorderSide(BorderSide(
-                                color: QPColors.whiteRoot,
-                                width: 1,
-                              ))
+                            ? const Border.fromBorderSide(
+                                BorderSide(
+                                  color: QPColors.whiteRoot,
+                                  width: 1,
+                                ),
+                              )
                             : null,
                         borderRadius:
                             const BorderRadius.all(Radius.circular(8)),
@@ -121,9 +125,12 @@ class _StoriesWidgetState extends State<StoriesWidget> {
                       child: Container(
                         margin: const EdgeInsets.all(1),
                         height: 4,
-                        decoration: const BoxDecoration(
-                          color: QPColors.whiteRoot,
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        decoration: BoxDecoration(
+                          color: index <= _currentIndex
+                              ? QPColors.brandFair
+                              : QPColors.whiteRoot,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(8)),
                         ),
                       ),
                     ),
@@ -135,7 +142,7 @@ class _StoriesWidgetState extends State<StoriesWidget> {
         ),
         Expanded(
           child: GestureDetector(
-            onTapDown: (details) => _onTapDown(details),
+            onTapUp: (details) => _onTapDown(details),
             onPanUpdate: (details) => _onPanUpdate(details),
             child: PageView.builder(
               controller: _pageController,
@@ -145,10 +152,10 @@ class _StoriesWidgetState extends State<StoriesWidget> {
                 final currentStory = widget.stories[i];
 
                 return CachedNetworkImage(
-                  progressIndicatorBuilder: (context, url, progress) => Center(
-                    child: CircularProgressIndicator(
-                      value: progress.progress,
-                    ),
+                  fit: BoxFit.cover,
+                  progressIndicatorBuilder: (context, url, progress) =>
+                      const Center(
+                    child: CircularProgressIndicator(),
                   ),
                   imageUrl: currentStory.content,
                 );
@@ -160,24 +167,42 @@ class _StoriesWidgetState extends State<StoriesWidget> {
     );
   }
 
-  void _onTapDown(TapDownDetails details) {
+  void _onTapDown(TapUpDetails details) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double dx = details.globalPosition.dx;
-    if (dx < screenWidth / 3) {
-      setState(() {
-        if (_currentIndex - 1 >= 0) {
+    final bool isTapLeft = dx < screenWidth / 3;
+    final bool isTapRight = dx > 2 * screenWidth / 3;
+
+    if (isTapLeft) {
+      if (_currentIndex == 0) {
+        if (widget.previousTadabburId == null) {
+          Navigator.pop(context);
+
+          return;
+        }
+      }
+
+      if (_currentIndex - 1 >= 0) {
+        setState(() {
           _currentIndex -= 1;
+        });
+      }
+    } else if (isTapRight) {
+      if (_currentIndex + 1 == widget.stories.length) {
+        if (widget.nextTadabburId == null) {
+          Navigator.pop(context);
+
+          return;
         }
-      });
-    } else if (dx > 2 * screenWidth / 3) {
-      setState(() {
-        if (_currentIndex + 1 < widget.stories.length) {
+      }
+
+      if (_currentIndex + 1 < widget.stories.length) {
+        setState(() {
           _currentIndex += 1;
-        } else {
-          _currentIndex = 0;
-        }
-      });
+        });
+      }
     }
+
     _pageController?.animateToPage(
       _currentIndex,
       duration: const Duration(milliseconds: 1),

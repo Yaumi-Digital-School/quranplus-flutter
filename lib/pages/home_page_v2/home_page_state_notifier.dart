@@ -131,6 +131,7 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
         await _sharedPreferenceService.getLastRecordingData();
 
     state = state.copyWith(
+      name: _name,
       juzElements: _juzElements,
       feedbackUrl: _feedbackUrl ?? '',
       ayahPage: _ayahPage,

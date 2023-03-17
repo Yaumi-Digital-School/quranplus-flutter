@@ -21,47 +21,47 @@ class TadabburSurahCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: QPColors.whiteMassive,
-        border: Border.fromBorderSide(
-          BorderSide(
-            color: QPColors.whiteRoot,
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          RoutePaths.routeReadTadabbur,
+          arguments: ReadTadabburParam(
+            surahId: surahID,
+            surahName: title,
+          ),
+        );
+      },
+      child: Container(
+        decoration: const BoxDecoration(
+          color: QPColors.whiteMassive,
+          border: Border.fromBorderSide(
+            BorderSide(
+              color: QPColors.whiteRoot,
+            ),
+          ),
+          borderRadius: BorderRadius.all(
+            Radius.circular(8),
           ),
         ),
-        borderRadius: BorderRadius.all(
-          Radius.circular(8),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(
-          top: 16,
-          right: 16,
-          left: 16,
-          bottom: 24,
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: _buildInformation()),
-            GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  RoutePaths.routeReadTadabbur,
-                  arguments: ReadTadabburParam(
-                    surahId: surahID,
-                    surahName: title,
-                  ),
-                );
-              },
-              child: const Icon(
+        child: Padding(
+          padding: const EdgeInsets.only(
+            top: 16,
+            right: 16,
+            left: 16,
+            bottom: 24,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: _buildInformation()),
+              const Icon(
                 Icons.keyboard_arrow_right,
                 size: 24,
                 color: QPColors.blackFair,
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
