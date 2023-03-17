@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:async/async.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -442,18 +442,15 @@ class _SuratPageV3State extends State<SuratPageV3> {
     BuildContext context,
     SuratPageStateNotifier notifier,
   ) async {
-    const Duration _duration = Duration(milliseconds: 6000);
     Navigator.push(
       context,
       PageTransition(
         type: PageTransitionType.fade,
-        child: const PreHabitTrackingAnimation(),
+        child: PreHabitTrackingAnimation(
+          notifier: notifier,
+        ),
       ),
     );
-    Timer(_duration, () {
-      Navigator.pop(context);
-      notifier.startRecording();
-    });
   }
 
   Widget _buildPageInFullPage({
