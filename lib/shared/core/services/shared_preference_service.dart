@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferenceService {
   late SharedPreferences _sharedPreferences;
+  static const String isAlreadyOnBoardingTadabbur =
+      "is-already-on-boarding-tadabbur";
 
   final String _readingSettingsKey = 'reading-settings';
   final String _apiTokenKey = "api-token";
@@ -39,6 +41,10 @@ class SharedPreferenceService {
     );
 
     return resultInObject;
+  }
+
+  Future<void> setAlreadyOnBoarding(String key) async {
+    _sharedPreferences.setBool(key, true);
   }
 
   Future<void> setApiToken(String? token) async {
@@ -86,6 +92,10 @@ class SharedPreferenceService {
 
   String getApiToken() {
     return _sharedPreferences.getString(_apiTokenKey) ?? '';
+  }
+
+  bool getIsAlreadyOnBoarding(String key) {
+    return _sharedPreferences.getBool(key) ?? false;
   }
 
   Future<bool> removeApiToken() async {
