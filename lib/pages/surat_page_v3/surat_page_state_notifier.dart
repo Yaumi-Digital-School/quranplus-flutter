@@ -155,6 +155,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     ConnectivityResult? connectivityResult,
   }) async {
     _allPages = await getPages();
+
     pageController = PageController(
       initialPage: startPageInIndex,
     );

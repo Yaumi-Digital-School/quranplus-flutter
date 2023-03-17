@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
@@ -215,8 +216,8 @@ class ButtonBrandSoft extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
-              offset: const Offset(0, 4),
-              blurRadius: 10,
+              offset: const Offset(0, 0.9),
+              blurRadius: 6,
               spreadRadius: 1,
             ),
           ],
@@ -229,6 +230,56 @@ class ButtonBrandSoft extends StatelessWidget {
               title,
               style:
                   QPTextStyle.button2Medium.copyWith(color: QPColors.brandFair),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ButtonPill extends StatelessWidget {
+  final VoidCallback? onTap;
+  final IconData? icon;
+  final String label;
+  const ButtonPill({
+    Key? key,
+    required this.onTap,
+    required this.label,
+    this.icon,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(24)),
+        ),
+        primary: Colors.white,
+      ),
+      onPressed: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 5,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (icon != null)
+              Icon(
+                icon,
+                color: QPColors.brandFair,
+                size: 17.0,
+              ),
+            const SizedBox(
+              width: 4,
+            ),
+            Text(
+              label,
+              style: const TextStyle(color: QPColors.brandFair),
             ),
           ],
         ),

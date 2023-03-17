@@ -570,14 +570,8 @@ class ListSuratByJuz extends StatelessWidget {
                   child: SizedBox(
                     height: 30,
                     width: 196,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        primary: Colors.white,
-                      ),
-                      onPressed: () {
+                    child: ButtonPill(
+                      onTap: () {
                         Navigator.pushNamed(
                           context,
                           RoutePaths.routeReadTadabbur,
@@ -587,22 +581,8 @@ class ListSuratByJuz extends StatelessWidget {
                           ),
                         );
                       },
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.menu_book,
-                            color: QPColors.brandFair,
-                            size: 18.0,
-                          ),
-                          const SizedBox(
-                            width: 4,
-                          ),
-                          Text(
-                            "$totalTadabburInSurah Tadabbur available",
-                            style: const TextStyle(color: QPColors.brandFair),
-                          ),
-                        ],
-                      ),
+                      label: "$totalTadabburInSurah Tadabbur available",
+                      icon: Icons.menu_book,
                     ),
                   ),
                 ),
