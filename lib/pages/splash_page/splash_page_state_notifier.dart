@@ -40,8 +40,8 @@ class SplashPageStateNotifier extends BaseStateNotifier<SplashPageState> {
     await _authenticationService.initRepository();
 
     if (res != ConnectivityResult.none) {
-      await _tadabburService.syncTadabburPerAyahInformations();
       await _remoteConfigService.init();
+      await _tadabburService.syncTadabburPerAyahInformations();
     }
   }
 }
