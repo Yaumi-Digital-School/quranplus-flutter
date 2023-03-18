@@ -4,6 +4,7 @@ import 'package:qurantafsir_flutter/pages/tadabbur_story/tadabbur_story_state_no
 import 'package:qurantafsir_flutter/pages/tadabbur_story/widgets/stories_widget.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/widgets/on_boarding_widget.dart';
 import 'package:qurantafsir_flutter/widgets/step_widget.dart';
@@ -19,7 +20,7 @@ class TadabburStoryPageParams {
   final int tadabburId;
 }
 
-class TadabburStoryPage extends StatelessWidget {
+class TadabburStoryPage extends StatefulWidget {
   const TadabburStoryPage({
     required this.params,
     Key? key,
@@ -27,6 +28,11 @@ class TadabburStoryPage extends StatelessWidget {
 
   final TadabburStoryPageParams params;
 
+  @override
+  State<TadabburStoryPage> createState() => _TadabburStoryPageState();
+}
+
+class _TadabburStoryPageState extends State<TadabburStoryPage> {
   @override
   Widget build(BuildContext context) {
     return StateNotifierConnector<TadabburStoryPageStateNotifier,
@@ -41,7 +47,7 @@ class TadabburStoryPage extends StatelessWidget {
           TadabburStoryPageStateNotifier, TadabburStoryPageState>((ref) {
         return TadabburStoryPageStateNotifier(
           tadabburApi: ref.read(tadabburApiProvider),
-          params: params,
+          params: widget.params,
         );
       }),
       builder: (
@@ -61,18 +67,48 @@ class TadabburStoryPage extends StatelessWidget {
 
         return Scaffold(
           backgroundColor: QPColors.whiteMassive,
-          body: OnBoardingWidget(
-            onBoardingKey: SharedPreferenceService.isAlreadyOnBoardingTadabbur,
-            listWidget: _getListStepParams(context),
-            child: SafeArea(
-              bottom: false,
-              child: StoriesWidget(
-                ayahNumber: state.contentInfo!.ayahNumber,
-                surahName: state.contentInfo!.surahInfo.surahName,
-                stories: state.contentInfo!.tadabburContent,
-                title: state.contentInfo!.title,
-              ),
-            ),
+          body: PageView.builder(
+            itemCount: state.contentInfos.length,
+            controller: state.controller,
+            padEnds: false,
+            itemBuilder: ((
+              context,
+              index,
+            ) {
+              final TadabburContentResponse item = state.contentInfos[index];
+
+              if (item.tadabburContent == null) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              return OnBoardingWidget(
+                onBoardingKey:
+                    SharedPreferenceService.isAlreadyOnBoardingTadabbur,
+                listWidget: _getListStepParams(context),
+                child: StoriesWidget(
+                  ayahNumber: item.ayahNumber!,
+                  surahName: item.surahInfo!.surahName,
+                  stories: item.tadabburContent!,
+                  title: item.title!,
+                  previousTadabburId: item.previousTadabburId,
+                  nextTadabburId: item.nextTadabburId,
+                  onOpenNextTadabbur: () {
+                    state.controller!.nextPage(
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                  onOpenPrevTadabbur: () {
+                    state.controller!.previousPage(
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                ),
+              );
+            }),
           ),
         );
       },
