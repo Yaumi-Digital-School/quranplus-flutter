@@ -10,6 +10,8 @@ class StoriesWidget extends StatefulWidget {
     required this.ayahNumber,
     required this.stories,
     required this.title,
+    required this.onOpenNextTadabbur,
+    required this.onOpenPrevTadabbur,
     this.previousTadabburId,
     this.nextTadabburId,
     Key? key,
@@ -21,6 +23,8 @@ class StoriesWidget extends StatefulWidget {
   final String title;
   final int? previousTadabburId;
   final int? nextTadabburId;
+  final VoidCallback onOpenPrevTadabbur;
+  final VoidCallback onOpenNextTadabbur;
 
   @override
   State<StoriesWidget> createState() => _StoriesWidgetState();
@@ -38,136 +42,138 @@ class _StoriesWidgetState extends State<StoriesWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 12, right: 24, left: 24),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "Ayah ${widget.ayahNumber}",
-                              style: QPTextStyle.button3Medium
-                                  .copyWith(color: QPColors.blackSoft),
-                            ),
-                            const SizedBox(width: 6),
-                            Container(
-                              width: 4,
-                              height: 4,
-                              decoration: const BoxDecoration(
-                                color: QPColors.blackSoft,
-                                shape: BoxShape.circle,
+    return SafeArea(
+      bottom: false,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 12, right: 24, left: 24),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                "Ayah ${widget.ayahNumber}",
+                                style: QPTextStyle.button3Medium
+                                    .copyWith(color: QPColors.blackSoft),
                               ),
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              widget.surahName,
-                              style: QPTextStyle.button3Medium
-                                  .copyWith(color: QPColors.blackSoft),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          widget.title,
-                          style: QPTextStyle.button1SemiBold.copyWith(
-                            color: QPColors.blackHeavy,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Icon(
-                      Icons.close,
-                      color: QPColors.blackFair,
-                      size: 12,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  widget.stories.length,
-                  (index) => Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(
-                        left: index == 0 ? 0 : 1,
-                        right: index == widget.stories.length - 1 ? 0 : 1,
-                      ),
-                      decoration: BoxDecoration(
-                        border: index == _currentIndex
-                            ? const Border.fromBorderSide(
-                                BorderSide(
-                                  color: QPColors.whiteRoot,
-                                  width: 1,
+                              const SizedBox(width: 6),
+                              Container(
+                                width: 4,
+                                height: 4,
+                                decoration: const BoxDecoration(
+                                  color: QPColors.blackSoft,
+                                  shape: BoxShape.circle,
                                 ),
-                              )
-                            : null,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(8)),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                widget.surahName,
+                                style: QPTextStyle.button3Medium
+                                    .copyWith(color: QPColors.blackSoft),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            widget.title,
+                            style: QPTextStyle.button1SemiBold.copyWith(
+                              color: QPColors.blackHeavy,
+                            ),
+                          ),
+                        ],
                       ),
+                    ),
+                    const SizedBox(width: 12),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Icon(
+                        Icons.close,
+                        color: QPColors.blackFair,
+                        size: 12,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    widget.stories.length,
+                    (index) => Expanded(
                       child: Container(
-                        margin: const EdgeInsets.all(1),
-                        height: 4,
+                        margin: EdgeInsets.only(
+                          left: index == 0 ? 0 : 1,
+                          right: index == widget.stories.length - 1 ? 0 : 1,
+                        ),
                         decoration: BoxDecoration(
-                          color: index <= _currentIndex
-                              ? QPColors.brandFair
-                              : QPColors.whiteRoot,
+                          border: index == _currentIndex
+                              ? const Border.fromBorderSide(
+                                  BorderSide(
+                                    color: QPColors.whiteRoot,
+                                    width: 1,
+                                  ),
+                                )
+                              : null,
                           borderRadius:
                               const BorderRadius.all(Radius.circular(8)),
+                        ),
+                        child: Container(
+                          margin: const EdgeInsets.all(1),
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: index < _currentIndex
+                                ? QPColors.brandFair
+                                : QPColors.whiteRoot,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(8)),
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: GestureDetector(
-            onTapUp: (details) => _onTapDown(details),
-            onPanUpdate: (details) => _onPanUpdate(details),
-            child: PageView.builder(
-              controller: _pageController,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: widget.stories.length,
-              itemBuilder: (context, i) {
-                final currentStory = widget.stories[i];
-
-                return CachedNetworkImage(
-                  fit: BoxFit.cover,
-                  progressIndicatorBuilder: (context, url, progress) =>
-                      const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                  imageUrl: currentStory.content,
-                );
-              },
+              ],
             ),
           ),
-        ),
-      ],
+          Expanded(
+            child: GestureDetector(
+              onTapUp: (details) => _onTapUp(details),
+              child: PageView.builder(
+                controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: widget.stories.length,
+                itemBuilder: (context, i) {
+                  final currentStory = widget.stories[i];
+
+                  return CachedNetworkImage(
+                    fit: BoxFit.cover,
+                    progressIndicatorBuilder: (context, url, progress) =>
+                        const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    imageUrl: currentStory.content,
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  void _onTapDown(TapUpDetails details) {
+  void _onTapUp(TapUpDetails details) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double dx = details.globalPosition.dx;
     final bool isTapLeft = dx < screenWidth / 3;
@@ -180,6 +186,12 @@ class _StoriesWidgetState extends State<StoriesWidget> {
 
           return;
         }
+
+        print('KWOAKWOAKOW');
+
+        widget.onOpenPrevTadabbur();
+
+        return;
       }
 
       if (_currentIndex - 1 >= 0) {
@@ -194,6 +206,10 @@ class _StoriesWidgetState extends State<StoriesWidget> {
 
           return;
         }
+
+        widget.onOpenNextTadabbur();
+
+        return;
       }
 
       if (_currentIndex + 1 < widget.stories.length) {
@@ -208,17 +224,5 @@ class _StoriesWidgetState extends State<StoriesWidget> {
       duration: const Duration(milliseconds: 1),
       curve: Curves.easeInOut,
     );
-  }
-
-  void _onPanUpdate(DragUpdateDetails details) {
-    // Swiping in previous direction.
-    if (details.delta.dx > 0) {
-      print("previous");
-    }
-
-    // Swiping in next direction.
-    if (details.delta.dx < 0) {
-      print("next");
-    }
   }
 }

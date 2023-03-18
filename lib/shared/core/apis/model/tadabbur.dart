@@ -124,28 +124,31 @@ class TadabburContentItem {
 
 @JsonSerializable()
 class TadabburContentResponse {
-  final String title;
+  final String? title;
   @JsonKey(name: 'ayah_number')
-  final int ayahNumber;
+  final int? ayahNumber;
   @JsonKey(name: 'surah_id')
-  final int surahNumber;
+  final int? surahNumber;
   @JsonKey(name: 'tadabbur_contents')
-  final List<TadabburContentItem> tadabburContent;
+  final List<TadabburContentItem>? tadabburContent;
   @JsonKey(name: 'next_tadabbur_id')
   final int? nextTadabburId;
   @JsonKey(name: 'previous_tadabbur_id')
   final int? previousTadabburId;
   @JsonKey(name: 'surah')
-  final TadabburContentResponseSurah surahInfo;
+  final TadabburContentResponseSurah? surahInfo;
+  
+  final bool shouldClosePage;
 
   TadabburContentResponse({
-    required this.ayahNumber,
-    required this.surahNumber,
-    required this.tadabburContent,
-    required this.title,
-    required this.surahInfo,
+    this.ayahNumber,
+    this.surahNumber,
+    this.tadabburContent,
+    this.title,
+    this.surahInfo,
     this.nextTadabburId,
     this.previousTadabburId,
+    this.shouldClosePage = false,
   });
 
   factory TadabburContentResponse.fromJson(Map<String, dynamic> json) {
