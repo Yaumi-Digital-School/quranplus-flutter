@@ -75,9 +75,9 @@ class _TadabburStoryPageState extends State<TadabburStoryPage> {
               context,
               index,
             ) {
-              final TadabburContentResponse item = state.contentInfos[index];
+              final TadabburContentReadingInfo item = state.contentInfos[index];
 
-              if (item.tadabburContent == null) {
+              if (item.content.tadabburContent == null) {
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
@@ -88,12 +88,8 @@ class _TadabburStoryPageState extends State<TadabburStoryPage> {
                     SharedPreferenceService.isAlreadyOnBoardingTadabbur,
                 listWidget: _getListStepParams(context),
                 child: StoriesWidget(
-                  ayahNumber: item.ayahNumber!,
-                  surahName: item.surahInfo!.surahName,
-                  stories: item.tadabburContent!,
-                  title: item.title!,
-                  previousTadabburId: item.previousTadabburId,
-                  nextTadabburId: item.nextTadabburId,
+                  key: GlobalKey(),
+                  contentInfo: item,
                   onOpenNextTadabbur: () {
                     state.controller!.nextPage(
                       duration: const Duration(milliseconds: 500),
@@ -106,6 +102,10 @@ class _TadabburStoryPageState extends State<TadabburStoryPage> {
                       curve: Curves.easeInOut,
                     );
                   },
+                  onClose: notifier.updateLatestReadStoryIndexToDB,
+                  lastReadStoryIndex: item.latestReadIndex,
+                  updateLatestReadStoryIndex:
+                      notifier.updateLatestReadStoryIndexInAyah,
                 ),
               );
             }),

@@ -122,6 +122,18 @@ class TadabburContentItem {
   }
 }
 
+class TadabburContentReadingInfo {
+  TadabburContentReadingInfo({
+    required this.tadabburID,
+    required this.content,
+    this.latestReadIndex = 0,
+  });
+
+  TadabburContentResponse content;
+  int latestReadIndex;
+  int tadabburID;
+}
+
 @JsonSerializable()
 class TadabburContentResponse {
   final String? title;
@@ -137,7 +149,7 @@ class TadabburContentResponse {
   final int? previousTadabburId;
   @JsonKey(name: 'surah')
   final TadabburContentResponseSurah? surahInfo;
-  
+
   final bool shouldClosePage;
 
   TadabburContentResponse({
