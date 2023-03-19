@@ -124,12 +124,14 @@ class TadabburContentItem {
 
 class TadabburContentReadingInfo {
   TadabburContentReadingInfo({
+    required this.tadabburID,
     required this.content,
     this.latestReadIndex = 0,
   });
 
   TadabburContentResponse content;
   int latestReadIndex;
+  int tadabburID;
 }
 
 @JsonSerializable()

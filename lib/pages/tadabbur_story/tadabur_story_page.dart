@@ -88,12 +88,8 @@ class _TadabburStoryPageState extends State<TadabburStoryPage> {
                     SharedPreferenceService.isAlreadyOnBoardingTadabbur,
                 listWidget: _getListStepParams(context),
                 child: StoriesWidget(
-                  ayahNumber: item.content.ayahNumber!,
-                  surahName: item.content.surahInfo!.surahName,
-                  stories: item.content.tadabburContent!,
-                  title: item.content.title!,
-                  previousTadabburId: item.content.previousTadabburId,
-                  nextTadabburId: item.content.nextTadabburId,
+                  key: GlobalKey(),
+                  contentInfo: item,
                   onOpenNextTadabbur: () {
                     state.controller!.nextPage(
                       duration: const Duration(milliseconds: 500),
@@ -106,8 +102,8 @@ class _TadabburStoryPageState extends State<TadabburStoryPage> {
                       curve: Curves.easeInOut,
                     );
                   },
-                  lastReadStoryIndex:
-                      notifier.getLatestReadStoryIndexInAyah(index),
+                  onClose: notifier.updateLatestReadStoryIndexToDB,
+                  lastReadStoryIndex: item.latestReadIndex,
                   updateLatestReadStoryIndex:
                       notifier.updateLatestReadStoryIndexInAyah,
                 ),

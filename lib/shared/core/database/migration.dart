@@ -5,6 +5,7 @@ import 'package:qurantafsir_flutter/shared/core/database/db_favorite_ayahs.dart'
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_progress.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur_ayah_available.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur_reading_content_info.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_daily_summary.dart';
@@ -19,6 +20,7 @@ class DbMigration {
     _migrate_4,
     _migrate_5,
     _migrate_6,
+    _migrate_7,
   ];
 
   Future<void> migrate(
@@ -130,6 +132,18 @@ class DbMigration {
        CREATE TABLE IF NOT EXISTS ${TadabburTable.tableName}(
          ${TadabburTable.surahID} integer not null,
          ${TadabburTable.totalTadabbur} integer not null)
+     ''');
+  }
+
+  Future<void> _migrate_7(Database db) async {
+    await db.execute('''
+       CREATE TABLE IF NOT EXISTS ${TadabburReadingContentInfoTable.tableName}(
+         ${TadabburReadingContentInfoTable.id} integer primary key autoincrement not null,
+         ${TadabburReadingContentInfoTable.tadabburID} integer not null,
+         ${TadabburReadingContentInfoTable.lastReadingIndex} integer not null,
+         CONSTRAINT ${TadabburReadingContentInfoTable.tableName}_${TadabburReadingContentInfoTable.tadabburID} 
+          UNIQUE (${TadabburReadingContentInfoTable.tadabburID})
+        )
      ''');
   }
 }

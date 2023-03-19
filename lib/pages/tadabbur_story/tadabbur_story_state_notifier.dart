@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:qurantafsir_flutter/pages/tadabbur_story/tadabur_story_page.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/tadabbur_api.dart';
+import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -48,6 +49,8 @@ class TadabburStoryPageStateNotifier
   late int _currentIndex;
   late PageController _controller;
 
+  final DbLocal _db = DbLocal();
+
   @override
   Future<void> initStateNotifier() async {
     state = state.copyWith(isLoading: true);
@@ -81,12 +84,18 @@ class TadabburStoryPageStateNotifier
     );
   }
 
-  int getLatestReadStoryIndexInAyah(int index) {
-    return state.contentInfos[index].latestReadIndex;
+  Future<void> updateLatestReadStoryIndexInAyah(int value) async {
+    state.contentInfos[_currentIndex].latestReadIndex = value;
+    await updateLatestReadStoryIndexToDB();
   }
 
-  void updateLatestReadStoryIndexInAyah(int value) {
-    state.contentInfos[_currentIndex].latestReadIndex = value;
+  Future<void> updateLatestReadStoryIndexToDB() async {
+    final TadabburContentReadingInfo item = state.contentInfos[_currentIndex];
+
+    await _db.insertOrupdateTadabburReadingContentInfoLastReadingIndex(
+      tadabburID: item.tadabburID,
+      lastReadingIndex: item.latestReadIndex,
+    );
   }
 
   Future<List<TadabburContentReadingInfo>> _initContent() async {
@@ -97,8 +106,13 @@ class TadabburStoryPageStateNotifier
     _currentIndex = 0;
 
     if (content != null) {
+      final int lastReadingIndex = await _db
+          .getTadabburReadingContentInfoByTadabburID(_params.tadabburId);
+
       res.add(TadabburContentReadingInfo(
         content: content,
+        latestReadIndex: lastReadingIndex,
+        tadabburID: _params.tadabburId,
       ));
 
       if (content.previousTadabburId != null) {
@@ -108,10 +122,17 @@ class TadabburStoryPageStateNotifier
             await _getTadabburContent(content.previousTadabburId!);
 
         if (prevContent != null) {
+          final int lastReadingIndex =
+              await _db.getTadabburReadingContentInfoByTadabburID(
+            content.previousTadabburId!,
+          );
+
           res.insert(
             0,
             TadabburContentReadingInfo(
               content: prevContent,
+              latestReadIndex: lastReadingIndex,
+              tadabburID: content.previousTadabburId!,
             ),
           );
         }
@@ -122,8 +143,14 @@ class TadabburStoryPageStateNotifier
             await _getTadabburContent(content.nextTadabburId!);
 
         if (nextContent != null) {
+          final int lastReadingIndex =
+              await _db.getTadabburReadingContentInfoByTadabburID(
+            content.nextTadabburId!,
+          );
           res.add(TadabburContentReadingInfo(
             content: nextContent,
+            latestReadIndex: lastReadingIndex,
+            tadabburID: content.nextTadabburId!,
           ));
         }
       }
@@ -145,6 +172,7 @@ class TadabburStoryPageStateNotifier
       ...state.contentInfos,
       TadabburContentReadingInfo(
         content: TadabburContentResponse(),
+        tadabburID: 0,
       ),
     ];
 
@@ -160,8 +188,16 @@ class TadabburStoryPageStateNotifier
     );
 
     if (content != null) {
+      final int lastReadingIndex =
+          await _db.getTadabburReadingContentInfoByTadabburID(
+        state.contentInfos[_currentIndex].content.nextTadabburId!,
+      );
       List<TadabburContentReadingInfo> res = state.contentInfos;
-      res[state.contentInfos.length - 1].content = content;
+      res[state.contentInfos.length - 1] = TadabburContentReadingInfo(
+        content: content,
+        latestReadIndex: lastReadingIndex,
+        tadabburID: state.contentInfos[_currentIndex].content.nextTadabburId!,
+      );
 
       state = state.copyWith(
         contentInfos: res,
@@ -184,6 +220,7 @@ class TadabburStoryPageStateNotifier
     List<TadabburContentReadingInfo> res = [
       TadabburContentReadingInfo(
         content: TadabburContentResponse(),
+        tadabburID: 0,
       ),
       ...state.contentInfos,
     ];
@@ -200,8 +237,16 @@ class TadabburStoryPageStateNotifier
     );
 
     if (content != null) {
-      List<TadabburContentReadingInfo> res = state.contentInfos;
-      res[0].content = content;
+      final int lastReadingIndex =
+          await _db.getTadabburReadingContentInfoByTadabburID(
+        res[_currentIndex].content.previousTadabburId!,
+      );
+
+      res[0] = TadabburContentReadingInfo(
+        content: content,
+        latestReadIndex: lastReadingIndex,
+        tadabburID: res[_currentIndex].content.previousTadabburId!,
+      );
 
       state = state.copyWith(
         contentInfos: res,
