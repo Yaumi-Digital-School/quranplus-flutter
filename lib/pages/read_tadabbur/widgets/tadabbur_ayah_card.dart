@@ -75,10 +75,13 @@ class TadabburAyahCard extends StatelessWidget {
             const SizedBox(
               width: 8,
             ),
-            Text(
-              title,
-              style: QPTextStyle.button1SemiBold.copyWith(
-                color: QPColors.blackFair,
+            Expanded(
+              flex: 7,
+              child: Text(
+                title,
+                style: QPTextStyle.button1SemiBold.copyWith(
+                  color: QPColors.blackFair,
+                ),
               ),
             ),
             const Spacer(),
