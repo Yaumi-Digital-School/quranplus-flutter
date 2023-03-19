@@ -75,9 +75,9 @@ class _TadabburStoryPageState extends State<TadabburStoryPage> {
               context,
               index,
             ) {
-              final TadabburContentResponse item = state.contentInfos[index];
+              final TadabburContentReadingInfo item = state.contentInfos[index];
 
-              if (item.tadabburContent == null) {
+              if (item.content.tadabburContent == null) {
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
@@ -88,12 +88,12 @@ class _TadabburStoryPageState extends State<TadabburStoryPage> {
                     SharedPreferenceService.isAlreadyOnBoardingTadabbur,
                 listWidget: _getListStepParams(context),
                 child: StoriesWidget(
-                  ayahNumber: item.ayahNumber!,
-                  surahName: item.surahInfo!.surahName,
-                  stories: item.tadabburContent!,
-                  title: item.title!,
-                  previousTadabburId: item.previousTadabburId,
-                  nextTadabburId: item.nextTadabburId,
+                  ayahNumber: item.content.ayahNumber!,
+                  surahName: item.content.surahInfo!.surahName,
+                  stories: item.content.tadabburContent!,
+                  title: item.content.title!,
+                  previousTadabburId: item.content.previousTadabburId,
+                  nextTadabburId: item.content.nextTadabburId,
                   onOpenNextTadabbur: () {
                     state.controller!.nextPage(
                       duration: const Duration(milliseconds: 500),
@@ -106,6 +106,10 @@ class _TadabburStoryPageState extends State<TadabburStoryPage> {
                       curve: Curves.easeInOut,
                     );
                   },
+                  lastReadStoryIndex:
+                      notifier.getLatestReadStoryIndexInAyah(index),
+                  updateLatestReadStoryIndex:
+                      notifier.updateLatestReadStoryIndexInAyah,
                 ),
               );
             }),

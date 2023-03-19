@@ -12,8 +12,10 @@ class StoriesWidget extends StatefulWidget {
     required this.title,
     required this.onOpenNextTadabbur,
     required this.onOpenPrevTadabbur,
+    required this.updateLatestReadStoryIndex,
     this.previousTadabburId,
     this.nextTadabburId,
+    this.lastReadStoryIndex,
     Key? key,
   }) : super(key: key);
 
@@ -25,6 +27,8 @@ class StoriesWidget extends StatefulWidget {
   final int? nextTadabburId;
   final VoidCallback onOpenPrevTadabbur;
   final VoidCallback onOpenNextTadabbur;
+  final int? lastReadStoryIndex;
+  final Function(int) updateLatestReadStoryIndex;
 
   @override
   State<StoriesWidget> createState() => _StoriesWidgetState();
@@ -32,12 +36,19 @@ class StoriesWidget extends StatefulWidget {
 
 class _StoriesWidgetState extends State<StoriesWidget> {
   PageController? _pageController;
-  int _currentIndex = 0;
+  late int _currentIndex;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
+    _currentIndex = 0;
+    if (widget.lastReadStoryIndex != null) {
+      _currentIndex = widget.lastReadStoryIndex!;
+    }
+
+    _pageController = PageController(
+      initialPage: _currentIndex,
+    );
   }
 
   @override
@@ -187,8 +198,6 @@ class _StoriesWidgetState extends State<StoriesWidget> {
           return;
         }
 
-        print('KWOAKWOAKOW');
-
         widget.onOpenPrevTadabbur();
 
         return;
@@ -218,6 +227,8 @@ class _StoriesWidgetState extends State<StoriesWidget> {
         });
       }
     }
+
+    widget.updateLatestReadStoryIndex(_currentIndex);
 
     _pageController?.animateToPage(
       _currentIndex,

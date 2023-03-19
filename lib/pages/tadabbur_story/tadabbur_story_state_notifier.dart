@@ -12,12 +12,12 @@ class TadabburStoryPageState {
     this.isLoading = true,
   });
 
-  final List<TadabburContentResponse> contentInfos;
+  final List<TadabburContentReadingInfo> contentInfos;
   final bool isLoading;
   final PageController? controller;
 
   TadabburStoryPageState copyWith({
-    List<TadabburContentResponse>? contentInfos,
+    List<TadabburContentReadingInfo>? contentInfos,
     PageController? controller,
     bool isLoading = true,
   }) {
@@ -52,7 +52,7 @@ class TadabburStoryPageStateNotifier
   Future<void> initStateNotifier() async {
     state = state.copyWith(isLoading: true);
 
-    List<TadabburContentResponse> res = await _initContent();
+    List<TadabburContentReadingInfo> res = await _initContent();
 
     _controller = PageController(initialPage: _currentIndex);
 
@@ -81,15 +81,25 @@ class TadabburStoryPageStateNotifier
     );
   }
 
-  Future<List<TadabburContentResponse>> _initContent() async {
+  int getLatestReadStoryIndexInAyah(int index) {
+    return state.contentInfos[index].latestReadIndex;
+  }
+
+  void updateLatestReadStoryIndexInAyah(int value) {
+    state.contentInfos[_currentIndex].latestReadIndex = value;
+  }
+
+  Future<List<TadabburContentReadingInfo>> _initContent() async {
     final TadabburContentResponse? content =
         await _getTadabburContent(_params.tadabburId);
 
-    List<TadabburContentResponse> res = [];
+    List<TadabburContentReadingInfo> res = [];
     _currentIndex = 0;
 
     if (content != null) {
-      res.add(content);
+      res.add(TadabburContentReadingInfo(
+        content: content,
+      ));
 
       if (content.previousTadabburId != null) {
         _currentIndex = 1;
@@ -98,7 +108,12 @@ class TadabburStoryPageStateNotifier
             await _getTadabburContent(content.previousTadabburId!);
 
         if (prevContent != null) {
-          res.insert(0, prevContent);
+          res.insert(
+            0,
+            TadabburContentReadingInfo(
+              content: prevContent,
+            ),
+          );
         }
       }
 
@@ -107,7 +122,9 @@ class TadabburStoryPageStateNotifier
             await _getTadabburContent(content.nextTadabburId!);
 
         if (nextContent != null) {
-          res.add(nextContent);
+          res.add(TadabburContentReadingInfo(
+            content: nextContent,
+          ));
         }
       }
     }
@@ -120,13 +137,15 @@ class TadabburStoryPageStateNotifier
       return;
     }
 
-    if (state.contentInfos[_currentIndex].nextTadabburId == null) {
+    if (state.contentInfos[_currentIndex].content.nextTadabburId == null) {
       return;
     }
 
-    List<TadabburContentResponse> res = [
+    List<TadabburContentReadingInfo> res = [
       ...state.contentInfos,
-      TadabburContentResponse(),
+      TadabburContentReadingInfo(
+        content: TadabburContentResponse(),
+      ),
     ];
 
     state = state.copyWith(
@@ -137,12 +156,12 @@ class TadabburStoryPageStateNotifier
     _controller.jumpToPage(_currentIndex);
 
     final TadabburContentResponse? content = await _getTadabburContent(
-      state.contentInfos[_currentIndex].nextTadabburId!,
+      state.contentInfos[_currentIndex].content.nextTadabburId!,
     );
 
     if (content != null) {
-      List<TadabburContentResponse> res = state.contentInfos;
-      res[state.contentInfos.length - 1] = content;
+      List<TadabburContentReadingInfo> res = state.contentInfos;
+      res[state.contentInfos.length - 1].content = content;
 
       state = state.copyWith(
         contentInfos: res,
@@ -156,14 +175,16 @@ class TadabburStoryPageStateNotifier
       return;
     }
 
-    if (state.contentInfos[_currentIndex].previousTadabburId == null) {
+    if (state.contentInfos[_currentIndex].content.previousTadabburId == null) {
       return;
     }
 
     _currentIndex += 1;
 
-    List<TadabburContentResponse> res = [
-      TadabburContentResponse(),
+    List<TadabburContentReadingInfo> res = [
+      TadabburContentReadingInfo(
+        content: TadabburContentResponse(),
+      ),
       ...state.contentInfos,
     ];
 
@@ -175,12 +196,12 @@ class TadabburStoryPageStateNotifier
     _controller.jumpToPage(_currentIndex);
 
     final TadabburContentResponse? content = await _getTadabburContent(
-      state.contentInfos[_currentIndex].previousTadabburId!,
+      state.contentInfos[_currentIndex].content.previousTadabburId!,
     );
 
     if (content != null) {
-      List<TadabburContentResponse> res = state.contentInfos;
-      res[0] = content;
+      List<TadabburContentReadingInfo> res = state.contentInfos;
+      res[0].content = content;
 
       state = state.copyWith(
         contentInfos: res,
