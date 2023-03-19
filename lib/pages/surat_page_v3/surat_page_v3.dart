@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:async/async.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';

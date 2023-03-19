@@ -187,8 +187,6 @@ class _StoriesWidgetState extends State<StoriesWidget> {
           return;
         }
 
-        print('KWOAKWOAKOW');
-
         widget.onOpenPrevTadabbur();
 
         return;

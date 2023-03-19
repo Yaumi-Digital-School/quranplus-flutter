@@ -50,8 +50,8 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
         child: Column(
           children: [
             DailyProgressTracker(
-              target: dailySummary!.target,
-              dailyProgress: dailySummary!.totalPages,
+              target: dailySummary.target,
+              dailyProgress: dailySummary.totalPages,
               isNeedSync: isNeedSync,
             ),
             const SizedBox(height: 20),
@@ -74,8 +74,8 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
     final DateTime now = DateTime.now();
     final String formattedDate = DateFormat('EEEE, d MMMM yyyy').format(now);
 
-    final int dailyProgress = dailySummary!.totalPages;
-    final int target = dailySummary!.target;
+    final int dailyProgress = dailySummary.totalPages;
+    final int target = dailySummary.target;
     final int dailyProgressToInt = dailyProgress.floor();
 
     double progress = dailyProgress / target;
