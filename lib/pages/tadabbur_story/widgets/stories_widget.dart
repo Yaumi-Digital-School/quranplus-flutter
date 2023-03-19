@@ -28,6 +28,7 @@ class StoriesWidget extends StatefulWidget {
 
 class _StoriesWidgetState extends State<StoriesWidget> {
   late PageController _pageController;
+  late TadabburContentResponse content;
   late int _currentIndex;
 
   @override
@@ -37,6 +38,8 @@ class _StoriesWidgetState extends State<StoriesWidget> {
     if (widget.lastReadStoryIndex != null) {
       _currentIndex = widget.lastReadStoryIndex!;
     }
+
+    content = widget.contentInfo.content;
 
     _pageController = PageController(
       initialPage: _currentIndex,
@@ -70,7 +73,7 @@ class _StoriesWidgetState extends State<StoriesWidget> {
                           Row(
                             children: [
                               Text(
-                                "Ayah ${widget.contentInfo.content.ayahNumber}",
+                                "Ayah ${content.ayahNumber}",
                                 style: QPTextStyle.button3Medium
                                     .copyWith(color: QPColors.blackSoft),
                               ),
@@ -85,9 +88,7 @@ class _StoriesWidgetState extends State<StoriesWidget> {
                               ),
                               const SizedBox(width: 6),
                               Text(
-                                widget.contentInfo.content.surahInfo
-                                        ?.surahName ??
-                                    '',
+                                content.surahInfo?.surahName ?? '',
                                 style: QPTextStyle.button3Medium
                                     .copyWith(color: QPColors.blackSoft),
                               ),
@@ -95,7 +96,7 @@ class _StoriesWidgetState extends State<StoriesWidget> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            widget.contentInfo.content.title ?? '',
+                            content.title ?? '',
                             style: QPTextStyle.button1SemiBold.copyWith(
                               color: QPColors.blackHeavy,
                             ),
@@ -124,15 +125,12 @@ class _StoriesWidgetState extends State<StoriesWidget> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(
-                    widget.contentInfo.content.tadabburContent?.length ?? 0,
+                    content.tadabburContent?.length ?? 0,
                     (index) => Expanded(
                       child: Container(
                         margin: EdgeInsets.only(
                           left: index == 0 ? 0 : 1,
-                          right: index ==
-                                  widget.contentInfo.content.tadabburContent!
-                                          .length -
-                                      1
+                          right: index == content.tadabburContent!.length - 1
                               ? 0
                               : 1,
                         ),
@@ -172,11 +170,9 @@ class _StoriesWidgetState extends State<StoriesWidget> {
               child: PageView.builder(
                 controller: _pageController,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount:
-                    widget.contentInfo.content.tadabburContent?.length ?? 0,
+                itemCount: content.tadabburContent?.length ?? 0,
                 itemBuilder: (context, i) {
-                  final currentStory =
-                      widget.contentInfo.content.tadabburContent![i];
+                  final currentStory = content.tadabburContent![i];
 
                   return CachedNetworkImage(
                     fit: BoxFit.cover,
@@ -203,7 +199,7 @@ class _StoriesWidgetState extends State<StoriesWidget> {
 
     if (isTapLeft) {
       if (_currentIndex == 0) {
-        if (widget.contentInfo.content.previousTadabburId == null) {
+        if (content.previousTadabburId == null) {
           Navigator.pop(context);
 
           return;
@@ -220,9 +216,8 @@ class _StoriesWidgetState extends State<StoriesWidget> {
         });
       }
     } else if (isTapRight) {
-      if (_currentIndex + 1 ==
-          widget.contentInfo.content.tadabburContent?.length) {
-        if (widget.contentInfo.content.nextTadabburId == null) {
+      if (_currentIndex + 1 == content.tadabburContent?.length) {
+        if (content.nextTadabburId == null) {
           Navigator.pop(context);
 
           return;
@@ -233,8 +228,7 @@ class _StoriesWidgetState extends State<StoriesWidget> {
         return;
       }
 
-      if (_currentIndex + 1 <
-          (widget.contentInfo.content.tadabburContent?.length ?? 0)) {
+      if (_currentIndex + 1 < (content.tadabburContent?.length ?? 0)) {
         setState(() {
           _currentIndex += 1;
         });
