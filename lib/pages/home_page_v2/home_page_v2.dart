@@ -567,7 +567,8 @@ class ListSuratByJuz extends StatelessWidget {
                 Container(
                   color: QPColors.whiteFair,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 0, left: 60),
+                    padding:
+                        const EdgeInsets.only(top: 0, left: 60, right: 120),
                     child: ButtonPill(
                       onTap: () {
                         Navigator.pushNamed(
