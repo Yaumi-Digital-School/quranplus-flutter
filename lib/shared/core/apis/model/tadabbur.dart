@@ -122,30 +122,63 @@ class TadabburContentItem {
   }
 }
 
+class TadabburContentReadingInfo {
+  TadabburContentReadingInfo({
+    required this.tadabburID,
+    required this.content,
+    this.latestReadIndex = 0,
+  });
+
+  TadabburContentResponse content;
+  int latestReadIndex;
+  int tadabburID;
+}
+
 @JsonSerializable()
 class TadabburContentResponse {
-  final String title;
+  final String? title;
   @JsonKey(name: 'ayah_number')
-  final int ayahNumber;
-  final int surah;
-  @JsonKey(name: 'tadabbur_content')
-  final List<TadabburContentItem> tadabburContent;
+  final int? ayahNumber;
+  @JsonKey(name: 'surah_id')
+  final int? surahNumber;
+  @JsonKey(name: 'tadabbur_contents')
+  final List<TadabburContentItem>? tadabburContent;
   @JsonKey(name: 'next_tadabbur_id')
-  final int nextTadabburId;
+  final int? nextTadabburId;
   @JsonKey(name: 'previous_tadabbur_id')
-  final int previousTadabburId;
+  final int? previousTadabburId;
+  @JsonKey(name: 'surah')
+  final TadabburContentResponseSurah? surahInfo;
+
+  final bool shouldClosePage;
 
   TadabburContentResponse({
-    required this.ayahNumber,
-    required this.nextTadabburId,
-    required this.previousTadabburId,
-    required this.surah,
-    required this.tadabburContent,
-    required this.title,
+    this.ayahNumber,
+    this.surahNumber,
+    this.tadabburContent,
+    this.title,
+    this.surahInfo,
+    this.nextTadabburId,
+    this.previousTadabburId,
+    this.shouldClosePage = false,
   });
 
   factory TadabburContentResponse.fromJson(Map<String, dynamic> json) {
     return _$TadabburContentResponseFromJson(json);
+  }
+}
+
+@JsonSerializable()
+class TadabburContentResponseSurah {
+  TadabburContentResponseSurah({
+    required this.surahName,
+  });
+
+  @JsonKey(name: 'indonesia_name')
+  final String surahName;
+
+  factory TadabburContentResponseSurah.fromJson(Map<String, dynamic> json) {
+    return _$TadabburContentResponseSurahFromJson(json);
   }
 }
 

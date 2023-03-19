@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:qurantafsir_flutter/pages/tadabbur_story/tadabur_story_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 
 class TadabburAyahCard extends StatelessWidget {
@@ -10,37 +12,50 @@ class TadabburAyahCard extends StatelessWidget {
     required this.title,
     required this.source,
     required this.createdAt,
-    required this.ayahId,
+    required this.surahNumber,
+    required this.tadabburId,
   }) : super(key: key);
 
   final String title;
   final String source;
   final int ayahNumber;
   final DateTime createdAt;
-  final int ayahId;
+  final int surahNumber;
+  final int tadabburId;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: QPColors.whiteMassive,
-        border: Border.fromBorderSide(
-          BorderSide(
-            color: QPColors.whiteRoot,
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          RoutePaths.routeTadabburContent,
+          arguments: TadabburStoryPageParams(
+            tadabburId: tadabburId,
+          ),
+        );
+      },
+      child: Container(
+        decoration: const BoxDecoration(
+          color: QPColors.whiteMassive,
+          border: Border.fromBorderSide(
+            BorderSide(
+              color: QPColors.whiteRoot,
+            ),
+          ),
+          borderRadius: BorderRadius.all(
+            Radius.circular(8),
           ),
         ),
-        borderRadius: BorderRadius.all(
-          Radius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: _buildInformation(context),
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: _buildInformation(),
       ),
     );
   }
 
-  Widget _buildInformation() {
+  Widget _buildInformation(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -67,15 +82,10 @@ class TadabburAyahCard extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            GestureDetector(
-              onTap: () {
-                // TODO : Add navigate to tadabbur content
-              },
-              child: const Icon(
-                Icons.keyboard_arrow_right,
-                size: 24,
-                color: QPColors.blackFair,
-              ),
+            const Icon(
+              Icons.keyboard_arrow_right,
+              size: 24,
+              color: QPColors.blackFair,
             ),
           ],
         ),

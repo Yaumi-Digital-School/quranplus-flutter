@@ -5,195 +5,242 @@ import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class StoriesWidget extends StatefulWidget {
-  final List<TadabburContentItem> stories;
-  final String surahName;
-  final int ayahNumber;
-  final int nextTadabburId;
-  final int previousTadabburId;
-
   const StoriesWidget({
-    required this.surahName,
-    required this.ayahNumber,
-    required this.nextTadabburId,
-    required this.previousTadabburId,
-    required this.stories,
+    required this.contentInfo,
+    required this.onOpenNextTadabbur,
+    required this.onOpenPrevTadabbur,
+    required this.updateLatestReadStoryIndex,
+    this.lastReadStoryIndex,
+    this.onClose,
     Key? key,
   }) : super(key: key);
+
+  final VoidCallback onOpenPrevTadabbur;
+  final VoidCallback onOpenNextTadabbur;
+  final VoidCallback? onClose;
+  final int? lastReadStoryIndex;
+  final Function(int) updateLatestReadStoryIndex;
+  final TadabburContentReadingInfo contentInfo;
 
   @override
   State<StoriesWidget> createState() => _StoriesWidgetState();
 }
 
 class _StoriesWidgetState extends State<StoriesWidget> {
-  PageController? _pageController;
-  int _currentIndex = 0;
+  late PageController _pageController;
+  late TadabburContentResponse content;
+  late int _currentIndex;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
+    _currentIndex = 0;
+    if (widget.lastReadStoryIndex != null) {
+      _currentIndex = widget.lastReadStoryIndex!;
+    }
+
+    content = widget.contentInfo.content;
+
+    _pageController = PageController(
+      initialPage: _currentIndex,
+    );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 12, right: 24, left: 24),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "Ayah ${widget.ayahNumber}",
-                              style: QPTextStyle.button3Medium
-                                  .copyWith(color: QPColors.blackSoft),
-                            ),
-                            const SizedBox(width: 6),
-                            Container(
-                              width: 4,
-                              height: 4,
-                              decoration: const BoxDecoration(
-                                color: QPColors.blackSoft,
-                                shape: BoxShape.circle,
+    return SafeArea(
+      bottom: false,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 12, right: 24, left: 24),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                "Ayah ${content.ayahNumber}",
+                                style: QPTextStyle.button3Medium
+                                    .copyWith(color: QPColors.blackSoft),
                               ),
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              widget.surahName,
-                              style: QPTextStyle.button3Medium
-                                  .copyWith(color: QPColors.blackSoft),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          "The Beginning of The Story",
-                          style: QPTextStyle.button1SemiBold.copyWith(
-                            color: QPColors.blackHeavy,
+                              const SizedBox(width: 6),
+                              Container(
+                                width: 4,
+                                height: 4,
+                                decoration: const BoxDecoration(
+                                  color: QPColors.blackSoft,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                content.surahInfo?.surahName ?? '',
+                                style: QPTextStyle.button3Medium
+                                    .copyWith(color: QPColors.blackSoft),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Icon(
-                      Icons.close,
-                      color: QPColors.blackFair,
-                      size: 12,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  widget.stories.length,
-                  (index) => Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(
-                        left: index == 0 ? 0 : 1,
-                        right: index == widget.stories.length - 1 ? 0 : 1,
+                          const SizedBox(height: 4),
+                          Text(
+                            content.title ?? '',
+                            style: QPTextStyle.button1SemiBold.copyWith(
+                              color: QPColors.blackHeavy,
+                            ),
+                          ),
+                        ],
                       ),
-                      decoration: BoxDecoration(
-                        border: index == _currentIndex
-                            ? const Border.fromBorderSide(BorderSide(
-                                color: QPColors.whiteRoot,
-                                width: 1,
-                              ))
-                            : null,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(8)),
+                    ),
+                    const SizedBox(width: 12),
+                    InkWell(
+                      onTap: () {
+                        if (widget.onClose != null) {
+                          widget.onClose!();
+                        }
+
+                        Navigator.pop(context);
+                      },
+                      child: const Icon(
+                        Icons.close,
+                        color: QPColors.blackFair,
+                        size: 12,
                       ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    content.tadabburContent?.length ?? 0,
+                    (index) => Expanded(
                       child: Container(
-                        margin: const EdgeInsets.all(1),
-                        height: 4,
-                        decoration: const BoxDecoration(
-                          color: QPColors.whiteRoot,
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        margin: EdgeInsets.only(
+                          left: index == 0 ? 0 : 1,
+                          right: index == content.tadabburContent!.length - 1
+                              ? 0
+                              : 1,
+                        ),
+                        decoration: BoxDecoration(
+                          border: index == _currentIndex
+                              ? const Border.fromBorderSide(
+                                  BorderSide(
+                                    color: QPColors.whiteRoot,
+                                    width: 1,
+                                  ),
+                                )
+                              : null,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(8)),
+                        ),
+                        child: Container(
+                          margin: const EdgeInsets.all(1),
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: index < _currentIndex
+                                ? QPColors.brandFair
+                                : QPColors.whiteRoot,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(8)),
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: GestureDetector(
-            onTapDown: (details) => _onTapDown(details),
-            onPanUpdate: (details) => _onPanUpdate(details),
-            child: PageView.builder(
-              controller: _pageController,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: widget.stories.length,
-              itemBuilder: (context, i) {
-                final currentStory = widget.stories[i];
-
-                return CachedNetworkImage(
-                  progressIndicatorBuilder: (context, url, progress) => Center(
-                    child: CircularProgressIndicator(
-                      value: progress.progress,
-                    ),
-                  ),
-                  imageUrl: currentStory.content,
-                );
-              },
+              ],
             ),
           ),
-        ),
-      ],
+          Expanded(
+            child: GestureDetector(
+              onTapUp: (details) => _onTapUp(details),
+              child: PageView.builder(
+                controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: content.tadabburContent?.length ?? 0,
+                itemBuilder: (context, i) {
+                  final currentStory = content.tadabburContent![i];
+
+                  return CachedNetworkImage(
+                    fit: BoxFit.cover,
+                    progressIndicatorBuilder: (context, url, progress) =>
+                        const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    imageUrl: currentStory.content,
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  void _onTapDown(TapDownDetails details) {
+  void _onTapUp(TapUpDetails details) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double dx = details.globalPosition.dx;
-    if (dx < screenWidth / 3) {
-      setState(() {
-        if (_currentIndex - 1 >= 0) {
+    final bool isTapLeft = dx < screenWidth / 3;
+    final bool isTapRight = dx > 2 * screenWidth / 3;
+
+    if (isTapLeft) {
+      if (_currentIndex == 0) {
+        if (content.previousTadabburId == null) {
+          Navigator.pop(context);
+
+          return;
+        }
+
+        widget.onOpenPrevTadabbur();
+
+        return;
+      }
+
+      if (_currentIndex - 1 >= 0) {
+        setState(() {
           _currentIndex -= 1;
+        });
+      }
+    } else if (isTapRight) {
+      if (_currentIndex + 1 == content.tadabburContent?.length) {
+        if (content.nextTadabburId == null) {
+          Navigator.pop(context);
+
+          return;
         }
-      });
-    } else if (dx > 2 * screenWidth / 3) {
-      setState(() {
-        if (_currentIndex + 1 < widget.stories.length) {
+
+        widget.onOpenNextTadabbur();
+
+        return;
+      }
+
+      if (_currentIndex + 1 < (content.tadabburContent?.length ?? 0)) {
+        setState(() {
           _currentIndex += 1;
-        } else {
-          _currentIndex = 0;
-        }
-      });
+        });
+      }
     }
+
+    widget.updateLatestReadStoryIndex(_currentIndex);
+
     _pageController?.animateToPage(
       _currentIndex,
       duration: const Duration(milliseconds: 1),
       curve: Curves.easeInOut,
     );
-  }
-
-  void _onPanUpdate(DragUpdateDetails details) {
-    // Swiping in previous direction.
-    if (details.delta.dx > 0) {
-      print("previous");
-    }
-
-    // Swiping in next direction.
-    if (details.delta.dx < 0) {
-      print("next");
-    }
   }
 }

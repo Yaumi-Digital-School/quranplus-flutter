@@ -1,13 +1,11 @@
-import 'dart:convert';
-
 import 'package:intl/intl.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_progress.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur_ayah_available.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur_reading_content_info.dart';
 import 'package:qurantafsir_flutter/shared/core/database/migration.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
@@ -731,5 +729,48 @@ class DbLocal {
       ''',
       );
     });
+  }
+
+  /*
+    TADABBUR READING CONTENT INFO
+  */
+
+  Future<int> getTadabburReadingContentInfoByTadabburID(int tadabburID) async {
+    final Database dbClient = await _db;
+    final List<Map<String, dynamic>> result = await dbClient.query(
+      TadabburReadingContentInfoTable.tableName,
+      columns: [TadabburReadingContentInfoTable.lastReadingIndex],
+      where: '${TadabburReadingContentInfoTable.tadabburID} = $tadabburID',
+      limit: 1,
+    );
+
+    if (result.isEmpty) {
+      return 0;
+    }
+
+    return result[0][TadabburReadingContentInfoTable.lastReadingIndex];
+  }
+
+  Future<int> insertOrupdateTadabburReadingContentInfoLastReadingIndex({
+    required int tadabburID,
+    required int lastReadingIndex,
+  }) async {
+    final Database dbClient = await _db;
+
+    int res = await dbClient.rawInsert('''
+        INSERT OR IGNORE INTO ${TadabburReadingContentInfoTable.tableName}
+        (${TadabburReadingContentInfoTable.tadabburID}, ${TadabburReadingContentInfoTable.lastReadingIndex})
+        VALUES ($tadabburID, $lastReadingIndex)
+      ''');
+
+    if (res == 0) {
+      res = await dbClient.rawUpdate('''
+        UPDATE ${TadabburReadingContentInfoTable.tableName}
+        SET ${TadabburReadingContentInfoTable.lastReadingIndex} = $lastReadingIndex
+        WHERE ${TadabburReadingContentInfoTable.tadabburID} = $tadabburID
+      ''');
+    }
+
+    return res;
   }
 }

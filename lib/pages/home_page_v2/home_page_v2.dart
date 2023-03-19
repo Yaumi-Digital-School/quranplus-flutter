@@ -389,7 +389,9 @@ class ListSuratByJuz extends StatelessWidget {
       return const StartHabitCard();
     }
 
-    if (isLoggedIn && state.dailySummary!.totalPages <= 0) {
+    if (isLoggedIn &&
+        state.dailySummary!.totalPages <= 0 &&
+        state.lastBookmark == null) {
       return _buildDailyHabitTracker(context, state);
     }
 
