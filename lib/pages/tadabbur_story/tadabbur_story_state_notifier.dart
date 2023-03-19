@@ -200,6 +200,7 @@ class TadabburStoryPageStateNotifier
         return response.data;
       }
     } catch (e) {
+      // ignore: avoid_print
       print(e);
     }
 

@@ -71,10 +71,6 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
     }
   }
 
-  Future<void> _setToken(String token) async {
-    await _sharedPreferenceService.setApiToken(token);
-  }
-
   Future<void> _removeToken() async {
     await _sharedPreferenceService.removeApiToken();
   }
@@ -135,10 +131,6 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
     );
 
     onSuccess.call();
-  }
-
-  Future<void> _setUsername(String name) async {
-    await _sharedPreferenceService.setUsername(name);
   }
 
   Future<void> _removeUsername() async {

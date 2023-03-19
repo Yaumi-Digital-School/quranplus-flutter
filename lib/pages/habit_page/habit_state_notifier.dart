@@ -65,10 +65,6 @@ class HabitPageStateNotifier extends BaseStateNotifier<HabitPageState> {
     }
   }
 
-  Future<void> _setToken(String token) async {
-    await _sharedPreferenceService.setApiToken(token);
-  }
-
   Future<void> signIn({
     required Function() onSuccess,
     required Function() onAccountDeletedError,
