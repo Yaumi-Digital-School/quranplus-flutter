@@ -16,7 +16,7 @@ packages:
     source: hosted
     version: "1.0.2"
   alice:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       name: alice
       url: "https://pub.dartlang.org"
