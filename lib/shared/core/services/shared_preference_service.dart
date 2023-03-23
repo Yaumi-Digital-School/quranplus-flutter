@@ -79,7 +79,10 @@ class SharedPreferenceService {
   }
 
   String getLastSync() {
-    return _sharedPreferences.getString(_lastSync) ?? '';
+    final String defaultLastSync =
+        DateCustomUtils.getFirstDayOfTheWeekFromToday();
+
+    return _sharedPreferences.getString(_lastSync) ?? defaultLastSync;
   }
 
   String getHabitNeedToSyncTimer() {
