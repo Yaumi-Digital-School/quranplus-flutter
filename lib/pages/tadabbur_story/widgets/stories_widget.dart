@@ -174,13 +174,17 @@ class _StoriesWidgetState extends State<StoriesWidget> {
                 itemBuilder: (context, i) {
                   final currentStory = content.tadabburContent![i];
 
-                  return CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    progressIndicatorBuilder: (context, url, progress) =>
-                        const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                    imageUrl: currentStory.content,
+                  return ListView(
+                    children: [
+                      CachedNetworkImage(
+                        width: MediaQuery.of(context).size.width,
+                        progressIndicatorBuilder: (context, url, progress) =>
+                            const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        imageUrl: currentStory.content,
+                      ),
+                    ],
                   );
                 },
               ),
@@ -237,7 +241,7 @@ class _StoriesWidgetState extends State<StoriesWidget> {
 
     widget.updateLatestReadStoryIndex(_currentIndex);
 
-    _pageController?.animateToPage(
+    _pageController.animateToPage(
       _currentIndex,
       duration: const Duration(milliseconds: 1),
       curve: Curves.easeInOut,
