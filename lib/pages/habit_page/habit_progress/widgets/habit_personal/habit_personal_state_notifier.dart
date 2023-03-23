@@ -62,7 +62,7 @@ class HabitPersonalStateNotifier extends BaseStateNotifier<HabitPersonalState> {
       db = DbLocal();
       DateTime now = DateTime.now();
       String formattedDate = DateFormat('MMMM yyyy').format(now);
-      _habitDailyService.syncHabit();
+      await _habitDailyService.syncHabit();
       final List<HabitDailySummary> listHabit = await db.getLastSevenDays(now);
       final HabitDailySummary currentProgress =
           await _habitDailyService.getCurrentDayHabitDailySummaryListLocal();

@@ -582,8 +582,7 @@ class DbLocal {
     SharedPreferenceService sharedPreferenceService,
   ) async {
     try {
-      final lastSync = sharedPreferenceService.getLastSync();
-      final lastSyncDate = lastSync.isEmpty ? "2022-01-01" : lastSync;
+      final String lastSyncDate = sharedPreferenceService.getLastSync();
       var dbClient = await _db;
 
       final resultQueryHabitDaily = await dbClient.rawQuery(

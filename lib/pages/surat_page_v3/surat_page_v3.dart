@@ -1018,8 +1018,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
               ButtonSecondary(
                 label: 'Submit',
                 onTap: () async {
-                  final bool isComplete = await notifier.stopRecording();
                   Navigator.pop(context);
+                  final bool isComplete = await notifier.stopRecording();
 
                   if (isFromTapBack) {
                     HabitProgressPostTrackingDialog.onTapBackTrackingDialog(

@@ -31,7 +31,7 @@ class HabitDailySummaryService {
 
     return HabitSyncRequest(
       dailySummaries: resultHabitDailySummaries,
-      lastSync: lastSync.isEmpty ? null : lastSync,
+      lastSync: lastSync,
     );
   }
 

@@ -110,7 +110,7 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     await _getVerseToAyahPage();
 
     if (_name?.isNotEmpty ?? false) {
-      _habitDailySummaryService.syncHabit(
+      await _habitDailySummaryService.syncHabit(
         connectivityResult: connectivityResult,
       );
     }
