@@ -32,7 +32,9 @@ import 'package:retrofit/retrofit.dart';
 import 'home_page_state_notifier.dart';
 
 class HomePageV2 extends StatefulWidget {
-  const HomePageV2({Key? key}) : super(key: key);
+  const HomePageV2({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<HomePageV2> createState() => _HomePageV2State();
@@ -173,6 +175,8 @@ class _HomePageV2State extends State<HomePageV2> {
 
       return;
     }
+
+    ref.read(habitDailySummaryService).shouldResyncHabitAfterLoggedIn = true;
 
     ForceLoginParam? param = await notifier.getAndRemoveForceLoginParam();
 
