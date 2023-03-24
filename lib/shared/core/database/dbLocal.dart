@@ -636,6 +636,7 @@ class DbLocal {
          ${HabitProgressTable.type}
          FROM ${HabitProgressTable.tableName}
          WHERE datetime(${HabitProgressTable.createdAt}) > datetime('$lastSyncDate')
+         AND ${HabitProgressTable.habitDailySummaryID} = $id
          AND (JULIANDAY('now') - JULIANDAY(${HabitProgressTable.createdAt})) <= 7
       ''',
     );
