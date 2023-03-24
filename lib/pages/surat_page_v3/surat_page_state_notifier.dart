@@ -161,15 +161,19 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     );
     final ReadingSettings settings =
         _sharedPreferenceService.getReadingSettings();
-    Verse firstVerseInDirectedPage = _allPages[startPageInIndex].verses[0];
+    int currentPageInt = startPageInIndex + 1;
+    Verse firstVerseInDirectedPage = _allPages[currentPageInt].verses[0];
     temp = firstVerseInDirectedPage.surahNumber;
-    currentPage = ValueNotifier(startPageInIndex + 1);
+
+    currentPage = ValueNotifier(currentPageInt);
     visibleSuratName = ValueNotifier(
       surahNumberToSurahNameMap[firstVerseInDirectedPage.surahNumber]!,
     );
+
     visibleJuzNumber = ValueNotifier(
       firstVerseInDirectedPage.juzNumber,
     );
+
     visibleIconBookmark = ValueNotifier(false);
 
     await _getTadabburAyahAvailable();

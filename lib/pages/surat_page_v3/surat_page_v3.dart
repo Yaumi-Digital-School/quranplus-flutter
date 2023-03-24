@@ -629,6 +629,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
           String surahName = surahNumberToSurahNameMap[surahNumber] ?? '';
           notifier.visibleSuratName.value = surahName;
           notifier.currentPage.value = pageValue;
+          notifier.visibleJuzNumber.value =
+              state.pages![pageValue].verses[0].juzNumber;
           notifier.checkIsBookmarkExists(pageValue);
           notifier.changePageOnRecording(pageValue);
           notifier.isOnReadCTAVisible.value = true;
@@ -665,6 +667,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
         notifier.changePageOnRecording(pageValue);
         notifier.checkIsBookmarkExists(pageValue);
         notifier.currentPage.value = pageValue;
+        notifier.visibleJuzNumber.value =
+            state.pages![pageValue].verses[0].juzNumber;
         notifier.isOnReadCTAVisible.value = true;
       },
       children: allPages,
