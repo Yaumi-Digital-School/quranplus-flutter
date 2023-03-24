@@ -685,7 +685,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     final int totalReadPages =
         currentRecordedReadPages + (_currentSummary!.totalPages);
 
-    _habitDailySummaryService.syncHabit();
+    await _habitDailySummaryService.syncHabit();
 
     if (totalReadPages >= (_currentSummary!.target)) {
       return true;
