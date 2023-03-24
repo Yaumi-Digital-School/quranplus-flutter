@@ -194,6 +194,6 @@ class AuthenticationService {
     final BottomNavigationBar navbar =
         mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
 
-    navbar.onTap!(3);
+    navbar.onTap!(4);
   }
 }
