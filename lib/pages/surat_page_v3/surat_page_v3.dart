@@ -667,6 +667,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
         notifier.changePageOnRecording(pageValue);
         notifier.checkIsBookmarkExists(pageValue);
         notifier.currentPage.value = pageValue;
+        notifier.visibleJuzNumber.value =
+            state.pages![pageValue].verses[0].juzNumber;
         notifier.isOnReadCTAVisible.value = true;
       },
       children: allPages,
