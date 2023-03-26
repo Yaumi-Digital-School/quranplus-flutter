@@ -17,14 +17,6 @@ class HabitDailySummaryService {
   final SharedPreferenceService sharedPreferenceService;
   final DbLocal _db = DbLocal();
   final HabitApi _habitApi;
-  bool shouldResyncHabitAfterLoggedIn = false;
-
-  bool getAndResetShouldResyncHabitAfterLoggedIn() {
-    final bool curr = shouldResyncHabitAfterLoggedIn;
-    shouldResyncHabitAfterLoggedIn = false;
-
-    return curr;
-  }
 
   Future<HabitDailySummary> getCurrentDayHabitDailySummaryListLocal() async {
     final HabitDailySummary result = await _db.getCurrentDayHabitDailySummary();

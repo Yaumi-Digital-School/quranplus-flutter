@@ -175,8 +175,7 @@ class _HomePageV2State extends State<HomePageV2> {
 
       return;
     }
-
-    ref.read(habitDailySummaryService).shouldResyncHabitAfterLoggedIn = true;
+    await ref.read(habitDailySummaryService).syncHabit();
 
     ForceLoginParam? param = await notifier.getAndRemoveForceLoginParam();
 

@@ -109,11 +109,6 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     await _getJuzElements();
     await _getVerseToAyahPage();
 
-    if (_habitDailySummaryService.getAndResetShouldResyncHabitAfterLoggedIn()) {
-      await _habitDailySummaryService.syncHabit(
-        connectivityResult: connectivityResult,
-      );
-    }
     final bool isNeedSync = _habitDailySummaryService.isNeedSync();
 
     _dailySummary = await _habitDailySummaryService

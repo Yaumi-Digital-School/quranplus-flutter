@@ -143,9 +143,10 @@ class HabitPage extends StatelessWidget {
           onAccountDeletedError: () {
             SignInBottomSheet.showAccountDeletedInfo(context: context);
           },
-          onSuccess: () {
-            ref.read(habitDailySummaryService).shouldResyncHabitAfterLoggedIn =
-                true;
+          onSuccess: () async {
+            await ref.read(habitDailySummaryService).syncHabit(
+                  connectivityResult: connectivityResult,
+                );
             ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
             final BottomNavigationBar navbar =
                 mainNavbarGlobalKey.currentWidget as BottomNavigationBar;

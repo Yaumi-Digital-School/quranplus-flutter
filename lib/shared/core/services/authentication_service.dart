@@ -28,7 +28,7 @@ class AuthenticationService {
 
   final UserApi userApi;
   final SharedPreferenceService _sharedPreferenceService;
-  bool _isLoggedIn = false;
+  late bool _isLoggedIn;
   late GoogleSignIn _googleSignIn;
 
   bool get isLoggedIn => _isLoggedIn;
@@ -42,6 +42,8 @@ class AuthenticationService {
       'email',
       'profile',
     ]);
+
+    _isLoggedIn = _sharedPreferenceService.getApiToken().isNotEmpty;
   }
 
   Future<SignInResult> signIn({
