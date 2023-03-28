@@ -162,7 +162,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     final ReadingSettings settings =
         _sharedPreferenceService.getReadingSettings();
     int currentPageInt = startPageInIndex + 1;
-    Verse firstVerseInDirectedPage = _allPages[currentPageInt].verses[0];
+    Verse firstVerseInDirectedPage = _allPages[startPageInIndex].verses[0];
     temp = firstVerseInDirectedPage.surahNumber;
 
     currentPage = ValueNotifier(currentPageInt);
