@@ -673,7 +673,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
       await _sharedPreferenceService.setLastRecordingData(
         LastRecordingData(
           surahName: visibleSuratName.value,
-          page: (pageController.page ?? 0).toInt() + 1,
+          page: currentPage.value,
         ),
       );
 
