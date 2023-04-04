@@ -35,10 +35,21 @@ Future<void> main() async {
       SharedPreferenceService();
   await sharedPreferenceService.init();
 
-  await GlobalConfiguration().loadFromAsset('env');
-  notificationAppLaunchDetails = (await flutterLocalNotificationsPlugin
-      .getNotificationAppLaunchDetails())!;
   await initNotifications(flutterLocalNotificationsPlugin);
+  notificationAppLaunchDetails =
+      await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+
+  // Handle the notification launch details
+  if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
+    // The app was opened via a notification
+    final notificationPayload = notificationAppLaunchDetails!.payload;
+    // Handle the notification payload here
+  } else {
+    // The app was opened via other means
+    // Handle the app launch logic here
+  }
+
+  await GlobalConfiguration().loadFromAsset('env');
 
   runApp(
     ProviderScope(

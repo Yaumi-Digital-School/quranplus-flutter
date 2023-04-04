@@ -13,7 +13,9 @@ final BehaviorSubject<String> selectNotificationSubject =
 
 Future<void> initNotifications(
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
-  var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+  var initializationSettingsAndroid =
+      AndroidInitializationSettings('ic_launcher');
+
   var initializationSettingsIOS = IOSInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
@@ -21,25 +23,24 @@ Future<void> initNotifications(
       onDidReceiveLocalNotification:
           (int id, String? title, String? body, String? payload) async {
         didReceiveLocalNotificationSubject.add(ReminderNotification(
-            id: id, title: title ?? '', body: body ?? '', payload: payload ?? ''));
+            id: id,
+            title: title ?? '',
+            body: body ?? '',
+            payload: payload ?? ''));
       });
-  const MacOSInitializationSettings initializationSettingsMacOS =
-      MacOSInitializationSettings(
-          requestAlertPermission: false,
-          requestBadgePermission: false,
-          requestSoundPermission: false);
+
   var initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
-      macOS: initializationSettingsMacOS);
+      android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
 
   tz.initializeTimeZones();
 
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: (String? payload) async {
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onSelectNotification: (payload) async {
+    // Handle notification tapped logic here
     if (payload != null) {
       debugPrint('notification payload: ' + payload);
+      selectNotificationSubject.add(payload);
     }
-    selectNotificationSubject.add(payload!);
   });
 }
 
@@ -54,7 +55,8 @@ Future<void> showNotification(
       'Global-Channel', 'Notification',
       channelDescription: 'Notification Channel',
       importance: Importance.max,
-      priority: Priority.high, ticker: 'ticker');
+      priority: Priority.high,
+      ticker: 'ticker');
   const iOSPlatformChannelSpecifics = IOSNotificationDetails();
   const NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
@@ -93,7 +95,7 @@ Future<void> scheduleNotification(
     name,
     'Reminder Times',
     channelDescription: 'Reminder Times',
-    icon: 'app_icon',
+    icon: 'ic_launcher',
   );
   const iOSPlatformChannelSpecifics = IOSNotificationDetails();
   var platformChannelSpecifics = NotificationDetails(
@@ -118,7 +120,7 @@ Future<void> scheduleNotificationPeriodically(
     name,
     'Reminder Times',
     channelDescription: 'Reminder Times',
-    icon: 'app_icon',
+    icon: 'ic_launcher',
   );
   var iOSPlatformChannelSpecifics = IOSNotificationDetails();
   var platformChannelSpecifics = NotificationDetails(
