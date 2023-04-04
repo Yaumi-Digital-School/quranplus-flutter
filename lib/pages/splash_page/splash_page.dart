@@ -27,11 +27,12 @@ class _SplashPageState extends State<SplashPage> {
             navigatorKey: widget.navigatorKey,
             tadabburService: ref.read(tadabburService),
             remoteConfigService: ref.read(remoteConfigService),
+            habitDailySummaryService: ref.read(habitDailySummaryService),
           );
         },
       ),
       onStateNotifierReady: (notifier, _) async {
-        await Future.delayed(const Duration(milliseconds: 2500), () async {
+        await Future.delayed(const Duration(milliseconds: 500), () async {
           await notifier.initStateNotifier();
           Navigator.of(context).pushReplacementNamed(RoutePaths.routeMain);
         });

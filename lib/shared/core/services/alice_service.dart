@@ -11,8 +11,8 @@ class AliceService {
   void init() {
     _alice = Alice(
       navigatorKey: _navigatorKey,
-      showNotification: true,
-      showInspectorOnShake: true,
+      showNotification: false,
+      showInspectorOnShake: false,
     );
   }
 

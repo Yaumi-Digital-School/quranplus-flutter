@@ -195,11 +195,6 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
     );
   }
 
-  _onPressedStartReading(BuildContext context) =>
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return const MainPage();
-      }));
-
   Widget _buildFavoritedAyah({
     required BuildContext context,
     required FavoriteAyahs favoriteAyah,

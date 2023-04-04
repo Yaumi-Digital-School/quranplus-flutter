@@ -161,15 +161,19 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     );
     final ReadingSettings settings =
         _sharedPreferenceService.getReadingSettings();
+    int currentPageInt = startPageInIndex + 1;
     Verse firstVerseInDirectedPage = _allPages[startPageInIndex].verses[0];
     temp = firstVerseInDirectedPage.surahNumber;
-    currentPage = ValueNotifier(startPageInIndex + 1);
+
+    currentPage = ValueNotifier(currentPageInt);
     visibleSuratName = ValueNotifier(
       surahNumberToSurahNameMap[firstVerseInDirectedPage.surahNumber]!,
     );
+
     visibleJuzNumber = ValueNotifier(
       firstVerseInDirectedPage.juzNumber,
     );
+
     visibleIconBookmark = ValueNotifier(false);
 
     await _getTadabburAyahAvailable();
@@ -669,7 +673,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
       await _sharedPreferenceService.setLastRecordingData(
         LastRecordingData(
           surahName: visibleSuratName.value,
-          page: (pageController.page ?? 0).toInt() + 1,
+          page: currentPage.value,
         ),
       );
 
@@ -681,7 +685,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     final int totalReadPages =
         currentRecordedReadPages + (_currentSummary!.totalPages);
 
-    _habitDailySummaryService.syncHabit();
+    await _habitDailySummaryService.syncHabit();
 
     if (totalReadPages >= (_currentSummary!.target)) {
       return true;

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:async/async.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +8,7 @@ import 'package:qurantafsir_flutter/pages/read_tadabbur/read_tadabbur_page.dart'
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/post_tracking_dialog.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/pre_tracking_animation.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/submission_dialog.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
@@ -630,6 +630,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
           String surahName = surahNumberToSurahNameMap[surahNumber] ?? '';
           notifier.visibleSuratName.value = surahName;
           notifier.currentPage.value = pageValue;
+          notifier.visibleJuzNumber.value =
+              state.pages![pageIndex].verses[0].juzNumber;
           notifier.checkIsBookmarkExists(pageValue);
           notifier.changePageOnRecording(pageValue);
           notifier.isOnReadCTAVisible.value = true;
@@ -666,6 +668,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
         notifier.changePageOnRecording(pageValue);
         notifier.checkIsBookmarkExists(pageValue);
         notifier.currentPage.value = pageValue;
+        notifier.visibleJuzNumber.value =
+            state.pages![pageIndex].verses[0].juzNumber;
         notifier.isOnReadCTAVisible.value = true;
       },
       children: allPages,
@@ -975,110 +979,11 @@ class _SuratPageV3State extends State<SuratPageV3> {
     showDialog<bool>(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          backgroundColor: brokenWhite,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(19)),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                isFromTapBack
-                    ? 'Please submit your reading progress before back to the Homepage'
-                    : "You've finished reading....",
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 10,
-                  color: neutral900,
-                ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Row(
-                children: [
-                  _buildTrackerSubmissionDialogInput(notifier),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  const Text(
-                    'Pages',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 10,
-                      color: neutral600,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              ButtonSecondary(
-                label: 'Submit',
-                onTap: () async {
-                  final bool isComplete = await notifier.stopRecording();
-                  Navigator.pop(context);
-
-                  if (isFromTapBack) {
-                    HabitProgressPostTrackingDialog.onTapBackTrackingDialog(
-                      context: context,
-                      sharedPreferenceService: notifier.sharedPreferenceService,
-                      isComplete: isComplete,
-                    );
-
-                    return true;
-                  }
-
-                  HabitProgressPostTrackingDialog.onSubmitPostTrackingDialog(
-                    context: context,
-                    sharedPreferenceService: notifier.sharedPreferenceService,
-                    isComplete: isComplete,
-                  );
-                },
-              ),
-            ],
-          ),
+        return TrackingSubmissionDialog(
+          notifier: notifier,
+          isFromTapBack: isFromTapBack,
         );
       },
-    );
-  }
-
-  Widget _buildTrackerSubmissionDialogInput(SuratPageStateNotifier notifier) {
-    notifier.habitTrackerSubmissionController.value = TextEditingValue(
-      text: notifier.recordedPagesList.length.toString(),
-    );
-
-    return SizedBox(
-      width: 60,
-      child: TextField(
-        controller: notifier.habitTrackerSubmissionController,
-        textAlign: TextAlign.center,
-        keyboardType: TextInputType.number,
-        style: const TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.w500,
-          color: neutral600,
-        ),
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-          isDense: true,
-          contentPadding: const EdgeInsets.all(7),
-          hintText: '1',
-          hintStyle: const TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.w500,
-            color: neutral400,
-          ),
-          border: enabledInputBorder,
-          enabledBorder: enabledInputBorder,
-          errorBorder: errorInputBorder,
-          focusedErrorBorder: errorInputBorder,
-        ),
-      ),
     );
   }
 }

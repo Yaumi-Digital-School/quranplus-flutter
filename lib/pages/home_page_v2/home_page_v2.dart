@@ -32,7 +32,9 @@ import 'package:retrofit/retrofit.dart';
 import 'home_page_state_notifier.dart';
 
 class HomePageV2 extends StatefulWidget {
-  const HomePageV2({Key? key}) : super(key: key);
+  const HomePageV2({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<HomePageV2> createState() => _HomePageV2State();
@@ -173,6 +175,7 @@ class _HomePageV2State extends State<HomePageV2> {
 
       return;
     }
+    await ref.read(habitDailySummaryService).syncHabit();
 
     ForceLoginParam? param = await notifier.getAndRemoveForceLoginParam();
 
@@ -389,7 +392,9 @@ class ListSuratByJuz extends StatelessWidget {
       return const StartHabitCard();
     }
 
-    if (isLoggedIn && state.dailySummary!.totalPages <= 0) {
+    if (isLoggedIn &&
+        state.dailySummary!.totalPages <= 0 &&
+        state.lastBookmark == null) {
       return _buildDailyHabitTracker(context, state);
     }
 
@@ -490,86 +495,85 @@ class ListSuratByJuz extends StatelessWidget {
         final bool hasTadabbur =
             state.listTaddaburAvailables!.containsKey(suratNumber);
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ListTile(
-              tileColor: backgroundColor,
-              minLeadingWidth: 20,
-              leading: Container(
-                alignment: Alignment.center,
-                height: 34,
-                width: 30,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color.fromRGBO(
-                        0,
-                        0,
-                        0,
-                        0.1,
+        return GestureDetector(
+          onTap: () async {
+            int page = surats[index].startPageToInt;
+            int startPageInIndexValue = page - 1;
+
+            final dynamic param = await Navigator.pushNamed(
+              context,
+              RoutePaths.routeSurahPage,
+              arguments: SuratPageV3Param(
+                startPageInIndex: startPageInIndexValue,
+                firstPagePointerIndex: surats[index].startPageID,
+              ),
+            );
+
+            if (param != null && param is SuratPageV3OnPopParam) {
+              notifier.refreshDataOnPopFromSurahPage();
+            }
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                tileColor: backgroundColor,
+                minLeadingWidth: 20,
+                leading: Container(
+                  alignment: Alignment.center,
+                  height: 34,
+                  width: 30,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color.fromRGBO(
+                          0,
+                          0,
+                          0,
+                          0.1,
+                        ),
+                        offset: Offset(1.0, 2.0),
+                        blurRadius: 5.0,
+                        spreadRadius: 1.0,
                       ),
-                      offset: Offset(1.0, 2.0),
-                      blurRadius: 5.0,
-                      spreadRadius: 1.0,
+                    ],
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
                     ),
-                  ],
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20),
+                  ),
+                  child: Text(
+                    surahNumberString,
+                    style: numberStyle,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                child: Text(
-                  surahNumberString,
-                  style: numberStyle,
+                title: Text(
+                  surahNameLatin,
+                  style: bodyMedium2,
                   overflow: TextOverflow.ellipsis,
                 ),
-              ),
-              title: Text(
-                surahNameLatin,
-                style: bodyMedium2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              subtitle: Padding(
-                padding: const EdgeInsets.only(top: 6),
-                child: Text(
-                  "Page ${surats[index].startPage}, Ayat ${surats[index].startAyat}",
-                  style: bodyLight3,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              trailing: Text(
-                surats[index].name,
-                style: suratFontStyle,
-                textAlign: TextAlign.right,
-              ),
-              onTap: () async {
-                int page = surats[index].startPageToInt;
-                int startPageInIndexValue = page - 1;
-
-                final dynamic param = await Navigator.pushNamed(
-                  context,
-                  RoutePaths.routeSurahPage,
-                  arguments: SuratPageV3Param(
-                    startPageInIndex: startPageInIndexValue,
-                    firstPagePointerIndex: surats[index].startPageID,
+                subtitle: Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: Text(
+                    "Page ${surats[index].startPage}, Ayat ${surats[index].startAyat}",
+                    style: bodyLight3,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                );
-
-                if (param != null && param is SuratPageV3OnPopParam) {
-                  notifier.refreshDataOnPopFromSurahPage();
-                }
-              },
-            ),
-            if (hasTadabbur)
-              Container(
-                color: QPColors.whiteFair,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 0, left: 60),
-                  child: SizedBox(
-                    height: 30,
-                    width: 196,
+                ),
+                trailing: Text(
+                  surats[index].name,
+                  style: suratFontStyle,
+                  textAlign: TextAlign.right,
+                ),
+              ),
+              if (hasTadabbur)
+                Container(
+                  color: QPColors.whiteFair,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.only(top: 0, left: 60, right: 120),
                     child: ButtonPill(
                       onTap: () {
                         Navigator.pushNamed(
@@ -586,12 +590,12 @@ class ListSuratByJuz extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
-            if (index == surats.length - 1 && hasTadabbur)
-              const SizedBox(
-                height: 24,
-              ),
-          ],
+              if (index == surats.length - 1 && hasTadabbur)
+                const SizedBox(
+                  height: 24,
+                ),
+            ],
+          ),
         );
       },
     );

@@ -75,9 +75,9 @@ class _TadabburStoryPageState extends State<TadabburStoryPage> {
               context,
               index,
             ) {
-              final TadabburContentResponse item = state.contentInfos[index];
+              final TadabburContentReadingInfo item = state.contentInfos[index];
 
-              if (item.tadabburContent == null) {
+              if (item.content.tadabburContent == null) {
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
@@ -88,12 +88,8 @@ class _TadabburStoryPageState extends State<TadabburStoryPage> {
                     SharedPreferenceService.isAlreadyOnBoardingTadabbur,
                 listWidget: _getListStepParams(context),
                 child: StoriesWidget(
-                  ayahNumber: item.ayahNumber!,
-                  surahName: item.surahInfo!.surahName,
-                  stories: item.tadabburContent!,
-                  title: item.title!,
-                  previousTadabburId: item.previousTadabburId,
-                  nextTadabburId: item.nextTadabburId,
+                  key: GlobalKey(),
+                  contentInfo: item,
                   onOpenNextTadabbur: () {
                     state.controller!.nextPage(
                       duration: const Duration(milliseconds: 500),
@@ -106,6 +102,10 @@ class _TadabburStoryPageState extends State<TadabburStoryPage> {
                       curve: Curves.easeInOut,
                     );
                   },
+                  onClose: notifier.updateLatestReadStoryIndexToDB,
+                  lastReadStoryIndex: item.latestReadIndex,
+                  updateLatestReadStoryIndex:
+                      notifier.updateLatestReadStoryIndexInAyah,
                 ),
               );
             }),
@@ -135,13 +135,13 @@ class _TadabburStoryPageState extends State<TadabburStoryPage> {
         description: "This is the ayah and the surah",
         direction: StepDirection.row,
         mainWidget: Image.asset(ImagePath.onBoardingArrowLeft, height: 56),
-        left: 28,
-        top: 48,
+        left: 56,
+        top: 24 + MediaQuery.of(context).padding.top,
         marginTopMainWidget: 45,
       ),
       StepParams(
         buttonTitle: "Got It",
-        description: "Tap on the right side to\nnext story",
+        description: "Tap on the right side to\ngo to the next story",
         direction: StepDirection.rowReverse,
         mainWidget: Image.asset(ImagePath.onBoardingFingerRight, height: 48),
         right: 28,
@@ -150,7 +150,7 @@ class _TadabburStoryPageState extends State<TadabburStoryPage> {
       ),
       StepParams(
         buttonTitle: "Got It",
-        description: "Tap on the left side to\nprevious story",
+        description: "Tap on the left side to go\nto the previous story",
         direction: StepDirection.row,
         mainWidget: Image.asset(ImagePath.onBoardingFingerLeft, height: 48),
         left: 28,

@@ -153,6 +153,9 @@ class SettingsPage extends StatelessWidget {
             SignInBottomSheet.showAccountDeletedInfo(context: context);
           },
           onSuccess: () async {
+            await ref.read(habitDailySummaryService).syncHabit(
+                  connectivityResult: connectivityResult,
+                );
             await ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
 
             ref.read(dioServiceProvider.notifier).state = DioService(

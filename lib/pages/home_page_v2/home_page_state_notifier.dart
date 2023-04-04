@@ -1,13 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/tadabbur_api.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
-import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur.dart';
 
 import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
@@ -23,7 +19,6 @@ import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 import 'package:http/http.dart' as http;
-import 'package:retrofit/dio.dart';
 
 class HomePageState {
   HomePageState({
@@ -114,11 +109,6 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     await _getJuzElements();
     await _getVerseToAyahPage();
 
-    if (_name?.isNotEmpty ?? false) {
-      _habitDailySummaryService.syncHabit(
-        connectivityResult: connectivityResult,
-      );
-    }
     final bool isNeedSync = _habitDailySummaryService.isNeedSync();
 
     _dailySummary = await _habitDailySummaryService
