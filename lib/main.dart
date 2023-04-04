@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:qurantafsir_flutter/pages/account_deletion/account_deletion_view.dart';
@@ -18,10 +19,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/utils/notification_helper.dart';
 import 'firebase_options.dart';
 import 'pages/read_tadabbur/read_tadabbur_page.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+NotificationAppLaunchDetails? notificationAppLaunchDetails;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +36,9 @@ Future<void> main() async {
   await sharedPreferenceService.init();
 
   await GlobalConfiguration().loadFromAsset('env');
+  notificationAppLaunchDetails = (await flutterLocalNotificationsPlugin
+      .getNotificationAppLaunchDetails())!;
+  await initNotifications(flutterLocalNotificationsPlugin);
 
   runApp(
     ProviderScope(
