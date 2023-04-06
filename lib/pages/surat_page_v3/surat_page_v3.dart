@@ -133,14 +133,10 @@ class _SuratPageV3State extends State<SuratPageV3> {
           connectivityResult: connectivityResult,
         );
         if (widget.param.firstPagePointerIndex != 0) {
-          WidgetsBinding.instance?.addPostFrameCallback(
-            (_) {
-              scrollController.scrollToIndex(
-                widget.param.firstPagePointerIndex,
-                preferPosition: AutoScrollPosition.begin,
-                duration: const Duration(milliseconds: 200),
-              );
-            },
+          scrollController.scrollToIndex(
+            widget.param.firstPagePointerIndex,
+            preferPosition: AutoScrollPosition.begin,
+            duration: const Duration(milliseconds: 200),
           );
         }
       },
