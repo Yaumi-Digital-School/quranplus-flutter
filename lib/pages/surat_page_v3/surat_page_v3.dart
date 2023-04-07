@@ -92,23 +92,6 @@ class _SuratPageV3State extends State<SuratPageV3> {
     scrollController = AutoScrollController();
     VisibilityDetectorController.instance.updateInterval =
         const Duration(milliseconds: 300);
-
-    if (widget.param.firstPagePointerIndex != 0) {
-      WidgetsBinding.instance?.addPostFrameCallback(
-        (_) {
-          Future.delayed(
-            const Duration(milliseconds: 600),
-            () {
-              scrollController.scrollToIndex(
-                widget.param.firstPagePointerIndex,
-                preferPosition: AutoScrollPosition.begin,
-                duration: const Duration(milliseconds: 200),
-              );
-            },
-          );
-        },
-      );
-    }
   }
 
   @override
@@ -149,6 +132,13 @@ class _SuratPageV3State extends State<SuratPageV3> {
         await notifier.initStateNotifier(
           connectivityResult: connectivityResult,
         );
+        if (widget.param.firstPagePointerIndex != 0) {
+          scrollController.scrollToIndex(
+            widget.param.firstPagePointerIndex,
+            preferPosition: AutoScrollPosition.begin,
+            duration: const Duration(milliseconds: 200),
+          );
+        }
       },
       builder: (
         BuildContext context,
