@@ -19,4 +19,9 @@ class IconPath {
   static String iconLeaveGroup = 'images/icon_leave_group.png';
   static String iconInviteMember = 'images/icon_invite_member.png';
   static String iconEditSquare = 'images/icon_edit_square.png';
+  static String iconFajr = 'images/icon_fajr.png';
+  static String iconDhuhr = 'images/icon_dhuhr.png';
+  static String iconAshr = 'images/icon_ashr.png';
+  static String iconMaghrib = 'images/icon_maghrib.png';
+  static String iconIsha = 'images/icon_isha.png';
 }

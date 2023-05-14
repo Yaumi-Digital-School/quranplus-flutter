@@ -19,6 +19,8 @@ class SharedPreferenceService {
   final String _habitNeedToSyncTimer = "habit-need-to-sync-timer";
   final String _lastSyncTadabburInformation = "last-sync-tadabbur-information";
   final String _lastRecordingData = "last-recording-data";
+  final String _latitude = "latitude";
+  final String _longitude = "lognitude";
 
   Future<void> init() async {
     _sharedPreferences = await SharedPreferences.getInstance();
@@ -95,6 +97,14 @@ class SharedPreferenceService {
 
   String getApiToken() {
     return _sharedPreferences.getString(_apiTokenKey) ?? '';
+  }
+
+  String getLatitude() {
+    return _sharedPreferences.getDouble(_latitude)?.toString() ?? '';
+  }
+
+  String getLongitude() {
+    return _sharedPreferences.getDouble(_longitude)?.toString() ?? '';
   }
 
   bool getIsAlreadyOnBoarding(String key) {

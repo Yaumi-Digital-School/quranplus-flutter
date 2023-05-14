@@ -28,7 +28,7 @@ PODS:
   - Firebase/RemoteConfig (9.6.0):
     - Firebase/CoreOnly
     - FirebaseRemoteConfig (~> 9.6.0)
-  - firebase_analytics (9.1.9):
+  - firebase_analytics (9.3.8):
     - Firebase/Analytics (= 9.6.0)
     - firebase_core
     - Flutter
@@ -97,6 +97,8 @@ PODS:
   - GCDWebServer (3.5.4):
     - GCDWebServer/Core (= 3.5.4)
   - GCDWebServer/Core (3.5.4)
+  - geolocator_apple (1.2.0):
+    - Flutter
   - google_sign_in_ios (0.0.1):
     - Flutter
     - GoogleSignIn (~> 6.2)
@@ -181,8 +183,9 @@ PODS:
     - Flutter
   - share (0.0.1):
     - Flutter
-  - shared_preferences_ios (0.0.1):
+  - shared_preferences_foundation (0.0.1):
     - Flutter
+    - FlutterMacOS
   - sign_in_with_apple (0.0.1):
     - Flutter
   - sqflite (0.0.2):
@@ -191,6 +194,8 @@ PODS:
   - url_launcher_ios (0.0.1):
     - Flutter
   - wakelock (0.0.1):
+    - Flutter
+  - workmanager (0.0.1):
     - Flutter
 
 DEPENDENCIES:
@@ -202,6 +207,7 @@ DEPENDENCIES:
   - firebase_remote_config (from `.symlinks/plugins/firebase_remote_config/ios`)
   - Flutter (from `Flutter`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
+  - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
   - open_file (from `.symlinks/plugins/open_file/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
@@ -209,11 +215,12 @@ DEPENDENCIES:
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - sensors (from `.symlinks/plugins/sensors/ios`)
   - share (from `.symlinks/plugins/share/ios`)
-  - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
+  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/ios`)
   - sign_in_with_apple (from `.symlinks/plugins/sign_in_with_apple/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - wakelock (from `.symlinks/plugins/wakelock/ios`)
+  - workmanager (from `.symlinks/plugins/workmanager/ios`)
 
 SPEC REPOS:
   trunk:
@@ -260,6 +267,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
+  geolocator_apple:
+    :path: ".symlinks/plugins/geolocator_apple/ios"
   google_sign_in_ios:
     :path: ".symlinks/plugins/google_sign_in_ios/ios"
   open_file:
@@ -274,8 +283,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sensors/ios"
   share:
     :path: ".symlinks/plugins/share/ios"
-  shared_preferences_ios:
-    :path: ".symlinks/plugins/shared_preferences_ios/ios"
+  shared_preferences_foundation:
+    :path: ".symlinks/plugins/shared_preferences_foundation/ios"
   sign_in_with_apple:
     :path: ".symlinks/plugins/sign_in_with_apple/ios"
   sqflite:
@@ -284,6 +293,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
   wakelock:
     :path: ".symlinks/plugins/wakelock/ios"
+  workmanager:
+    :path: ".symlinks/plugins/workmanager/ios"
 
 SPEC CHECKSUMS:
   AppAuth: 8fca6b5563a5baef2c04bee27538025e4ceb2add
@@ -291,7 +302,7 @@ SPEC CHECKSUMS:
   Cache: 4ca7e00363fca5455f26534e5607634c820ffc2d
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
   Firebase: 5ae8b7cf8efce559a653aef0ad95bab3f427c351
-  firebase_analytics: 33c587f1b91752323ef87b96271ee5d7d7618145
+  firebase_analytics: 9937a91df25cce5b0ee19eaf65277ff8bf0f88e5
   firebase_core: 7c28ecc1e5dd74e03829ac3e9ff5ba3314e737a9
   firebase_dynamic_links: 8fc870871acfbbd39172cb430e4a04c0fe2be4c7
   firebase_remote_config: df81462997f4d1582113c543e5a39ef832cebb92
@@ -307,6 +318,7 @@ SPEC CHECKSUMS:
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   GCDWebServer: 2c156a56c8226e2d5c0c3f208a3621ccffbe3ce4
+  geolocator_apple: cc556e6844d508c95df1e87e3ea6fa4e58c50401
   google_sign_in_ios: 4f85eb9f937450765c8573bb85fd8cd6a5af675c
   GoogleAppMeasurement: 6de2b1a69e4326eb82ee05d138f6a5cb7311bcb1
   GoogleDataTransport: ea169759df570f4e37bdee1623ec32a7e64e67c4
@@ -326,11 +338,12 @@ SPEC CHECKSUMS:
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   sensors: 84eb7a30e47a649e4172b71d6e81be614c280336
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
-  shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
+  shared_preferences_foundation: 297b3ebca31b34ec92be11acd7fb0ba932c822ca
   sign_in_with_apple: f3bf75217ea4c2c8b91823f225d70230119b8440
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
-  url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
+  url_launcher_ios: ae1517e5e344f5544fb090b079e11f399dfbe4d2
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
+  workmanager: 0afdcf5628bbde6924c21af7836fed07b42e30e6
 
 PODFILE CHECKSUM: a5adfe7971131cf0589107393691ada35be2b45f
 

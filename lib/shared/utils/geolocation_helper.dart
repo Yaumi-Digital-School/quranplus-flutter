@@ -3,7 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart' as permHandler;
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<permHandler.PermissionStatus?> requestLocationPermision() async {
+Future<permHandler.PermissionStatus?> requestLocationPermission() async {
   Map<permHandler.Permission, permHandler.PermissionStatus> statuses = await [
     permHandler.Permission.location,
   ].request();
@@ -15,7 +15,7 @@ Future<Coordinates> getCoordinates() async {
   bool serviceEnabled;
   LocationPermission permission;
 
-  if (await requestLocationPermision() !=
+  if (await requestLocationPermission() !=
       permHandler.PermissionStatus.granted) {
     return Future.error('Location permissions are denied');
   }
@@ -39,13 +39,17 @@ Future<Coordinates> getCoordinates() async {
 
   if (permission == LocationPermission.deniedForever) {
     // Permissions are denied forever, handle appropriately.
-    return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+    return Future.error(
+        'Location permissions are permanently denied, we cannot request permissions.');
   }
 
-  final locationData = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  final locationData = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high);
 
   final coordinates =
       Coordinates(locationData.latitude, locationData.longitude);
+
+  saveCoordinates(coordinates);
 
   return coordinates;
 }
@@ -59,7 +63,8 @@ Future<void> saveCoordinates(Coordinates coord) async {
 Future<Coordinates> getSavedCoordinates() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   if (prefs.containsKey('latitude') && prefs.containsKey('longitude')) {
-    return Coordinates(prefs.getDouble('latitude')!, prefs.getDouble('longitude')!);
+    return Coordinates(
+        prefs.getDouble('latitude')!, prefs.getDouble('longitude')!);
   }
 
   return Coordinates(0, 0);

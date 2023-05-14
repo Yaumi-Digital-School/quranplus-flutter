@@ -5,6 +5,8 @@ import 'package:global_configuration/global_configuration.dart';
 import 'package:qurantafsir_flutter/pages/account_deletion/account_deletion_view.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_view.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
+import 'package:qurantafsir_flutter/pages/notification_reminder_page/notification_reminder_page.dart';
+import 'package:qurantafsir_flutter/pages/prayer_time_page/prayer_time_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page.dart';
 import 'package:qurantafsir_flutter/pages/splash_page/splash_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
@@ -19,7 +21,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/utils/geolocation_helper.dart';
 import 'package:qurantafsir_flutter/shared/utils/notification_helper.dart';
+import 'package:qurantafsir_flutter/shared/utils/worker_helper.dart';
 import 'firebase_options.dart';
 import 'pages/read_tadabbur/read_tadabbur_page.dart';
 
@@ -39,6 +43,13 @@ Future<void> main() async {
   notificationAppLaunchDetails =
       await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
 
+  await initWorkerManager();
+
+  await enablePeriodicTask(updatePrayerTimeTaskID, updatePrayerTimeTaskName,
+      Duration(hours: 12), {'date': DateTime.now().toString()});
+
+  await GlobalConfiguration().loadFromAsset('env');
+
   // Handle the notification launch details
   if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
     // The app was opened via a notification
@@ -48,8 +59,6 @@ Future<void> main() async {
     // The app was opened via other means
     // Handle the app launch logic here
   }
-
-  await GlobalConfiguration().loadFromAsset('env');
 
   runApp(
     ProviderScope(
@@ -151,6 +160,12 @@ class _MyAppState extends ConsumerState<MyApp> {
             selectedRouteWidget = TadabburStoryPage(
               params: args,
             );
+            break;
+          case RoutePaths.routeSetupPrayerTime:
+            selectedRouteWidget = PrayerTimePage();
+            break;
+          case RoutePaths.routeNotificationSetting:
+            selectedRouteWidget = NotificationReminderPage();
             break;
           default:
             selectedRouteWidget = const Scaffold(

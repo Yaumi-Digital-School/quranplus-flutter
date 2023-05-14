@@ -29,6 +29,22 @@ Future<void> initNotifications(
             payload: payload ?? ''));
       });
 
+  // Define notification channels
+  const AndroidNotificationChannel prayerNotificationChannel =
+      AndroidNotificationChannel(
+    'prayer_channel',
+    'Prayer Notification',
+    description: 'This is Prayer Notification Channel',
+    importance: Importance.high, // Set the importance to high
+  );
+
+  const AndroidNotificationChannel reminderChannel = AndroidNotificationChannel(
+    'reminder_channel', // ID
+    'Reminder Channel', // Title
+    description: 'This is Reminder Channel', // Description
+    importance: Importance.high, // Set the importance to low
+  );
+
   var initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
 
@@ -42,6 +58,16 @@ Future<void> initNotifications(
       selectNotificationSubject.add(payload);
     }
   });
+
+  // Create notification channels
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(prayerNotificationChannel);
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(reminderChannel);
 }
 
 Future<void> showNotification(
@@ -52,7 +78,7 @@ Future<void> showNotification(
     String body,
     String payload) async {
   const androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'Global-Channel', 'Notification',
+      'global', 'Notification',
       channelDescription: 'Notification Channel',
       importance: Importance.max,
       priority: Priority.high,
@@ -97,10 +123,12 @@ Future<void> scheduleNotification(
     channelDescription: 'Reminder Times',
     icon: 'ic_launcher',
   );
+
   const iOSPlatformChannelSpecifics = IOSNotificationDetails();
   var platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics);
+
   await flutterLocalNotificationsPlugin.zonedSchedule(
       id, title, body, tzTime, platformChannelSpecifics,
       androidAllowWhileIdle: true,
@@ -122,10 +150,12 @@ Future<void> scheduleNotificationPeriodically(
     channelDescription: 'Reminder Times',
     icon: 'ic_launcher',
   );
+
   var iOSPlatformChannelSpecifics = IOSNotificationDetails();
   var platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics);
+
   await flutterLocalNotificationsPlugin.periodicallyShow(
       id, title, body, interval, platformChannelSpecifics);
 }

@@ -7,20 +7,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void _enableAlarmNotification(PrayerTimes prayerTimes, int prayerIndex) {
   Prayer prayer = Prayer.values[prayerIndex];
-  DateTime prayerTime = prayerTimes.timeForPrayer(prayer)!;
+  DateTime? prayerTime = prayerTimes.timeForPrayer(prayer);
 
-  scheduleNotification(
-      flutterLocalNotificationsPlugin,
-      prayerIndex,
-      prayer.toString(),
-      'Salah Reminder',
-      'Time for Salah: ' +
-          prayerNames[prayerIndex] +
-          ', at ' +
-          prayerTime.hour.toString() +
-          ':' +
-          prayerTime.minute.toString(),
-      prayerTime);
+  if (prayerTime != null) {
+    scheduleNotification(
+        flutterLocalNotificationsPlugin,
+        prayerIndex,
+        prayer.toString(),
+        'Salah Reminder',
+        'Time for Salah: ' +
+            prayerNames[prayerIndex] +
+            ', at ' +
+            prayerTime.hour.toString() +
+            ':' +
+            prayerTime.minute.toString(),
+        prayerTime);
+  }
 }
 
 void setAlarmNotification(

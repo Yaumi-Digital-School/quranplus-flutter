@@ -34,7 +34,8 @@ class _SplashPageState extends State<SplashPage> {
       onStateNotifierReady: (notifier, _) async {
         await Future.delayed(const Duration(milliseconds: 500), () async {
           await notifier.initStateNotifier();
-          Navigator.of(context).pushReplacementNamed(RoutePaths.routeMain);
+          Navigator.of(context)
+              .pushReplacementNamed(RoutePaths.routeSetupPrayerTime);
         });
       },
       builder: (

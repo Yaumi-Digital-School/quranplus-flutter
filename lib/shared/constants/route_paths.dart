@@ -10,4 +10,7 @@ class RoutePaths {
   static const String tadabburSurahList = '/tadabbur-surah-list';
   static const String routeReadTadabbur = "/read-tadabbur";
   static const String routeTadabburContent = "/tadabbur-content";
+  static const String routeSetupPrayerTime = "/setup-prayer-time";
+  static const String routePrayerTimeSetting = "/prayer-time-setting";
+  static const String routeNotificationSetting = "/notification-setting";
 }
