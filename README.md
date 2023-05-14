@@ -1,5 +1,8 @@
 # Quran Tafsir App
 
+## Technical Docs
+- [Docs Link](https://docs.google.com/document/d/13dj3vLI09XOuCy3Deh2nCiAieruJzf2mBGGSgAmGH6g/edit?usp=sharing)
+
 ## Development Environment
 
 - Flutter Version : 2.10.2
@@ -38,10 +41,10 @@ Branch `master` adalah branch utama yang digunakan. Aplikasi yang sudah di publi
 Berikut ini adalah cara berkontribusi pada Repository ini : 
 
 1. Lakukan pull dari latest master untuk mendapatkan perubahan terbaru dari Repository
-2. Buatlah branch baru dari branch `master` dengan nama branch yang melambangkan fitur yang dibuat
+2. Buatlah branch baru dari branch `master` dengan nama branch yang melambangkan fitur yang dibuat. Konvensi yang digunakan adalah [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/#summary)
 3. Lakukan development di local di branch baru tersebut, lalu push perubahan ke branch baru tersebut
-4. Setelah development selesai, buatlah Merge Request (MR) di gitlab anda untuk di merge ke master
-**notes:** Pada pembuatan MR, buatlah title MR yang deskriptif dengan format berikut ini :
+4. Setelah development selesai, buatlah Pull Request (PR).
+**notes:** Pada pembuatan MR, buatlah title MR yang deskriptif dengan format berikut ini berdasarkan standar [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/#summary):
 - Prefix `feat:` untuk pembuatan fitur baru, contoh : 
 ```
 feat: add change font size feature in surat page v3
@@ -54,4 +57,4 @@ refactor: code tidying to increase readability
 ```
 fix: set default value on nullable variable to avoid null safety error
 ```
-5. Setelah MR sudah dibuat, beritahukan di grup bahwa MR sudah dibuat agar bisa di review terlebih dahulu :D
+5. Selesai
