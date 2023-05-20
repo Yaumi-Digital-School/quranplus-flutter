@@ -35,10 +35,9 @@ class TadabburService {
       }
     }
 
-    HttpResponse<dynamic> response =
-        await _tadabburApi.getListOfAvailableTadabburAyah();
-
     try {
+      HttpResponse<dynamic> response =
+          await _tadabburApi.getListOfAvailableTadabburAyah();
       if (response.response.statusCode == 200) {
         final Map<String, List<dynamic>> res =
             Map<String, List<dynamic>>.from(response.response.data);

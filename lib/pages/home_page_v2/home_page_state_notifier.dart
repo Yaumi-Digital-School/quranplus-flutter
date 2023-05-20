@@ -103,34 +103,42 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
         await Connectivity().checkConnectivity();
     _getUsername();
     if (connectivityResult != ConnectivityResult.none) {
-      _feedbackUrl = (await _fetchLink()).url ?? '';
+      try {
+        _feedbackUrl = (await _fetchLink()).url ?? '';
+      } catch (e) {
+        _feedbackUrl = "";
+      }
     }
-    await _getTaddaburSurahAvaliable();
-    await _getJuzElements();
-    await _getVerseToAyahPage();
+    try {
+      await _getTaddaburSurahAvaliable();
+      await _getJuzElements();
+      await _getVerseToAyahPage();
 
-    final bool isNeedSync = _habitDailySummaryService.isNeedSync();
+      final bool isNeedSync = _habitDailySummaryService.isNeedSync();
 
-    _dailySummary = await _habitDailySummaryService
-        .getCurrentDayHabitDailySummaryListLocal();
+      _dailySummary = await _habitDailySummaryService
+          .getCurrentDayHabitDailySummaryListLocal();
 
-    await _getJuzElements();
-    await _getVerseToAyahPage();
-    _lastBookmark = await _getLastBookmark();
-    final LastRecordingData? lastRecordingData =
-        await _sharedPreferenceService.getLastRecordingData();
+      await _getJuzElements();
+      await _getVerseToAyahPage();
+      _lastBookmark = await _getLastBookmark();
+      final LastRecordingData? lastRecordingData =
+          await _sharedPreferenceService.getLastRecordingData();
 
-    state = state.copyWith(
-      name: _name,
-      juzElements: _juzElements,
-      feedbackUrl: _feedbackUrl ?? '',
-      ayahPage: _ayahPage,
-      dailySummary: _dailySummary,
-      isNeedSync: isNeedSync,
-      listTaddaburAvailables: _listTaddaburAvailables,
-      lastBookmark: _lastBookmark,
-      lastRecordingData: lastRecordingData,
-    );
+      state = state.copyWith(
+        name: _name,
+        juzElements: _juzElements,
+        feedbackUrl: _feedbackUrl ?? '',
+        ayahPage: _ayahPage,
+        dailySummary: _dailySummary,
+        isNeedSync: isNeedSync,
+        listTaddaburAvailables: _listTaddaburAvailables,
+        lastBookmark: _lastBookmark,
+        lastRecordingData: lastRecordingData,
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<Bookmarks?> _getLastBookmark() async {
@@ -187,12 +195,17 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
   }
 
   Future<FormLink> _fetchLink() async {
-    final response = await http
-        .get(Uri.parse(EnvConstants.baseUrl! + '/api/resource/form-feedback'));
+    try {
+      final response = await http.get(
+        Uri.parse(EnvConstants.baseUrl! + '/api/resource/form-feedback'),
+      );
 
-    if (response.statusCode == 200) {
-      return FormLink.fromJson(jsonDecode(response.body));
-    } else {
+      if (response.statusCode == 200) {
+        return FormLink.fromJson(jsonDecode(response.body));
+      } else {
+        throw Exception('Failed to load form link');
+      }
+    } catch (e) {
       throw Exception('Failed to load form link');
     }
   }

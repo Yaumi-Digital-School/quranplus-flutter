@@ -40,12 +40,26 @@ class TadabburSurahListViewStateNotifier
   }
 
   Future<void> _getAvailableTadabburSurahList() async {
-    HttpResponse<List<GetTadabburSurahListItemResponse>> request =
-        await _tadabburApi.getAvailableTadabburSurahList();
+    try {
+      HttpResponse<List<GetTadabburSurahListItemResponse>> request =
+          await _tadabburApi.getAvailableTadabburSurahList();
 
-    if ((request.response.statusCode ?? 400) == 200) {
+      if ((request.response.statusCode ?? 400) == 200) {
+        state = state.copyWith(
+          tadabburSurahList: request.data,
+          isLoading: false,
+        );
+
+        return;
+      }
+
       state = state.copyWith(
-        tadabburSurahList: request.data,
+        tadabburSurahList: [],
+        isLoading: false,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        tadabburSurahList: [],
         isLoading: false,
       );
     }
