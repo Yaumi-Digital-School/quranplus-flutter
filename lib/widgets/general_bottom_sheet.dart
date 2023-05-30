@@ -1,7 +1,77 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
+
+class BaseWidgetBottomSheet extends ConsumerStatefulWidget {
+  const BaseWidgetBottomSheet({
+    required this.mainAxisSize,
+    required this.widgetChild,
+    Key? key,
+  }) : super(key: key);
+
+  final MainAxisSize mainAxisSize;
+  final Widget widgetChild;
+  @override
+  ConsumerState<BaseWidgetBottomSheet> createState() =>
+      _BaseWidgetBottomSheetState();
+}
+
+class _BaseWidgetBottomSheetState extends ConsumerState<BaseWidgetBottomSheet> {
+  Color _getBackgroundColor(QPThemeMode mode) {
+    switch (mode) {
+      case QPThemeMode.dark:
+        return QPColors.darkModeMassive;
+      case QPThemeMode.brown:
+        return QPColors.brownModeRoot;
+      default:
+        return QPColors.whiteFair;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final stateTheme = ref.watch(themeProvider);
+
+    return Container(
+      padding: EdgeInsets.only(
+        left: 24,
+        right: 24,
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      decoration: BoxDecoration(
+        color: _getBackgroundColor(stateTheme),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(8),
+          topRight: Radius.circular(8),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: widget.mainAxisSize,
+        children: [
+          const SizedBox(height: 8),
+          Center(
+            child: Container(
+              height: 5,
+              width: 40,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(16)),
+                color: QPColors.whiteRoot,
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          widget.widgetChild,
+          const SizedBox(height: 40),
+        ],
+      ),
+    );
+  }
+}
 
 class GeneralBottomSheet {
   static void showBaseBottomSheet({
@@ -12,7 +82,6 @@ class GeneralBottomSheet {
   }) {
     showModalBottomSheet(
       isScrollControlled: true,
-      backgroundColor: QPColors.whiteFair,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(8),
@@ -20,32 +89,9 @@ class GeneralBottomSheet {
       ),
       context: context,
       builder: (BuildContext context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 24,
-            right: 24,
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: mainAxisSize,
-            children: [
-              const SizedBox(height: 8),
-              Center(
-                child: Container(
-                  height: 5,
-                  width: 40,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(16)),
-                    color: QPColors.whiteRoot,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              widgetChild,
-              const SizedBox(height: 40),
-            ],
-          ),
+        return BaseWidgetBottomSheet(
+          mainAxisSize: mainAxisSize,
+          widgetChild: widgetChild,
         );
       },
     ).then((_) => onClose);
