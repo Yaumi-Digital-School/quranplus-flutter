@@ -1,4 +1,5 @@
 import 'package:qurantafsir_flutter/main.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/tadabbur_api.dart';
 import 'package:qurantafsir_flutter/shared/core/services/alice_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
@@ -18,6 +19,7 @@ import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_ser
 import 'package:qurantafsir_flutter/shared/core/services/remote_config_service/remote_config_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/tadabbur_service.dart';
+import 'package:qurantafsir_flutter/shared/core/state_notifiers/theme_state_notifier.dart';
 
 final StateProvider<DioService> dioServiceProvider =
     StateProvider<DioService>((ref) {
@@ -153,6 +155,12 @@ final StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>
     );
   },
 );
+
+final StateNotifierProvider<ThemeStateNotifier, QPThemeMode> themeProvider =
+    StateNotifierProvider<ThemeStateNotifier, QPThemeMode>(((ref) =>
+        ThemeStateNotifier(
+          sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
+        )));
 
 final Provider<AliceService> aliceServiceProvider =
     Provider<AliceService>((ref) {
