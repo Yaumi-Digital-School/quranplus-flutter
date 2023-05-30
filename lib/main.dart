@@ -10,9 +10,8 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/pages/tadabbur_story/tadabur_story_page.dart';
 import 'package:qurantafsir_flutter/pages/tadabbur_surah_list_page/tadabbur_surah_list_view.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
-import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
-import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
@@ -63,12 +62,23 @@ class _MyAppState extends ConsumerState<MyApp> {
     super.initState();
   }
 
+  ThemeData _getThemeData(QPThemeMode theme) {
+    switch (theme) {
+      case QPThemeMode.brown:
+        return QPThemeData.brownThemeData;
+      case QPThemeMode.dark:
+        return QPThemeData.darkThemeData;
+      default:
+        return QPThemeData.lightThemeData;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final SharedPreferenceService sp =
         ref.watch(sharedPreferenceServiceProvider);
     final AuthenticationService ur = ref.watch(authenticationService);
-
+    final mode = ref.watch(themeProvider);
     if (sp.getApiToken().isNotEmpty) {
       ur.setIsLoggedIn(true);
     }
@@ -76,11 +86,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: AppConstants.appName,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        backgroundColor: backgroundColor,
-        scaffoldBackgroundColor: QPColors.whiteFair,
-      ),
+      theme: _getThemeData(mode),
       navigatorObservers: <NavigatorObserver>[MyApp.observer],
       navigatorKey: navigatorKey,
       onGenerateRoute: (RouteSettings settings) {
