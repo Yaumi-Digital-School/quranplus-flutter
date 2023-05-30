@@ -2,13 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qurantafsir_flutter/pages/account_page/account_page.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
+import 'package:qurantafsir_flutter/pages/settings_page/widgets/change_theme_bottom_sheet.dart';
+import 'package:qurantafsir_flutter/pages/settings_page/widgets/list_item_widget.dart';
+import 'package:qurantafsir_flutter/pages/settings_page/widgets/version_app_widget.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
@@ -20,6 +24,7 @@ import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:qurantafsir_flutter/widgets/horizontal_divider.dart';
 import 'package:qurantafsir_flutter/widgets/registration_view.dart';
 import 'package:qurantafsir_flutter/widgets/sign_in_bottom_sheet.dart';
 
@@ -137,6 +142,105 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
+  Widget _buildUserView(
+    BuildContext context,
+    SettingsPageState state,
+    SettingsPageStateNotifier notifier,
+    WidgetRef ref,
+  ) {
+    final stateTheme = ref.watch(themeProvider);
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 24, left: 24, bottom: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ListItemWidget(
+            iconPath: IconPath.iconAccount,
+            onTap: () {
+              _onAccountTap(context);
+            },
+            title: 'Account',
+          ),
+          const HorizontalDivider(),
+          ListItemWidget(
+            iconPath: IconPath.iconTheme,
+            onTap: () {
+              _onThemesTap(context);
+            },
+            title: "Themes",
+            subtitle: _getModeString(stateTheme),
+          ),
+          const HorizontalDivider(),
+          ListItemWidget(
+            iconPath: IconPath.iconLogout,
+            onTap: () {
+              _onLogoutTap(context, notifier, ref);
+            },
+            title: "Sign out",
+            customColor: QPColors.errorFair,
+          ),
+          const HorizontalDivider(),
+          const SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Quran Plus Version",
+                style: bodyRegular2,
+              ),
+              const VersionAppWidget(),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> navigateAfterLogin({
+    required BuildContext context,
+    required SettingsPageStateNotifier notifier,
+  }) async {
+    final ForceLoginParam? param = await notifier.getForceLoginInformation();
+    if (param == null) {
+      Navigator.of(context).pushReplacementNamed(
+        RoutePaths.routeMain,
+      );
+
+      return;
+    }
+
+    Map<String, dynamic> routeArgs = param.arguments ?? <String, dynamic>{};
+    Object? routeParams;
+
+    switch (param.nextPath) {
+      case RoutePaths.routeSurahPage:
+        routeParams = SuratPageV3Param(
+          startPageInIndex: routeArgs['startPageInIndex'],
+          isStartTracking: routeArgs['isStartTracking'],
+        );
+        break;
+      default:
+    }
+
+    Navigator.pushNamed(
+      context,
+      param.nextPath ?? '',
+      arguments: routeParams,
+    );
+  }
+
+  String _getModeString(QPThemeMode mode) {
+    switch (mode) {
+      case QPThemeMode.dark:
+        return "Dark Mode";
+      case QPThemeMode.brown:
+        return "Brown Mode";
+      default:
+        return "Light Mode";
+    }
+  }
+
   _onTapButtonSignIn(
     BuildContext context,
     SettingsPageStateNotifier notifier,
@@ -187,192 +291,54 @@ class SettingsPage extends StatelessWidget {
     };
   }
 
-  Widget _buildUserView(
+  void _onAccountTap(BuildContext context) async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult != ConnectivityResult.none) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return AccountPage();
+      }));
+    } else {
+      _generalBottomSheet.showNoInternetBottomSheet(
+        context,
+        () => Navigator.pop(context),
+      );
+    }
+  }
+
+  void _onThemesTap(BuildContext context) {
+    GeneralBottomSheet.showBaseBottomSheet(
+      context: context,
+      widgetChild: const ChangeThemeBottomSheet(),
+    );
+  }
+
+  void _onLogoutTap(
     BuildContext context,
-    SettingsPageState state,
     SettingsPageStateNotifier notifier,
     WidgetRef ref,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          TextButton(
-            style: TextButton.styleFrom(padding: EdgeInsets.zero),
-            onPressed: () async {
-              var connectivityResult = await Connectivity().checkConnectivity();
-              if (connectivityResult != ConnectivityResult.none) {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return AccountPage();
-                }));
-              } else {
-                _generalBottomSheet.showNoInternetBottomSheet(
-                  context,
-                  () => Navigator.pop(context),
-                );
-              }
-            },
-            child: _buildImageButton(
-              'Account',
-              IconPath.iconAccounnt,
-              neutral900,
-            ),
-          ),
-          TextButton(
-            style: TextButton.styleFrom(padding: EdgeInsets.zero),
-            onPressed: () async {
-              var connectivityResult = await Connectivity().checkConnectivity();
-              if (connectivityResult != ConnectivityResult.none) {
-                notifier.signOut(() {
-                  ref.read(dioServiceProvider.notifier).state = DioService(
-                    baseUrl: EnvConstants.baseUrl!,
-                    aliceService: ref.read(aliceServiceProvider),
-                    accessToken: '',
-                  );
-
-                  ScaffoldMessenger.of(context)
-                    ..hideCurrentSnackBar()
-                    ..showSnackBar(
-                      const SnackBar(
-                        content: Text('Sign out Berhasil'),
-                      ),
-                    );
-                });
-              } else {
-                _generalBottomSheet.showNoInternetBottomSheet(
-                  context,
-                  () => Navigator.pop(context),
-                );
-              }
-            },
-            child: _buildImageButton(
-              'Sign out',
-              IconPath.iconLogout,
-              exit500,
-            ),
-          ),
-          const SizedBox(
-            height: 24,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 24, right: 24),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Quran Plus Version",
-                  style: bodyRegular2,
-                ),
-                const VersionAppWidget(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildImageButton(String name, String imgAsset, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: neutral400),
-        ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Image.asset(
-                imgAsset,
-                width: 24,
-                color: color,
-              ),
-              const SizedBox(width: 16),
-              Text(
-                name,
-                style: subHeadingSemiBold2.apply(color: color),
-              ),
-            ],
-          ),
-          Icon(
-            Icons.keyboard_arrow_right,
-            size: 24,
-            color: color,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> navigateAfterLogin({
-    required BuildContext context,
-    required SettingsPageStateNotifier notifier,
-  }) async {
-    final ForceLoginParam? param = await notifier.getForceLoginInformation();
-    if (param == null) {
-      Navigator.of(context).pushReplacementNamed(
-        RoutePaths.routeMain,
-      );
-
-      return;
-    }
-
-    Map<String, dynamic> routeArgs = param.arguments ?? <String, dynamic>{};
-    Object? routeParams;
-
-    switch (param.nextPath) {
-      case RoutePaths.routeSurahPage:
-        routeParams = SuratPageV3Param(
-          startPageInIndex: routeArgs['startPageInIndex'],
-          isStartTracking: routeArgs['isStartTracking'],
+  ) async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult != ConnectivityResult.none) {
+      notifier.signOut(() {
+        ref.read(dioServiceProvider.notifier).state = DioService(
+          baseUrl: EnvConstants.baseUrl!,
+          aliceService: ref.read(aliceServiceProvider),
+          accessToken: '',
         );
-        break;
-      default:
+
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            const SnackBar(
+              content: Text('Sign out Berhasil'),
+            ),
+          );
+      });
+    } else {
+      _generalBottomSheet.showNoInternetBottomSheet(
+        context,
+        () => Navigator.pop(context),
+      );
     }
-
-    Navigator.pushNamed(
-      context,
-      param.nextPath ?? '',
-      arguments: routeParams,
-    );
-  }
-}
-
-class VersionAppWidget extends StatefulWidget {
-  const VersionAppWidget({Key? key, this.title}) : super(key: key);
-
-  final String? title;
-
-  @override
-  State<VersionAppWidget> createState() => _VersionAppWidget();
-}
-
-class _VersionAppWidget extends State<VersionAppWidget> {
-  PackageInfo? _packageInfo;
-
-  @override
-  void initState() {
-    super.initState();
-    _initPackageInfo();
-  }
-
-  Future<void> _initPackageInfo() async {
-    final PackageInfo info = await PackageInfo.fromPlatform();
-    setState(() {
-      _packageInfo = info;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      _packageInfo == null ? '' : _packageInfo!.version,
-      style: bodyRegular2,
-    );
   }
 }
