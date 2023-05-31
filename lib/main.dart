@@ -78,6 +78,8 @@ class _MyAppState extends ConsumerState<MyApp> {
     final SharedPreferenceService sp =
         ref.watch(sharedPreferenceServiceProvider);
     final AuthenticationService ur = ref.watch(authenticationService);
+    final themeStateNotifier = ref.read(themeProvider.notifier);
+    themeStateNotifier.initStateNotifier();
     final mode = ref.watch(themeProvider);
     if (sp.getApiToken().isNotEmpty) {
       ur.setIsLoggedIn(true);
