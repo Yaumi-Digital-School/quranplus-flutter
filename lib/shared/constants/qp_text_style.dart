@@ -3,78 +3,125 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 
 class QPTextStyle {
+  static TextStyle getBaseTextStyle(BuildContext context) {
+    return GoogleFonts.notoSans(color: Theme.of(context).colorScheme.primary);
+  }
+
   static TextStyle baseTextStyle =
       GoogleFonts.notoSans(color: QPColors.blackMassive);
 
-  static TextStyle heading1Bold =
-      baseTextStyle.copyWith(fontWeight: QPFontWeight.bold, fontSize: 24);
-  static TextStyle heading1SemiBold =
-      baseTextStyle.copyWith(fontWeight: QPFontWeight.semiBold, fontSize: 24);
-  static TextStyle heading1Regular =
-      baseTextStyle.copyWith(fontWeight: QPFontWeight.regular, fontSize: 24);
+  static TextStyle getHeading1Bold(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.bold, fontSize: 24);
 
-  static TextStyle subHeading1Medium =
-      baseTextStyle.copyWith(fontWeight: QPFontWeight.medium, fontSize: 20);
-  static TextStyle subHeading1SemiBold =
-      baseTextStyle.copyWith(fontWeight: QPFontWeight.semiBold, fontSize: 20);
-  static TextStyle subHeading1Regular =
-      baseTextStyle.copyWith(fontWeight: QPFontWeight.regular, fontSize: 20);
+  static TextStyle getHeading1SemiBold(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.semiBold, fontSize: 24);
 
-  static TextStyle subHeading2Medium =
-      baseTextStyle.copyWith(fontWeight: QPFontWeight.medium, fontSize: 16);
-  static TextStyle subHeading2SemiBold =
-      baseTextStyle.copyWith(fontWeight: QPFontWeight.semiBold, fontSize: 16);
-  static TextStyle subHeading2Regular =
-      baseTextStyle.copyWith(fontWeight: QPFontWeight.regular, fontSize: 16);
+  static TextStyle getHeading1Regular(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.regular, fontSize: 24);
 
-  static TextStyle subHeading3Medium =
-      baseTextStyle.copyWith(fontWeight: QPFontWeight.medium, fontSize: 14);
-  static TextStyle subHeading3SemiBold =
-      baseTextStyle.copyWith(fontWeight: QPFontWeight.semiBold, fontSize: 14);
-  static TextStyle subHeading3Regular =
-      baseTextStyle.copyWith(fontWeight: QPFontWeight.regular, fontSize: 14);
+  static TextStyle getSubHeading1Medium(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.medium, fontSize: 20);
 
-  static TextStyle subHeading4Medium =
-      baseTextStyle.copyWith(fontWeight: QPFontWeight.medium, fontSize: 12);
-  static TextStyle subHeading4SemiBold =
-      baseTextStyle.copyWith(fontWeight: QPFontWeight.semiBold, fontSize: 12);
-  static TextStyle subHeading4Regular =
-      baseTextStyle.copyWith(fontWeight: QPFontWeight.regular, fontSize: 12);
+  static TextStyle getSubHeading1SemiBold(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.semiBold, fontSize: 20);
 
-  static TextStyle body1Medium = subHeading2Medium;
-  static TextStyle body1SemiBold = subHeading2SemiBold;
-  static TextStyle body1Regular = subHeading2Regular;
+  static TextStyle getSubHeading1Regular(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.regular, fontSize: 20);
 
-  static TextStyle body2Medium = subHeading3Medium;
-  static TextStyle body2SemiBold = subHeading3SemiBold;
-  static TextStyle body2Regular = subHeading3Regular;
+  static TextStyle getSubHeading2Medium(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.medium, fontSize: 16);
 
-  static TextStyle body3Medium = subHeading4Medium;
-  static TextStyle body3SemiBold = subHeading4SemiBold;
-  static TextStyle body3Regular = baseTextStyle.copyWith(
-    fontWeight: QPFontWeight.regular,
-    fontSize: 12,
-    height: 1.6,
-  );
+  static TextStyle getSubHeading2SemiBold(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.semiBold, fontSize: 16);
 
-  static TextStyle button1SemiBold = subHeading3SemiBold;
-  static TextStyle button1Medium = subHeading3Medium;
+  static TextStyle getSubHeading2Regular(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.regular, fontSize: 16);
 
-  static TextStyle button2SemiBold = subHeading4SemiBold;
-  static TextStyle button2Medium = subHeading4Medium;
+  static TextStyle getSubHeading3Medium(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.medium, fontSize: 14);
 
-  static TextStyle button3SemiBold =
-      baseTextStyle.copyWith(fontWeight: QPFontWeight.semiBold, fontSize: 10);
-  static TextStyle button3Medium =
-      baseTextStyle.copyWith(fontWeight: QPFontWeight.medium, fontSize: 10);
+  static TextStyle getSubHeading3SemiBold(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.semiBold, fontSize: 14);
 
-  static TextStyle description1Regular =
-      baseTextStyle.copyWith(fontWeight: QPFontWeight.regular, fontSize: 12);
-  static TextStyle description2Regular =
-      baseTextStyle.copyWith(fontWeight: QPFontWeight.regular, fontSize: 10);
+  static TextStyle getSubHeading3Regular(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.regular, fontSize: 14);
 
-  static TextStyle caption =
-      baseTextStyle.copyWith(fontWeight: QPFontWeight.light, fontSize: 10);
+  static TextStyle getSubHeading4Medium(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.medium, fontSize: 12);
+
+  static TextStyle getSubHeading4SemiBold(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.semiBold, fontSize: 12);
+
+  static TextStyle getSubHeading4Regular(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.regular, fontSize: 12);
+
+  static TextStyle getBody1Medium(BuildContext context) =>
+      getSubHeading2Medium(context);
+  static TextStyle getBody1SemiBold(BuildContext context) =>
+      getSubHeading2SemiBold(context);
+  static TextStyle getBody1Regular(BuildContext context) =>
+      getSubHeading2Regular(context);
+
+  static TextStyle getBody2Medium(BuildContext context) =>
+      getSubHeading3Medium(context);
+  static TextStyle getBody2SemiBold(BuildContext context) =>
+      getSubHeading3SemiBold(context);
+  static TextStyle getBody2Regular(BuildContext context) =>
+      getSubHeading3Regular(context);
+
+  static TextStyle getBody3Medium(BuildContext context) =>
+      getSubHeading4Medium(context);
+  static TextStyle getBody3SemiBold(BuildContext context) =>
+      getSubHeading4SemiBold(context);
+
+  static TextStyle getBody3Regular(BuildContext context) =>
+      getBaseTextStyle(context).copyWith(
+        fontWeight: QPFontWeight.regular,
+        fontSize: 12,
+        height: 1.6,
+      );
+
+  static TextStyle getButton1SemiBold(BuildContext context) =>
+      getSubHeading3SemiBold(context);
+  static TextStyle getButton1Medium(BuildContext context) =>
+      getSubHeading3Medium(context);
+
+  static TextStyle getButton2SemiBold(BuildContext context) =>
+      getSubHeading4SemiBold(context);
+  static TextStyle getButton2Medium(BuildContext context) =>
+      getSubHeading4Medium(context);
+
+  static TextStyle getButton3SemiBold(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.semiBold, fontSize: 10);
+  static TextStyle getButton3Medium(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.medium, fontSize: 10);
+
+  static TextStyle getDescription1Regular(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.regular, fontSize: 12);
+  static TextStyle getDescription2Regular(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.regular, fontSize: 10);
+
+  static TextStyle getCaption(BuildContext context) => getBaseTextStyle(context)
+      .copyWith(fontWeight: QPFontWeight.light, fontSize: 10);
 }
 
 class QPFontWeight {
