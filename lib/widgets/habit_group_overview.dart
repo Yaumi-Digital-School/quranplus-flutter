@@ -51,10 +51,10 @@ class HabitGroupOverviewWidget extends StatelessWidget {
         child: Column(
           children: [
             if (type == HabitGroupOverviewType.withGroupDetailInfo)
-              _buildGroupDetailNavigationCTA(),
+              _buildGroupDetailNavigationCTA(context),
             if (type == HabitGroupOverviewType.withCurrentMonthInfo)
-              _buildCurrentMonthInformation(),
-            _buildGroupOverviewInformationSection(),
+              _buildCurrentMonthInformation(context),
+            _buildGroupOverviewInformationSection(context),
           ],
         ),
       ),
@@ -95,6 +95,7 @@ class HabitGroupOverviewWidget extends StatelessWidget {
   Widget _buildDailyRecapInformation({
     required HabitGroupSummary item,
     required int idxInList,
+    required BuildContext context,
   }) {
     final String nameOfDay =
         DateFormat('EEEE').format(item.date).substring(0, 3);
@@ -142,13 +143,14 @@ class HabitGroupOverviewWidget extends StatelessWidget {
       );
     }
 
-    TextStyle dateStyle = QPTextStyle.subHeading3SemiBold;
-    TextStyle dayStyle = QPTextStyle.description2Regular;
+    TextStyle dateStyle = QPTextStyle.getSubHeading3SemiBold(context);
+    TextStyle dayStyle = QPTextStyle.getDescription2Regular(context);
     if (isDisabled) {
-      dateStyle =
-          QPTextStyle.subHeading3SemiBold.copyWith(color: QPColors.blackSoft);
-      dayStyle =
-          QPTextStyle.description2Regular.copyWith(color: QPColors.blackSoft);
+      // Todo: check color based on theme
+      dateStyle = QPTextStyle.getSubHeading3SemiBold(context)
+          .copyWith(color: QPColors.blackSoft);
+      dayStyle = QPTextStyle.getDescription2Regular(context)
+          .copyWith(color: QPColors.blackSoft);
     }
 
     return Column(
@@ -208,7 +210,7 @@ class HabitGroupOverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildGroupOverviewInformationSection() {
+  Widget _buildGroupOverviewInformationSection(BuildContext context) {
     List<Widget> items = <Widget>[];
     for (int i = 0; i < numberOfDaysInAWeek; i++) {
       HabitGroupSummary item = sevenDaysInformation[i];
@@ -216,6 +218,7 @@ class HabitGroupOverviewWidget extends StatelessWidget {
         _buildDailyRecapInformation(
           item: item,
           idxInList: i,
+          context: context,
         ),
       );
     }
@@ -237,7 +240,7 @@ class HabitGroupOverviewWidget extends StatelessWidget {
               totalMembers == 1
                   ? '$totalMembers member'
                   : '$totalMembers members',
-              style: QPTextStyle.subHeading4SemiBold.copyWith(
+              style: QPTextStyle.getSubHeading4SemiBold(context).copyWith(
                 color: QPColors.brandFair,
               ),
             ),
@@ -246,19 +249,19 @@ class HabitGroupOverviewWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildCurrentMonthInformation() {
+  Widget _buildCurrentMonthInformation(BuildContext context) {
     final String current = DateFormat('MMMM yyyy').format(DateTime.now());
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Text(
         current,
-        style: QPTextStyle.subHeading3SemiBold,
+        style: QPTextStyle.getSubHeading3SemiBold(context),
       ),
     );
   }
 
-  Widget _buildGroupDetailNavigationCTA() {
+  Widget _buildGroupDetailNavigationCTA(BuildContext context) {
     return GestureDetector(
       onTap: onTapGroupDetailCTA,
       child: Padding(
@@ -270,7 +273,7 @@ class HabitGroupOverviewWidget extends StatelessWidget {
                 Expanded(
                   child: Text(
                     groupName ?? '',
-                    style: QPTextStyle.subHeading3SemiBold,
+                    style: QPTextStyle.getSubHeading3SemiBold(context),
                   ),
                 ),
                 const Icon(

@@ -54,7 +54,7 @@ class TadabburSurahCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(child: _buildInformation()),
+              Expanded(child: _buildInformation(context)),
               const Icon(
                 Icons.keyboard_arrow_right,
                 size: 24,
@@ -67,13 +67,13 @@ class TadabburSurahCard extends StatelessWidget {
     );
   }
 
-  Widget _buildInformation() {
+  Widget _buildInformation(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
-          style: QPTextStyle.subHeading3SemiBold,
+          style: QPTextStyle.getSubHeading3SemiBold(context),
         ),
         const SizedBox(
           height: 10,
@@ -89,7 +89,8 @@ class TadabburSurahCard extends StatelessWidget {
             ),
             Text(
               '$availableTadabbur Tadabbur available',
-              style: QPTextStyle.subHeading4SemiBold.copyWith(
+              style: QPTextStyle.getSubHeading4SemiBold(context).copyWith(
+                // Todo: check color based on theme
                 color: QPColors.blackFair,
               ),
             ),
@@ -100,7 +101,8 @@ class TadabburSurahCard extends StatelessWidget {
         ),
         Text(
           DateCustomUtils.getDateRangeFormatted(lastUpdatedAt),
-          style: QPTextStyle.description2Regular.copyWith(
+          style: QPTextStyle.getDescription2Regular(context).copyWith(
+            // Todo: check color based on theme
             color: QPColors.blackSoft,
           ),
         ),

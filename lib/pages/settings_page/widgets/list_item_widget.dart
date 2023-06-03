@@ -35,14 +35,15 @@ class ListItemWidget extends StatelessWidget {
             const SizedBox(width: 16),
             Text(
               title,
-              style:
-                  QPTextStyle.subHeading2SemiBold.copyWith(color: customColor),
+              style: QPTextStyle.getSubHeading2SemiBold(context)
+                  .copyWith(color: customColor),
             ),
             const Spacer(),
             if (subtitle != null)
               Text(
                 subtitle!,
-                style: QPTextStyle.body3Regular.copyWith(color: customColor),
+                style: QPTextStyle.getBody3Regular(context)
+                    .copyWith(color: customColor),
               ),
             const SizedBox(width: 16),
             Icon(

@@ -19,7 +19,7 @@ class SignInBottomSheet {
           Text(
             'Sorry, we can’t register your\naccount! :(',
             textAlign: TextAlign.center,
-            style: QPTextStyle.subHeading1SemiBold,
+            style: QPTextStyle.getSubHeading1SemiBold(context),
           ),
           const SizedBox(
             height: 16,
@@ -29,27 +29,30 @@ class SignInBottomSheet {
             text: TextSpan(
               text:
                   'Your email is associated with another account. Please reach us at',
-              style: QPTextStyle.body2Regular.copyWith(
+              style: QPTextStyle.getBody2Regular(context).copyWith(
+                // Todo: check color based on theme
                 color: QPColors.blackHeavy,
               ),
               children: [
                 TextSpan(
                   text: ' yaumi.indonesia@gmail.com ',
-                  style: QPTextStyle.body2Regular,
+                  style: QPTextStyle.getBody2Regular(context),
                 ),
                 TextSpan(
                   text: 'and',
-                  style: QPTextStyle.body2Regular.copyWith(
+                  style: QPTextStyle.getBody2Regular(context).copyWith(
+                    // Todo: check color based on theme
                     color: QPColors.blackHeavy,
                   ),
                 ),
                 TextSpan(
                   text: ' rizaherzego@gmail.com ',
-                  style: QPTextStyle.body2Regular,
+                  style: QPTextStyle.getBody2Regular(context),
                 ),
                 TextSpan(
                   text: 'to proceed your registration with that account.',
-                  style: QPTextStyle.body2Regular.copyWith(
+                  style: QPTextStyle.getBody2Regular(context).copyWith(
+                    // Todo: check color based on theme
                     color: QPColors.blackHeavy,
                   ),
                 ),
@@ -98,12 +101,12 @@ class SignInBottomSheet {
           const SizedBox(height: 24),
           Text(
             'Sign in Required',
-            style: QPTextStyle.subHeading2SemiBold,
+            style: QPTextStyle.getSubHeading2SemiBold(context),
           ),
           const SizedBox(height: 8),
           Text(
             'Sign in or create account to access your group invitation',
-            style: QPTextStyle.body3Regular,
+            style: QPTextStyle.getBody3Regular(context),
           ),
           const SizedBox(height: 24),
           Padding(

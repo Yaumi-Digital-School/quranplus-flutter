@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/read_tadabbur/read_tadabbur_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/post_tracking_dialog.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/pre_tracking_animation.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/submission_dialog.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
@@ -932,7 +931,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
           ),
           Text(
             'Tadabbur Available',
-            style: QPTextStyle.button3Medium,
+            style: QPTextStyle.getButton3Medium(context),
           ),
         ],
       ),

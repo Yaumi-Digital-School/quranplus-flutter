@@ -20,12 +20,12 @@ class HabitGroupCreateGroupBottomSheet {
         children: [
           Text(
             "Create habit group",
-            style: QPTextStyle.subHeading2SemiBold,
+            style: QPTextStyle.getSubHeading2SemiBold(context),
           ),
           const SizedBox(height: 24),
           Text(
             "Input your group name",
-            style: QPTextStyle.subHeading4Medium,
+            style: QPTextStyle.getSubHeading4Medium(context),
           ),
           const SizedBox(height: 8),
           Form(

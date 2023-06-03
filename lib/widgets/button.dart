@@ -226,9 +226,9 @@ class ButtonBrandSoft extends StatelessWidget {
             if (leftWidget != null) leftWidget!,
             const SizedBox(width: 10),
             Text(
-              title,
-              style:
-                  QPTextStyle.button2Medium.copyWith(color: QPColors.brandFair),
+              title, // Todo: check color based on theme
+              style: QPTextStyle.getButton2Medium(context)
+                  .copyWith(color: QPColors.brandFair),
             ),
           ],
         ),

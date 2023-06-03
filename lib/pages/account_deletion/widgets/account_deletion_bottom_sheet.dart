@@ -17,7 +17,7 @@ class AccountDeletionBottomSheet {
           Text(
             'Delete Confirmation',
             textAlign: TextAlign.center,
-            style: QPTextStyle.subHeading1SemiBold,
+            style: QPTextStyle.getSubHeading1SemiBold(context),
           ),
           const SizedBox(
             height: 16,
@@ -25,7 +25,8 @@ class AccountDeletionBottomSheet {
           Text(
             'Are you sure you want to delete your account?\nThis action can’t be undone.',
             textAlign: TextAlign.center,
-            style: QPTextStyle.body2Regular.copyWith(
+            style: QPTextStyle.getBody2Regular(context).copyWith(
+              // Todo: check color based on theme
               color: QPColors.blackFair,
             ),
           ),

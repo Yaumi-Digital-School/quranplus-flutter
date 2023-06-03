@@ -116,7 +116,7 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
                 centerTitle: true,
                 title: Text(
                   state.groupName,
-                  style: QPTextStyle.subHeading2SemiBold,
+                  style: QPTextStyle.getSubHeading2SemiBold(context),
                 ),
                 backgroundColor: QPColors.whiteFair,
                 actions: [
@@ -144,7 +144,8 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
                               ),
                               Text(
                                 "Invite Member",
-                                style: QPTextStyle.subHeading4SemiBold,
+                                style:
+                                    QPTextStyle.getSubHeading4SemiBold(context),
                               ),
                             ],
                           ),
@@ -163,7 +164,9 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
                                 ),
                                 Text(
                                   "Edit Group Name",
-                                  style: QPTextStyle.subHeading4SemiBold,
+                                  style: QPTextStyle.getSubHeading4SemiBold(
+                                    context,
+                                  ),
                                 ),
                               ],
                             ),
@@ -181,7 +184,8 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
                               ),
                               Text(
                                 "Leave Group",
-                                style: QPTextStyle.subHeading4SemiBold,
+                                style:
+                                    QPTextStyle.getSubHeading4SemiBold(context),
                               ),
                             ],
                           ),
@@ -317,7 +321,7 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
       children: [
         Text(
           'All Member Completion',
-          style: QPTextStyle.subHeading2SemiBold,
+          style: QPTextStyle.getSubHeading2SemiBold(context),
         ),
         const SizedBox(height: 16),
         HabitGroupOverviewWidget(

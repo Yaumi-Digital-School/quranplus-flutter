@@ -75,7 +75,7 @@ class ReadTadabburPage extends StatelessWidget {
               ),
               title: Text(
                 "Read Tadabbur",
-                style: QPTextStyle.subHeading2SemiBold,
+                style: QPTextStyle.getSubHeading2SemiBold(context),
               ),
               automaticallyImplyLeading: false,
               elevation: 0.7,
@@ -93,7 +93,7 @@ class ReadTadabburPage extends StatelessWidget {
                   children: [
                     Text(
                       param.surahName,
-                      style: QPTextStyle.subHeading2SemiBold,
+                      style: QPTextStyle.getSubHeading2SemiBold(context),
                     ),
                     const SizedBox(height: 24),
                     Expanded(

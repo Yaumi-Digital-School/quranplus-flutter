@@ -18,12 +18,15 @@ class HabitGroupEmptyGroupView extends StatelessWidget {
       children: [
         Text(
           "Tracking your reading habit group",
-          style: QPTextStyle.subHeading2SemiBold,
+          style: QPTextStyle.getSubHeading2SemiBold(context),
         ),
         const SizedBox(height: 8),
         Text(
           "In this habit group, all members progress are visible and hopefully can motivate you to read more Qur’an and compete in goodness",
-          style: QPTextStyle.body3Regular.copyWith(color: QPColors.blackFair),
+          style: QPTextStyle.getBody3Regular(context).copyWith(
+            // Todo: check color based on theme
+            color: QPColors.blackFair,
+          ),
         ),
         const SizedBox(height: 24),
         _buildCreateNewGroupCard(context),
@@ -74,12 +77,14 @@ class HabitGroupEmptyGroupView extends StatelessWidget {
                 children: [
                   Text(
                     "Create new group",
-                    style: QPTextStyle.subHeading3SemiBold,
+                    style: QPTextStyle.getSubHeading3SemiBold(context),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     "Set goals, track, and monitor reading progress",
-                    style: QPTextStyle.body3Regular
+                    style: QPTextStyle.getBody3Regular(
+                      context,
+                    ) // Todo: check color based on theme
                         .copyWith(color: QPColors.blackFair),
                   ),
                 ],

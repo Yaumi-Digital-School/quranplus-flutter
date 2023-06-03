@@ -24,11 +24,14 @@ class _ChangeThemeBottomSheetState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Select the theme mode", style: QPTextStyle.subHeading2SemiBold),
+        Text(
+          "Select the theme mode",
+          style: QPTextStyle.getSubHeading2SemiBold(context),
+        ),
         const SizedBox(height: 8),
         Text(
           "Select available mode to read and explore our app",
-          style: QPTextStyle.body3Regular,
+          style: QPTextStyle.getBody3Regular(context),
         ),
         const SizedBox(height: 32),
         Row(
