@@ -16,6 +16,7 @@ class QPThemeData {
         primary: QPColors.blackHeavy,
         primaryContainer: QPColors.whiteMassive,
         secondaryContainer: QPColors.whiteHeavy,
+        surface: QPColors.whiteSoft,
       ),
     );
   }
@@ -28,6 +29,7 @@ class QPThemeData {
         primary: QPColors.whiteFair,
         primaryContainer: QPColors.darkModeHeavy,
         secondaryContainer: QPColors.darkModeFair,
+        surface: QPColors.darkModeHeavy,
       ),
     );
   }
@@ -40,6 +42,7 @@ class QPThemeData {
         primary: QPColors.brownModeMassive,
         primaryContainer: QPColors.brownModeFair,
         secondaryContainer: QPColors.brownModeRoot,
+        surface: QPColors.brownModeSoft,
       ),
     );
   }
