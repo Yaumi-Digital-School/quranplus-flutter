@@ -19,6 +19,8 @@ class SharedPreferenceService {
   final String _habitNeedToSyncTimer = "habit-need-to-sync-timer";
   final String _lastSyncTadabburInformation = "last-sync-tadabbur-information";
   final String _lastRecordingData = "last-recording-data";
+  final String _shownOptionalUpdateMinVersion =
+      "shown-optional-update-min-version";
 
   Future<void> init() async {
     _sharedPreferences = await SharedPreferences.getInstance();
@@ -155,6 +157,17 @@ class SharedPreferenceService {
     return LastRecordingData.fromJson(
       json.decode(res),
     );
+  }
+
+  Future<void> setShownOptionalUpdateMinVersion(String version) async {
+    await _sharedPreferences.setString(_shownOptionalUpdateMinVersion, version);
+  }
+
+  String getShownOptionalUpdateMinVersion() {
+    final String res =
+        _sharedPreferences.getString(_shownOptionalUpdateMinVersion) ?? '';
+
+    return res;
   }
 
   Future<void> clear() async {
