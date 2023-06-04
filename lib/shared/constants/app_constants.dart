@@ -10,3 +10,8 @@ enum SignInType {
   google,
   apple,
 }
+
+enum AppUpdateType {
+  forceUpdate,
+  optionalUpdate,
+}

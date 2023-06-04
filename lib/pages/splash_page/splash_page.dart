@@ -1,10 +1,15 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/splash_page/splash_page_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
+import 'package:qurantafsir_flutter/shared/core/models/app_update_info.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
+import 'package:qurantafsir_flutter/widgets/app_update/force_update_dialog.dart';
+import 'package:qurantafsir_flutter/widgets/app_update/optional_update_dialog.dart';
 
 class SplashPage extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
@@ -28,14 +33,27 @@ class _SplashPageState extends State<SplashPage> {
             tadabburService: ref.read(tadabburService),
             remoteConfigService: ref.read(remoteConfigService),
             habitDailySummaryService: ref.read(habitDailySummaryService),
+            sharedPreferenceService: ref.read(sharedPreferenceServiceProvider),
           );
         },
       ),
       onStateNotifierReady: (notifier, _) async {
-        await Future.delayed(const Duration(milliseconds: 500), () async {
-          await notifier.initStateNotifier();
-          Navigator.of(context).pushReplacementNamed(RoutePaths.routeMain);
-        });
+        Connectivity cn = Connectivity();
+        ConnectivityResult conn = await cn.checkConnectivity();
+
+        await notifier.initStateNotifier(
+          conn: conn,
+        );
+
+        AppUpdateInfo? updateInfo = await notifier.getAppUpdateStatus(
+          context: context,
+          conn: conn,
+        );
+        if (updateInfo != null) {
+          await buildAppUpdateDialog(updateInfo);
+        }
+
+        Navigator.of(context).pushReplacementNamed(RoutePaths.routeMain);
       },
       builder: (
         _,
@@ -58,6 +76,34 @@ class _SplashPageState extends State<SplashPage> {
             ),
           ),
         );
+      },
+    );
+  }
+
+  Future<void> buildAppUpdateDialog(
+    AppUpdateInfo info,
+  ) async {
+    late Widget dialog;
+    switch (info.type) {
+      case AppUpdateType.forceUpdate:
+        dialog = const ForceUpdateDialog();
+        break;
+      case AppUpdateType.optionalUpdate:
+      default:
+        if (!info.shouldShowUpdateMinVersion) {
+          return;
+        }
+
+        dialog = OptionalUpdateDialog(
+          optionalMinVersion: info.optionalUpdateMinVersion!,
+        );
+    }
+
+    await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return dialog;
       },
     );
   }

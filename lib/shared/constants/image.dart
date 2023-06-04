@@ -14,4 +14,5 @@ class ImagePath {
   static String onBoardingFingerRight = 'images/on_boarding_finger_right.png';
   static String onBoardingSwipeRight = 'images/on_boarding_swipe_right.png';
   static String onBoardingSwipeLeft = 'images/on_boarding_swipe_left.png';
+  static String forceUpdateIcon = 'images/force_update.png';
 }
