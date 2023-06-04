@@ -12,6 +12,7 @@ import 'package:qurantafsir_flutter/shared/core/services/shared_preference_servi
 import 'package:qurantafsir_flutter/shared/core/services/tadabbur_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/utils/app_update.dart';
+import 'package:qurantafsir_flutter/shared/utils/internet_connection.dart';
 import 'package:version/version.dart';
 
 class SplashPageState {}
@@ -53,7 +54,7 @@ class SplashPageStateNotifier extends BaseStateNotifier<SplashPageState> {
     await _deepLinkService.init(navigatorKey);
     await _authenticationService.initRepository();
 
-    if (conn != null && conn != ConnectivityResult.none) {
+    if (conn != null && conn.isOnInternetConnection) {
       await _remoteConfigService.init();
       await _tadabburService.syncTadabburPerAyahInformations();
 
@@ -69,10 +70,10 @@ class SplashPageStateNotifier extends BaseStateNotifier<SplashPageState> {
   }) async {
     AppUpdateInfo? appUpdateInfo;
 
-    if (conn != ConnectivityResult.none) {
+    if (conn.isOnInternetConnection) {
       PackageInfo info = await PackageInfo.fromPlatform();
 
-      appUpdateInfo = await AppUpdateUtil.showAppUpdateStatus(
+      appUpdateInfo = AppUpdateUtil.showAppUpdateStatus(
         context: context,
         remoteConfigService: _remoteConfigService,
         currentVersion: Version.parse(info.version),

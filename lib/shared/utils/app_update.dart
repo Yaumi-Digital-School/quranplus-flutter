@@ -6,12 +6,12 @@ import 'package:qurantafsir_flutter/shared/core/services/shared_preference_servi
 import 'package:version/version.dart';
 
 class AppUpdateUtil {
-  static Future<AppUpdateInfo?> showAppUpdateStatus({
+  static AppUpdateInfo? showAppUpdateStatus({
     required BuildContext context,
     required RemoteConfigService remoteConfigService,
     required SharedPreferenceService sharedPreferenceService,
     required Version currentVersion,
-  }) async {
+  }) {
     final Version forceUpdateMinVersion = Version.parse(
       remoteConfigService.forceUpdateMinVersion,
     );
