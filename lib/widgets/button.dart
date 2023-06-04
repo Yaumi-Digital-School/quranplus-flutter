@@ -241,11 +241,14 @@ class ButtonPill extends StatelessWidget {
   final VoidCallback? onTap;
   final IconData? icon;
   final String label;
+  final Color? colorText;
+
   const ButtonPill({
     Key? key,
     required this.onTap,
     required this.label,
     this.icon,
+    this.colorText,
   }) : super(key: key);
 
   @override
@@ -255,7 +258,7 @@ class ButtonPill extends StatelessWidget {
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(24)),
         ),
-        primary: Colors.white,
+        primary: Theme.of(context).colorScheme.primaryContainer,
       ),
       onPressed: onTap,
       child: Padding(
@@ -270,7 +273,7 @@ class ButtonPill extends StatelessWidget {
             if (icon != null)
               Icon(
                 icon,
-                color: QPColors.brandFair,
+                color: colorText ?? QPColors.brandFair,
                 size: 17.0,
               ),
             const SizedBox(
@@ -278,7 +281,9 @@ class ButtonPill extends StatelessWidget {
             ),
             Text(
               label,
-              style: const TextStyle(color: QPColors.brandFair),
+              style: QPTextStyle.getSubHeading4SemiBold(context).copyWith(
+                color: colorText,
+              ),
             ),
           ],
         ),
