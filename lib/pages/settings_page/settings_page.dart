@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/account_page/account_page.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
-import 'package:qurantafsir_flutter/pages/settings_page/widgets/change_theme_bottom_sheet.dart';
+import 'package:qurantafsir_flutter/widgets/change_theme_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/widgets/list_item_widget.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/widgets/version_app_widget.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
