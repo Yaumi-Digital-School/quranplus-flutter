@@ -17,6 +17,9 @@ class ButtonSecondary extends StatelessWidget {
     this.leftIcon,
     this.textStyle,
     this.size = ButtonSize.extendable,
+    this.backgroundColor = Colors.white,
+    this.leftIconColor,
+    this.borderColor = Colors.transparent,
   }) : super(key: key);
 
   final String? leftIcon;
@@ -24,6 +27,9 @@ class ButtonSecondary extends StatelessWidget {
   final TextStyle? textStyle;
   final Function()? onTap;
   final ButtonSize size;
+  final Color backgroundColor;
+  final Color? leftIconColor;
+  final Color borderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +44,16 @@ class ButtonSecondary extends StatelessWidget {
       width: width,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
+          shape: RoundedRectangleBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            side: BorderSide(
+              width: 1,
+              color: borderColor,
+            ),
           ),
           padding: const EdgeInsets.all(10.0),
-          primary: Colors.white,
-          onPrimary: primary500,
+          primary: backgroundColor,
+          onPrimary: Colors.red,
           elevation: 1,
         ),
         onPressed: onTap,
@@ -62,7 +72,7 @@ class ButtonSecondary extends StatelessWidget {
             width: 24,
             height: 24,
             fit: BoxFit.scaleDown,
-            color: null,
+            color: leftIconColor,
           ),
           const SizedBox(
             width: 10.0,
