@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_view.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/card_start_habit.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/daily_progress_tracker_detail_card/daily_progress_tracker_detail_card.dart';
@@ -89,19 +90,17 @@ class _HomePageV2State extends State<HomePageV2> {
               title: Transform.translate(
                 offset: const Offset(8, 0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Container(
-                      width: 110,
-                      height: 28,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(
-                            ImagePath.logoQuranPlusLandscape,
-                          ),
-                        ),
-                      ),
+                    SvgPicture.asset(
+                      IconPath.iconQuranPlus,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
+                    const SizedBox(width: 8),
+                    SvgPicture.asset(
+                      ImagePath.quranPlusText,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const Spacer(),
                     SizedBox(
                       width: 100,
                       child: IconButton(
@@ -308,9 +307,9 @@ class ListSuratByJuz extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
                   alignment: Alignment.centerLeft,
-                  decoration: const BoxDecoration(
-                    color: backgroundColor,
-                    boxShadow: [
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    boxShadow: const [
                       BoxShadow(
                         color: Color.fromRGBO(
                           0,
@@ -328,7 +327,7 @@ class ListSuratByJuz extends StatelessWidget {
                         ? 'Assalamu’alaikum, ${parentState.name}'
                         : 'Assalamu’alaikum',
                     textAlign: TextAlign.start,
-                    style: captionSemiBold1,
+                    style: QPTextStyle.getSubHeading4SemiBold(context),
                   ),
                 ),
                 Expanded(
@@ -413,7 +412,7 @@ class ListSuratByJuz extends StatelessWidget {
 
   Widget _buildDailyHabitTracker(BuildContext context, HomePageState state) {
     return Card(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.primaryContainer,
       elevation: 1.2,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -430,6 +429,26 @@ class ListSuratByJuz extends StatelessWidget {
             const SizedBox(height: 20),
             ButtonSecondary(
               label: "See Details",
+              borderColor: QPColors.getColorBasedTheme(
+                dark: QPColors.blackFair,
+                light: QPColors.whiteRoot,
+                brown: QPColors.brownModeHeavy,
+                context: context,
+              ),
+              textStyle: QPTextStyle.getSubHeading4SemiBold(context).copyWith(
+                color: QPColors.getColorBasedTheme(
+                  dark: QPColors.whiteFair,
+                  light: QPColors.brandFair,
+                  brown: QPColors.brownModeFair,
+                  context: context,
+                ),
+              ),
+              backgroundColor: QPColors.getColorBasedTheme(
+                dark: QPColors.blackHeavy,
+                light: QPColors.whiteMassive,
+                brown: QPColors.brownModeRoot,
+                context: context,
+              ),
               onTap: () {
                 final navigationBar =
                     mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
