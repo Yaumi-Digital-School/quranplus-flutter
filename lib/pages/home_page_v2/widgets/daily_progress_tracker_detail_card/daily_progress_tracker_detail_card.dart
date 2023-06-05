@@ -35,12 +35,12 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
       return _buildDailyHabitTrackerWithHistoryData(context);
     }
 
-    return _buildDailyHabitTracker();
+    return _buildDailyHabitTracker(context);
   }
 
-  Widget _buildDailyHabitTracker() {
+  Widget _buildDailyHabitTracker(BuildContext context) {
     return Card(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.primaryContainer,
       elevation: 1.2,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -57,6 +57,26 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
             const SizedBox(height: 20),
             ButtonSecondary(
               label: "See Details",
+              borderColor: QPColors.getColorBasedTheme(
+                dark: QPColors.blackFair,
+                light: QPColors.whiteRoot,
+                brown: QPColors.brownModeHeavy,
+                context: context,
+              ),
+              textStyle: QPTextStyle.getSubHeading4SemiBold(context).copyWith(
+                color: QPColors.getColorBasedTheme(
+                  dark: QPColors.whiteFair,
+                  light: QPColors.brandFair,
+                  brown: QPColors.brownModeFair,
+                  context: context,
+                ),
+              ),
+              backgroundColor: QPColors.getColorBasedTheme(
+                dark: QPColors.blackHeavy,
+                light: QPColors.whiteMassive,
+                brown: QPColors.brownModeRoot,
+                context: context,
+              ),
               onTap: () {
                 final navigationBar =
                     mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
@@ -86,7 +106,7 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
     final int progressInPercentage = (progress * 100).round();
 
     return Card(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.primaryContainer,
       elevation: 0,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
@@ -103,10 +123,7 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
               children: [
                 Text(
                   'Continue Reading',
-                  style: QPTextStyle.getSubHeading2SemiBold(context).copyWith(
-                    // Todo: check color based on theme
-                    color: QPColors.blackHeavy,
-                  ),
+                  style: QPTextStyle.getSubHeading2SemiBold(context),
                 ),
                 _buildSeeDetailCTA(context),
               ],
@@ -114,8 +131,12 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
             Text(
               formattedDate,
               style: QPTextStyle.getDescription2Regular(context).copyWith(
-                // Todo: check color based on theme
-                color: QPColors.blackFair,
+                color: QPColors.getColorBasedTheme(
+                  dark: QPColors.whiteRoot,
+                  light: QPColors.blackFair,
+                  brown: QPColors.brownModeMassive,
+                  context: context,
+                ),
               ),
             ),
             const SizedBox(
@@ -152,8 +173,12 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
                     ? '$dailyProgressToInt/$target Pages'
                     : '$dailyProgressToInt/$target Page',
                 style: QPTextStyle.getBody3Regular(context).copyWith(
-                  // Todo: check color based on theme
-                  color: QPColors.blackFair,
+                  color: QPColors.getColorBasedTheme(
+                    dark: QPColors.whiteRoot,
+                    light: QPColors.blackFair,
+                    brown: QPColors.brownModeMassive,
+                    context: context,
+                  ),
                 ),
               ),
             ),
@@ -234,11 +259,11 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
           horizontal: 16,
           vertical: 8,
         ),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(
             Radius.circular(8),
           ),
-          color: QPColors.whiteHeavy,
+          color: Theme.of(context).colorScheme.secondaryContainer,
         ),
         child: Row(
           children: [
@@ -255,8 +280,12 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
                 Text(
                   title,
                   style: QPTextStyle.getDescription2Regular(context).copyWith(
-                    // Todo: check color based on theme
-                    color: QPColors.brandFair,
+                    color: QPColors.getColorBasedTheme(
+                      dark: QPColors.whiteHeavy,
+                      light: QPColors.brandFair,
+                      brown: QPColors.brownModeMassive,
+                      context: context,
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -265,8 +294,12 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
                 Text(
                   mainInfo,
                   style: QPTextStyle.getButton2SemiBold(context).copyWith(
-                    // Todo: check color based on theme
-                    color: QPColors.blackFair,
+                    color: QPColors.getColorBasedTheme(
+                      dark: QPColors.whiteFair,
+                      light: QPColors.blackFair,
+                      brown: QPColors.brownModeMassive,
+                      context: context,
+                    ),
                   ),
                 ),
                 Text(
@@ -274,7 +307,12 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
                   style: QPTextStyle.baseTextStyle.copyWith(
                     fontWeight: QPFontWeight.regular,
                     fontSize: 8,
-                    color: QPColors.blackFair,
+                    color: QPColors.getColorBasedTheme(
+                      dark: QPColors.blackRoot,
+                      light: QPColors.blackFair,
+                      brown: QPColors.brownModeMassive,
+                      context: context,
+                    ),
                   ),
                 ),
               ],
@@ -296,18 +334,34 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
       child: Text(
         'See Details',
         style: QPTextStyle.getSubHeading4SemiBold(context).copyWith(
-          color: QPColors.brandFair,
+          color: QPColors.getColorBasedTheme(
+            dark: QPColors.whiteFair,
+            light: QPColors.brandFair,
+            brown: QPColors.brownModeMassive,
+            context: context,
+          ),
         ),
       ),
       style: ElevatedButton.styleFrom(
         elevation: 0,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(24)),
+        shape: RoundedRectangleBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(24)),
           side: BorderSide(
-            color: QPColors.whiteRoot,
+            color: QPColors.getColorBasedTheme(
+              dark: QPColors.blackFair,
+              light: QPColors.whiteRoot,
+              brown: QPColors.brownModeHeavy,
+              context: context,
+            ),
+            width: 1,
           ),
         ),
-        primary: Colors.white,
+        primary: QPColors.getColorBasedTheme(
+          dark: QPColors.blackHeavy,
+          light: QPColors.whiteMassive,
+          brown: QPColors.brownModeRoot,
+          context: context,
+        ),
       ),
     );
   }

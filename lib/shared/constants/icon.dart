@@ -20,4 +20,5 @@ class IconPath {
   static String iconInviteMember = 'images/icon_invite_member.png';
   static String iconEditSquare = 'images/icon_edit_square.png';
   static String iconTheme = "images/svg/theme-icon.svg";
+  static String iconQuranPlus = "images/svg/logo-quran-plus.svg";
 }
