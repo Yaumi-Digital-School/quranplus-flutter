@@ -568,6 +568,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
           height: 1.5,
           fontFamily: fontFamily,
           fontSize: 30,
+          color: Theme.of(context).colorScheme.primary,
         ),
       );
     }
@@ -579,6 +580,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
           height: 1.5,
           fontFamily: fontFamily,
           fontSize: 30,
+          color: Theme.of(context).colorScheme.primary,
         ),
       ),
     );
@@ -966,6 +968,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
       return Image.asset(
         'images/bismillah_v2.png',
         width: 170,
+        color: Theme.of(context).colorScheme.primary,
       );
     }
 
