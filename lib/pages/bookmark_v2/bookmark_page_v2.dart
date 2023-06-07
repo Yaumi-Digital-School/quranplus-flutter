@@ -6,12 +6,14 @@ import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_state_notifi
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
-import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/shared/constants/image.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
-import 'package:qurantafsir_flutter/widgets/button.dart';
 
 class BookmarkPageV2 extends StatefulWidget {
   const BookmarkPageV2({Key? key}) : super(key: key);
@@ -64,13 +66,13 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                 preferredSize: const Size.fromHeight(54.0),
                 child: AppBar(
                   elevation: 0.7,
-                  foregroundColor: Colors.black,
+                  foregroundColor: Theme.of(context).colorScheme.primary,
                   centerTitle: true,
                   title: const Text(
                     "Bookmark",
                     style: TextStyle(fontSize: 16),
                   ),
-                  backgroundColor: backgroundColor,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   automaticallyImplyLeading: false,
                 ),
               ),
@@ -84,25 +86,48 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                     ),
                     Container(
                       height: 50,
-                      decoration: const BoxDecoration(
-                        color: neutral100,
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      decoration: BoxDecoration(
+                        color: QPColors.getColorBasedTheme(
+                          dark: QPColors.darkModeHeavy,
+                          light: QPColors.whiteMassive,
+                          brown: QPColors.brownModeSoft,
+                          context: context,
+                        ),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20)),
                         boxShadow: <BoxShadow>[
                           BoxShadow(
-                            color: neutral300,
-                            blurRadius: 9.0,
-                            spreadRadius: 0.9,
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
-                      child: const TabBar(
-                        padding: EdgeInsets.all(4.0),
-                        unselectedLabelColor: primary500,
-                        indicator: BoxDecoration(
-                          color: primary500,
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                      child: TabBar(
+                        padding: const EdgeInsets.all(4.0),
+                        unselectedLabelColor: QPColors.getColorBasedTheme(
+                          dark: QPColors.whiteFair,
+                          light: QPColors.brandFair,
+                          brown: QPColors.brownModeMassive,
+                          context: context,
                         ),
-                        tabs: <Widget>[
+                        labelColor: QPColors.getColorBasedTheme(
+                          dark: QPColors.whiteMassive,
+                          light: QPColors.whiteMassive,
+                          brown: QPColors.brownModeMassive,
+                          context: context,
+                        ),
+                        indicator: BoxDecoration(
+                          color: QPColors.getColorBasedTheme(
+                            dark: QPColors.blackFair,
+                            light: QPColors.brandFair,
+                            brown: QPColors.brownModeHeavy,
+                            context: context,
+                          ),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(20)),
+                        ),
+                        tabs: const <Widget>[
                           Tab(
                             text: 'Bookmark',
                           ),
@@ -222,14 +247,21 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
         ),
         title: Text(
           'Surat ${favoriteAyah.surahName}',
-          style: bodyMedium1,
+          style: QPTextStyle.getSubHeading3SemiBold(context),
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Row(
           children: <Widget>[
             Text(
               'Ayah ${favoriteAyah.ayahSurah.toString()}',
-              style: caption1,
+              style: QPTextStyle.getSubHeading4Regular(context).copyWith(
+                color: QPColors.getColorBasedTheme(
+                  dark: QPColors.whiteRoot,
+                  light: QPColors.whiteFair,
+                  brown: QPColors.brownModeMassive,
+                  context: context,
+                ),
+              ),
               overflow: TextOverflow.ellipsis,
             ),
           ],
@@ -259,6 +291,18 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
     );
   }
 
+  String _getEmptyStateImageUrl() {
+    final mode = QPThemeData.getThemeModeBasedContext(context);
+    switch (mode) {
+      case QPThemeMode.brown:
+        return ImagePath.emptyStateBrown;
+      case QPThemeMode.dark:
+        return ImagePath.emptyStateDark;
+      default:
+        return ImagePath.emptyStateLight;
+    }
+  }
+
   Widget _buildEmptyState({
     required String message,
   }) {
@@ -268,15 +312,21 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Container(
-          alignment: Alignment.center,
-          width: 200,
-          height: 200,
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(
-                'images/empty_state.png',
+        Center(
+          child: Container(
+            width: 200,
+            height: 200,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: QPColors.getColorBasedTheme(
+                dark: QPColors.darkModeHeavy,
+                light: QPColors.whiteSoft,
+                brown: QPColors.brownModeSoft,
+                context: context,
               ),
+            ),
+            child: Image.asset(
+              _getEmptyStateImageUrl(),
             ),
           ),
         ),
@@ -285,10 +335,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
         ),
         Text(
           'Ayah not found',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: semiBold,
-          ),
+          style: QPTextStyle.getSubHeading2SemiBold(context),
           textAlign: TextAlign.center,
         ),
         const SizedBox(
@@ -296,33 +343,64 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
         ),
         Text(
           message,
-          style: TextStyle(
-            fontWeight: regular,
+          style: QPTextStyle.getSubHeading4Regular(context).copyWith(
+            color: QPColors.getColorBasedTheme(
+              dark: QPColors.whiteRoot,
+              light: QPColors.whiteFair,
+              brown: QPColors.brownModeMassive,
+              context: context,
+            ),
           ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(
           height: 20,
         ),
-        Container(
-          height: 40,
-          width: deviceWidth * 0.8,
-          decoration: const BoxDecoration(
-            color: neutral100,
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            boxShadow: [
-              BoxShadow(
-                color: neutral300,
-                blurRadius: 9,
+        InkWell(
+          onTap: () =>
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return const MainPage();
+          })),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 6.5),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: QPColors.getColorBasedTheme(
+                dark: QPColors.blackHeavy,
+                light: QPColors.whiteMassive,
+                brown: QPColors.brownModeRoot,
+                context: context,
               ),
-            ],
-          ),
-          child: ButtonSecondary(
-            label: 'Start Reading',
-            onTap: () =>
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return const MainPage();
-            })),
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              border: Border.all(
+                color: QPColors.getColorBasedTheme(
+                  dark: QPColors.blackFair,
+                  light: Colors.transparent,
+                  brown: QPColors.brownModeHeavy,
+                  context: context,
+                ),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 6,
+                  offset: const Offset(0, 0.9),
+                ),
+              ],
+            ),
+            child: Center(
+              child: Text(
+                "Start Reading",
+                style: QPTextStyle.getButton1SemiBold(context).copyWith(
+                  color: QPColors.getColorBasedTheme(
+                    dark: QPColors.whiteFair,
+                    light: QPColors.brandFair,
+                    brown: QPColors.brownModeMassive,
+                    context: context,
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ],
@@ -353,14 +431,21 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
         ),
         title: Text(
           "Surat ${bookmark.surahName}",
-          style: bodyMedium1,
+          style: QPTextStyle.getSubHeading3SemiBold(context),
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Row(
           children: <Widget>[
             Text(
               "Page ${bookmark.page.toString()}",
-              style: caption1,
+              style: QPTextStyle.getSubHeading4Regular(context).copyWith(
+                color: QPColors.getColorBasedTheme(
+                  dark: QPColors.whiteRoot,
+                  light: QPColors.whiteFair,
+                  brown: QPColors.brownModeMassive,
+                  context: context,
+                ),
+              ),
               overflow: TextOverflow.ellipsis,
             ),
           ],
@@ -371,7 +456,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
             Text(
               bookmark.createdAtFormatted,
               textAlign: TextAlign.right,
-              style: caption1,
+              style: QPTextStyle.getSubHeading3Regular(context),
             ),
           ],
         ),
