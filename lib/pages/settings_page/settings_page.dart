@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/account_page/account_page.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/widgets/change_theme_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/widgets/list_item_widget.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/widgets/version_app_widget.dart';
@@ -14,7 +15,6 @@ import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
-import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
@@ -79,13 +79,13 @@ class SettingsPage extends StatelessWidget {
               child: AppBar(
                 automaticallyImplyLeading: false,
                 elevation: 0.7,
-                foregroundColor: Colors.black,
+                foregroundColor: Theme.of(context).colorScheme.primary,
                 centerTitle: true,
                 title: const Text(
                   'Settings',
                   style: TextStyle(fontSize: 16),
                 ),
-                backgroundColor: backgroundColor,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               ),
             ),
             body: SingleChildScrollView(
@@ -187,7 +187,14 @@ class SettingsPage extends StatelessWidget {
             children: [
               Text(
                 "Quran Plus Version",
-                style: bodyRegular2,
+                style: QPTextStyle.getSubHeading3Regular(context).copyWith(
+                  color: QPColors.getColorBasedTheme(
+                    dark: QPColors.whiteRoot,
+                    light: QPColors.whiteFair,
+                    brown: QPColors.brownModeMassive,
+                    context: context,
+                  ),
+                ),
               ),
               const VersionAppWidget(),
             ],
