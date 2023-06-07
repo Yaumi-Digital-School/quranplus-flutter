@@ -15,4 +15,7 @@ class ImagePath {
   static String onBoardingSwipeLeft = 'images/on_boarding_swipe_left.png';
   static String forceUpdateIcon = 'images/force_update.png';
   static String quranPlusText = "images/svg/quran-plus-text.svg";
+  static String emptyStateLight = "images/empty-state-light.png";
+  static String emptyStateDark = "images/empty-state-dark.png";
+  static String emptyStateBrown = "images/empty-state-brown.png";
 }
