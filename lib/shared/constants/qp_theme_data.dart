@@ -49,4 +49,18 @@ class QPThemeData {
       ),
     );
   }
+
+  static QPThemeMode getThemeModeBasedContext(BuildContext context) {
+    final theme = Theme.of(context);
+    final scaffoldBackgroundColor = theme.scaffoldBackgroundColor;
+    if (scaffoldBackgroundColor == QPColors.brownModeRoot) {
+      return QPThemeMode.brown;
+    }
+
+    if (scaffoldBackgroundColor == QPColors.darkModeMassive) {
+      return QPThemeMode.dark;
+    }
+
+    return QPThemeMode.light;
+  }
 }
