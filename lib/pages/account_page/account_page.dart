@@ -44,19 +44,19 @@ class AccountPage extends StatelessWidget {
             preferredSize: const Size.fromHeight(54.0),
             child: AppBar(
               elevation: 0.7,
-              foregroundColor: Colors.black,
+              foregroundColor: Theme.of(context).colorScheme.primary,
               centerTitle: true,
               title: const Text(
                 'Account',
                 style: TextStyle(fontSize: 16),
               ),
-              backgroundColor: backgroundColor,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               leading: IconButton(
                 onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(
+                icon: Icon(
                   Icons.arrow_back_ios,
                   size: 16,
-                  color: Colors.black,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ),
@@ -70,7 +70,7 @@ class AccountPage extends StatelessWidget {
                   const SizedBox(height: 40),
                   Text(
                     'Name',
-                    style: subHeadingSemiBold2,
+                    style: QPTextStyle.getSubHeading2SemiBold(context),
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
@@ -82,7 +82,7 @@ class AccountPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    style: bodyMedium2,
+                    style: QPTextStyle.getSubHeading3Medium(context),
                     onChanged: (value) {
                       notifier.nameChanged(value);
                     },
@@ -90,7 +90,8 @@ class AccountPage extends StatelessWidget {
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(8),
                       hintText: 'Name',
-                      hintStyle: bodyMedium2.apply(color: neutral400),
+                      hintStyle: QPTextStyle.getSubHeading3Medium(context)
+                          .copyWith(color: Theme.of(context).hintColor),
                       border: enabledInputBorder,
                       enabledBorder: enabledInputBorder,
                       errorBorder: errorInputBorder,
@@ -100,28 +101,34 @@ class AccountPage extends StatelessWidget {
                   const SizedBox(height: 24),
                   Text(
                     'Email',
-                    style: subHeadingSemiBold2,
+                    style: QPTextStyle.getSubHeading2SemiBold(context),
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
                     controller: TextEditingController(text: state.email),
-                    style: bodyMedium2.apply(color: neutral500),
+                    style: QPTextStyle.getSubHeading3Medium(context),
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       enabled: false,
                       contentPadding: const EdgeInsets.all(8),
                       hintText: 'email@gmail.com',
-                      hintStyle: bodyMedium2.apply(color: neutral400),
+                      hintStyle: QPTextStyle.getSubHeading3Medium(context)
+                          .copyWith(color: Theme.of(context).hintColor),
                       border: enabledInputBorder,
                       enabledBorder: enabledInputBorder,
-                      fillColor: neutral300,
+                      fillColor: QPColors.getColorBasedTheme(
+                        dark: QPColors.blackFair,
+                        light: QPColors.whiteRoot,
+                        brown: QPColors.brownModeHeavy,
+                        context: context,
+                      ),
                       filled: true,
                     ),
                   ),
                   const SizedBox(height: 24),
                   Text(
                     'Please complete the fields below',
-                    style: bodyRegular2,
+                    style: QPTextStyle.getSubHeading3Regular(context),
                   ),
                   const SizedBox(height: 16),
                   Row(
@@ -130,7 +137,7 @@ class AccountPage extends StatelessWidget {
                     children: [
                       Text(
                         'Date of Birth',
-                        style: subHeadingSemiBold2,
+                        style: QPTextStyle.getSubHeading2SemiBold(context),
                       ),
                       if (state.formStatus == FormStatus.invalid &&
                           (state.dateOfMonth.isEmpty ||
@@ -184,7 +191,9 @@ class AccountPage extends StatelessWidget {
                             counterText: '',
                             contentPadding: const EdgeInsets.all(8),
                             hintText: 'DD',
-                            hintStyle: bodyMedium2.apply(color: neutral400),
+                            hintStyle: bodyMedium2.copyWith(
+                              color: Theme.of(context).hintColor,
+                            ),
                             border: enabledInputBorder,
                             enabledBorder: enabledInputBorder,
                             errorBorder: errorInputBorder,
@@ -230,7 +239,9 @@ class AccountPage extends StatelessWidget {
                             counterText: '',
                             contentPadding: const EdgeInsets.all(8),
                             hintText: 'MM',
-                            hintStyle: bodyMedium2.apply(color: neutral400),
+                            hintStyle: bodyMedium2.copyWith(
+                              color: Theme.of(context).hintColor,
+                            ),
                             border: enabledInputBorder,
                             enabledBorder: enabledInputBorder,
                             errorBorder: errorInputBorder,
@@ -278,7 +289,9 @@ class AccountPage extends StatelessWidget {
                             counterText: '',
                             contentPadding: const EdgeInsets.all(8),
                             hintText: 'YYYY',
-                            hintStyle: bodyMedium2.apply(color: neutral400),
+                            hintStyle: bodyMedium2.copyWith(
+                              color: Theme.of(context).hintColor,
+                            ),
                             border: enabledInputBorder,
                             enabledBorder: enabledInputBorder,
                             errorBorder: errorInputBorder,
@@ -306,7 +319,7 @@ class AccountPage extends StatelessWidget {
                     children: [
                       Text(
                         'Gender',
-                        style: subHeadingMedium2,
+                        style: QPTextStyle.getSubHeading2SemiBold(context),
                       ),
                       if (state.formStatus == FormStatus.invalid &&
                           state.gender.isEmpty) ...[
@@ -334,7 +347,16 @@ class AccountPage extends StatelessWidget {
                               child: Radio(
                                 value: item[0],
                                 groupValue: state.gender,
-                                activeColor: neutral900,
+                                fillColor:
+                                    MaterialStateProperty.resolveWith<Color>(
+                                  (Set<MaterialState> states) {
+                                    return Theme.of(context)
+                                        .colorScheme
+                                        .primary;
+                                  },
+                                ),
+                                activeColor:
+                                    Theme.of(context).colorScheme.primary,
                                 onChanged: (value) {
                                   notifier.genderChanged(value);
                                 },
@@ -342,7 +364,7 @@ class AccountPage extends StatelessWidget {
                             ),
                             Text(
                               item,
-                              style: bodyRegular2,
+                              style: QPTextStyle.getSubHeading3Regular(context),
                             ),
                           ],
                         ),
