@@ -64,7 +64,7 @@ class TadabburSurahListView extends StatelessWidget {
                 'Tadabbur',
                 style: QPTextStyle.getSubHeading2SemiBold(context),
               ),
-              backgroundColor: QPColors.whiteFair,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             ),
           ),
           body: Padding(
