@@ -439,7 +439,7 @@ class ListSuratByJuz extends StatelessWidget {
                 color: QPColors.getColorBasedTheme(
                   dark: QPColors.whiteFair,
                   light: QPColors.brandFair,
-                  brown: QPColors.brownModeFair,
+                  brown: QPColors.brownModeMassive,
                   context: context,
                 ),
               ),
