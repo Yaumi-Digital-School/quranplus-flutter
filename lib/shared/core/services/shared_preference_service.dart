@@ -21,6 +21,7 @@ class SharedPreferenceService {
   final String _lastRecordingData = "last-recording-data";
   final String _shownOptionalUpdateMinVersion =
       "shown-optional-update-min-version";
+  final String _themeKey = "theme";
 
   Future<void> init() async {
     _sharedPreferences = await SharedPreferences.getInstance();
@@ -74,6 +75,14 @@ class SharedPreferenceService {
       _lastSyncTadabburInformation,
       formattedLastSync,
     );
+  }
+
+  Future<void> setTheme(String theme) async {
+    await _sharedPreferences.setString(_themeKey, theme);
+  }
+
+  String getTheme() {
+    return _sharedPreferences.getString(_themeKey) ?? "";
   }
 
   String getLastSyncTadabburInformation() {

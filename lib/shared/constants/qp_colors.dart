@@ -74,4 +74,11 @@ class QPColors {
   static const Color exit900 = Color(0xFF5C0831);
 
   static const Color background = Color(0xFFF8F7F3);
+
+  static const Color darkModeMassive = Color(0xff121212);
+  static const Color darkModeFair = Color(0xff282828);
+  static const Color darkModeHeavy = Color(0xff1D1D1D);
+  static const Color brownModeRoot = Color(0xffECE1CB);
+  static const Color brownModeFair = Color(0xffE4D0A6);
+  static const Color brownModeMassive = Color(0xff5B4A30);
 }
