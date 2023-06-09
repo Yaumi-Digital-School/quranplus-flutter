@@ -8,14 +8,10 @@ jobs:
 
     runs-on: ubuntu-latest
 
-   steps:
-      - name: Install Flutter
-        uses: subosito/flutter-action@master
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: dart-code-metrics
+        uses: dart-code-checker/dart-code-metrics-action@v3
         with:
-          channel: stable
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Run DCM
-        run: dcm analyze --reporter=github lib
+          github_token: ${{ secrets.GITHUB_TOKEN }}
