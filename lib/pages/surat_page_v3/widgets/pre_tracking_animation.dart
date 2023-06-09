@@ -37,54 +37,101 @@ class _PreHabitTrackingAnimationState extends State<PreHabitTrackingAnimation> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Take a breath',
-              style: QPTextStyle.heading1Bold,
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            Text(
-              "Start with Basmalah",
-              style: QPTextStyle.subHeading1Regular,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Lottie.asset(
-              AnimationPaths.takingBreathe,
-              width: 297,
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            Text(
-              "Prepare for reading....",
-              style: buildTextStyle(
-                color: neutral600,
-                fontSize: 20,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            const SizedBox(
-              height: 84,
-            ),
-            ButtonPill(
-              onTap: () {
-                Navigator.pop(context);
-                timer?.cancel();
-              },
-              label: "Cancel Tracking",
-              icon: Icons.cancel_outlined,
-            ),
-          ],
-        ),
-      ),
-    );
+    return Scaffold(body: OrientationBuilder(
+      builder: (context, orientation) {
+        return Center(
+          child: orientation == Orientation.portrait
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Take a breath',
+                      style: QPTextStyle.heading1Bold,
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      "Start with Basmalah",
+                      style: QPTextStyle.subHeading1Regular,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Lottie.asset(
+                      AnimationPaths.takingBreathe,
+                      width: 297,
+                    ),
+                    const SizedBox(
+                      height: 40,
+                    ),
+                    Text(
+                      "Prepare for reading....",
+                      style: buildTextStyle(
+                        color: neutral600,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 84,
+                    ),
+                    ButtonPill(
+                      onTap: () {
+                        Navigator.pop(context);
+                        timer?.cancel();
+                      },
+                      label: "Cancel Tracking",
+                      icon: Icons.cancel_outlined,
+                    ),
+                  ],
+                )
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      height: 18,
+                    ),
+                    Text(
+                      'Take a breath',
+                      style: QPTextStyle.heading1Bold,
+                    ),
+                    const SizedBox(
+                      height: 6,
+                    ),
+                    Text(
+                      "Start with Basmalah",
+                      style: QPTextStyle.subHeading1Regular,
+                    ),
+                    const Spacer(),
+                    Lottie.asset(
+                      AnimationPaths.takingBreathe,
+                      width: 198,
+                    ),
+                    const Spacer(),
+                    Text(
+                      "Prepare for reading....",
+                      style: buildTextStyle(
+                        color: neutral600,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 9,
+                    ),
+                    ButtonPill(
+                      onTap: () {
+                        Navigator.pop(context);
+                        timer?.cancel();
+                      },
+                      label: "Cancel Tracking",
+                      icon: Icons.cancel_outlined,
+                    ),
+                  ],
+                ),
+        );
+      },
+    ));
   }
 }

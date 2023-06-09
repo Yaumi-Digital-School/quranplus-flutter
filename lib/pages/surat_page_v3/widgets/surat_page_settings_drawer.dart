@@ -166,6 +166,8 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
   }
 
   Widget _buildChangeFontSize() {
+    print("\\\\\\\\\\\\");
+    print(widget.fontSize);
     return Column(
       children: <Widget>[
         ListTile(

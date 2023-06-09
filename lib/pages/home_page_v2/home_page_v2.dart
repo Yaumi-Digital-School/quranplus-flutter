@@ -289,90 +289,101 @@ class ListSuratByJuz extends StatelessWidget {
 
   double diameterButtonSearch(BuildContext context) =>
       MediaQuery.of(context).size.width * 1 / 6;
-
+  double diameterButtonSearchLandscape(BuildContext context) =>
+      MediaQuery.of(context).size.width * 0.1;
   @override
   Widget build(BuildContext context) {
     return Consumer(
       builder: (BuildContext context, WidgetRef ref, Widget? child) {
         bool isLoggedIn = ref.watch(authenticationService).isLoggedIn;
 
-        return Stack(
-          children: <Widget>[
-            Column(
-              children: [
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
-                  alignment: Alignment.centerLeft,
-                  decoration: const BoxDecoration(
-                    color: backgroundColor,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color.fromRGBO(
-                          0,
-                          0,
-                          0,
-                          0.08,
-                        ),
-                        blurRadius: 15,
-                        offset: Offset(4, 4),
+        return OrientationBuilder(
+          builder: (context, orientation) {
+            return Stack(
+              children: <Widget>[
+                Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 30,
                       ),
-                    ],
-                  ),
-                  child: Text(
-                    parentState.name.isNotEmpty
-                        ? 'Assalamu’alaikum, ${parentState.name}'
-                        : 'Assalamu’alaikum',
-                    textAlign: TextAlign.start,
-                    style: captionSemiBold1,
-                  ),
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                            24,
-                            16,
-                            24,
-                            24,
+                      alignment: Alignment.centerLeft,
+                      decoration: const BoxDecoration(
+                        color: backgroundColor,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color.fromRGBO(
+                              0,
+                              0,
+                              0,
+                              0.08,
+                            ),
+                            blurRadius: 15,
+                            offset: Offset(4, 4),
                           ),
-                          child: _buildHabitInformationCard(
-                            context,
-                            isLoggedIn,
-                            parentState,
-                            notifier,
-                          ),
+                        ],
+                      ),
+                      child: Text(
+                        parentState.name.isNotEmpty
+                            ? 'Assalamu’alaikum, ${parentState.name}'
+                            : 'Assalamu’alaikum',
+                        textAlign: TextAlign.start,
+                        style: captionSemiBold1,
+                      ),
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                24,
+                                16,
+                                24,
+                                24,
+                              ),
+                              child: _buildHabitInformationCard(
+                                context,
+                                isLoggedIn,
+                                parentState,
+                                notifier,
+                              ),
+                            ),
+                            if (parentState.juzElements == null ||
+                                parentState.listTaddaburAvailables == null)
+                              const _ListSurahByJuzSkeleton(),
+                            if (parentState.juzElements != null)
+                              _buildSurahByJuzContainer(),
+                          ],
                         ),
-                        if (parentState.juzElements == null ||
-                            parentState.listTaddaburAvailables == null)
-                          const _ListSurahByJuzSkeleton(),
-                        if (parentState.juzElements != null)
-                          _buildSurahByJuzContainer(),
-                      ],
+                      ),
+                    ),
+                  ],
+                ),
+                Positioned(
+                  bottom: diameterButtonSearch(context) * 2 / 6,
+                  right: diameterButtonSearch(context) * 2 / 6,
+                  child: Container(
+                    width: orientation == Orientation.portrait
+                        ? diameterButtonSearch(context)
+                        : diameterButtonSearchLandscape(context),
+                    height: orientation == Orientation.portrait
+                        ? diameterButtonSearch(context)
+                        : diameterButtonSearchLandscape(context),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: darkGreen,
+                    ),
+                    child: _ButtonSearch(
+                      versePagetoAyah: parentState.ayahPage,
+                      state: parentState,
                     ),
                   ),
                 ),
               ],
-            ),
-            Positioned(
-              bottom: diameterButtonSearch(context) * 2 / 6,
-              right: diameterButtonSearch(context) * 2 / 6,
-              child: Container(
-                width: diameterButtonSearch(context),
-                height: diameterButtonSearch(context),
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: darkGreen,
-                ),
-                child: _ButtonSearch(
-                  versePagetoAyah: parentState.ayahPage,
-                  state: parentState,
-                ),
-              ),
-            ),
-          ],
+            );
+          },
         );
       },
     );

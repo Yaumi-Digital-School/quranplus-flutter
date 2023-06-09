@@ -36,6 +36,7 @@ class SuratPageState {
     this.isBookmarkFetched = false,
     this.isRecording = false,
     this.isLoading = true,
+    this.orientation,
   });
 
   List<QuranPage>? pages;
@@ -49,6 +50,7 @@ class SuratPageState {
   bool isBookmarkFetched;
   bool isRecording;
   bool isLoading;
+  Orientation? orientation;
 
   SuratPageState copyWith({
     List<QuranPage>? pages,
@@ -61,6 +63,7 @@ class SuratPageState {
     bool? isBookmarkFetched,
     bool? isRecording,
     bool? isLoading,
+    Orientation? orientation,
   }) {
     separatorBuilderIndex = 0;
 
@@ -75,6 +78,7 @@ class SuratPageState {
       fullPageSeparators: fullPageSeparators ?? this.fullPageSeparators,
       isRecording: isRecording ?? this.isRecording,
       isLoading: isLoading ?? this.isLoading,
+      orientation: orientation ?? this.orientation,
     );
   }
 
@@ -94,6 +98,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     required BookmarkApi bookmarkApi,
     required BookmarksService bookmarksService,
     required AutoScrollController scrollController,
+    required Orientation orientation,
     bool isLoggedIn = false,
   })  : _sharedPreferenceService = sharedPreferenceService,
         _isLoggedIn = isLoggedIn,
@@ -102,8 +107,10 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
         _scrollController = scrollController,
         _authenticationService = authenticationService,
         _habitDailySummaryService = habitDailySummaryService,
+        _orientation = orientation,
         super(SuratPageState());
 
+  final Orientation _orientation;
   final AutoScrollController _scrollController;
   final SharedPreferenceService _sharedPreferenceService;
   final HabitDailySummaryService _habitDailySummaryService;
@@ -206,6 +213,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
       fullPageSeparators: _fullPageSeparators,
       isBookmarkFetched: true,
       isLoading: false,
+      orientation: _orientation,
     );
 
     checkIsBookmarkExists(startPageInIndex + 1);
@@ -428,6 +436,18 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   }
 
   void minusFontSize(int fontSize) {
+    if (_orientation == Orientation.landscape) {
+      ReadingSettings settings = state.readingSettings!.copyWith(
+        fontSizeLandscape: fontSize,
+      );
+
+      if (settings.fontSizeLandscape > 2) {
+        settings.fontSizeLandscape--;
+        setValueFontSize(settings);
+      }
+      state = state.copyWith(readingSettings: settings);
+      _sharedPreferenceService.setReadingSettings(settings);
+    }
     ReadingSettings settings = state.readingSettings!.copyWith(
       fontSize: fontSize,
     );
@@ -441,46 +461,95 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   }
 
   void addFontSize(int fontSize) {
-    ReadingSettings settings = state.readingSettings!.copyWith(
-      fontSize: fontSize,
-    );
-    if (settings.fontSize <= 4) {
-      settings.fontSize++;
-      setValueFontSize(settings);
+    print("========");
+    print(fontSize);
+
+    if (_orientation == Orientation.landscape) {
+      ReadingSettings settings = state.readingSettings!.copyWith(
+        fontSizeLandscape: fontSize,
+      );
+      if (settings.fontSizeLandscape <= 4) {
+        print("++++++");
+        print(settings.fontSizeLandscape);
+        settings.fontSizeLandscape++;
+        setValueFontSize(settings);
+      }
+
+      state = state.copyWith(readingSettings: settings);
+      _sharedPreferenceService.setReadingSettings(settings);
+    } else {
+      ReadingSettings settings = state.readingSettings!.copyWith(
+        fontSize: fontSize,
+      );
+      print(settings.fontSize);
+      if (settings.fontSize <= 4) {
+        print("XXXXXXX");
+        print(settings.fontSize);
+        settings.fontSize++;
+        setValueFontSize(settings);
+      }
+      state = state.copyWith(readingSettings: settings);
+      _sharedPreferenceService.setReadingSettings(settings);
     }
-    state = state.copyWith(readingSettings: settings);
-    _sharedPreferenceService.setReadingSettings(settings);
   }
 
   void setValueFontSize(ReadingSettings readingSettings) {
-    switch (readingSettings.fontSize) {
-      case 1:
-        readingSettings.valueFontSize = 12;
-        readingSettings.valueFontSizeArabic = 24;
-        readingSettings.valueFontSizeArabicFirstSheet = 35;
-        break;
-      case 2:
-        readingSettings.valueFontSize = 16;
-        readingSettings.valueFontSizeArabic = 36;
-        readingSettings.valueFontSizeArabicFirstSheet = 47;
-        break;
-      case 3:
-        readingSettings.valueFontSize = 20;
-        readingSettings.valueFontSizeArabic = 40;
-        readingSettings.valueFontSizeArabicFirstSheet = 51;
-        break;
-      case 4:
-        readingSettings.valueFontSize = 24;
-        readingSettings.valueFontSizeArabic = 44;
-        readingSettings.valueFontSizeArabicFirstSheet = 55;
-        break;
-      case 5:
-        readingSettings.valueFontSize = 28;
-        readingSettings.valueFontSizeArabic = 48;
-        readingSettings.valueFontSizeArabicFirstSheet = 59;
-        break;
-      default:
-        break;
+    print(_orientation);
+    if (_orientation == Orientation.landscape) {
+      switch (readingSettings.fontSizeLandscape) {
+        case 2:
+          readingSettings.valueFontSizeLandscape = 16;
+          readingSettings.valueFontSizeArabicLandscape = 36;
+          readingSettings.valueFontSizeArabicFirstSheetLandscape = 47;
+          break;
+        case 3:
+          readingSettings.valueFontSizeLandscape = 20;
+          readingSettings.valueFontSizeArabicLandscape = 40;
+          readingSettings.valueFontSizeArabicFirstSheetLandscape = 51;
+          break;
+        case 4:
+          readingSettings.valueFontSizeLandscape = 24;
+          readingSettings.valueFontSizeArabicLandscape = 44;
+          readingSettings.valueFontSizeArabicFirstSheetLandscape = 55;
+          break;
+        case 5:
+          readingSettings.valueFontSizeLandscape = 28;
+          readingSettings.valueFontSizeArabicLandscape = 48;
+          readingSettings.valueFontSizeArabicFirstSheetLandscape = 59;
+          break;
+        default:
+          break;
+      }
+    } else {
+      switch (readingSettings.fontSize) {
+        case 1:
+          readingSettings.valueFontSize = 12;
+          readingSettings.valueFontSizeArabic = 24;
+          readingSettings.valueFontSizeArabicFirstSheet = 35;
+          break;
+        case 2:
+          readingSettings.valueFontSize = 16;
+          readingSettings.valueFontSizeArabic = 36;
+          readingSettings.valueFontSizeArabicFirstSheet = 47;
+          break;
+        case 3:
+          readingSettings.valueFontSize = 20;
+          readingSettings.valueFontSizeArabic = 40;
+          readingSettings.valueFontSizeArabicFirstSheet = 51;
+          break;
+        case 4:
+          readingSettings.valueFontSize = 24;
+          readingSettings.valueFontSizeArabic = 44;
+          readingSettings.valueFontSizeArabicFirstSheet = 55;
+          break;
+        case 5:
+          readingSettings.valueFontSize = 28;
+          readingSettings.valueFontSizeArabic = 48;
+          readingSettings.valueFontSizeArabicFirstSheet = 59;
+          break;
+        default:
+          break;
+      }
     }
   }
 
