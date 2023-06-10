@@ -3,6 +3,7 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifie
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/post_tracking_dialog.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/widgets/adaptive_theme_dialog.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 
 class TrackingSubmissionDialog extends StatefulWidget {
@@ -25,12 +26,15 @@ class _TrackingSubmissionDialogState extends State<TrackingSubmissionDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: brokenWhite,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(19)),
+    return AdaptiveThemeDialog(
+      contentPadding: const EdgeInsets.fromLTRB(
+        24.0,
+        20.0,
+        24.0,
+        24.0,
       ),
-      content: isLoading
+      borderRadiusValue: 19,
+      child: isLoading
           ? Column(
               mainAxisSize: MainAxisSize.min,
               children: [
