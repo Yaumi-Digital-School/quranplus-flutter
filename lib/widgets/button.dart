@@ -35,8 +35,8 @@ class ButtonSecondary extends StatelessWidget {
     final double labelFontSize = size == ButtonSize.regular ? 14 : 12;
 
     final Color borderColor = QPColors.getColorBasedTheme(
-      dark: QPColors.blackFair,
-      light: QPColors.whiteRoot,
+      dark: QPColors.blackHeavy,
+      light: QPColors.whiteMassive,
       brown: QPColors.brownModeHeavy,
       context: context,
     );

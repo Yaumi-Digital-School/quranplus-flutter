@@ -97,8 +97,7 @@ class HabitGroupEmptyGroupView extends StatelessWidget {
                     "Set goals, track, and monitor reading progress",
                     style: QPTextStyle.getBody3Regular(
                       context,
-                    ) // Todo: check color based on theme
-                        .copyWith(
+                    ).copyWith(
                       color: QPColors.blackFair,
                     ),
                   ),
