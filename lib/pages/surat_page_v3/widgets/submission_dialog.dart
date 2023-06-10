@@ -99,7 +99,7 @@ class _TrackingSubmissionDialogState extends State<TrackingSubmissionDialog> {
                         isComplete: isComplete,
                       );
 
-                      return true;
+                      return;
                     }
 
                     HabitProgressPostTrackingDialog.onSubmitPostTrackingDialog(

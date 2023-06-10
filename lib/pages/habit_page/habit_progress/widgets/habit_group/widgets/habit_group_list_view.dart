@@ -30,10 +30,7 @@ class HabitGroupListView extends StatelessWidget {
             ),
             Text(
               '${listGroup.length} groups',
-              style: QPTextStyle.getDescription2Regular(context).copyWith(
-                // Todo: check color based on theme
-                color: QPColors.blackFair,
-              ),
+              style: QPTextStyle.getDescription2Regular(context),
             ),
           ],
         ),

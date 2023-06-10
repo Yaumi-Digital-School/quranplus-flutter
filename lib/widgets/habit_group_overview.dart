@@ -39,12 +39,22 @@ class HabitGroupOverviewWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onTapGroupDetailCTA,
       child: Container(
-        decoration: const BoxDecoration(
-          color: QPColors.whiteMassive,
+        decoration: BoxDecoration(
+          color: QPColors.getColorBasedTheme(
+            dark: QPColors.darkModeFair,
+            light: QPColors.whiteMassive,
+            brown: QPColors.brownModeFair,
+            context: context,
+          ),
           border: Border.fromBorderSide(BorderSide(
-            color: QPColors.whiteRoot,
+            color: QPColors.getColorBasedTheme(
+              dark: QPColors.darkModeHeavy,
+              light: QPColors.whiteHeavy,
+              brown: QPColors.brownModeHeavy,
+              context: context,
+            ),
           )),
-          borderRadius: BorderRadius.all(
+          borderRadius: const BorderRadius.all(
             Radius.circular(8),
           ),
         ),
@@ -110,26 +120,40 @@ class HabitGroupOverviewWidget extends StatelessWidget {
     final bool isDisabled = (startOfEnabledDate != null &&
         startOfEnabledDate!.difference(item.date).inDays > 0);
 
-    BoxDecoration? decoration;
+    BoxDecoration decoration = BoxDecoration(
+      color: QPColors.getColorBasedTheme(
+        dark: Colors.transparent,
+        light: Colors.transparent,
+        brown: QPColors.brownModeRoot,
+        context: context,
+      ),
+      borderRadius: const BorderRadius.all(
+        Radius.circular(8),
+      ),
+    );
 
     if (isToday) {
-      decoration = const BoxDecoration(
-        border: Border.fromBorderSide(
+      final Color isTodayColor = QPColors.getColorBasedTheme(
+        dark: Colors.transparent,
+        light: Colors.transparent,
+        brown: QPColors.whiteFair,
+        context: context,
+      );
+
+      decoration = decoration.copyWith(
+        border: const Border.fromBorderSide(
           BorderSide(
             color: QPColors.warningFair,
           ),
         ),
-        borderRadius: BorderRadius.all(
-          Radius.circular(8),
-        ),
+        color: isTodayColor,
       );
     }
 
     if (!isDisabled &&
         isBeforeToday &&
         type == HabitGroupOverviewType.withCurrentMonthInfo) {
-      decoration = BoxDecoration(
-        color: QPColors.whiteFair,
+      decoration = decoration.copyWith(
         border: isSelected
             ? const Border.fromBorderSide(
                 BorderSide(
@@ -137,20 +161,21 @@ class HabitGroupOverviewWidget extends StatelessWidget {
                 ),
               )
             : null,
-        borderRadius: const BorderRadius.all(
-          Radius.circular(8),
-        ),
       );
     }
 
     TextStyle dateStyle = QPTextStyle.getSubHeading3SemiBold(context);
     TextStyle dayStyle = QPTextStyle.getDescription2Regular(context);
     if (isDisabled) {
-      // Todo: check color based on theme
-      dateStyle = QPTextStyle.getSubHeading3SemiBold(context)
-          .copyWith(color: QPColors.blackSoft);
-      dayStyle = QPTextStyle.getDescription2Regular(context)
-          .copyWith(color: QPColors.blackSoft);
+      dateStyle = QPTextStyle.getSubHeading3SemiBold(context).copyWith(
+        color: QPColors.getColorBasedTheme(
+          dark: QPColors.blackFair,
+          light: QPColors.blackSoft,
+          brown: QPColors.blackFair,
+          context: context,
+        ),
+      );
+      dayStyle = QPTextStyle.getDescription2Regular(context);
     }
 
     return Column(
@@ -276,9 +301,14 @@ class HabitGroupOverviewWidget extends StatelessWidget {
                     style: QPTextStyle.getSubHeading3SemiBold(context),
                   ),
                 ),
-                const Icon(
+                Icon(
                   Icons.chevron_right,
-                  color: Colors.black,
+                  color: QPColors.getColorBasedTheme(
+                    dark: QPColors.whiteFair,
+                    light: QPColors.blackSoft,
+                    brown: QPColors.brownModeMassive,
+                    context: context,
+                  ),
                   size: 30,
                 ),
               ],
@@ -286,8 +316,8 @@ class HabitGroupOverviewWidget extends StatelessWidget {
             const SizedBox(
               height: 16,
             ),
-            const Divider(
-              color: QPColors.whiteSoft,
+            Divider(
+              color: Theme.of(context).dividerColor,
             ),
           ],
         ),

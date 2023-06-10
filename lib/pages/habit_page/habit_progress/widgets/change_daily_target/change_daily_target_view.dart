@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/change_daily_target/change_daily_target_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
@@ -62,17 +63,17 @@ class _ChangeDailyTargetViewState extends State<ChangeDailyTargetView> {
                   children: [
                     Text(
                       'Set your daily target',
-                      style: TextStyle(fontWeight: semiBold, fontSize: 18),
+                      style: QPTextStyle.getSubHeading1SemiBold(context),
                     ),
-                    SizedBox(
-                      width: 288,
-                      child: Text(
-                        'Set a daily reading target to motivate and help you stay active.',
-                        style: TextStyle(
-                          fontWeight: regular,
-                          fontSize: 12,
-                          color: neutral500,
-                        ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      'Set a daily reading target to motivate and help you stay active.',
+                      style: TextStyle(
+                        fontWeight: regular,
+                        fontSize: 12,
+                        color: neutral500,
                       ),
                     ),
                     const SizedBox(
@@ -109,7 +110,7 @@ class _ChangeDailyTargetViewState extends State<ChangeDailyTargetView> {
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: regular,
-                          color: neutral600,
+                          color: neutral500,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -119,7 +120,7 @@ class _ChangeDailyTargetViewState extends State<ChangeDailyTargetView> {
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: regular,
-                        color: neutral600,
+                        color: neutral500,
                       ),
                     ),
                     const SizedBox(height: 13),

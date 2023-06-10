@@ -17,19 +17,13 @@ class ButtonSecondary extends StatelessWidget {
     this.leftIcon,
     this.textStyle,
     this.size = ButtonSize.extendable,
-    this.backgroundColor = Colors.white,
-    this.leftIconColor,
-    this.borderColor = Colors.transparent,
   }) : super(key: key);
 
   final String? leftIcon;
   final String label;
   final TextStyle? textStyle;
-  final Function()? onTap;
+  final VoidCallback? onTap;
   final ButtonSize size;
-  final Color backgroundColor;
-  final Color? leftIconColor;
-  final Color borderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +33,20 @@ class ButtonSecondary extends StatelessWidget {
             ? double.infinity
             : 130;
     final double labelFontSize = size == ButtonSize.regular ? 14 : 12;
+
+    final Color borderColor = QPColors.getColorBasedTheme(
+      dark: QPColors.blackFair,
+      light: QPColors.whiteRoot,
+      brown: QPColors.brownModeHeavy,
+      context: context,
+    );
+
+    final Color backgroundColor = QPColors.getColorBasedTheme(
+      dark: QPColors.blackHeavy,
+      light: QPColors.whiteMassive,
+      brown: QPColors.brownModeRoot,
+      context: context,
+    );
 
     return SizedBox(
       width: width,
@@ -57,12 +65,35 @@ class ButtonSecondary extends StatelessWidget {
           elevation: 1,
         ),
         onPressed: onTap,
-        child: _childButton(leftIcon, label, labelFontSize),
+        child: _childButton(
+          leftIcon,
+          label,
+          labelFontSize,
+          context,
+        ),
       ),
     );
   }
 
-  Widget _childButton(String? leftIcon, String label, double labelFontSize) {
+  Widget _childButton(
+    String? leftIcon,
+    String label,
+    double labelFontSize,
+    BuildContext context,
+  ) {
+    final Color contentColor = QPColors.getColorBasedTheme(
+      dark: QPColors.whiteFair,
+      light: QPColors.brandFair,
+      brown: QPColors.brownModeMassive,
+      context: context,
+    );
+
+    final TextStyle labelStyle =
+        QPTextStyle.getSubHeading4SemiBold(context).copyWith(
+      fontSize: labelFontSize,
+      color: contentColor,
+    );
+
     if (leftIcon != null) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -72,7 +103,7 @@ class ButtonSecondary extends StatelessWidget {
             width: 24,
             height: 24,
             fit: BoxFit.scaleDown,
-            color: leftIconColor,
+            color: contentColor,
           ),
           const SizedBox(
             width: 10.0,
@@ -94,10 +125,7 @@ class ButtonSecondary extends StatelessWidget {
     return Text(
       label,
       textAlign: TextAlign.center,
-      style: textStyle ??
-          bodySemibold2.apply(color: primary500).copyWith(
-                fontSize: labelFontSize,
-              ),
+      style: textStyle ?? labelStyle,
     );
   }
 }
@@ -127,13 +155,20 @@ class ButtonNeutral extends StatelessWidget {
             : 100;
     final double labelFontSize = size == ButtonSize.regular ? 14 : 12;
 
+    final Color contentColor = QPColors.getColorBasedTheme(
+      dark: QPColors.whiteFair,
+      light: QPColors.brandFair,
+      brown: QPColors.brownModeMassive,
+      context: context,
+    );
+
     return SizedBox(
       width: width,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            side: BorderSide(color: darkGreen, width: 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            side: BorderSide(color: contentColor, width: 1),
           ),
           padding: const EdgeInsets.all(10.0),
           primary: Colors.transparent,
@@ -146,7 +181,7 @@ class ButtonNeutral extends StatelessWidget {
           textAlign: TextAlign.center,
           style: textStyle ??
               bodySemibold2.copyWith(
-                color: darkGreen,
+                color: contentColor,
                 fontSize: labelFontSize,
               ),
         ),
@@ -165,7 +200,7 @@ class ButtonPrimary extends StatelessWidget {
   }) : super(key: key);
 
   final String label;
-  final Function()? onTap;
+  final VoidCallback? onTap;
   final ButtonSize size;
   final TextStyle? textStyle;
 
