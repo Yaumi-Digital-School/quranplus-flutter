@@ -11,7 +11,9 @@ class ThemeStateNotifier extends BaseStateNotifier<QPThemeMode> {
   @override
   initStateNotifier() {
     final currentMode = sharedPreferenceService.getTheme();
-    state = currentMode != "" ? QPThemeMode.values.byName(currentMode) : QPThemeMode.light;
+    state = currentMode != ""
+        ? QPThemeMode.values.byName(currentMode)
+        : QPThemeMode.light;
   }
 
   void setMode(QPThemeMode newMode) async {
