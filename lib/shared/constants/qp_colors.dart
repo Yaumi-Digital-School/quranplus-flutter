@@ -83,6 +83,7 @@ class QPColors {
   static const Color brownModeFair = Color(0xffE4D0A6);
   static const Color brownModeMassive = Color(0xff5B4A30);
   static const Color brownModeSoft = Color(0xffEADCC1);
+  static const Color brownModeHeavy = Color(0xFFCDB687);
 
   static Color getColorBasedTheme({
     required Color dark,
