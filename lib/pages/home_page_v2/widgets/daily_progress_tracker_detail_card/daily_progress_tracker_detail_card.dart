@@ -103,16 +103,18 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
               children: [
                 Text(
                   'Continue Reading',
-                  style: QPTextStyle.subHeading2SemiBold.copyWith(
+                  style: QPTextStyle.getSubHeading2SemiBold(context).copyWith(
+                    // Todo: check color based on theme
                     color: QPColors.blackHeavy,
                   ),
                 ),
-                _buildSeeDetailCTA(),
+                _buildSeeDetailCTA(context),
               ],
             ),
             Text(
               formattedDate,
-              style: QPTextStyle.description2Regular.copyWith(
+              style: QPTextStyle.getDescription2Regular(context).copyWith(
+                // Todo: check color based on theme
                 color: QPColors.blackFair,
               ),
             ),
@@ -138,7 +140,7 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
                 ),
                 Text(
                   '$progressInPercentage%',
-                  style: QPTextStyle.body3Regular,
+                  style: QPTextStyle.getBody3Regular(context),
                 ),
               ],
             ),
@@ -149,8 +151,10 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
                 target > 1
                     ? '$dailyProgressToInt/$target Pages'
                     : '$dailyProgressToInt/$target Page',
-                style: QPTextStyle.body3Regular
-                    .copyWith(color: QPColors.blackFair),
+                style: QPTextStyle.getBody3Regular(context).copyWith(
+                  // Todo: check color based on theme
+                  color: QPColors.blackFair,
+                ),
               ),
             ),
             const SizedBox(
@@ -250,7 +254,8 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: QPTextStyle.description2Regular.copyWith(
+                  style: QPTextStyle.getDescription2Regular(context).copyWith(
+                    // Todo: check color based on theme
                     color: QPColors.brandFair,
                   ),
                 ),
@@ -259,7 +264,8 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
                 ),
                 Text(
                   mainInfo,
-                  style: QPTextStyle.button2SemiBold.copyWith(
+                  style: QPTextStyle.getButton2SemiBold(context).copyWith(
+                    // Todo: check color based on theme
                     color: QPColors.blackFair,
                   ),
                 ),
@@ -279,7 +285,7 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
     );
   }
 
-  Widget _buildSeeDetailCTA() {
+  Widget _buildSeeDetailCTA(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
         final navigationBar =
@@ -289,7 +295,7 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
       },
       child: Text(
         'See Details',
-        style: QPTextStyle.subHeading4SemiBold.copyWith(
+        style: QPTextStyle.getSubHeading4SemiBold(context).copyWith(
           color: QPColors.brandFair,
         ),
       ),

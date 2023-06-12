@@ -252,14 +252,16 @@ class _HomePageV2State extends State<HomePageV2> {
         const SizedBox(height: 28),
         Text(
           title,
-          style: QPTextStyle.heading1SemiBold.copyWith(
+          style: QPTextStyle.getHeading1SemiBold(context).copyWith(
+            // Todo: check color based on theme
             color: QPColors.blackMassive,
           ),
         ),
         const SizedBox(height: 24),
         Text(
           description,
-          style: QPTextStyle.body2Regular.copyWith(
+          style: QPTextStyle.getBody2Regular(context).copyWith(
+            // Todo: check color based on theme
             color: QPColors.neutral700,
           ),
         ),
@@ -269,8 +271,10 @@ class _HomePageV2State extends State<HomePageV2> {
           onTap: () {
             Navigator.pop(context);
           },
-          textStyle:
-              QPTextStyle.button2SemiBold.copyWith(color: QPColors.brandFair),
+          textStyle: QPTextStyle.getButton2SemiBold(context).copyWith(
+            // Todo: check color based on theme
+            color: QPColors.brandFair,
+          ),
         ),
       ],
     );
@@ -450,7 +454,8 @@ class ListSuratByJuz extends StatelessWidget {
             Container(
               height: 42,
               alignment: Alignment.centerLeft,
-              decoration: const BoxDecoration(color: neutral200),
+              decoration:
+                  BoxDecoration(color: Theme.of(context).colorScheme.surface),
               padding: const EdgeInsets.symmetric(
                 horizontal: 24,
               ),
@@ -517,15 +522,15 @@ class ListSuratByJuz extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
-                tileColor: backgroundColor,
+                tileColor: Theme.of(context).scaffoldBackgroundColor,
                 minLeadingWidth: 20,
                 leading: Container(
                   alignment: Alignment.center,
                   height: 34,
                   width: 30,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.secondaryContainer,
+                    boxShadow: const [
                       BoxShadow(
                         color: Color.fromRGBO(
                           0,
@@ -538,7 +543,7 @@ class ListSuratByJuz extends StatelessWidget {
                         spreadRadius: 1.0,
                       ),
                     ],
-                    borderRadius: BorderRadius.all(
+                    borderRadius: const BorderRadius.all(
                       Radius.circular(20),
                     ),
                   ),
@@ -564,7 +569,9 @@ class ListSuratByJuz extends StatelessWidget {
                 ),
                 trailing: Text(
                   surats[index].name,
-                  style: suratFontStyle,
+                  style: suratFontStyle.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                   textAlign: TextAlign.right,
                 ),
               ),

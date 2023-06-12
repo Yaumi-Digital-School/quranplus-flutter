@@ -74,7 +74,7 @@ class _StoriesWidgetState extends State<StoriesWidget> {
                             children: [
                               Text(
                                 "Ayah ${content.ayahNumber}",
-                                style: QPTextStyle.button3Medium
+                                style: QPTextStyle.getButton3Medium(context)
                                     .copyWith(color: QPColors.blackSoft),
                               ),
                               const SizedBox(width: 6),
@@ -89,7 +89,9 @@ class _StoriesWidgetState extends State<StoriesWidget> {
                               const SizedBox(width: 6),
                               Text(
                                 content.surahInfo?.surahName ?? '',
-                                style: QPTextStyle.button3Medium
+                                style: QPTextStyle.getButton3Medium(
+                                  context,
+                                ) // Todo: check color based on theme
                                     .copyWith(color: QPColors.blackSoft),
                               ),
                             ],
@@ -97,7 +99,9 @@ class _StoriesWidgetState extends State<StoriesWidget> {
                           const SizedBox(height: 4),
                           Text(
                             content.title ?? '',
-                            style: QPTextStyle.button1SemiBold.copyWith(
+                            style: QPTextStyle.getButton1SemiBold(context)
+                                .copyWith(
+                              // Todo: check color based on theme
                               color: QPColors.blackHeavy,
                             ),
                           ),

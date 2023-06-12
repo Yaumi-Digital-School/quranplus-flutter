@@ -40,7 +40,7 @@ class _TrackingSubmissionDialogState extends State<TrackingSubmissionDialog> {
                 ),
                 Text(
                   'Submitting...',
-                  style: QPTextStyle.subHeading2Regular,
+                  style: QPTextStyle.getSubHeading2Regular(context),
                 ),
               ],
             )

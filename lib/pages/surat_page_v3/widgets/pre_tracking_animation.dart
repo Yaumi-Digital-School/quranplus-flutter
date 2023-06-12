@@ -44,14 +44,14 @@ class _PreHabitTrackingAnimationState extends State<PreHabitTrackingAnimation> {
           children: [
             Text(
               'Take a breath',
-              style: QPTextStyle.heading1Bold,
+              style: QPTextStyle.getHeading1Bold(context),
             ),
             const SizedBox(
               height: 8,
             ),
             Text(
               "Start with Basmalah",
-              style: QPTextStyle.subHeading1Regular,
+              style: QPTextStyle.getSubHeading1Regular(context),
             ),
             const SizedBox(
               height: 10,

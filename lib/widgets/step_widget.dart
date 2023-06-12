@@ -53,8 +53,9 @@ class StepWidget extends StatelessWidget {
           Text(
             stepParams.description,
             textAlign: TextAlign.center,
-            style:
-                QPTextStyle.subHeading3SemiBold.copyWith(color: Colors.white),
+            // Todo: check color based on theme
+            style: QPTextStyle.getSubHeading3SemiBold(context)
+                .copyWith(color: Colors.white),
           ),
           const SizedBox(height: 24),
           InkWell(
@@ -67,7 +68,9 @@ class StepWidget extends StatelessWidget {
               ),
               child: Text(
                 stepParams.buttonTitle,
-                style: QPTextStyle.button2Medium.copyWith(color: Colors.white),
+                // Todo: check color based on theme
+                style: QPTextStyle.getButton2Medium(context)
+                    .copyWith(color: Colors.white),
               ),
             ),
           ),
@@ -99,7 +102,8 @@ class StepWidget extends StatelessWidget {
                   children: [
                     Text(
                       stepParams.description,
-                      style: QPTextStyle.subHeading3SemiBold
+                      // Todo: check color based on theme
+                      style: QPTextStyle.getSubHeading3SemiBold(context)
                           .copyWith(color: Colors.white),
                       textAlign: stepParams.direction == StepDirection.row
                           ? TextAlign.left
@@ -119,7 +123,8 @@ class StepWidget extends StatelessWidget {
                         ),
                         child: Text(
                           stepParams.buttonTitle,
-                          style: QPTextStyle.button2Medium
+                          // Todo: check color based on theme
+                          style: QPTextStyle.getButton2Medium(context)
                               .copyWith(color: Colors.white),
                         ),
                       ),

@@ -67,19 +67,22 @@ class _HabitPersonalWeeklyOverviewWidgetState
       ),
       child: Column(
         children: [
-          _buildDetailInformation(),
-          _buildWeeklyRecapInformations(widget.sevenDaysPersonalInfo),
+          _buildDetailInformation(context),
+          _buildWeeklyRecapInformations(widget.sevenDaysPersonalInfo, context),
         ],
       ),
     );
   }
 
-  Widget _buildWeeklyRecapInformations(List<HabitDailySummary> summaries) {
+  Widget _buildWeeklyRecapInformations(
+    List<HabitDailySummary> summaries,
+    BuildContext context,
+  ) {
     List<Widget> recaps = <Widget>[];
 
     for (int i = 0; i < summaries.length; i++) {
       recaps.add(
-        _buildDailyRecapInformation(summaries[i], i),
+        _buildDailyRecapInformation(summaries[i], i, context),
       );
     }
 
@@ -96,7 +99,7 @@ class _HabitPersonalWeeklyOverviewWidgetState
     );
   }
 
-  Widget _buildDetailInformation() {
+  Widget _buildDetailInformation(BuildContext context) {
     if (widget.type ==
             HabitPersonalWeeklyOverviewType.withCurrentMonthInformation &&
         dateInformation != null) {
@@ -104,7 +107,7 @@ class _HabitPersonalWeeklyOverviewWidgetState
         padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: Text(
           dateInformation!,
-          style: QPTextStyle.subHeading3SemiBold,
+          style: QPTextStyle.getSubHeading3SemiBold(context),
         ),
       );
     }
@@ -124,14 +127,16 @@ class _HabitPersonalWeeklyOverviewWidgetState
           children: [
             Text(
               widget.name!,
-              style: QPTextStyle.subHeading3SemiBold.copyWith(
+              style: QPTextStyle.getSubHeading3SemiBold(context).copyWith(
+                // Todo: check color based on theme
                 color: QPColors.brandHeavy,
               ),
             ),
             if (widget.isAdmin)
               Text(
                 'Admin',
-                style: QPTextStyle.subHeading4Regular.copyWith(
+                style: QPTextStyle.getSubHeading4Regular(context).copyWith(
+                  // Todo: check color based on theme
                   color: QPColors.brandFair,
                 ),
               ),
@@ -143,7 +148,11 @@ class _HabitPersonalWeeklyOverviewWidgetState
     return const SizedBox.shrink();
   }
 
-  Widget _buildDailyRecapInformation(HabitDailySummary item, int idxInList) {
+  Widget _buildDailyRecapInformation(
+    HabitDailySummary item,
+    int idxInList,
+    BuildContext context,
+  ) {
     final int? selectedPersonalInformationIdx = widget.selectedIdx;
     final String nameOfDay =
         DateFormat('EEEE').format(item.date).substring(0, 3);
@@ -189,13 +198,14 @@ class _HabitPersonalWeeklyOverviewWidgetState
       );
     }
 
-    TextStyle dateStyle = QPTextStyle.subHeading3SemiBold;
-    TextStyle dayStyle = QPTextStyle.description2Regular;
+    TextStyle dateStyle = QPTextStyle.getSubHeading3SemiBold(context);
+    TextStyle dayStyle = QPTextStyle.getDescription2Regular(context);
     if (isDisabled) {
-      dateStyle =
-          QPTextStyle.subHeading3SemiBold.copyWith(color: QPColors.blackSoft);
-      dayStyle =
-          QPTextStyle.description2Regular.copyWith(color: QPColors.blackSoft);
+      // Todo: check color based on theme
+      dateStyle = QPTextStyle.getSubHeading3SemiBold(context)
+          .copyWith(color: QPColors.blackSoft);
+      dayStyle = QPTextStyle.getDescription2Regular(context)
+          .copyWith(color: QPColors.blackSoft);
     }
 
     return Column(

@@ -31,7 +31,7 @@ class ForceUpdateDialog extends StatelessWidget {
           ),
           Text(
             '📣 Update Required!',
-            style: QPTextStyle.subHeading2SemiBold,
+            style: QPTextStyle.getSubHeading2SemiBold(context),
           ),
           const SizedBox(
             height: 8,
@@ -39,7 +39,7 @@ class ForceUpdateDialog extends StatelessWidget {
           Text(
             'Stay up-to-date with the latest\nfeatures and security updates.',
             textAlign: TextAlign.center,
-            style: QPTextStyle.body3Medium,
+            style: QPTextStyle.getBody3Medium(context),
           ),
           const SizedBox(
             height: 28,

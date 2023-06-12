@@ -376,7 +376,9 @@ class AccountPage extends StatelessWidget {
                       ),
                       child: Text(
                         'Delete my account',
-                        style: QPTextStyle.subHeading3SemiBold.copyWith(
+                        style: QPTextStyle.getSubHeading3SemiBold(context)
+                            .copyWith(
+                          // Todo: check color based on theme
                           color: QPColors.errorFair,
                         ),
                       ),

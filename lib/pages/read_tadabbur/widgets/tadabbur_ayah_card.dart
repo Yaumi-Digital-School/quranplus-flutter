@@ -61,7 +61,7 @@ class TadabburAyahCard extends StatelessWidget {
       children: [
         Text(
           "Ayah $ayahNumber",
-          style: QPTextStyle.button3Medium,
+          style: QPTextStyle.getButton3Medium(context),
         ),
         const SizedBox(
           height: 8,
@@ -79,7 +79,7 @@ class TadabburAyahCard extends StatelessWidget {
               flex: 7,
               child: Text(
                 title,
-                style: QPTextStyle.button1SemiBold.copyWith(
+                style: QPTextStyle.getButton1SemiBold(context).copyWith(
                   color: QPColors.blackFair,
                 ),
               ),
@@ -99,13 +99,15 @@ class TadabburAyahCard extends StatelessWidget {
           children: [
             Text(
               source,
-              style: QPTextStyle.button3SemiBold
+              style: QPTextStyle.getButton3SemiBold(context)
+                  // Todo: check color based on theme
                   .copyWith(color: QPColors.blackFair),
             ),
             const SizedBox(width: 8),
             Text(
               DateCustomUtils.getDateRangeFormatted(createdAt),
-              style: QPTextStyle.description2Regular.copyWith(
+              style: QPTextStyle.getDescription2Regular(context).copyWith(
+                // Todo: check color based on theme
                 color: QPColors.blackSoft,
               ),
             ),

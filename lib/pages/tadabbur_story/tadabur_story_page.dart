@@ -123,7 +123,9 @@ class _TadabburStoryPageState extends State<TadabburStoryPage> {
         direction: StepDirection.column,
         mainWidget: Text(
           "Welcome to Tadabbur!",
-          style: QPTextStyle.subHeading1SemiBold.copyWith(color: Colors.white),
+          style: QPTextStyle.getSubHeading1SemiBold(context)
+              // Todo: check color based on theme
+              .copyWith(color: Colors.white),
         ),
         left: 48,
         bottom: 0,

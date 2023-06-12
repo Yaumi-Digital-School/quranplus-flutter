@@ -39,13 +39,15 @@ class UserSummaryBottomSheet {
         const SizedBox(height: 20),
         Text(
           "Progress history is here",
-          style: QPTextStyle.subHeading3SemiBold
+          style: QPTextStyle.getSubHeading3SemiBold(context)
+              // Todo: check color based on theme
               .copyWith(color: QPColors.blackFair),
         ),
         const SizedBox(height: 12),
         Text(
           "It seems that ${isCurrentUser ? "you have" : data.user.name + " has"} not made any progress",
-          style: QPTextStyle.subHeading4Regular
+          style: QPTextStyle.getSubHeading4Regular(context)
+              // Todo: check color based on theme
               .copyWith(color: QPColors.blackFair),
         ),
       ],
@@ -78,11 +80,12 @@ class UserSummaryBottomSheet {
                     children: [
                       Text(
                         item.description,
-                        style: QPTextStyle.subHeading4Medium,
+                        style: QPTextStyle.getSubHeading4Medium(context),
                       ),
                       Text(
                         notes,
-                        style: QPTextStyle.subHeading4Regular
+                        style: QPTextStyle.getSubHeading4Regular(context)
+                            // Todo: check color based on theme
                             .copyWith(color: QPColors.blackFair),
                       ),
                     ],
@@ -91,7 +94,9 @@ class UserSummaryBottomSheet {
                 const SizedBox(width: 40),
                 Text(
                   item.inputTime.substring(0, item.inputTime.length - 3),
-                  style: QPTextStyle.subHeading4Regular
+                  style: QPTextStyle.getSubHeading4Regular(
+                    context,
+                  ) // Todo: check color based on theme
                       .copyWith(color: QPColors.blackFair),
                 ),
               ],
@@ -108,11 +113,12 @@ class UserSummaryBottomSheet {
         children: [
           Text(
             title,
-            style: QPTextStyle.subHeading3SemiBold,
+            style: QPTextStyle.getSubHeading3SemiBold(context),
           ),
           Text(
             dateInformation,
-            style: QPTextStyle.button2Medium.copyWith(
+            style: QPTextStyle.getButton2Medium(context).copyWith(
+              // Todo: check color based on theme
               color: QPColors.blackSoft,
             ),
           ),
@@ -138,14 +144,15 @@ class UserSummaryBottomSheet {
           const SizedBox(height: 4),
           Text(
             progressInformation,
-            style: QPTextStyle.body3Regular.copyWith(
+            style: QPTextStyle.getBody3Regular(context).copyWith(
+              // Todo: check color based on theme
               color: QPColors.blackFair,
             ),
           ),
           const SizedBox(height: 32),
           Text(
             "Progress History",
-            style: QPTextStyle.subHeading3SemiBold,
+            style: QPTextStyle.getSubHeading3SemiBold(context),
           ),
           const SizedBox(height: 16),
           SizedBox(

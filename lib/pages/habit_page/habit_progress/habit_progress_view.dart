@@ -64,6 +64,7 @@ class HabitProgressView extends StatelessWidget {
                       HabitProgressTab.personal,
                       notifier,
                       state,
+                      context,
                     ),
                   ),
                   Expanded(
@@ -72,6 +73,7 @@ class HabitProgressView extends StatelessWidget {
                       HabitProgressTab.group,
                       notifier,
                       state,
+                      context,
                     ),
                   ),
                 ],
@@ -93,6 +95,7 @@ class HabitProgressView extends StatelessWidget {
     HabitProgressTab tab,
     HabitProgressStateNotifier notifier,
     HabitProgressState state,
+    BuildContext context,
   ) {
     return InkWell(
       onTap: () {
@@ -109,7 +112,8 @@ class HabitProgressView extends StatelessWidget {
         ),
         child: Text(
           title,
-          style: QPTextStyle.subHeading4SemiBold.copyWith(
+          style: QPTextStyle.getSubHeading4SemiBold(context).copyWith(
+            // Todo: check color based on theme
             color: state.habitProgressTab == tab
                 ? Colors.white
                 : QPColors.brandFair,

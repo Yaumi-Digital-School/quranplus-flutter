@@ -38,7 +38,7 @@ class OptionalUpdateDialog extends ConsumerWidget {
           ),
           Text(
             'New update available!',
-            style: QPTextStyle.subHeading2SemiBold,
+            style: QPTextStyle.getSubHeading2SemiBold(context),
           ),
           const SizedBox(
             height: 8,
@@ -46,7 +46,7 @@ class OptionalUpdateDialog extends ConsumerWidget {
           Text(
             'To improve your experience, we recommend\nto update the app.',
             textAlign: TextAlign.center,
-            style: QPTextStyle.body3Medium,
+            style: QPTextStyle.getBody3Medium(context),
           ),
           const SizedBox(
             height: 28,

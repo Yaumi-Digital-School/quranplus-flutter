@@ -43,7 +43,7 @@ class AccountDeletionInformationView extends StatelessWidget {
               centerTitle: true,
               title: Text(
                 'Delete Account',
-                style: QPTextStyle.subHeading2SemiBold,
+                style: QPTextStyle.getSubHeading2SemiBold(context),
               ),
               backgroundColor: QPColors.whiteFair,
               leading: IconButton(
@@ -63,7 +63,7 @@ class AccountDeletionInformationView extends StatelessWidget {
               children: <Widget>[
                 Text(
                   'What happens after I delete my account?',
-                  style: QPTextStyle.subHeading2SemiBold,
+                  style: QPTextStyle.getSubHeading2SemiBold(context),
                 ),
                 const SizedBox(
                   height: 8,
@@ -71,7 +71,8 @@ class AccountDeletionInformationView extends StatelessWidget {
                 Text(
                   'After you delete your account, all data associated with this account (saved bookmarks, favorites, reading progress and target) will be permanently deleted and irrecoverable.',
                   textAlign: TextAlign.justify,
-                  style: QPTextStyle.body3Regular.copyWith(
+                  style: QPTextStyle.getBody3Regular(context).copyWith(
+                    // Todo: check color based on theme
                     color: QPColors.blackFair,
                   ),
                 ),
@@ -83,27 +84,31 @@ class AccountDeletionInformationView extends StatelessWidget {
                   text: TextSpan(
                     text:
                         'If you want to register your new account with the same email, reach us at ',
-                    style: QPTextStyle.body3Regular.copyWith(
+                    // Todo: check color based on theme
+                    style: QPTextStyle.getBody3Regular(context).copyWith(
                       color: QPColors.blackFair,
                     ),
                     children: [
+                      // Todo: check color based on theme
                       TextSpan(
                         text: 'yaumi.indonesia@gmail.com',
-                        style: QPTextStyle.body3Medium,
+                        style: QPTextStyle.getBody3Medium(context),
                       ),
                       TextSpan(
                         text: ' and ',
-                        style: QPTextStyle.body3Regular.copyWith(
+                        // Todo: check color based on theme
+                        style: QPTextStyle.getBody3Regular(context).copyWith(
                           color: QPColors.blackFair,
                         ),
                       ),
                       TextSpan(
                         text: 'rizaherzego@gmail.com',
-                        style: QPTextStyle.body3Medium,
+                        style: QPTextStyle.getBody3Medium(context),
                       ),
                       TextSpan(
                         text: ' to proceed your registration.',
-                        style: QPTextStyle.body3Regular.copyWith(
+                        style: QPTextStyle.getBody3Regular(context).copyWith(
+                          // Todo: check color based on theme
                           color: QPColors.blackFair,
                         ),
                       ),
@@ -158,7 +163,9 @@ class AccountDeletionInformationView extends StatelessWidget {
                     },
                     child: Text(
                       'Delete account',
-                      style: QPTextStyle.subHeading3SemiBold.copyWith(
+                      style:
+                          QPTextStyle.getSubHeading3SemiBold(context).copyWith(
+                        // Todo: check color based on theme
                         color: QPColors.errorFair,
                       ),
                     ),
