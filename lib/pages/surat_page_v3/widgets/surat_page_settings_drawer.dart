@@ -30,8 +30,8 @@ class SuratPageSettingsDrawer extends StatefulWidget {
   final ValueSetter<bool> onTapTranslation;
   final ValueSetter<bool> onTapTafsir;
   final ValueSetter<bool> onTapLatins;
-  final Function(int) onTapAdd;
-  final Function(int) onTapMinus;
+  final Function() onTapAdd;
+  final Function() onTapMinus;
 
   @override
   State<StatefulWidget> createState() => _SuratPageSettingsDrawerState();
@@ -166,8 +166,6 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
   }
 
   Widget _buildChangeFontSize() {
-    print("\\\\\\\\\\\\");
-    print(widget.fontSize);
     return Column(
       children: <Widget>[
         ListTile(
@@ -180,7 +178,7 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             GestureDetector(
-              onTap: () => widget.onTapMinus(widget.fontSize),
+              onTap: () => widget.onTapMinus(),
               child: _buildButtonFontSize(
                 neutral200,
                 Icons.remove,
@@ -196,7 +194,7 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
               ),
             ),
             GestureDetector(
-              onTap: () => widget.onTapAdd(widget.fontSize),
+              onTap: () => widget.onTapAdd(),
               child: _buildButtonFontSize(brokenWhite, Icons.add, darkGreen),
             ),
           ],

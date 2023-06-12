@@ -36,7 +36,6 @@ class SuratPageState {
     this.isBookmarkFetched = false,
     this.isRecording = false,
     this.isLoading = true,
-    this.orientation,
   });
 
   List<QuranPage>? pages;
@@ -50,7 +49,6 @@ class SuratPageState {
   bool isBookmarkFetched;
   bool isRecording;
   bool isLoading;
-  Orientation? orientation;
 
   SuratPageState copyWith({
     List<QuranPage>? pages,
@@ -63,7 +61,6 @@ class SuratPageState {
     bool? isBookmarkFetched,
     bool? isRecording,
     bool? isLoading,
-    Orientation? orientation,
   }) {
     separatorBuilderIndex = 0;
 
@@ -78,7 +75,6 @@ class SuratPageState {
       fullPageSeparators: fullPageSeparators ?? this.fullPageSeparators,
       isRecording: isRecording ?? this.isRecording,
       isLoading: isLoading ?? this.isLoading,
-      orientation: orientation ?? this.orientation,
     );
   }
 
@@ -98,7 +94,6 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     required BookmarkApi bookmarkApi,
     required BookmarksService bookmarksService,
     required AutoScrollController scrollController,
-    required Orientation orientation,
     bool isLoggedIn = false,
   })  : _sharedPreferenceService = sharedPreferenceService,
         _isLoggedIn = isLoggedIn,
@@ -107,10 +102,8 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
         _scrollController = scrollController,
         _authenticationService = authenticationService,
         _habitDailySummaryService = habitDailySummaryService,
-        _orientation = orientation,
         super(SuratPageState());
 
-  final Orientation _orientation;
   final AutoScrollController _scrollController;
   final SharedPreferenceService _sharedPreferenceService;
   final HabitDailySummaryService _habitDailySummaryService;
@@ -213,7 +206,6 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
       fullPageSeparators: _fullPageSeparators,
       isBookmarkFetched: true,
       isLoading: false,
-      orientation: _orientation,
     );
 
     checkIsBookmarkExists(startPageInIndex + 1);
@@ -435,67 +427,39 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     _sharedPreferenceService.setReadingSettings(settings);
   }
 
-  void minusFontSize(int fontSize) {
-    if (_orientation == Orientation.landscape) {
-      ReadingSettings settings = state.readingSettings!.copyWith(
-        fontSizeLandscape: fontSize,
-      );
+  void minusFontSize(Orientation orientation) {
+    ReadingSettings settings = state.readingSettings!;
 
-      if (settings.fontSizeLandscape > 2) {
-        settings.fontSizeLandscape--;
-        setValueFontSize(settings);
-      }
-      state = state.copyWith(readingSettings: settings);
-      _sharedPreferenceService.setReadingSettings(settings);
+    if (settings.fontSizeLandscape > 2) {
+      settings.fontSizeLandscape--;
     }
-    ReadingSettings settings = state.readingSettings!.copyWith(
-      fontSize: fontSize,
-    );
 
     if (settings.fontSize >= 2) {
       settings.fontSize--;
-      setValueFontSize(settings);
     }
+    setValueFontSize(settings, orientation);
     state = state.copyWith(readingSettings: settings);
     _sharedPreferenceService.setReadingSettings(settings);
   }
 
-  void addFontSize(int fontSize) {
-    print("========");
-    print(fontSize);
+  void addFontSize(Orientation orientation) {
+    ReadingSettings settings = state.readingSettings!;
 
-    if (_orientation == Orientation.landscape) {
-      ReadingSettings settings = state.readingSettings!.copyWith(
-        fontSizeLandscape: fontSize,
-      );
-      if (settings.fontSizeLandscape <= 4) {
-        print("++++++");
-        print(settings.fontSizeLandscape);
-        settings.fontSizeLandscape++;
-        setValueFontSize(settings);
-      }
-
-      state = state.copyWith(readingSettings: settings);
-      _sharedPreferenceService.setReadingSettings(settings);
-    } else {
-      ReadingSettings settings = state.readingSettings!.copyWith(
-        fontSize: fontSize,
-      );
-      print(settings.fontSize);
-      if (settings.fontSize <= 4) {
-        print("XXXXXXX");
-        print(settings.fontSize);
-        settings.fontSize++;
-        setValueFontSize(settings);
-      }
-      state = state.copyWith(readingSettings: settings);
-      _sharedPreferenceService.setReadingSettings(settings);
+    if (settings.fontSizeLandscape <= 4) {
+      settings.fontSizeLandscape++;
     }
+
+    if (settings.fontSize <= 4) {
+      settings.fontSize++;
+    }
+    setValueFontSize(settings, orientation);
+    state = state.copyWith(readingSettings: settings);
+    _sharedPreferenceService.setReadingSettings(settings);
   }
 
-  void setValueFontSize(ReadingSettings readingSettings) {
-    print(_orientation);
-    if (_orientation == Orientation.landscape) {
+  void setValueFontSize(
+      ReadingSettings readingSettings, Orientation orientation,) {
+    if (orientation == Orientation.landscape) {
       switch (readingSettings.fontSizeLandscape) {
         case 2:
           readingSettings.valueFontSizeLandscape = 16;

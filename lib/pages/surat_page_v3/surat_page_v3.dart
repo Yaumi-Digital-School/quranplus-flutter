@@ -104,202 +104,195 @@ class _SuratPageV3State extends State<SuratPageV3> {
   Widget build(BuildContext context) {
     final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-    return OrientationBuilder(
-      builder: (context, orientation) {
-        print(orientation);
+    return StateNotifierConnector<SuratPageStateNotifier, SuratPageState>(
+      stateNotifierProvider:
+          StateNotifierProvider<SuratPageStateNotifier, SuratPageState>(
+        (ref) {
+          return SuratPageStateNotifier(
+            startPageInIndex: widget.param.startPageInIndex,
+            sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
+            bookmarkApi: ref.watch(bookmarkApiProvider),
+            bookmarksService: ref.watch(bookmarksService),
+            authenticationService: ref.watch(authenticationService),
+            scrollController: scrollController,
+            isLoggedIn: ref.watch(authenticationService).isLoggedIn,
+            habitDailySummaryService: ref.watch(habitDailySummaryService),
+          );
+        },
+      ),
+      onStateNotifierReady: (notifier, ref) async {
+        if (widget.param.isStartTracking) {
+          Future.delayed(Duration.zero, () {
+            _startTracking(context, notifier);
+          });
+        }
 
-        return StateNotifierConnector<SuratPageStateNotifier, SuratPageState>(
-          stateNotifierProvider:
-              StateNotifierProvider<SuratPageStateNotifier, SuratPageState>(
-            (ref) {
-              return SuratPageStateNotifier(
-                startPageInIndex: widget.param.startPageInIndex,
-                sharedPreferenceService:
-                    ref.watch(sharedPreferenceServiceProvider),
-                bookmarkApi: ref.watch(bookmarkApiProvider),
-                bookmarksService: ref.watch(bookmarksService),
-                authenticationService: ref.watch(authenticationService),
-                scrollController: scrollController,
-                isLoggedIn: ref.watch(authenticationService).isLoggedIn,
-                habitDailySummaryService: ref.watch(habitDailySummaryService),
-                orientation: orientation,
-              );
-            },
+        final ConnectivityResult connectivityResult =
+            await Connectivity().checkConnectivity();
+        await notifier.initStateNotifier(
+          connectivityResult: connectivityResult,
+        );
+        if (widget.param.firstPagePointerIndex != 0) {
+          scrollController.scrollToIndex(
+            widget.param.firstPagePointerIndex,
+            preferPosition: AutoScrollPosition.begin,
+            duration: const Duration(milliseconds: 200),
+          );
+        }
+      },
+      builder: (
+        BuildContext context,
+        SuratPageState state,
+        SuratPageStateNotifier notifier,
+        _,
+      ) {
+        if (state.isLoading) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+        Orientation orientation = MediaQuery.of(context).orientation;
+
+        return WillPopScope(
+          onWillPop: () async => _onTapBack(
+            notifier: notifier,
+            state: state,
           ),
-          onStateNotifierReady: (notifier, ref) async {
-            if (widget.param.isStartTracking) {
-              Future.delayed(Duration.zero, () {
-                _startTracking(context, notifier);
-              });
-            }
-
-            final ConnectivityResult connectivityResult =
-                await Connectivity().checkConnectivity();
-            await notifier.initStateNotifier(
-              connectivityResult: connectivityResult,
-            );
-            if (widget.param.firstPagePointerIndex != 0) {
-              scrollController.scrollToIndex(
-                widget.param.firstPagePointerIndex,
-                preferPosition: AutoScrollPosition.begin,
-                duration: const Duration(milliseconds: 200),
-              );
-            }
-          },
-          builder: (
-            BuildContext context,
-            SuratPageState state,
-            SuratPageStateNotifier notifier,
-            _,
-          ) {
-            if (state.isLoading) {
-              return const Scaffold(
-                body: Center(
-                  child: CircularProgressIndicator(),
+          child: Scaffold(
+            key: _scaffoldKey,
+            appBar: PreferredSize(
+              preferredSize: const Size.fromHeight(54.0),
+              child: AppBar(
+                leading: IconButton(
+                  icon: const Icon(
+                    Icons.chevron_left,
+                    color: Colors.black,
+                    size: 30,
+                  ),
+                  onPressed: () async => _onTapBack(
+                    notifier: notifier,
+                    state: state,
+                  ),
                 ),
-              );
-            }
-
-            return WillPopScope(
-              onWillPop: () async => _onTapBack(
-                notifier: notifier,
-                state: state,
-              ),
-              child: Scaffold(
-                key: _scaffoldKey,
-                appBar: PreferredSize(
-                  preferredSize: const Size.fromHeight(54.0),
-                  child: AppBar(
-                    leading: IconButton(
-                      icon: const Icon(
-                        Icons.chevron_left,
-                        color: Colors.black,
-                        size: 30,
-                      ),
-                      onPressed: () async => _onTapBack(
-                        notifier: notifier,
-                        state: state,
-                      ),
+                automaticallyImplyLeading: false,
+                elevation: 2.5,
+                foregroundColor: Colors.black,
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    ValueListenableBuilder(
+                      valueListenable: notifier.visibleSuratName,
+                      builder: (context, value, __) {
+                        return Text(
+                          '$value',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        );
+                      },
                     ),
-                    automaticallyImplyLeading: false,
-                    elevation: 2.5,
-                    foregroundColor: Colors.black,
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
                       children: <Widget>[
                         ValueListenableBuilder(
-                          valueListenable: notifier.visibleSuratName,
+                          valueListenable: notifier.currentPage,
                           builder: (context, value, __) {
                             return Text(
-                              '$value',
+                              'Page $value',
                               style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
+                                fontSize: 10,
                               ),
                             );
                           },
                         ),
-                        Row(
-                          children: <Widget>[
-                            ValueListenableBuilder(
-                              valueListenable: notifier.currentPage,
-                              builder: (context, value, __) {
-                                return Text(
-                                  'Page $value',
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                  ),
-                                );
-                              },
-                            ),
-                            ValueListenableBuilder(
-                              valueListenable: notifier.visibleJuzNumber,
-                              builder: (context, value, __) {
-                                return Text(
-                                  ', Juz $value',
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
+                        ValueListenableBuilder(
+                          valueListenable: notifier.visibleJuzNumber,
+                          builder: (context, value, __) {
+                            return Text(
+                              ', Juz $value',
+                              style: const TextStyle(
+                                fontSize: 10,
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),
-                    backgroundColor: backgroundColor,
-                    actions: <Widget>[
-                      ValueListenableBuilder(
-                        valueListenable: notifier.visibleIconBookmark,
-                        builder: (context, value, __) {
-                          if (notifier.visibleIconBookmark.value) {
-                            return IconButton(
-                              icon: const Icon(Icons.bookmark_outlined),
-                              onPressed: () async {
-                                final ConnectivityResult connectivityResult =
-                                    await Connectivity().checkConnectivity();
-                                notifier.deleteBookmark(
-                                  notifier.currentPage.value,
-                                  connectivityResult,
-                                );
-                              },
+                  ],
+                ),
+                backgroundColor: backgroundColor,
+                actions: <Widget>[
+                  ValueListenableBuilder(
+                    valueListenable: notifier.visibleIconBookmark,
+                    builder: (context, value, __) {
+                      if (notifier.visibleIconBookmark.value) {
+                        return IconButton(
+                          icon: const Icon(Icons.bookmark_outlined),
+                          onPressed: () async {
+                            final ConnectivityResult connectivityResult =
+                                await Connectivity().checkConnectivity();
+                            notifier.deleteBookmark(
+                              notifier.currentPage.value,
+                              connectivityResult,
                             );
-                          } else {
-                            return IconButton(
-                              icon: const Icon(Icons.bookmark_outline),
-                              onPressed: () async {
-                                final ConnectivityResult connectivityResult =
-                                    await Connectivity().checkConnectivity();
-                                notifier.insertBookmark(
-                                  notifier.visibleSuratName.value,
-                                  notifier.currentPage.value,
-                                  connectivityResult,
-                                );
-                              },
+                          },
+                        );
+                      } else {
+                        return IconButton(
+                          icon: const Icon(Icons.bookmark_outline),
+                          onPressed: () async {
+                            final ConnectivityResult connectivityResult =
+                                await Connectivity().checkConnectivity();
+                            notifier.insertBookmark(
+                              notifier.visibleSuratName.value,
+                              notifier.currentPage.value,
+                              connectivityResult,
                             );
-                          }
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(CustomIcons.book),
-                        onPressed: () => notifier.setIsInFullPage(
-                          !state.readingSettings!.isInFullPage,
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(CustomIcons.sliders),
-                        onPressed: () {
-                          _scaffoldKey.currentState?.openEndDrawer();
-                        },
-                      ),
-                    ],
+                          },
+                        );
+                      }
+                    },
                   ),
-                ),
-                body: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: _buildPageOnReadCTA(
-                    context: context,
-                    sn: notifier,
-                    state: state,
+                  IconButton(
+                    icon: const Icon(CustomIcons.book),
+                    onPressed: () => notifier.setIsInFullPage(
+                      !state.readingSettings!.isInFullPage,
+                    ),
                   ),
-                ),
-                endDrawer: SuratPageSettingsDrawer(
-                  isWithLatins: state.readingSettings!.isWithLatins,
-                  isWithTranslation: state.readingSettings!.isWithTranslations,
-                  isWithTafsir: state.readingSettings!.isWithTafsirs,
-                  fontSize: state.orientation == Orientation.landscape
-                      ? state.readingSettings!.fontSizeLandscape
-                      : state.readingSettings!.fontSize,
-                  onTapLatins: (value) => notifier.setisWithLatins(value),
-                  onTapTranslation: (value) =>
-                      notifier.setIsWithTranslations(value),
-                  onTapTafsir: (value) => notifier.setIsWithTafsirs(value),
-                  onTapAdd: (value) => notifier.addFontSize(value),
-                  onTapMinus: (value) => notifier.minusFontSize(value),
-                ),
+                  IconButton(
+                    icon: const Icon(CustomIcons.sliders),
+                    onPressed: () {
+                      _scaffoldKey.currentState?.openEndDrawer();
+                    },
+                  ),
+                ],
               ),
-            );
-          },
+            ),
+            body: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _buildPageOnReadCTA(
+                context: context,
+                sn: notifier,
+                state: state,
+              ),
+            ),
+            endDrawer: SuratPageSettingsDrawer(
+              isWithLatins: state.readingSettings!.isWithLatins,
+              isWithTranslation: state.readingSettings!.isWithTranslations,
+              isWithTafsir: state.readingSettings!.isWithTafsirs,
+              fontSize: orientation == Orientation.landscape
+                  ? state.readingSettings!.fontSizeLandscape
+                  : state.readingSettings!.fontSize,
+              onTapLatins: (value) => notifier.setisWithLatins(value),
+              onTapTranslation: (value) =>
+                  notifier.setIsWithTranslations(value),
+              onTapTafsir: (value) => notifier.setIsWithTafsirs(value),
+              onTapAdd: () => notifier.addFontSize(orientation),
+              onTapMinus: () => notifier.minusFontSize(orientation),
+            ),
+          ),
         );
       },
     );
@@ -333,15 +326,18 @@ class _SuratPageV3State extends State<SuratPageV3> {
     required SuratPageStateNotifier sn,
     required BuildContext context,
   }) {
+    Orientation orientation = MediaQuery.of(context).orientation;
     final Widget pages = state.readingSettings!.isInFullPage
         ? _buildPagesInFullPage(
             state: state,
             notifier: sn,
             context: context,
+            orientation: orientation,
           )
         : _buildPages(
             state: state,
             notifier: sn,
+            orientation: orientation,
           );
 
     final double bottomPadding = MediaQuery.of(context).size.height * 0.025;
@@ -459,6 +455,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     required int pageIndex,
     required BuildContext context,
     required SuratPageStateNotifier notifier,
+    required Orientation orientation,
   }) {
     final List<String> texts = List<String>.filled(15, '');
     final int page = pageIndex + 1;
@@ -487,6 +484,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
             page: page,
             text: words,
             state: state,
+            orientation: orientation,
           ),
         )
         .toList();
@@ -494,7 +492,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     final double bottomPadding = MediaQuery.of(context).size.height * 0.1;
     final double topPadding = MediaQuery.of(context).size.height * 0.05;
 
-    if (state.orientation == Orientation.landscape) {
+    if (orientation == Orientation.landscape) {
       return SingleChildScrollView(
         child: Container(
           child: Column(
@@ -575,6 +573,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     required String text,
     required int page,
     required SuratPageState state,
+    required Orientation orientation,
   }) {
     String fontFamily = 'Page$page';
     if (text.length == 1) {
@@ -602,7 +601,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
       );
     }
 
-    if (state.orientation == Orientation.landscape) {
+    if (orientation == Orientation.landscape) {
       return SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(left: 36, right: 36),
@@ -636,6 +635,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     required SuratPageState state,
     required SuratPageStateNotifier notifier,
     required BuildContext context,
+    required Orientation orientation,
   }) {
     List<Widget> allPages = <Widget>[];
 
@@ -645,6 +645,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
         pageIndex: idx,
         context: context,
         notifier: notifier,
+        orientation: orientation,
       );
 
       allPages.add(page);
@@ -677,6 +678,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
   Widget _buildPages({
     required SuratPageState state,
     required SuratPageStateNotifier notifier,
+    required Orientation orientation,
   }) {
     List<Widget> allPages = <Widget>[];
 
@@ -688,6 +690,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
         pageNumberInQuran: pageNumberInQuran,
         state: state,
         notifier: notifier,
+        orientation: orientation,
       );
 
       allPages.add(page);
@@ -714,6 +717,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     required int pageNumberInQuran,
     required SuratPageState state,
     required SuratPageStateNotifier notifier,
+    required Orientation orientation,
   }) {
     List<Widget> ayahs = <Widget>[];
     for (int i = 0; i < quranPageObject.verses.length; i++) {
@@ -724,10 +728,10 @@ class _SuratPageV3State extends State<SuratPageV3> {
         verse: verse,
         useDivider: useDivider,
         fontSize: pageNumberInQuran == 1 || pageNumberInQuran == 2
-            ? state.orientation == Orientation.landscape
+            ? orientation == Orientation.landscape
                 ? state.readingSettings!.valueFontSizeArabicFirstSheetLandscape
                 : state.readingSettings!.valueFontSizeArabicFirstSheet
-            : state.orientation == Orientation.landscape
+            : orientation == Orientation.landscape
                 ? state.readingSettings!.valueFontSizeArabicLandscape
                 : state.readingSettings!.valueFontSizeArabic,
         pageNumberInQuran: pageNumberInQuran,
