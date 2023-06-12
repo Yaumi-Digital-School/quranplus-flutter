@@ -11,6 +11,7 @@ class QPThemeData {
   static ThemeData get lightThemeData {
     return ThemeData(
       scaffoldBackgroundColor: QPColors.whiteFair,
+      dialogBackgroundColor: QPColors.whiteFair,
       dividerColor: QPColors.whiteRoot,
       hintColor: QPColors.blackSoft,
       colorScheme: const ColorScheme.light().copyWith(
@@ -25,6 +26,7 @@ class QPThemeData {
   static ThemeData get darkThemeData {
     return ThemeData(
       scaffoldBackgroundColor: QPColors.darkModeMassive,
+      dialogBackgroundColor: QPColors.darkModeMassive,
       dividerColor: QPColors.darkModeFair,
       hintColor: QPColors.blackSoft,
       colorScheme: const ColorScheme.light().copyWith(
@@ -39,6 +41,7 @@ class QPThemeData {
   static ThemeData get brownThemeData {
     return ThemeData(
       scaffoldBackgroundColor: QPColors.brownModeRoot,
+      dialogBackgroundColor: QPColors.brownModeRoot,
       dividerColor: QPColors.brownModeFair,
       hintColor: QPColors.brownModeMassive,
       colorScheme: const ColorScheme.light().copyWith(

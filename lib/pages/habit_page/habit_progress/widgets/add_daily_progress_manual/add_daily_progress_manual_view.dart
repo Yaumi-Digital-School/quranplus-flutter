@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/add_daily_progress_manual/add_daily_progress_manual_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_progress.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
@@ -66,23 +67,27 @@ class _AddDailyProgressManualViewState
                   children: [
                     Text(
                       "You have read $totalPages of $target Pages today",
-                      style: subHeadingSemiBold2,
+                      style: QPTextStyle.getSubHeading2SemiBold(context),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       formattedDate,
-                      style: bodyRegular3.copyWith(color: neutral600),
+                      style:
+                          QPTextStyle.getDescription1Regular(context).copyWith(
+                        color: neutral600,
+                      ),
                     ),
                     const SizedBox(height: 24),
                     Text(
                       "Progress History",
-                      style: buttonMedium3,
+                      style: QPTextStyle.getDescription2Regular(context),
                     ),
                     const SizedBox(height: 8),
                     state.progressHistory.isEmpty
                         ? Text(
                             "No progress yet",
-                            style: regular8.copyWith(color: neutral600),
+                            style: QPTextStyle.getDescription2Regular(context)
+                                .copyWith(color: neutral600),
                           )
                         : Column(
                             children:
@@ -91,7 +96,7 @@ class _AddDailyProgressManualViewState
                     const SizedBox(height: 24),
                     Text(
                       "Add Manual Progress",
-                      style: semiBold10,
+                      style: QPTextStyle.getDescription2Regular(context),
                     ),
                     const SizedBox(height: 8),
                     Row(
@@ -104,14 +109,14 @@ class _AddDailyProgressManualViewState
                         const SizedBox(width: 8),
                         Text(
                           "Pages",
-                          style: regular10.copyWith(color: neutral600),
+                          style: QPTextStyle.getDescription2Regular(context)
+                              .copyWith(color: neutral600),
                         ),
                       ],
                     ),
                     const SizedBox(height: 32),
                     ButtonSecondary(
                       label: "Save",
-                      textStyle: semiBold10.copyWith(color: darkGreen),
                       onTap: () async {
                         if (inputPages != "" && int.parse(inputPages) > 0) {
                           await notifier

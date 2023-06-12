@@ -429,26 +429,6 @@ class ListSuratByJuz extends StatelessWidget {
             const SizedBox(height: 20),
             ButtonSecondary(
               label: "See Details",
-              borderColor: QPColors.getColorBasedTheme(
-                dark: QPColors.blackFair,
-                light: QPColors.whiteRoot,
-                brown: QPColors.brownModeHeavy,
-                context: context,
-              ),
-              textStyle: QPTextStyle.getSubHeading4SemiBold(context).copyWith(
-                color: QPColors.getColorBasedTheme(
-                  dark: QPColors.whiteFair,
-                  light: QPColors.brandFair,
-                  brown: QPColors.brownModeMassive,
-                  context: context,
-                ),
-              ),
-              backgroundColor: QPColors.getColorBasedTheme(
-                dark: QPColors.blackHeavy,
-                light: QPColors.whiteMassive,
-                brown: QPColors.brownModeRoot,
-                context: context,
-              ),
               onTap: () {
                 final navigationBar =
                     mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
