@@ -69,16 +69,15 @@ class HabitPage extends StatelessWidget {
               child: AppBar(
                 elevation: 0.7,
                 automaticallyImplyLeading: false,
-                foregroundColor: Colors.black,
+                foregroundColor: Theme.of(context).colorScheme.primary,
                 centerTitle: true,
                 title: const Text(
                   'Reading Habit Tracker',
                   style: TextStyle(fontSize: 16),
                 ),
-                backgroundColor: backgroundColor,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               ),
             ),
-            backgroundColor: QPColors.whiteFair,
             body:
                 state.authenticationStatus == AuthenticationStatus.authenticated
                     ? const HabitProgressView()

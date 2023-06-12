@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:intl/intl.dart';
 
 class DailyProgressTracker extends StatelessWidget {
@@ -30,15 +31,21 @@ class DailyProgressTracker extends StatelessWidget {
       children: <Widget>[
         Text(
           "Today's Progress",
-          style: TextStyle(fontSize: 17, fontWeight: semiBold),
+          style: QPTextStyle.getSubHeading1SemiBold(context),
         ),
         const SizedBox(
           height: 4,
         ),
         Text(
           formattedDate,
-          style:
-              TextStyle(fontSize: 12, color: Colors.grey, fontWeight: medium),
+          style: QPTextStyle.getSubHeading4Medium(context).copyWith(
+            color: QPColors.getColorBasedTheme(
+              dark: QPColors.whiteRoot,
+              light: QPColors.blackFair,
+              brown: QPColors.brownModeMassive,
+              context: context,
+            ),
+          ),
         ),
         const SizedBox(
           height: 16,
@@ -52,8 +59,8 @@ class DailyProgressTracker extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 0),
             percent: progress,
             barRadius: const Radius.circular(8),
-            progressColor: darkGreen,
-            backgroundColor: neutral300,
+            progressColor: QPColors.brandFair,
+            backgroundColor: QPColors.brandRoot,
           ),
         ),
         const SizedBox(height: 8),
@@ -63,8 +70,14 @@ class DailyProgressTracker extends StatelessWidget {
             target > 1
                 ? '$dailyProgressToInt / $target pages'
                 : '$dailyProgressToInt / $target page',
-            style:
-                TextStyle(fontSize: 12, fontWeight: regular, color: neutral600),
+            style: QPTextStyle.getSubHeading4Regular(context).copyWith(
+              color: QPColors.getColorBasedTheme(
+                dark: QPColors.whiteRoot,
+                light: QPColors.blackFair,
+                brown: QPColors.brownModeMassive,
+                context: context,
+              ),
+            ),
           ),
         ),
         if (isNeedSync)
@@ -72,7 +85,7 @@ class DailyProgressTracker extends StatelessWidget {
             padding: const EdgeInsets.only(top: 8),
             child: Text(
               "*back online within 7 days to sync your data",
-              style: regular10.copyWith(color: neutral600),
+              style: QPTextStyle.getDescription2Regular(context),
             ),
           ),
       ],

@@ -11,6 +11,7 @@ class QPThemeData {
   static ThemeData get lightThemeData {
     return ThemeData(
       scaffoldBackgroundColor: QPColors.whiteFair,
+      dialogBackgroundColor: QPColors.whiteFair,
       dividerColor: QPColors.whiteRoot,
       hintColor: QPColors.blackSoft,
       colorScheme: const ColorScheme.light().copyWith(
@@ -25,6 +26,7 @@ class QPThemeData {
   static ThemeData get darkThemeData {
     return ThemeData(
       scaffoldBackgroundColor: QPColors.darkModeMassive,
+      dialogBackgroundColor: QPColors.darkModeMassive,
       dividerColor: QPColors.darkModeFair,
       hintColor: QPColors.blackSoft,
       colorScheme: const ColorScheme.light().copyWith(
@@ -39,6 +41,7 @@ class QPThemeData {
   static ThemeData get brownThemeData {
     return ThemeData(
       scaffoldBackgroundColor: QPColors.brownModeRoot,
+      dialogBackgroundColor: QPColors.brownModeRoot,
       dividerColor: QPColors.brownModeFair,
       hintColor: QPColors.brownModeMassive,
       colorScheme: const ColorScheme.light().copyWith(
@@ -48,5 +51,19 @@ class QPThemeData {
         surface: QPColors.brownModeSoft,
       ),
     );
+  }
+
+  static QPThemeMode getThemeModeBasedContext(BuildContext context) {
+    final theme = Theme.of(context);
+    final scaffoldBackgroundColor = theme.scaffoldBackgroundColor;
+    if (scaffoldBackgroundColor == QPColors.brownModeRoot) {
+      return QPThemeMode.brown;
+    }
+
+    if (scaffoldBackgroundColor == QPColors.darkModeMassive) {
+      return QPThemeMode.dark;
+    }
+
+    return QPThemeMode.light;
   }
 }

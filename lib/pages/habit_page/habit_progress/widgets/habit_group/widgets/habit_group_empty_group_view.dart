@@ -45,7 +45,20 @@ class HabitGroupEmptyGroupView extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: QPColors.getColorBasedTheme(
+            dark: QPColors.darkModeFair,
+            light: QPColors.whiteMassive,
+            brown: QPColors.brownModeFair,
+            context: context,
+          ),
+          border: Border.fromBorderSide(BorderSide(
+            color: QPColors.getColorBasedTheme(
+              dark: QPColors.darkModeHeavy,
+              light: QPColors.whiteHeavy,
+              brown: QPColors.brownModeHeavy,
+              context: context,
+            ),
+          )),
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           boxShadow: [
             BoxShadow(
@@ -84,16 +97,22 @@ class HabitGroupEmptyGroupView extends StatelessWidget {
                     "Set goals, track, and monitor reading progress",
                     style: QPTextStyle.getBody3Regular(
                       context,
-                    ) // Todo: check color based on theme
-                        .copyWith(color: QPColors.blackFair),
+                    ).copyWith(
+                      color: QPColors.blackFair,
+                    ),
                   ),
                 ],
               ),
             ),
             const SizedBox(width: 20),
-            const Icon(
+            Icon(
               Icons.arrow_forward_ios,
-              color: QPColors.neutral900,
+              color: QPColors.getColorBasedTheme(
+                dark: QPColors.whiteMassive,
+                light: QPColors.blackMassive,
+                brown: QPColors.brownModeMassive,
+                context: context,
+              ),
               size: 18,
             ),
           ],

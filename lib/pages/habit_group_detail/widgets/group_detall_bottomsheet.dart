@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_state_notifier.dart';
-import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/habit_progress_state_notifier.dart';
+import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/habit_progress_view.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
@@ -58,7 +58,9 @@ class HabitGroupBottomSheet {
           const SizedBox(height: 24),
           TextField(
             readOnly: true,
-            style: QPTextStyle.getSubHeading3Regular(context),
+            style: QPTextStyle.getSubHeading3Regular(context).copyWith(
+              color: QPColors.blackMassive,
+            ),
             controller: _textController,
             decoration: InputDecoration(
               border: const OutlineInputBorder(

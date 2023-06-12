@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_view.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/card_start_habit.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/daily_progress_tracker_detail_card/daily_progress_tracker_detail_card.dart';
@@ -89,19 +90,17 @@ class _HomePageV2State extends State<HomePageV2> {
               title: Transform.translate(
                 offset: const Offset(8, 0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Container(
-                      width: 110,
-                      height: 28,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(
-                            ImagePath.logoQuranPlusLandscape,
-                          ),
-                        ),
-                      ),
+                    SvgPicture.asset(
+                      IconPath.iconQuranPlus,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
+                    const SizedBox(width: 8),
+                    SvgPicture.asset(
+                      ImagePath.quranPlusText,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const Spacer(),
                     SizedBox(
                       width: 100,
                       child: IconButton(
@@ -114,7 +113,7 @@ class _HomePageV2State extends State<HomePageV2> {
                   ],
                 ),
               ),
-              backgroundColor: backgroundColor,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             ),
           ),
           body: ListSuratByJuz(
@@ -308,9 +307,9 @@ class ListSuratByJuz extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
                   alignment: Alignment.centerLeft,
-                  decoration: const BoxDecoration(
-                    color: backgroundColor,
-                    boxShadow: [
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    boxShadow: const [
                       BoxShadow(
                         color: Color.fromRGBO(
                           0,
@@ -328,7 +327,7 @@ class ListSuratByJuz extends StatelessWidget {
                         ? 'Assalamu’alaikum, ${parentState.name}'
                         : 'Assalamu’alaikum',
                     textAlign: TextAlign.start,
-                    style: captionSemiBold1,
+                    style: QPTextStyle.getSubHeading4SemiBold(context),
                   ),
                 ),
                 Expanded(
@@ -413,7 +412,7 @@ class ListSuratByJuz extends StatelessWidget {
 
   Widget _buildDailyHabitTracker(BuildContext context, HomePageState state) {
     return Card(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.primaryContainer,
       elevation: 1.2,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -462,14 +461,17 @@ class ListSuratByJuz extends StatelessWidget {
               child: Text(
                 parentState.juzElements![index].name,
                 textAlign: TextAlign.start,
-                style: bodyRegular1,
+                style: QPTextStyle.getBody1Regular(context),
               ),
             ),
-            _buildListSuratByJuz(
-              context: context,
-              juz: parentState.juzElements![index],
-              notifier: notifier,
-              state: parentState,
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20, top: 16),
+              child: _buildListSuratByJuz(
+                context: context,
+                juz: parentState.juzElements![index],
+                notifier: notifier,
+                state: parentState,
+              ),
             ),
           ],
         );
@@ -524,6 +526,14 @@ class ListSuratByJuz extends StatelessWidget {
               ListTile(
                 tileColor: Theme.of(context).scaffoldBackgroundColor,
                 minLeadingWidth: 20,
+                contentPadding: EdgeInsets.only(
+                  top: 8,
+                  right: 16,
+                  left: 16,
+                  bottom: hasTadabbur ? 0 : 8,
+                ),
+                dense: true,
+                visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
                 leading: Container(
                   alignment: Alignment.center,
                   height: 34,
@@ -549,20 +559,21 @@ class ListSuratByJuz extends StatelessWidget {
                   ),
                   child: Text(
                     surahNumberString,
-                    style: numberStyle,
+                    style: QPTextStyle.getSubHeading4Medium(context),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 title: Text(
                   surahNameLatin,
-                  style: bodyMedium2,
+                  style: QPTextStyle.getSubHeading3Medium(context),
                   overflow: TextOverflow.ellipsis,
                 ),
                 subtitle: Padding(
                   padding: const EdgeInsets.only(top: 6),
                   child: Text(
                     "Page ${surats[index].startPage}, Ayat ${surats[index].startAyat}",
-                    style: bodyLight3,
+                    style: QPTextStyle.getDescription2Regular(context)
+                        .copyWith(color: Theme.of(context).hintColor),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -576,30 +587,29 @@ class ListSuratByJuz extends StatelessWidget {
                 ),
               ),
               if (hasTadabbur)
-                Container(
-                  color: QPColors.whiteFair,
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.only(top: 0, left: 60, right: 120),
-                    child: ButtonPill(
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          RoutePaths.routeReadTadabbur,
-                          arguments: ReadTadabburParam(
-                            surahName: surahNameLatin,
-                            surahId: suratNumber,
-                          ),
-                        );
-                      },
-                      label: "$totalTadabburInSurah Tadabbur available",
-                      icon: Icons.menu_book,
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 60, right: 120, bottom: 8),
+                  child: ButtonPill(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        RoutePaths.routeReadTadabbur,
+                        arguments: ReadTadabburParam(
+                          surahName: surahNameLatin,
+                          surahId: suratNumber,
+                        ),
+                      );
+                    },
+                    label: "$totalTadabburInSurah Tadabbur available",
+                    icon: Icons.menu_book,
+                    colorText: QPColors.getColorBasedTheme(
+                      dark: QPColors.whiteFair,
+                      light: QPColors.brandFair,
+                      brown: QPColors.brownModeMassive,
+                      context: context,
                     ),
                   ),
-                ),
-              if (index == surats.length - 1 && hasTadabbur)
-                const SizedBox(
-                  height: 24,
                 ),
             ],
           ),

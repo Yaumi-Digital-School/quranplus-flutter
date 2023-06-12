@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
@@ -56,14 +57,24 @@ class _HabitPersonalWeeklyOverviewWidgetState
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(
           Radius.circular(8),
         ),
-        color: QPColors.whiteMassive,
-        border: Border.fromBorderSide(
-          BorderSide(color: QPColors.whiteRoot),
+        color: QPColors.getColorBasedTheme(
+          dark: QPColors.darkModeFair,
+          light: QPColors.whiteFair,
+          brown: QPColors.brownModeFair,
+          context: context,
         ),
+        border: Border.fromBorderSide(BorderSide(
+          color: QPColors.getColorBasedTheme(
+            dark: QPColors.darkModeHeavy,
+            light: QPColors.whiteHeavy,
+            brown: QPColors.brownModeHeavy,
+            context: context,
+          ),
+        )),
       ),
       child: Column(
         children: [
@@ -127,10 +138,7 @@ class _HabitPersonalWeeklyOverviewWidgetState
           children: [
             Text(
               widget.name!,
-              style: QPTextStyle.getSubHeading3SemiBold(context).copyWith(
-                // Todo: check color based on theme
-                color: QPColors.brandHeavy,
-              ),
+              style: QPTextStyle.getSubHeading3SemiBold(context),
             ),
             if (widget.isAdmin)
               Text(
@@ -168,23 +176,38 @@ class _HabitPersonalWeeklyOverviewWidgetState
     final bool isDisabled = (widget.startEnabledProgressDate != null &&
         widget.startEnabledProgressDate!.difference(item.date).inDays > 0);
 
-    BoxDecoration? decoration;
+    BoxDecoration decoration = BoxDecoration(
+      color: QPColors.getColorBasedTheme(
+        dark: Colors.transparent,
+        light: Colors.transparent,
+        brown: QPColors.brownModeRoot,
+        context: context,
+      ),
+      borderRadius: const BorderRadius.all(
+        Radius.circular(8),
+      ),
+    );
+
     if (isToday) {
-      decoration = const BoxDecoration(
-        border: Border.fromBorderSide(
+      final Color isTodayColor = QPColors.getColorBasedTheme(
+        dark: Colors.transparent,
+        light: Colors.transparent,
+        brown: QPColors.whiteFair,
+        context: context,
+      );
+
+      decoration = decoration.copyWith(
+        border: const Border.fromBorderSide(
           BorderSide(
             color: QPColors.warningFair,
           ),
         ),
-        borderRadius: BorderRadius.all(
-          Radius.circular(8),
-        ),
+        color: isTodayColor,
       );
     }
 
     if (!isDisabled && isBeforeToday) {
-      decoration = BoxDecoration(
-        color: QPColors.whiteFair,
+      decoration = decoration.copyWith(
         border: isSelected
             ? const Border.fromBorderSide(
                 BorderSide(
@@ -192,20 +215,21 @@ class _HabitPersonalWeeklyOverviewWidgetState
                 ),
               )
             : null,
-        borderRadius: const BorderRadius.all(
-          Radius.circular(8),
-        ),
       );
     }
 
     TextStyle dateStyle = QPTextStyle.getSubHeading3SemiBold(context);
     TextStyle dayStyle = QPTextStyle.getDescription2Regular(context);
     if (isDisabled) {
-      // Todo: check color based on theme
-      dateStyle = QPTextStyle.getSubHeading3SemiBold(context)
-          .copyWith(color: QPColors.blackSoft);
-      dayStyle = QPTextStyle.getDescription2Regular(context)
-          .copyWith(color: QPColors.blackSoft);
+      dateStyle = QPTextStyle.getSubHeading3SemiBold(context).copyWith(
+        color: QPColors.getColorBasedTheme(
+          dark: QPColors.blackFair,
+          light: QPColors.blackSoft,
+          brown: QPColors.blackFair,
+          context: context,
+        ),
+      );
+      dayStyle = QPTextStyle.getDescription2Regular(context);
     }
 
     return Column(

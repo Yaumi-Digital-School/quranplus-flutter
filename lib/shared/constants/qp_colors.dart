@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
 
 class QPColors {
   static const Color brandMassive = Color(0xFF1E3E13);
@@ -91,16 +92,14 @@ class QPColors {
     required Color brown,
     required BuildContext context,
   }) {
-    final theme = Theme.of(context);
-    final scaffoldBackgroundColor = theme.scaffoldBackgroundColor;
-    if (scaffoldBackgroundColor == QPColors.brownModeRoot) {
-      return brown;
+    final mode = QPThemeData.getThemeModeBasedContext(context);
+    switch (mode) {
+      case QPThemeMode.brown:
+        return brown;
+      case QPThemeMode.dark:
+        return dark;
+      default:
+        return light;
     }
-
-    if (scaffoldBackgroundColor == QPColors.darkModeMassive) {
-      return dark;
-    }
-
-    return light;
   }
 }

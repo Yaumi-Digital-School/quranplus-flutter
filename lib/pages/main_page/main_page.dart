@@ -5,7 +5,7 @@ import 'package:qurantafsir_flutter/pages/home_page_v2/home_page_v2.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page.dart';
 import 'package:qurantafsir_flutter/pages/tadabbur_surah_list_page/tadabbur_surah_list_view.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
-import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 
 class MainPageParam {
   MainPageParam({
@@ -63,6 +63,12 @@ class _MainPageState extends State<MainPage> {
       bottomNavigationBar: BottomNavigationBar(
         key: mainNavbarGlobalKey,
         type: BottomNavigationBarType.fixed,
+        backgroundColor: QPColors.getColorBasedTheme(
+          dark: QPColors.darkModeHeavy,
+          light: QPColors.whiteMassive,
+          brown: QPColors.brownModeFair,
+          context: context,
+        ),
         items: <BottomNavigationBarItem>[
           const BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -88,8 +94,13 @@ class _MainPageState extends State<MainPage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: primary500,
-        unselectedItemColor: neutral300,
+        selectedItemColor: QPColors.brandFair,
+        unselectedItemColor: QPColors.getColorBasedTheme(
+          dark: QPColors.whiteFair,
+          light: QPColors.blackFair,
+          brown: QPColors.brownModeMassive,
+          context: context,
+        ),
         selectedFontSize: 12,
         onTap: (index) => onItemTapped(index),
       ),

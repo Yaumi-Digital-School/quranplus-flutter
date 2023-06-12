@@ -76,11 +76,10 @@ class HabitGroupView extends StatelessWidget {
                 right: 24,
                 bottom: 40,
                 child: IconButton(
-                  splashRadius: 24,
-                  padding: const EdgeInsets.all(0),
+                  padding: EdgeInsets.zero,
                   iconSize: 48,
                   icon: const Icon(
-                    Icons.add_circle,
+                    Icons.add_circle_outlined,
                     color: QPColors.brandFair,
                   ),
                   onPressed: () {

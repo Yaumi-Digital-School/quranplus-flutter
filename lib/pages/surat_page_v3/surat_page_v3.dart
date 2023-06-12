@@ -21,6 +21,7 @@ import 'package:qurantafsir_flutter/shared/constants/app_icons.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
+import 'package:qurantafsir_flutter/widgets/horizontal_divider.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:wakelock/wakelock.dart';
@@ -164,9 +165,9 @@ class _SuratPageV3State extends State<SuratPageV3> {
               preferredSize: const Size.fromHeight(54.0),
               child: AppBar(
                 leading: IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.chevron_left,
-                    color: Colors.black,
+                    color: Theme.of(context).colorScheme.primary,
                     size: 30,
                   ),
                   onPressed: () async => _onTapBack(
@@ -176,7 +177,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
                 ),
                 automaticallyImplyLeading: false,
                 elevation: 2.5,
-                foregroundColor: Colors.black,
+                foregroundColor: Theme.of(context).colorScheme.primary,
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -185,10 +186,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
                       builder: (context, value, __) {
                         return Text(
                           '$value',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style: QPTextStyle.getSubHeading2SemiBold(context),
                         );
                       },
                     ),
@@ -199,9 +197,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
                           builder: (context, value, __) {
                             return Text(
                               'Page $value',
-                              style: const TextStyle(
-                                fontSize: 10,
-                              ),
+                              style:
+                                  QPTextStyle.getDescription2Regular(context),
                             );
                           },
                         ),
@@ -210,9 +207,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
                           builder: (context, value, __) {
                             return Text(
                               ', Juz $value',
-                              style: const TextStyle(
-                                fontSize: 10,
-                              ),
+                              style:
+                                  QPTextStyle.getDescription2Regular(context),
                             );
                           },
                         ),
@@ -220,7 +216,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
                     ),
                   ],
                 ),
-                backgroundColor: backgroundColor,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 actions: <Widget>[
                   ValueListenableBuilder(
                     valueListenable: notifier.visibleIconBookmark,
@@ -572,6 +568,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
           height: 1.5,
           fontFamily: fontFamily,
           fontSize: 30,
+          color: Theme.of(context).colorScheme.primary,
         ),
       );
     }
@@ -583,6 +580,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
           height: 1.5,
           fontFamily: fontFamily,
           fontSize: 30,
+          color: Theme.of(context).colorScheme.primary,
         ),
       ),
     );
@@ -809,6 +807,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
                           fontSize: fontSize,
                           height: 1.6,
                           wordSpacing: 2,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                         textAlign: TextAlign.right,
                       ),
@@ -824,8 +823,14 @@ class _SuratPageV3State extends State<SuratPageV3> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     latin!,
-                    style: bodyLatin1.merge(
-                      TextStyle(fontSize: state.readingSettings?.valueFontSize),
+                    style: QPTextStyle.getDescription1Regular(context).copyWith(
+                      fontSize: state.readingSettings?.valueFontSize,
+                      color: QPColors.getColorBasedTheme(
+                        dark: QPColors.blackSoft,
+                        light: QPColors.neutral600,
+                        brown: QPColors.brownModeMassive,
+                        context: context,
+                      ),
                     ),
                   ),
                 ),
@@ -837,11 +842,9 @@ class _SuratPageV3State extends State<SuratPageV3> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     translation!,
-                    style: bodyRegular3.merge(
-                      TextStyle(
-                        height: 1.5,
-                        fontSize: state.readingSettings?.valueFontSize,
-                      ),
+                    style: QPTextStyle.getDescription1Regular(context).copyWith(
+                      height: 1.5,
+                      fontSize: state.readingSettings?.valueFontSize,
                     ),
                   ),
                 ),
@@ -849,9 +852,14 @@ class _SuratPageV3State extends State<SuratPageV3> {
             if (isWithTafsirs)
               Container(
                 margin: const EdgeInsets.all(16),
-                decoration: const BoxDecoration(
-                  color: backgroundTextTafsir,
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                decoration: BoxDecoration(
+                  color: QPColors.getColorBasedTheme(
+                    dark: QPColors.darkModeFair,
+                    light: QPColors.whiteSoft,
+                    brown: QPColors.brownModeHeavy,
+                    context: context,
+                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -864,10 +872,15 @@ class _SuratPageV3State extends State<SuratPageV3> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           tafsir!,
-                          style: bodyRegular3.merge(
-                            TextStyle(
-                              height: 1.5,
-                              fontSize: state.readingSettings?.valueFontSize,
+                          style: QPTextStyle.getDescription1Regular(context)
+                              .copyWith(
+                            height: 1.5,
+                            fontSize: state.readingSettings?.valueFontSize,
+                            color: QPColors.getColorBasedTheme(
+                              dark: QPColors.whiteFair,
+                              light: QPColors.blackFair,
+                              brown: QPColors.brownModeMassive,
+                              context: context,
                             ),
                           ),
                         ),
@@ -877,8 +890,14 @@ class _SuratPageV3State extends State<SuratPageV3> {
                         alignment: Alignment.centerRight,
                         child: Text(
                           'Tafsir Ringkasan Kemenag',
-                          style: bodyRegular3.copyWith(
-                            color: neutral900.withOpacity(0.5),
+                          style: QPTextStyle.getDescription1Regular(context)
+                              .copyWith(
+                            color: QPColors.getColorBasedTheme(
+                              dark: QPColors.blackSoft,
+                              light: Colors.black.withOpacity(0.5),
+                              brown: QPColors.brownModeMassive,
+                              context: context,
+                            ),
                           ),
                         ),
                       ),
@@ -900,10 +919,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
                   right: 16.0,
                   top: 16.0,
                 ),
-                child: Divider(
-                  height: 10,
-                  color: neutral400,
-                ),
+                child: HorizontalDivider(),
               ),
           ],
         ),
@@ -915,9 +931,9 @@ class _SuratPageV3State extends State<SuratPageV3> {
     return Container(
       margin: const EdgeInsets.only(right: 16),
       padding: const EdgeInsets.all(6),
-      decoration: const BoxDecoration(
-        color: QPColors.whiteMassive,
-        borderRadius: BorderRadius.all(Radius.circular(24)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primaryContainer,
+        borderRadius: const BorderRadius.all(Radius.circular(24)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -931,7 +947,14 @@ class _SuratPageV3State extends State<SuratPageV3> {
           ),
           Text(
             'Tadabbur Available',
-            style: QPTextStyle.getButton3Medium(context),
+            style: QPTextStyle.getButton3Medium(context).copyWith(
+              color: QPColors.getColorBasedTheme(
+                dark: QPColors.whiteFair,
+                light: QPColors.brandFair,
+                brown: QPColors.brownModeMassive,
+                context: context,
+              ),
+            ),
           ),
         ],
       ),
@@ -945,19 +968,16 @@ class _SuratPageV3State extends State<SuratPageV3> {
       return Image.asset(
         'images/bismillah_v2.png',
         width: 170,
+        color: Theme.of(context).colorScheme.primary,
       );
     }
 
-    return Container(
+    return Image.asset(
+      'images/bismillah_v2.png',
+      color: Theme.of(context).colorScheme.primary,
       width: 165,
       height: 80,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(
-            'images/bismillah_v2.png',
-          ),
-        ),
-      ),
+      fit: BoxFit.contain,
     );
   }
 
