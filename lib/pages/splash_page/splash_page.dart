@@ -63,16 +63,12 @@ class _SplashPageState extends State<SplashPage> {
       ) {
         return Scaffold(
           body: Center(
-            child: Container(
+            child: Image.asset(
+              ImagePath.logoQuranPlusPotrait,
+              color: Theme.of(context).colorScheme.primary,
               width: 92,
               height: 110,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(
-                    ImagePath.logoQuranPlusPotrait,
-                  ),
-                ),
-              ),
+              fit: BoxFit.contain,
             ),
           ),
         );

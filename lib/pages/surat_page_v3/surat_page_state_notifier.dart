@@ -136,6 +136,8 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   bool? _isBookmarkChanged;
   bool? _isFavoriteAyahChanged;
   bool? _isHabitDailySummaryChanged;
+  int currentLandscapeFontSize = 2;
+  int currentFontSize = 1;
 
   ValueNotifier<int> recordedPagesAsRead = ValueNotifier(0);
   List<int> recordedPagesList = <int>[];
@@ -437,6 +439,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     if (settings.fontSize >= 2) {
       settings.fontSize--;
     }
+
     setValueFontSize(settings, orientation);
     state = state.copyWith(readingSettings: settings);
     _sharedPreferenceService.setReadingSettings(settings);
@@ -452,14 +455,25 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     if (settings.fontSize <= 4) {
       settings.fontSize++;
     }
+
     setValueFontSize(settings, orientation);
     state = state.copyWith(readingSettings: settings);
     _sharedPreferenceService.setReadingSettings(settings);
   }
 
   void setValueFontSize(
-      ReadingSettings readingSettings, Orientation orientation,) {
-    if (orientation == Orientation.landscape) {
+    ReadingSettings readingSettings,
+    Orientation orientation,
+  ) {
+    print("landscape font:");
+    print(readingSettings.fontSizeLandscape);
+    print("-----");
+    print("potrait");
+    print(readingSettings.fontSize);
+    print("====");
+
+    if (currentLandscapeFontSize != readingSettings.fontSizeLandscape) {
+      currentLandscapeFontSize = readingSettings.fontSizeLandscape;
       switch (readingSettings.fontSizeLandscape) {
         case 2:
           readingSettings.valueFontSizeLandscape = 16;
@@ -484,7 +498,9 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
         default:
           break;
       }
-    } else {
+    }
+    if (currentFontSize != readingSettings.fontSize) {
+      currentFontSize = readingSettings.fontSize;
       switch (readingSettings.fontSize) {
         case 1:
           readingSettings.valueFontSize = 12;

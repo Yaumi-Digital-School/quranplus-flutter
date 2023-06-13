@@ -6,8 +6,8 @@ class IconPath {
   static String iconCollaborate = 'images/icon_collaborate.png';
   static String iconGoogle = 'images/icon_google.png';
   static String iconApple = 'images/icon_apple.png';
-  static String iconAccounnt = 'images/icon_account.png';
-  static String iconLogout = 'images/icon_logout.png';
+  static String iconAccount = 'images/svg/icon-account.svg';
+  static String iconLogout = 'images/svg/logout-icon.svg';
   static String iconSync = 'images/icon_sync.png';
   static String iconUpdateNow = 'images/icon_update_now.png';
   static String iconFavoriteInactive = 'images/icon_favorite_inactive.png';
@@ -19,4 +19,6 @@ class IconPath {
   static String iconLeaveGroup = 'images/icon_leave_group.png';
   static String iconInviteMember = 'images/icon_invite_member.png';
   static String iconEditSquare = 'images/icon_edit_square.png';
+  static String iconTheme = "images/svg/theme-icon.svg";
+  static String iconQuranPlus = "images/svg/logo-quran-plus.svg";
 }

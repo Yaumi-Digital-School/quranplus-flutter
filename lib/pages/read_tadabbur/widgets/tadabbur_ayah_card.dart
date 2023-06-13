@@ -36,14 +36,24 @@ class TadabburAyahCard extends StatelessWidget {
         );
       },
       child: Container(
-        decoration: const BoxDecoration(
-          color: QPColors.whiteMassive,
+        decoration: BoxDecoration(
+          color: QPColors.getColorBasedTheme(
+            dark: QPColors.darkModeHeavy,
+            light: QPColors.whiteMassive,
+            brown: QPColors.brownModeFair,
+            context: context,
+          ),
           border: Border.fromBorderSide(
             BorderSide(
-              color: QPColors.whiteRoot,
+              color: QPColors.getColorBasedTheme(
+                dark: QPColors.darkModeFair,
+                light: QPColors.whiteRoot,
+                brown: QPColors.brownModeHeavy,
+                context: context,
+              ),
             ),
           ),
-          borderRadius: BorderRadius.all(
+          borderRadius: const BorderRadius.all(
             Radius.circular(8),
           ),
         ),
@@ -61,16 +71,22 @@ class TadabburAyahCard extends StatelessWidget {
       children: [
         Text(
           "Ayah $ayahNumber",
-          style: QPTextStyle.button3Medium,
+          style: QPTextStyle.getButton3Medium(context),
         ),
         const SizedBox(
           height: 8,
         ),
         Row(
           children: [
-            const Icon(
+            Icon(
               Icons.menu_book,
-              size: 12,
+              size: 16,
+              color: QPColors.getColorBasedTheme(
+                dark: QPColors.whiteFair,
+                light: QPColors.blackFair,
+                brown: QPColors.brownModeMassive,
+                context: context,
+              ),
             ),
             const SizedBox(
               width: 8,
@@ -79,16 +95,28 @@ class TadabburAyahCard extends StatelessWidget {
               flex: 7,
               child: Text(
                 title,
-                style: QPTextStyle.button1SemiBold.copyWith(
-                  color: QPColors.blackFair,
+                style: QPTextStyle.getButton1SemiBold(context).copyWith(
+                  color: QPColors.getColorBasedTheme(
+                    dark: QPColors.whiteFair,
+                    light: QPColors.blackFair,
+                    brown: QPColors.brownModeMassive,
+                    context: context,
+                  ),
                 ),
               ),
             ),
-            const Spacer(),
-            const Icon(
+            const SizedBox(
+              width: 8,
+            ),
+            Icon(
               Icons.keyboard_arrow_right,
               size: 24,
-              color: QPColors.blackFair,
+              color: QPColors.getColorBasedTheme(
+                dark: QPColors.whiteFair,
+                light: QPColors.blackFair,
+                brown: QPColors.brownModeMassive,
+                context: context,
+              ),
             ),
           ],
         ),
@@ -99,14 +127,25 @@ class TadabburAyahCard extends StatelessWidget {
           children: [
             Text(
               source,
-              style: QPTextStyle.button3SemiBold
-                  .copyWith(color: QPColors.blackFair),
+              style: QPTextStyle.getButton3SemiBold(context).copyWith(
+                color: QPColors.getColorBasedTheme(
+                  dark: QPColors.blackRoot,
+                  light: QPColors.blackFair,
+                  brown: QPColors.brownModeMassive,
+                  context: context,
+                ),
+              ),
             ),
             const SizedBox(width: 8),
             Text(
               DateCustomUtils.getDateRangeFormatted(createdAt),
-              style: QPTextStyle.description2Regular.copyWith(
-                color: QPColors.blackSoft,
+              style: QPTextStyle.getDescription2Regular(context).copyWith(
+                color: QPColors.getColorBasedTheme(
+                  dark: QPColors.blackRoot,
+                  light: QPColors.blackSoft,
+                  brown: QPColors.brownModeMassive,
+                  context: context,
+                ),
               ),
             ),
           ],

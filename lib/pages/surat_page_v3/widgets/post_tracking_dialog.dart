@@ -6,6 +6,7 @@ import 'package:qurantafsir_flutter/shared/constants/animation_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
+import 'package:qurantafsir_flutter/widgets/adaptive_theme_dialog.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 
 class HabitProgressPostTrackingDialog {
@@ -17,12 +18,15 @@ class HabitProgressPostTrackingDialog {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          backgroundColor: brokenWhite,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(19)),
+        return AdaptiveThemeDialog(
+          contentPadding: const EdgeInsets.fromLTRB(
+            24.0,
+            20.0,
+            24.0,
+            24.0,
           ),
-          content: _PostSubmissionRemarks(
+          borderRadiusValue: 19,
+          child: _PostSubmissionRemarks(
             sharedPreferenceService: sharedPreferenceService,
             isComplete: isComplete,
             cta: ButtonSecondary(
@@ -49,12 +53,8 @@ class HabitProgressPostTrackingDialog {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          backgroundColor: brokenWhite,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(19)),
-          ),
-          content: _PostSubmissionRemarks(
+        return AdaptiveThemeDialog(
+          child: _PostSubmissionRemarks(
             sharedPreferenceService: sharedPreferenceService,
             isComplete: isComplete,
             cta: Row(

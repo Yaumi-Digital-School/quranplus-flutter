@@ -22,7 +22,7 @@ class ButtonSecondary extends StatelessWidget {
   final String? leftIcon;
   final String label;
   final TextStyle? textStyle;
-  final Function()? onTap;
+  final VoidCallback? onTap;
   final ButtonSize size;
 
   @override
@@ -34,25 +34,66 @@ class ButtonSecondary extends StatelessWidget {
             : 130;
     final double labelFontSize = size == ButtonSize.regular ? 14 : 12;
 
+    final Color borderColor = QPColors.getColorBasedTheme(
+      dark: QPColors.blackHeavy,
+      light: QPColors.whiteMassive,
+      brown: QPColors.brownModeHeavy,
+      context: context,
+    );
+
+    final Color backgroundColor = QPColors.getColorBasedTheme(
+      dark: QPColors.blackHeavy,
+      light: QPColors.whiteMassive,
+      brown: QPColors.brownModeRoot,
+      context: context,
+    );
+
     return SizedBox(
       width: width,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
+          shape: RoundedRectangleBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            side: BorderSide(
+              width: 1,
+              color: borderColor,
+            ),
           ),
           padding: const EdgeInsets.all(10.0),
-          primary: Colors.white,
-          onPrimary: primary500,
+          primary: backgroundColor,
+          onPrimary: Colors.red,
           elevation: 1,
         ),
         onPressed: onTap,
-        child: _childButton(leftIcon, label, labelFontSize),
+        child: _childButton(
+          leftIcon,
+          label,
+          labelFontSize,
+          context,
+        ),
       ),
     );
   }
 
-  Widget _childButton(String? leftIcon, String label, double labelFontSize) {
+  Widget _childButton(
+    String? leftIcon,
+    String label,
+    double labelFontSize,
+    BuildContext context,
+  ) {
+    final Color contentColor = QPColors.getColorBasedTheme(
+      dark: QPColors.whiteFair,
+      light: QPColors.brandFair,
+      brown: QPColors.brownModeMassive,
+      context: context,
+    );
+
+    final TextStyle labelStyle =
+        QPTextStyle.getSubHeading4SemiBold(context).copyWith(
+      fontSize: labelFontSize,
+      color: contentColor,
+    );
+
     if (leftIcon != null) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -62,7 +103,7 @@ class ButtonSecondary extends StatelessWidget {
             width: 24,
             height: 24,
             fit: BoxFit.scaleDown,
-            color: null,
+            color: contentColor,
           ),
           const SizedBox(
             width: 10.0,
@@ -84,10 +125,7 @@ class ButtonSecondary extends StatelessWidget {
     return Text(
       label,
       textAlign: TextAlign.center,
-      style: textStyle ??
-          bodySemibold2.apply(color: primary500).copyWith(
-                fontSize: labelFontSize,
-              ),
+      style: textStyle ?? labelStyle,
     );
   }
 }
@@ -117,13 +155,20 @@ class ButtonNeutral extends StatelessWidget {
             : 100;
     final double labelFontSize = size == ButtonSize.regular ? 14 : 12;
 
+    final Color contentColor = QPColors.getColorBasedTheme(
+      dark: QPColors.whiteFair,
+      light: QPColors.brandFair,
+      brown: QPColors.brownModeMassive,
+      context: context,
+    );
+
     return SizedBox(
       width: width,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            side: BorderSide(color: darkGreen, width: 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            side: BorderSide(color: contentColor, width: 1),
           ),
           padding: const EdgeInsets.all(10.0),
           primary: Colors.transparent,
@@ -136,7 +181,7 @@ class ButtonNeutral extends StatelessWidget {
           textAlign: TextAlign.center,
           style: textStyle ??
               bodySemibold2.copyWith(
-                color: darkGreen,
+                color: contentColor,
                 fontSize: labelFontSize,
               ),
         ),
@@ -155,7 +200,7 @@ class ButtonPrimary extends StatelessWidget {
   }) : super(key: key);
 
   final String label;
-  final Function()? onTap;
+  final VoidCallback? onTap;
   final ButtonSize size;
   final TextStyle? textStyle;
 
@@ -226,9 +271,9 @@ class ButtonBrandSoft extends StatelessWidget {
             if (leftWidget != null) leftWidget!,
             const SizedBox(width: 10),
             Text(
-              title,
-              style:
-                  QPTextStyle.button2Medium.copyWith(color: QPColors.brandFair),
+              title, // Todo: check color based on theme
+              style: QPTextStyle.getButton2Medium(context)
+                  .copyWith(color: QPColors.brandFair),
             ),
           ],
         ),
@@ -241,11 +286,14 @@ class ButtonPill extends StatelessWidget {
   final VoidCallback? onTap;
   final IconData? icon;
   final String label;
+  final Color? colorText;
+
   const ButtonPill({
     Key? key,
     required this.onTap,
     required this.label,
     this.icon,
+    this.colorText,
   }) : super(key: key);
 
   @override
@@ -255,7 +303,7 @@ class ButtonPill extends StatelessWidget {
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(24)),
         ),
-        primary: Colors.white,
+        primary: Theme.of(context).colorScheme.primaryContainer,
       ),
       onPressed: onTap,
       child: Padding(
@@ -270,7 +318,7 @@ class ButtonPill extends StatelessWidget {
             if (icon != null)
               Icon(
                 icon,
-                color: QPColors.brandFair,
+                color: colorText ?? QPColors.brandFair,
                 size: 17.0,
               ),
             const SizedBox(
@@ -278,7 +326,9 @@ class ButtonPill extends StatelessWidget {
             ),
             Text(
               label,
-              style: const TextStyle(color: QPColors.brandFair),
+              style: QPTextStyle.getSubHeading4SemiBold(context).copyWith(
+                color: colorText,
+              ),
             ),
           ],
         ),

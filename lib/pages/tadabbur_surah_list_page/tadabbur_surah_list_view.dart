@@ -62,9 +62,9 @@ class TadabburSurahListView extends StatelessWidget {
               centerTitle: true,
               title: Text(
                 'Tadabbur',
-                style: QPTextStyle.subHeading2SemiBold,
+                style: QPTextStyle.getSubHeading2SemiBold(context),
               ),
-              backgroundColor: QPColors.whiteFair,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             ),
           ),
           body: Padding(
@@ -81,7 +81,7 @@ class TadabburSurahListView extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 24),
                     child: Text(
                       'Tadabbur Al-Quran',
-                      style: QPTextStyle.subHeading2SemiBold,
+                      style: QPTextStyle.getSubHeading2SemiBold(context),
                     ),
                   );
                 }

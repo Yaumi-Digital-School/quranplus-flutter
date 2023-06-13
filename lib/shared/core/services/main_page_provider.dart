@@ -1,4 +1,4 @@
-import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/habit_progress_state_notifier.dart';
+import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/habit_progress_view.dart';
 
 class MainPageProvider {
   MainPageProvider();

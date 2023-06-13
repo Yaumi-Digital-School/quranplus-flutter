@@ -33,14 +33,24 @@ class TadabburSurahCard extends StatelessWidget {
         );
       },
       child: Container(
-        decoration: const BoxDecoration(
-          color: QPColors.whiteMassive,
+        decoration: BoxDecoration(
+          color: QPColors.getColorBasedTheme(
+            dark: QPColors.darkModeHeavy,
+            light: QPColors.whiteMassive,
+            brown: QPColors.brownModeFair,
+            context: context,
+          ),
           border: Border.fromBorderSide(
             BorderSide(
-              color: QPColors.whiteRoot,
+              color: QPColors.getColorBasedTheme(
+                dark: QPColors.darkModeFair,
+                light: QPColors.whiteRoot,
+                brown: QPColors.brownModeHeavy,
+                context: context,
+              ),
             ),
           ),
-          borderRadius: BorderRadius.all(
+          borderRadius: const BorderRadius.all(
             Radius.circular(8),
           ),
         ),
@@ -49,48 +59,75 @@ class TadabburSurahCard extends StatelessWidget {
             top: 16,
             right: 16,
             left: 16,
-            bottom: 24,
+            bottom: 16,
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(child: _buildInformation()),
-              const Icon(
-                Icons.keyboard_arrow_right,
-                size: 24,
-                color: QPColors.blackFair,
-              ),
-            ],
-          ),
+          child: _buildInformation(context),
         ),
       ),
     );
   }
 
-  Widget _buildInformation() {
+  Widget _buildInformation(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: QPTextStyle.subHeading3SemiBold,
-        ),
-        const SizedBox(
-          height: 10,
-        ),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.menu_book,
-              size: 12,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: QPTextStyle.getSubHeading3SemiBold(context),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.menu_book,
+                        size: 16,
+                        color: QPColors.getColorBasedTheme(
+                          dark: QPColors.whiteFair,
+                          light: QPColors.blackFair,
+                          brown: QPColors.brownModeMassive,
+                          context: context,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        '$availableTadabbur Tadabbur available',
+                        style: QPTextStyle.getSubHeading4SemiBold(context)
+                            .copyWith(
+                          color: QPColors.getColorBasedTheme(
+                            dark: QPColors.whiteFair,
+                            light: QPColors.blackFair,
+                            brown: QPColors.brownModeMassive,
+                            context: context,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
             const SizedBox(
-              width: 8,
+              height: 8,
             ),
-            Text(
-              '$availableTadabbur Tadabbur available',
-              style: QPTextStyle.subHeading4SemiBold.copyWith(
-                color: QPColors.blackFair,
+            Icon(
+              Icons.keyboard_arrow_right,
+              size: 24,
+              color: QPColors.getColorBasedTheme(
+                dark: QPColors.whiteFair,
+                light: QPColors.blackFair,
+                brown: QPColors.brownModeMassive,
+                context: context,
               ),
             ),
           ],
@@ -100,8 +137,13 @@ class TadabburSurahCard extends StatelessWidget {
         ),
         Text(
           DateCustomUtils.getDateRangeFormatted(lastUpdatedAt),
-          style: QPTextStyle.description2Regular.copyWith(
-            color: QPColors.blackSoft,
+          style: QPTextStyle.getDescription2Regular(context).copyWith(
+            color: QPColors.getColorBasedTheme(
+              dark: QPColors.blackSoft,
+              light: QPColors.blackSoft,
+              brown: QPColors.brownModeMassive,
+              context: context,
+            ),
           ),
         ),
       ],

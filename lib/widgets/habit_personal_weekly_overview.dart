@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
@@ -56,30 +57,43 @@ class _HabitPersonalWeeklyOverviewWidgetState
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(
           Radius.circular(8),
         ),
-        color: QPColors.whiteMassive,
-        border: Border.fromBorderSide(
-          BorderSide(color: QPColors.whiteRoot),
+        color: QPColors.getColorBasedTheme(
+          dark: QPColors.darkModeFair,
+          light: QPColors.whiteFair,
+          brown: QPColors.brownModeFair,
+          context: context,
         ),
+        border: Border.fromBorderSide(BorderSide(
+          color: QPColors.getColorBasedTheme(
+            dark: QPColors.darkModeHeavy,
+            light: QPColors.whiteHeavy,
+            brown: QPColors.brownModeHeavy,
+            context: context,
+          ),
+        )),
       ),
       child: Column(
         children: [
-          _buildDetailInformation(),
-          _buildWeeklyRecapInformations(widget.sevenDaysPersonalInfo),
+          _buildDetailInformation(context),
+          _buildWeeklyRecapInformations(widget.sevenDaysPersonalInfo, context),
         ],
       ),
     );
   }
 
-  Widget _buildWeeklyRecapInformations(List<HabitDailySummary> summaries) {
+  Widget _buildWeeklyRecapInformations(
+    List<HabitDailySummary> summaries,
+    BuildContext context,
+  ) {
     List<Widget> recaps = <Widget>[];
 
     for (int i = 0; i < summaries.length; i++) {
       recaps.add(
-        _buildDailyRecapInformation(summaries[i], i),
+        _buildDailyRecapInformation(summaries[i], i, context),
       );
     }
 
@@ -96,7 +110,7 @@ class _HabitPersonalWeeklyOverviewWidgetState
     );
   }
 
-  Widget _buildDetailInformation() {
+  Widget _buildDetailInformation(BuildContext context) {
     if (widget.type ==
             HabitPersonalWeeklyOverviewType.withCurrentMonthInformation &&
         dateInformation != null) {
@@ -104,7 +118,7 @@ class _HabitPersonalWeeklyOverviewWidgetState
         padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: Text(
           dateInformation!,
-          style: QPTextStyle.subHeading3SemiBold,
+          style: QPTextStyle.getSubHeading3SemiBold(context),
         ),
       );
     }
@@ -124,14 +138,13 @@ class _HabitPersonalWeeklyOverviewWidgetState
           children: [
             Text(
               widget.name!,
-              style: QPTextStyle.subHeading3SemiBold.copyWith(
-                color: QPColors.brandHeavy,
-              ),
+              style: QPTextStyle.getSubHeading3SemiBold(context),
             ),
             if (widget.isAdmin)
               Text(
                 'Admin',
-                style: QPTextStyle.subHeading4Regular.copyWith(
+                style: QPTextStyle.getSubHeading4Regular(context).copyWith(
+                  // Todo: check color based on theme
                   color: QPColors.brandFair,
                 ),
               ),
@@ -143,7 +156,11 @@ class _HabitPersonalWeeklyOverviewWidgetState
     return const SizedBox.shrink();
   }
 
-  Widget _buildDailyRecapInformation(HabitDailySummary item, int idxInList) {
+  Widget _buildDailyRecapInformation(
+    HabitDailySummary item,
+    int idxInList,
+    BuildContext context,
+  ) {
     final int? selectedPersonalInformationIdx = widget.selectedIdx;
     final String nameOfDay =
         DateFormat('EEEE').format(item.date).substring(0, 3);
@@ -159,23 +176,38 @@ class _HabitPersonalWeeklyOverviewWidgetState
     final bool isDisabled = (widget.startEnabledProgressDate != null &&
         widget.startEnabledProgressDate!.difference(item.date).inDays > 0);
 
-    BoxDecoration? decoration;
+    BoxDecoration decoration = BoxDecoration(
+      color: QPColors.getColorBasedTheme(
+        dark: Colors.transparent,
+        light: Colors.transparent,
+        brown: QPColors.brownModeRoot,
+        context: context,
+      ),
+      borderRadius: const BorderRadius.all(
+        Radius.circular(8),
+      ),
+    );
+
     if (isToday) {
-      decoration = const BoxDecoration(
-        border: Border.fromBorderSide(
+      final Color isTodayColor = QPColors.getColorBasedTheme(
+        dark: Colors.transparent,
+        light: Colors.transparent,
+        brown: QPColors.whiteFair,
+        context: context,
+      );
+
+      decoration = decoration.copyWith(
+        border: const Border.fromBorderSide(
           BorderSide(
             color: QPColors.warningFair,
           ),
         ),
-        borderRadius: BorderRadius.all(
-          Radius.circular(8),
-        ),
+        color: isTodayColor,
       );
     }
 
     if (!isDisabled && isBeforeToday) {
-      decoration = BoxDecoration(
-        color: QPColors.whiteFair,
+      decoration = decoration.copyWith(
         border: isSelected
             ? const Border.fromBorderSide(
                 BorderSide(
@@ -183,19 +215,21 @@ class _HabitPersonalWeeklyOverviewWidgetState
                 ),
               )
             : null,
-        borderRadius: const BorderRadius.all(
-          Radius.circular(8),
-        ),
       );
     }
 
-    TextStyle dateStyle = QPTextStyle.subHeading3SemiBold;
-    TextStyle dayStyle = QPTextStyle.description2Regular;
+    TextStyle dateStyle = QPTextStyle.getSubHeading3SemiBold(context);
+    TextStyle dayStyle = QPTextStyle.getDescription2Regular(context);
     if (isDisabled) {
-      dateStyle =
-          QPTextStyle.subHeading3SemiBold.copyWith(color: QPColors.blackSoft);
-      dayStyle =
-          QPTextStyle.description2Regular.copyWith(color: QPColors.blackSoft);
+      dateStyle = QPTextStyle.getSubHeading3SemiBold(context).copyWith(
+        color: QPColors.getColorBasedTheme(
+          dark: QPColors.blackFair,
+          light: QPColors.blackSoft,
+          brown: QPColors.blackFair,
+          context: context,
+        ),
+      );
+      dayStyle = QPTextStyle.getDescription2Regular(context);
     }
 
     return Column(

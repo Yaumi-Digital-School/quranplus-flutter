@@ -64,10 +64,15 @@ class ReadTadabburPage extends StatelessWidget {
             preferredSize: const Size.fromHeight(54.0),
             child: AppBar(
               leading: IconButton(
-                icon: const Icon(
+                icon: Icon(
                   Icons.chevron_left,
-                  color: QPColors.blackMassive,
-                  size: 30,
+                  color: QPColors.getColorBasedTheme(
+                    dark: QPColors.whiteFair,
+                    light: QPColors.blackMassive,
+                    brown: QPColors.brownModeMassive,
+                    context: context,
+                  ),
+                  size: 24,
                 ),
                 onPressed: () {
                   Navigator.pop(context);
@@ -75,15 +80,14 @@ class ReadTadabburPage extends StatelessWidget {
               ),
               title: Text(
                 "Read Tadabbur",
-                style: QPTextStyle.subHeading2SemiBold,
+                style: QPTextStyle.getSubHeading2SemiBold(context),
               ),
               automaticallyImplyLeading: false,
               elevation: 0.7,
               centerTitle: true,
-              backgroundColor: QPColors.whiteFair,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             ),
           ),
-          backgroundColor: QPColors.whiteFair,
           body: Stack(
             children: [
               Padding(
@@ -93,7 +97,7 @@ class ReadTadabburPage extends StatelessWidget {
                   children: [
                     Text(
                       param.surahName,
-                      style: QPTextStyle.subHeading2SemiBold,
+                      style: QPTextStyle.getSubHeading2SemiBold(context),
                     ),
                     const SizedBox(height: 24),
                     Expanded(

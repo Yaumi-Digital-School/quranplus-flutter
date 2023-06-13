@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/constants/animation_paths.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+
 import 'package:qurantafsir_flutter/widgets/button.dart';
 
 class PreHabitTrackingAnimation extends StatefulWidget {
@@ -46,14 +48,14 @@ class _PreHabitTrackingAnimationState extends State<PreHabitTrackingAnimation> {
                   children: [
                     Text(
                       'Take a breath',
-                      style: QPTextStyle.heading1Bold,
+                      style: QPTextStyle.getHeading1Bold(context),
                     ),
                     const SizedBox(
                       height: 8,
                     ),
                     Text(
                       "Start with Basmalah",
-                      style: QPTextStyle.subHeading1Regular,
+                      style: QPTextStyle.getSubHeading1Regular(context),
                     ),
                     const SizedBox(
                       height: 10,
@@ -67,10 +69,14 @@ class _PreHabitTrackingAnimationState extends State<PreHabitTrackingAnimation> {
                     ),
                     Text(
                       "Prepare for reading....",
-                      style: buildTextStyle(
-                        color: neutral600,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w400,
+                      style:
+                          QPTextStyle.getSubHeading1Regular(context).copyWith(
+                        color: QPColors.getColorBasedTheme(
+                          dark: QPColors.whiteRoot,
+                          light: QPColors.blackFair,
+                          brown: QPColors.brownModeMassive,
+                          context: context,
+                        ),
                       ),
                     ),
                     const SizedBox(
@@ -94,14 +100,14 @@ class _PreHabitTrackingAnimationState extends State<PreHabitTrackingAnimation> {
                     ),
                     Text(
                       'Take a breath',
-                      style: QPTextStyle.heading1Bold,
+                      style: QPTextStyle.getHeading1Bold(context),
                     ),
                     const SizedBox(
                       height: 6,
                     ),
                     Text(
                       "Start with Basmalah",
-                      style: QPTextStyle.subHeading1Regular,
+                      style: QPTextStyle.getSubHeading1Regular(context),
                     ),
                     const Spacer(),
                     Lottie.asset(

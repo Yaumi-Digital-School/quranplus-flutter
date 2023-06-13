@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_state_notifier.dart';
-import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/habit_progress_state_notifier.dart';
+import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/habit_progress_view.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
@@ -39,18 +39,18 @@ class HabitGroupBottomSheet {
         children: [
           Text(
             "Invite Member",
-            style: QPTextStyle.subHeading2SemiBold,
+            style: QPTextStyle.getSubHeading2SemiBold(context),
           ),
           const SizedBox(height: 8),
           RichText(
             text: TextSpan(
               text:
                   'Copy this link and send it to the people you want to join ',
-              style: QPTextStyle.body3Regular,
+              style: QPTextStyle.getBody3Regular(context),
               children: [
                 TextSpan(
                   text: currentGroupName,
-                  style: QPTextStyle.body3SemiBold,
+                  style: QPTextStyle.getBody3SemiBold(context),
                 ),
               ],
             ),
@@ -58,7 +58,9 @@ class HabitGroupBottomSheet {
           const SizedBox(height: 24),
           TextField(
             readOnly: true,
-            style: QPTextStyle.subHeading3Regular,
+            style: QPTextStyle.getSubHeading3Regular(context).copyWith(
+              color: QPColors.blackMassive,
+            ),
             controller: _textController,
             decoration: InputDecoration(
               border: const OutlineInputBorder(
@@ -98,12 +100,12 @@ class HabitGroupBottomSheet {
         children: [
           Text(
             "Edit group name",
-            style: QPTextStyle.subHeading2SemiBold,
+            style: QPTextStyle.getSubHeading2SemiBold(context),
           ),
           const SizedBox(height: 24),
           Text(
             "Input your group name",
-            style: QPTextStyle.subHeading4Medium,
+            style: QPTextStyle.getSubHeading4Medium(context),
           ),
           const SizedBox(height: 8),
           Form(
@@ -164,14 +166,14 @@ class HabitGroupBottomSheet {
           Center(
             child: Text(
               "Confirm leave group",
-              style: QPTextStyle.heading1Regular,
+              style: QPTextStyle.getHeading1Regular(context),
             ),
           ),
           const SizedBox(height: 8),
           Center(
             child: Text(
               "Are you sure you want to leave group?",
-              style: QPTextStyle.subHeading3Regular,
+              style: QPTextStyle.getSubHeading3Regular(context),
             ),
           ),
           const SizedBox(height: 40),
@@ -184,7 +186,7 @@ class HabitGroupBottomSheet {
                   Navigator.pop(context);
                 },
                 size: ButtonSize.regular,
-                textStyle: QPTextStyle.button1SemiBold
+                textStyle: QPTextStyle.getButton1SemiBold(context)
                     .copyWith(color: QPColors.whiteMassive),
               ),
               ButtonSecondary(
@@ -216,7 +218,7 @@ class HabitGroupBottomSheet {
                   );
                 },
                 size: ButtonSize.regular,
-                textStyle: QPTextStyle.button1SemiBold
+                textStyle: QPTextStyle.getButton1SemiBold(context)
                     .copyWith(color: QPColors.brandFair),
               ),
             ],
@@ -249,15 +251,15 @@ class HabitGroupBottomSheet {
           const SizedBox(height: 24),
           Text(
             "Alhamdulillah, you joined the group!",
-            style: QPTextStyle.heading1SemiBold
+            style: QPTextStyle.getHeading1SemiBold(context)
                 .copyWith(color: QPColors.brandFair),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
           Text(
             "Now you can update and set your reading\nprogress and target with group members",
-            style:
-                QPTextStyle.body2Regular.copyWith(color: QPColors.neutral700),
+            style: QPTextStyle.getBody2Regular(context)
+                .copyWith(color: QPColors.neutral700),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
@@ -266,8 +268,8 @@ class HabitGroupBottomSheet {
             onTap: () {
               Navigator.pop(context);
             },
-            textStyle:
-                QPTextStyle.button1SemiBold.copyWith(color: QPColors.brandFair),
+            textStyle: QPTextStyle.getButton1SemiBold(context)
+                .copyWith(color: QPColors.brandFair),
           ),
         ],
       ),

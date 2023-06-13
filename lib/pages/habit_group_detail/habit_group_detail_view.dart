@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/widgets/group_detall_bottomsheet.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/widgets/user_summary_bottomsheet.dart';
-import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/habit_progress_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
@@ -17,6 +16,8 @@ import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/dynamic_link_helper.dart';
 import 'package:qurantafsir_flutter/widgets/habit_group_overview.dart';
 import 'package:qurantafsir_flutter/widgets/habit_personal_weekly_overview.dart';
+
+import '../habit_page/habit_progress/habit_progress_view.dart';
 
 class HabitGroupDetailViewParam {
   HabitGroupDetailViewParam({
@@ -102,9 +103,14 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
               preferredSize: const Size.fromHeight(54.0),
               child: AppBar(
                 leading: IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.chevron_left,
-                    color: QPColors.blackMassive,
+                    color: QPColors.getColorBasedTheme(
+                      dark: QPColors.whiteFair,
+                      light: QPColors.blackSoft,
+                      brown: QPColors.brownModeMassive,
+                      context: context,
+                    ),
                     size: 30,
                   ),
                   onPressed: () {
@@ -116,16 +122,19 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
                 centerTitle: true,
                 title: Text(
                   state.groupName,
-                  style: QPTextStyle.subHeading2SemiBold,
+                  style: QPTextStyle.getSubHeading2SemiBold(context),
                 ),
-                backgroundColor: QPColors.whiteFair,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 actions: [
                   Theme(
                     data: Theme.of(context).copyWith(
-                      textTheme:
-                          const TextTheme().apply(bodyColor: Colors.black),
-                      iconTheme: const IconThemeData(
-                        color: Colors.black,
+                      iconTheme: IconThemeData(
+                        color: QPColors.getColorBasedTheme(
+                          dark: QPColors.whiteMassive,
+                          light: QPColors.blackMassive,
+                          brown: QPColors.brownModeMassive,
+                          context: context,
+                        ),
                       ),
                     ),
                     child: PopupMenuButton(
@@ -138,13 +147,18 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
                               ImageIcon(
                                 AssetImage(IconPath.iconInviteMember),
                                 size: 12,
+                                color: QPColors.blackMassive,
                               ),
                               const SizedBox(
                                 width: 14,
                               ),
                               Text(
                                 "Invite Member",
-                                style: QPTextStyle.subHeading4SemiBold,
+                                style:
+                                    QPTextStyle.getSubHeading4SemiBold(context)
+                                        .copyWith(
+                                  color: QPColors.blackMassive,
+                                ),
                               ),
                             ],
                           ),
@@ -157,13 +171,18 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
                                 ImageIcon(
                                   AssetImage(IconPath.iconEditSquare),
                                   size: 12,
+                                  color: QPColors.blackMassive,
                                 ),
                                 const SizedBox(
                                   width: 14,
                                 ),
                                 Text(
                                   "Edit Group Name",
-                                  style: QPTextStyle.subHeading4SemiBold,
+                                  style: QPTextStyle.getSubHeading4SemiBold(
+                                    context,
+                                  ).copyWith(
+                                    color: QPColors.blackMassive,
+                                  ),
                                 ),
                               ],
                             ),
@@ -175,13 +194,18 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
                               ImageIcon(
                                 AssetImage(IconPath.iconLeaveGroup),
                                 size: 12,
+                                color: QPColors.blackMassive,
                               ),
                               const SizedBox(
                                 width: 14,
                               ),
                               Text(
                                 "Leave Group",
-                                style: QPTextStyle.subHeading4SemiBold,
+                                style:
+                                    QPTextStyle.getSubHeading4SemiBold(context)
+                                        .copyWith(
+                                  color: QPColors.blackMassive,
+                                ),
                               ),
                             ],
                           ),
@@ -317,7 +341,7 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
       children: [
         Text(
           'All Member Completion',
-          style: QPTextStyle.subHeading2SemiBold,
+          style: QPTextStyle.getSubHeading2SemiBold(context),
         ),
         const SizedBox(height: 16),
         HabitGroupOverviewWidget(

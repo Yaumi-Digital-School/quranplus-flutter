@@ -35,12 +35,12 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
       return _buildDailyHabitTrackerWithHistoryData(context);
     }
 
-    return _buildDailyHabitTracker();
+    return _buildDailyHabitTracker(context);
   }
 
-  Widget _buildDailyHabitTracker() {
+  Widget _buildDailyHabitTracker(BuildContext context) {
     return Card(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.primaryContainer,
       elevation: 1.2,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -86,7 +86,7 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
     final int progressInPercentage = (progress * 100).round();
 
     return Card(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.primaryContainer,
       elevation: 0,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
@@ -103,17 +103,20 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
               children: [
                 Text(
                   'Continue Reading',
-                  style: QPTextStyle.subHeading2SemiBold.copyWith(
-                    color: QPColors.blackHeavy,
-                  ),
+                  style: QPTextStyle.getSubHeading2SemiBold(context),
                 ),
-                _buildSeeDetailCTA(),
+                _buildSeeDetailCTA(context),
               ],
             ),
             Text(
               formattedDate,
-              style: QPTextStyle.description2Regular.copyWith(
-                color: QPColors.blackFair,
+              style: QPTextStyle.getDescription2Regular(context).copyWith(
+                color: QPColors.getColorBasedTheme(
+                  dark: QPColors.whiteRoot,
+                  light: QPColors.blackFair,
+                  brown: QPColors.brownModeMassive,
+                  context: context,
+                ),
               ),
             ),
             const SizedBox(
@@ -138,7 +141,7 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
                 ),
                 Text(
                   '$progressInPercentage%',
-                  style: QPTextStyle.body3Regular,
+                  style: QPTextStyle.getBody3Regular(context),
                 ),
               ],
             ),
@@ -149,8 +152,14 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
                 target > 1
                     ? '$dailyProgressToInt/$target Pages'
                     : '$dailyProgressToInt/$target Page',
-                style: QPTextStyle.body3Regular
-                    .copyWith(color: QPColors.blackFair),
+                style: QPTextStyle.getBody3Regular(context).copyWith(
+                  color: QPColors.getColorBasedTheme(
+                    dark: QPColors.whiteRoot,
+                    light: QPColors.blackFair,
+                    brown: QPColors.brownModeMassive,
+                    context: context,
+                  ),
+                ),
               ),
             ),
             const SizedBox(
@@ -230,11 +239,11 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
           horizontal: 16,
           vertical: 8,
         ),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(
             Radius.circular(8),
           ),
-          color: QPColors.whiteHeavy,
+          color: Theme.of(context).colorScheme.secondaryContainer,
         ),
         child: Row(
           children: [
@@ -250,8 +259,13 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: QPTextStyle.description2Regular.copyWith(
-                    color: QPColors.brandFair,
+                  style: QPTextStyle.getDescription2Regular(context).copyWith(
+                    color: QPColors.getColorBasedTheme(
+                      dark: QPColors.whiteHeavy,
+                      light: QPColors.brandFair,
+                      brown: QPColors.brownModeMassive,
+                      context: context,
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -259,8 +273,13 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
                 ),
                 Text(
                   mainInfo,
-                  style: QPTextStyle.button2SemiBold.copyWith(
-                    color: QPColors.blackFair,
+                  style: QPTextStyle.getButton2SemiBold(context).copyWith(
+                    color: QPColors.getColorBasedTheme(
+                      dark: QPColors.whiteFair,
+                      light: QPColors.blackFair,
+                      brown: QPColors.brownModeMassive,
+                      context: context,
+                    ),
                   ),
                 ),
                 Text(
@@ -268,7 +287,12 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
                   style: QPTextStyle.baseTextStyle.copyWith(
                     fontWeight: QPFontWeight.regular,
                     fontSize: 8,
-                    color: QPColors.blackFair,
+                    color: QPColors.getColorBasedTheme(
+                      dark: QPColors.blackRoot,
+                      light: QPColors.blackFair,
+                      brown: QPColors.brownModeMassive,
+                      context: context,
+                    ),
                   ),
                 ),
               ],
@@ -279,7 +303,7 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
     );
   }
 
-  Widget _buildSeeDetailCTA() {
+  Widget _buildSeeDetailCTA(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
         final navigationBar =
@@ -289,19 +313,35 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
       },
       child: Text(
         'See Details',
-        style: QPTextStyle.subHeading4SemiBold.copyWith(
-          color: QPColors.brandFair,
+        style: QPTextStyle.getSubHeading4SemiBold(context).copyWith(
+          color: QPColors.getColorBasedTheme(
+            dark: QPColors.whiteFair,
+            light: QPColors.brandFair,
+            brown: QPColors.brownModeMassive,
+            context: context,
+          ),
         ),
       ),
       style: ElevatedButton.styleFrom(
         elevation: 0,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(24)),
+        shape: RoundedRectangleBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(24)),
           side: BorderSide(
-            color: QPColors.whiteRoot,
+            color: QPColors.getColorBasedTheme(
+              dark: QPColors.blackFair,
+              light: QPColors.whiteRoot,
+              brown: QPColors.brownModeHeavy,
+              context: context,
+            ),
+            width: 1,
           ),
         ),
-        primary: Colors.white,
+        primary: QPColors.getColorBasedTheme(
+          dark: QPColors.blackHeavy,
+          light: QPColors.whiteMassive,
+          brown: QPColors.brownModeRoot,
+          context: context,
+        ),
       ),
     );
   }

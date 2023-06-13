@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/change_daily_target/change_daily_target_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
@@ -62,17 +64,16 @@ class _ChangeDailyTargetViewState extends State<ChangeDailyTargetView> {
                   children: [
                     Text(
                       'Set your daily target',
-                      style: TextStyle(fontWeight: semiBold, fontSize: 18),
+                      style: QPTextStyle.getSubHeading2SemiBold(context),
                     ),
-                    SizedBox(
-                      width: 288,
-                      child: Text(
-                        'Set a daily reading target to motivate and help you stay active.',
-                        style: TextStyle(
-                          fontWeight: regular,
-                          fontSize: 12,
-                          color: neutral500,
-                        ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      'Set a daily reading target to motivate and help you stay active.',
+                      style:
+                          QPTextStyle.getSubHeading4Regular(context).copyWith(
+                        color: QPColors.blackSoft,
                       ),
                     ),
                     const SizedBox(
@@ -80,7 +81,10 @@ class _ChangeDailyTargetViewState extends State<ChangeDailyTargetView> {
                     ),
                     Text(
                       'Daily Target',
-                      style: TextStyle(fontWeight: semiBold, fontSize: 12),
+                      style:
+                          QPTextStyle.getSubHeading4Regular(context).copyWith(
+                        color: QPColors.blackSoft,
+                      ),
                     ),
                     const SizedBox(
                       height: 9,
@@ -106,20 +110,18 @@ class _ChangeDailyTargetViewState extends State<ChangeDailyTargetView> {
                     if (state.targetType == 'Juz') ...<Widget>[
                       Text(
                         '1 juz means 20 pages',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: regular,
-                          color: neutral600,
+                        style: QPTextStyle.getDescription2Regular(context)
+                            .copyWith(
+                          color: QPColors.blackSoft,
                         ),
                       ),
                       const SizedBox(height: 8),
                     ],
                     Text(
                       'Changing this will only apply to today and future targets',
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: regular,
-                        color: neutral600,
+                      style:
+                          QPTextStyle.getDescription2Regular(context).copyWith(
+                        color: QPColors.blackSoft,
                       ),
                     ),
                     const SizedBox(height: 13),
@@ -168,7 +170,7 @@ class DropDownListChangeTargetState extends State<DropDownListChangeTarget> {
       decoration: const ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          side: BorderSide(color: neutral500, width: 0.5),
+          side: BorderSide(color: QPColors.blackSoft, width: 0.5),
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
       ),

@@ -24,7 +24,7 @@ class RegistrationView extends StatelessWidget {
         const SizedBox(height: 24),
         Text(
           'Why I must Sign in?',
-          style: QPTextStyle.subHeading2SemiBold,
+          style: QPTextStyle.getSubHeading2SemiBold(context),
         ),
         const SizedBox(height: 24),
         Container(
@@ -33,7 +33,7 @@ class RegistrationView extends StatelessWidget {
             children: [
               Text(
                 'Signing in to Quran Plus with your Google Account can help you experience all of the benefits. Here’s what you get when you sign in:',
-                style: QPTextStyle.body3Regular,
+                style: QPTextStyle.getBody3Regular(context),
                 textAlign: TextAlign.justify,
               ),
               const SizedBox(height: 24),
@@ -52,12 +52,12 @@ class RegistrationView extends StatelessWidget {
                       children: [
                         Text(
                           'Sync Bookmark and Favorite data',
-                          style: QPTextStyle.subHeading4SemiBold,
+                          style: QPTextStyle.getSubHeading4SemiBold(context),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'Help you synchronize and keep your bookmark and favorite data on your device',
-                          style: QPTextStyle.body3Regular,
+                          style: QPTextStyle.getBody3Regular(context),
                         ),
                       ],
                     ),
@@ -82,7 +82,8 @@ class RegistrationView extends StatelessWidget {
                           children: [
                             Text(
                               'Add progress and set target',
-                              style: QPTextStyle.subHeading4SemiBold,
+                              style:
+                                  QPTextStyle.getSubHeading4SemiBold(context),
                             ),
                             const SizedBox(
                               width: 8,
@@ -93,7 +94,7 @@ class RegistrationView extends StatelessWidget {
                         const SizedBox(height: 8),
                         Text(
                           'You can add your daily reading progress manually or record it and set your own reading target',
-                          style: QPTextStyle.body3Regular,
+                          style: QPTextStyle.getBody3Regular(context),
                         ),
                       ],
                     ),
@@ -120,7 +121,8 @@ class RegistrationView extends StatelessWidget {
                           children: [
                             Text(
                               'See all members reading progress',
-                              style: QPTextStyle.subHeading4SemiBold,
+                              style:
+                                  QPTextStyle.getSubHeading4SemiBold(context),
                             ),
                             const SizedBox(
                               width: 8,
@@ -131,7 +133,7 @@ class RegistrationView extends StatelessWidget {
                         const SizedBox(height: 8),
                         Text(
                           'All members progress are visible and hopefully can motivate you to reading more Qur’an and compete in goodness',
-                          style: QPTextStyle.body3Regular,
+                          style: QPTextStyle.getBody3Regular(context),
                         ),
                       ],
                     ),

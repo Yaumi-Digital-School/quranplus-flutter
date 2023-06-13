@@ -61,7 +61,11 @@ class _StoriesWidgetState extends State<StoriesWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 12, right: 24, left: 24),
+            padding: const EdgeInsets.only(
+              top: 12,
+              right: 24,
+              left: 24,
+            ),
             child: Column(
               children: [
                 Row(
@@ -74,30 +78,36 @@ class _StoriesWidgetState extends State<StoriesWidget> {
                             children: [
                               Text(
                                 "Ayah ${content.ayahNumber}",
-                                style: QPTextStyle.button3Medium
-                                    .copyWith(color: QPColors.blackSoft),
+                                style: QPTextStyle.getButton3Medium(context)
+                                    .copyWith(
+                                  color: QPColors.blackSoft,
+                                ),
                               ),
                               const SizedBox(width: 6),
                               Container(
                                 width: 4,
                                 height: 4,
                                 decoration: const BoxDecoration(
-                                  color: QPColors.blackSoft,
+                                  color: QPColors.whiteRoot,
                                   shape: BoxShape.circle,
                                 ),
                               ),
                               const SizedBox(width: 6),
                               Text(
                                 content.surahInfo?.surahName ?? '',
-                                style: QPTextStyle.button3Medium
-                                    .copyWith(color: QPColors.blackSoft),
+                                style: QPTextStyle.getButton3Medium(
+                                  context,
+                                ).copyWith(
+                                  color: QPColors.blackSoft,
+                                ),
                               ),
                             ],
                           ),
                           const SizedBox(height: 4),
                           Text(
                             content.title ?? '',
-                            style: QPTextStyle.button1SemiBold.copyWith(
+                            style: QPTextStyle.getButton1SemiBold(context)
+                                .copyWith(
                               color: QPColors.blackHeavy,
                             ),
                           ),
@@ -116,7 +126,7 @@ class _StoriesWidgetState extends State<StoriesWidget> {
                       child: const Icon(
                         Icons.close,
                         color: QPColors.blackFair,
-                        size: 12,
+                        size: 24,
                       ),
                     ),
                   ],

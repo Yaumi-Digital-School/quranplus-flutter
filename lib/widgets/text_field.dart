@@ -136,7 +136,7 @@ class TextFieldWithDropdown extends StatelessWidget {
                           ),
                           child: Text(
                             option,
-                            style: QPTextStyle.subHeading4SemiBold,
+                            style: QPTextStyle.getSubHeading4SemiBold(context),
                           ),
                         ),
                       );
@@ -159,7 +159,7 @@ class TextFieldWithDropdown extends StatelessWidget {
                 controller: textEditingController,
                 focusNode: focusNode,
                 textAlign: TextAlign.center,
-                style: QPTextStyle.subHeading4SemiBold,
+                style: QPTextStyle.getSubHeading4SemiBold(context),
                 decoration: const InputDecoration(
                   contentPadding: EdgeInsets.all(8),
                   border: OutlineInputBorder(
@@ -204,7 +204,7 @@ class _FieldLabel extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Text(
         label,
-        style: QPTextStyle.subHeading4Medium,
+        style: QPTextStyle.getSubHeading4Medium(context),
       ),
     );
   }
@@ -255,7 +255,7 @@ class FormFieldWidget extends StatelessWidget {
             cursorColor: Colors.black,
             textAlign: TextAlign.center,
             textAlignVertical: TextAlignVertical.center,
-            style: QPTextStyle.subHeading4SemiBold,
+            style: QPTextStyle.getSubHeading4SemiBold(context),
             onChanged: onChange,
             decoration: InputDecoration(
               prefixIcon: iconForm,
@@ -265,7 +265,8 @@ class FormFieldWidget extends StatelessWidget {
                 horizontal: 8,
               ),
               hintText: hintTextForm,
-              hintStyle: QPTextStyle.subHeading4Regular
+              // Todo: check color based on theme
+              hintStyle: QPTextStyle.getSubHeading4Regular(context)
                   .copyWith(color: QPColors.blackFair),
               filled: true,
               fillColor: Colors.white,

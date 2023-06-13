@@ -18,12 +18,15 @@ class HabitGroupEmptyGroupView extends StatelessWidget {
       children: [
         Text(
           "Tracking your reading habit group",
-          style: QPTextStyle.subHeading2SemiBold,
+          style: QPTextStyle.getSubHeading2SemiBold(context),
         ),
         const SizedBox(height: 8),
         Text(
           "In this habit group, all members progress are visible and hopefully can motivate you to read more Qur’an and compete in goodness",
-          style: QPTextStyle.body3Regular.copyWith(color: QPColors.blackFair),
+          style: QPTextStyle.getBody3Regular(context).copyWith(
+            // Todo: check color based on theme
+            color: QPColors.blackFair,
+          ),
         ),
         const SizedBox(height: 24),
         _buildCreateNewGroupCard(context),
@@ -42,7 +45,20 @@ class HabitGroupEmptyGroupView extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: QPColors.getColorBasedTheme(
+            dark: QPColors.darkModeFair,
+            light: QPColors.whiteMassive,
+            brown: QPColors.brownModeFair,
+            context: context,
+          ),
+          border: Border.fromBorderSide(BorderSide(
+            color: QPColors.getColorBasedTheme(
+              dark: QPColors.darkModeHeavy,
+              light: QPColors.whiteHeavy,
+              brown: QPColors.brownModeHeavy,
+              context: context,
+            ),
+          )),
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           boxShadow: [
             BoxShadow(
@@ -74,21 +90,29 @@ class HabitGroupEmptyGroupView extends StatelessWidget {
                 children: [
                   Text(
                     "Create new group",
-                    style: QPTextStyle.subHeading3SemiBold,
+                    style: QPTextStyle.getSubHeading3SemiBold(context),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     "Set goals, track, and monitor reading progress",
-                    style: QPTextStyle.body3Regular
-                        .copyWith(color: QPColors.blackFair),
+                    style: QPTextStyle.getBody3Regular(
+                      context,
+                    ).copyWith(
+                      color: QPColors.blackFair,
+                    ),
                   ),
                 ],
               ),
             ),
             const SizedBox(width: 20),
-            const Icon(
+            Icon(
               Icons.arrow_forward_ios,
-              color: QPColors.neutral900,
+              color: QPColors.getColorBasedTheme(
+                dark: QPColors.whiteMassive,
+                light: QPColors.blackMassive,
+                brown: QPColors.brownModeMassive,
+                context: context,
+              ),
               size: 18,
             ),
           ],

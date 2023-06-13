@@ -26,13 +26,11 @@ class HabitGroupListView extends StatelessWidget {
           children: [
             Text(
               'Your habit group',
-              style: QPTextStyle.subHeading2SemiBold,
+              style: QPTextStyle.getSubHeading2SemiBold(context),
             ),
             Text(
               '${listGroup.length} groups',
-              style: QPTextStyle.description2Regular.copyWith(
-                color: QPColors.blackFair,
-              ),
+              style: QPTextStyle.getDescription2Regular(context),
             ),
           ],
         ),
