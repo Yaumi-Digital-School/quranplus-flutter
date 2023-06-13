@@ -4,10 +4,12 @@ import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/animation_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/widgets/adaptive_theme_dialog.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
+import 'package:qurantafsir_flutter/widgets/utils/general_dialog.dart';
 
 class HabitProgressPostTrackingDialog {
   static void onSubmitPostTrackingDialog({
@@ -15,7 +17,7 @@ class HabitProgressPostTrackingDialog {
     required SharedPreferenceService sharedPreferenceService,
     required bool isComplete,
   }) {
-    showDialog(
+    showQPGeneralDialog(
       context: context,
       builder: (context) {
         return AdaptiveThemeDialog(
@@ -50,7 +52,7 @@ class HabitProgressPostTrackingDialog {
     required SharedPreferenceService sharedPreferenceService,
     required bool isComplete,
   }) {
-    showDialog(
+    showQPGeneralDialog(
       context: context,
       builder: (context) {
         return AdaptiveThemeDialog(
@@ -142,11 +144,7 @@ class _PostSubmissionRemarks extends StatelessWidget {
                 ),
                 Text(
                   titleText,
-                  style: buildTextStyle(
-                    color: darkGreen,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: QPTextStyle.getSubHeading2Medium(context),
                 ),
               ],
             ),
@@ -156,11 +154,7 @@ class _PostSubmissionRemarks extends StatelessWidget {
             Text(
               subtitleText,
               textAlign: TextAlign.center,
-              style: buildTextStyle(
-                color: neutral700,
-                fontSize: 10,
-                fontWeight: FontWeight.w500,
-              ),
+              style: QPTextStyle.getBody3Regular(context),
             ),
             const SizedBox(
               height: 43,

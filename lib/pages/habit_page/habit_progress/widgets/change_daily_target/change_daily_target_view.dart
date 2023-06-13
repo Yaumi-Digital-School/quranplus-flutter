@@ -71,20 +71,14 @@ class _ChangeDailyTargetViewState extends State<ChangeDailyTargetView> {
                     ),
                     Text(
                       'Set a daily reading target to motivate and help you stay active.',
-                      style:
-                          QPTextStyle.getSubHeading4Regular(context).copyWith(
-                        color: QPColors.blackSoft,
-                      ),
+                      style: QPTextStyle.getBody3Regular(context),
                     ),
                     const SizedBox(
                       height: 16,
                     ),
                     Text(
                       'Daily Target',
-                      style:
-                          QPTextStyle.getSubHeading4Regular(context).copyWith(
-                        color: QPColors.blackSoft,
-                      ),
+                      style: QPTextStyle.getSubHeading4Medium(context),
                     ),
                     const SizedBox(
                       height: 9,
@@ -110,19 +104,13 @@ class _ChangeDailyTargetViewState extends State<ChangeDailyTargetView> {
                     if (state.targetType == 'Juz') ...<Widget>[
                       Text(
                         '1 juz means 20 pages',
-                        style: QPTextStyle.getDescription2Regular(context)
-                            .copyWith(
-                          color: QPColors.blackSoft,
-                        ),
+                        style: QPTextStyle.getDescription2Regular(context),
                       ),
                       const SizedBox(height: 8),
                     ],
                     Text(
                       'Changing this will only apply to today and future targets',
-                      style:
-                          QPTextStyle.getDescription2Regular(context).copyWith(
-                        color: QPColors.blackSoft,
-                      ),
+                      style: QPTextStyle.getDescription2Regular(context),
                     ),
                     const SizedBox(height: 13),
                     ButtonSecondary(

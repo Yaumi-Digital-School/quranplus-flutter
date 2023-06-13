@@ -10,6 +10,7 @@ import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/widgets/app_update/force_update_dialog.dart';
 import 'package:qurantafsir_flutter/widgets/app_update/optional_update_dialog.dart';
+import 'package:qurantafsir_flutter/widgets/utils/general_dialog.dart';
 
 class SplashPage extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
@@ -95,8 +96,8 @@ class _SplashPageState extends State<SplashPage> {
         );
     }
 
-    await showDialog(
-      barrierDismissible: false,
+    await showQPGeneralDialog(
+      isBarrierDismissable: false,
       context: context,
       builder: (BuildContext context) {
         return dialog;
