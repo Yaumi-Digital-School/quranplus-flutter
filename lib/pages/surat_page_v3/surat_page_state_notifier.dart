@@ -465,13 +465,6 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     ReadingSettings readingSettings,
     Orientation orientation,
   ) {
-    print("landscape font:");
-    print(readingSettings.fontSizeLandscape);
-    print("-----");
-    print("potrait");
-    print(readingSettings.fontSize);
-    print("====");
-
     if (currentLandscapeFontSize != readingSettings.fontSizeLandscape) {
       currentLandscapeFontSize = readingSettings.fontSizeLandscape;
       switch (readingSettings.fontSizeLandscape) {
