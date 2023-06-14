@@ -38,6 +38,7 @@ class _ChangeThemeBottomSheetState
           children: [
             Expanded(
               child: ThemeBoxOptionWidget(
+                theme: "Light",
                 firstColor: QPColors.whiteSoft,
                 secondColor: QPColors.whiteMassive,
                 thirdColor: QPColors.whiteRoot,
@@ -50,6 +51,7 @@ class _ChangeThemeBottomSheetState
             const SizedBox(width: 16),
             Expanded(
               child: ThemeBoxOptionWidget(
+                theme: "Dark",
                 firstColor: QPColors.darkModeHeavy,
                 secondColor: QPColors.blackFair,
                 thirdColor: QPColors.darkModeFair,
@@ -62,6 +64,7 @@ class _ChangeThemeBottomSheetState
             const SizedBox(width: 16),
             Expanded(
               child: ThemeBoxOptionWidget(
+                theme: "Brown",
                 firstColor: QPColors.brownModeRoot,
                 secondColor: QPColors.whiteMassive,
                 thirdColor: QPColors.brownModeFair,
