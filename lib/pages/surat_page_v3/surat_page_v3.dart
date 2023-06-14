@@ -22,6 +22,7 @@ import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/widgets/horizontal_divider.dart';
+import 'package:qurantafsir_flutter/widgets/utils/general_dialog.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:wakelock/wakelock.dart';
@@ -1049,7 +1050,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     SuratPageStateNotifier notifier, {
     bool isFromTapBack = false,
   }) async {
-    showDialog<bool>(
+    showQPGeneralDialog<bool>(
       context: context,
       builder: (context) {
         return TrackingSubmissionDialog(

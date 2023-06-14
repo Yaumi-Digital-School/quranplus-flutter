@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
 enum ContentType {
@@ -47,12 +49,14 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
     isWithTranslation = widget.isWithTranslation ?? false;
     isWithTafsir = widget.isWithTafsir ?? false;
     isWithLatins = widget.isWithLatins ?? false;
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Theme.of(context).dialogBackgroundColor,
       child: Padding(
         padding: const EdgeInsets.only(top: 60),
         child: ListView(
@@ -79,7 +83,14 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
         ListTile(
           title: Text(
             'Content',
-            style: titleDrawerBold,
+            style: QPTextStyle.getSubHeading3SemiBold(context).copyWith(
+              color: QPColors.getColorBasedTheme(
+                dark: QPColors.whiteFair,
+                light: QPColors.brandFair,
+                brown: QPColors.brandHeavy,
+                context: context,
+              ),
+            ),
           ),
         ),
         Column(
@@ -89,10 +100,12 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
                 _buildCheckbox(
                   text: 'Tafsir',
                   contentType: ContentType.tafsir,
+                  context: context,
                 ),
                 _buildCheckbox(
                   text: 'Terjemahan',
                   contentType: ContentType.translation,
+                  context: context,
                 ),
               ],
             ),
@@ -101,6 +114,7 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
                 _buildCheckbox(
                   text: 'Latin',
                   contentType: ContentType.latins,
+                  context: context,
                 ),
               ],
             ),
@@ -114,7 +128,15 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
   Widget _buildCheckbox({
     required String text,
     required ContentType contentType,
+    required BuildContext context,
   }) {
+    final Color checkboxDecorationColor = QPColors.getColorBasedTheme(
+      dark: QPColors.whiteFair,
+      brown: QPColors.blackHeavy,
+      light: QPColors.blackHeavy,
+      context: context,
+    );
+
     return Padding(
       padding: const EdgeInsets.only(top: 21),
       child: Row(
@@ -147,18 +169,20 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
                 }
               });
             },
-            checkColor: neutral900,
-            activeColor: backgroundColor,
+            checkColor: checkboxDecorationColor,
+            activeColor: Theme.of(context).dialogBackgroundColor,
             side: MaterialStateBorderSide.resolveWith(
-              (states) => const BorderSide(
+              (states) => BorderSide(
                 width: 1.0,
-                color: neutral900,
+                color: checkboxDecorationColor,
               ),
             ),
           ),
           Text(
             text,
-            style: bodyDrawerRegular,
+            style: QPTextStyle.getSubHeading3Regular(context).copyWith(
+              color: checkboxDecorationColor,
+            ),
           ),
         ],
       ),
@@ -171,7 +195,14 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
         ListTile(
           title: Text(
             'Font Size',
-            style: titleDrawerBold,
+            style: QPTextStyle.getSubHeading3SemiBold(context).copyWith(
+              color: QPColors.getColorBasedTheme(
+                dark: QPColors.whiteFair,
+                light: QPColors.brandFair,
+                brown: QPColors.brandHeavy,
+                context: context,
+              ),
+            ),
           ),
         ),
         Row(

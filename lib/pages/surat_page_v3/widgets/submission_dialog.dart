@@ -56,11 +56,7 @@ class _TrackingSubmissionDialogState extends State<TrackingSubmissionDialog> {
                   widget.isFromTapBack
                       ? 'Please submit your reading progress before back to the Homepage'
                       : "You've finished reading....",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 10,
-                    color: neutral900,
-                  ),
+                  style: QPTextStyle.getSubHeading3Medium(context),
                 ),
                 const SizedBox(
                   height: 16,

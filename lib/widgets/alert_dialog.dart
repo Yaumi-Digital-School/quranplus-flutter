@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/search_by_page_or_ayah.dart';
+import 'package:qurantafsir_flutter/widgets/utils/general_dialog.dart';
 
 class GeneralSearchDialog {
   static Future searchDialog(BuildContext context, Widget widgetChild) {
-    return showDialog(
+    return showQPGeneralDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -127,7 +128,7 @@ class GeneralSearchDialog {
 
 class Alert {
   static Future searchDialog(BuildContext context, Widget widgetChild) {
-    return showDialog(
+    return showQPGeneralDialog(
       context: context,
       builder: (context) {
         return AlertDialog(

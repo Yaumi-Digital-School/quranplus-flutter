@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/add_daily_progress_manual/add_daily_progress_manual_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_progress.dart';
@@ -67,27 +68,23 @@ class _AddDailyProgressManualViewState
                   children: [
                     Text(
                       "You have read $totalPages of $target Pages today",
-                      style: QPTextStyle.getSubHeading2SemiBold(context),
+                      style: QPTextStyle.getSubHeading3SemiBold(context),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       formattedDate,
-                      style:
-                          QPTextStyle.getDescription1Regular(context).copyWith(
-                        color: neutral600,
-                      ),
+                      style: QPTextStyle.getDescription2Regular(context),
                     ),
                     const SizedBox(height: 24),
                     Text(
                       "Progress History",
-                      style: QPTextStyle.getDescription2Regular(context),
+                      style: QPTextStyle.getSubHeading4Medium(context),
                     ),
                     const SizedBox(height: 8),
                     state.progressHistory.isEmpty
                         ? Text(
                             "No progress yet",
-                            style: QPTextStyle.getDescription2Regular(context)
-                                .copyWith(color: neutral600),
+                            style: QPTextStyle.getDescription2Regular(context),
                           )
                         : Column(
                             children:
@@ -96,7 +93,7 @@ class _AddDailyProgressManualViewState
                     const SizedBox(height: 24),
                     Text(
                       "Add Manual Progress",
-                      style: QPTextStyle.getDescription2Regular(context),
+                      style: QPTextStyle.getSubHeading4Medium(context),
                     ),
                     const SizedBox(height: 8),
                     Row(
@@ -109,8 +106,7 @@ class _AddDailyProgressManualViewState
                         const SizedBox(width: 8),
                         Text(
                           "Pages",
-                          style: QPTextStyle.getDescription2Regular(context)
-                              .copyWith(color: neutral600),
+                          style: QPTextStyle.getDescription2Regular(context),
                         ),
                       ],
                     ),
@@ -141,16 +137,28 @@ class _AddDailyProgressManualViewState
       final updateDesc = type == HabitProgressType.manual
           ? "Updated Manually"
           : "Updated by Reading";
+
+      final Color textColor = QPColors.getColorBasedTheme(
+        dark: QPColors.blackRoot,
+        light: QPColors.blackMassive,
+        brown: QPColors.brownModeMassive,
+        context: context,
+      );
+
       final content = Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             "${inputTime.substring(0, inputTime.length - 3)} - $description",
-            style: regular8.copyWith(fontWeight: light, color: neutral600),
+            style: QPTextStyle.getCaption(context).copyWith(
+              color: textColor,
+            ),
           ),
           Text(
             updateDesc,
-            style: regular8.copyWith(fontWeight: light, color: neutral600),
+            style: QPTextStyle.getCaption(context).copyWith(
+              color: textColor,
+            ),
           ),
         ],
       );

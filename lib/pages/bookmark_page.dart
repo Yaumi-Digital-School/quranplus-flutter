@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/widgets/utils/general_dialog.dart';
 
 class BookmarkPage extends StatefulWidget {
   const BookmarkPage({Key? key}) : super(key: key);
@@ -138,7 +139,10 @@ class _BookmarkPageState extends State<BookmarkPage> {
                       ),
                     ],
                   );
-                  showDialog(context: context, builder: (context) => hapus);
+                  showQPGeneralDialog(
+                    context: context,
+                    builder: (context) => hapus,
+                  );
                 },
               ),
             ],
