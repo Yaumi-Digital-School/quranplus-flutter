@@ -8,7 +8,6 @@ class ReadingSettings {
     this.isWithTafsirs = true,
     this.isWithLatins = true,
     this.isWithTranslations = true,
-    this.fontSizeLandscape = 1,
     this.fontSize = 1,
     this.valueFontSize = 12,
     this.valueFontSizeArabic = 24,
@@ -23,7 +22,7 @@ class ReadingSettings {
   bool isWithLatins;
   bool isWithTranslations;
   int fontSize;
-  int fontSizeLandscape;
+
   double valueFontSize;
   double valueFontSizeArabic;
   double valueFontSizeArabicFirstSheet;
@@ -43,7 +42,6 @@ class ReadingSettings {
     bool? isWithTranslations,
     double? valueFontSize,
     double? valueFontSizeArabic,
-    int? fontSizeLandscape,
     int? fontSize,
     bool? isInFullPage,
     double? valueFontSizeArabicFirstSheet,
@@ -55,7 +53,6 @@ class ReadingSettings {
       valueFontSize: valueFontSize ?? this.valueFontSize,
       valueFontSizeArabic: valueFontSizeArabic ?? this.valueFontSizeArabic,
       fontSize: fontSize ?? this.fontSize,
-      fontSizeLandscape: fontSizeLandscape ?? this.fontSizeLandscape,
       valueFontSizeArabicFirstSheet:
           valueFontSizeArabicFirstSheet ?? this.valueFontSizeArabicFirstSheet,
       isInFullPage: isInFullPage ?? this.isInFullPage,

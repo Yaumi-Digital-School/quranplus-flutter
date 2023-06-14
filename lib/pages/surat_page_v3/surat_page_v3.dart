@@ -278,15 +278,13 @@ class _SuratPageV3State extends State<SuratPageV3> {
               isWithLatins: state.readingSettings!.isWithLatins,
               isWithTranslation: state.readingSettings!.isWithTranslations,
               isWithTafsir: state.readingSettings!.isWithTafsirs,
-              fontSize: orientation == Orientation.landscape
-                  ? state.readingSettings!.fontSizeLandscape
-                  : state.readingSettings!.fontSize,
+              fontSize: state.readingSettings!.fontSize,
               onTapLatins: (value) => notifier.setisWithLatins(value),
               onTapTranslation: (value) =>
                   notifier.setIsWithTranslations(value),
               onTapTafsir: (value) => notifier.setIsWithTafsirs(value),
-              onTapAdd: () => notifier.addFontSize(orientation),
-              onTapMinus: () => notifier.minusFontSize(orientation),
+              onTapAdd: () => notifier.addFontSize(),
+              onTapMinus: () => notifier.minusFontSize(),
             ),
           ),
         );
@@ -750,6 +748,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
         pageNumberInQuran: pageNumberInQuran,
         state: state,
         notifier: notifier,
+        orientation: orientation,
       );
 
       ayahs.add(w);
@@ -773,6 +772,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     required int pageNumberInQuran,
     required SuratPageState state,
     required SuratPageStateNotifier notifier,
+    required Orientation orientation,
   }) {
     String allVerses = '';
     String fontFamilyPage = 'Page$pageNumberInQuran';
@@ -891,7 +891,9 @@ class _SuratPageV3State extends State<SuratPageV3> {
                   child: Text(
                     latin!,
                     style: QPTextStyle.getDescription1Regular(context).copyWith(
-                      fontSize: state.readingSettings?.valueFontSize,
+                      fontSize: orientation == Orientation.landscape
+                          ? state.readingSettings!.valueFontSizeLandscape
+                          : state.readingSettings?.valueFontSize,
                       color: QPColors.getColorBasedTheme(
                         dark: QPColors.blackSoft,
                         light: QPColors.neutral600,
