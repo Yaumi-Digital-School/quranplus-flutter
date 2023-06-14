@@ -13,6 +13,7 @@ import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/widgets/adaptive_theme_dialog.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/daily_progress_tracker.dart';
+import 'package:qurantafsir_flutter/widgets/utils/general_dialog.dart';
 
 import 'habit_personal_state_notifier.dart';
 
@@ -239,9 +240,9 @@ class _HabitPersonalState extends State<HabitPersonalView> {
     HabitDailySummary currentProgress,
     HabitPersonalStateNotifier habitProgressStateNotifier,
   ) async {
-    final isRefresh = await showDialog(
+    final isRefresh = await showQPGeneralDialog(
           context: context,
-          builder: (context) {
+          builder: (BuildContext context) {
             return AdaptiveThemeDialog(
               child: ChangeDailyTargetView(
                 habitDailySummary: currentProgress,
@@ -259,7 +260,7 @@ class _HabitPersonalState extends State<HabitPersonalView> {
     HabitDailySummary currentProgress,
     HabitPersonalStateNotifier habitProgressStateNotifier,
   ) async {
-    final isRefresh = await showDialog(
+    final isRefresh = await showQPGeneralDialog(
           context: context,
           builder: (context) {
             return AdaptiveThemeDialog(
