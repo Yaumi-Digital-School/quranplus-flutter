@@ -8,7 +8,7 @@ class ReadingSettings {
     this.isWithTafsirs = true,
     this.isWithLatins = true,
     this.isWithTranslations = true,
-    this.fontSizeLandscape = 2,
+    this.fontSizeLandscape = 1,
     this.fontSize = 1,
     this.valueFontSize = 12,
     this.valueFontSizeArabic = 24,

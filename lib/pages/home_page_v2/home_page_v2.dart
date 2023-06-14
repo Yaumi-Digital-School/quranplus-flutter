@@ -281,7 +281,7 @@ class _HomePageV2State extends State<HomePageV2> {
 }
 
 class ListSuratByJuz extends StatelessWidget {
-  const ListSuratByJuz({
+  ListSuratByJuz({
     Key? key,
     required this.notifier,
     required this.parentState,
@@ -290,7 +290,7 @@ class ListSuratByJuz extends StatelessWidget {
   final HomePageStateNotifier notifier;
   final HomePageState parentState;
 
-  double diameterButtonSearch(BuildContext context) => 65;
+  double diameterButtonSearch = 65;
 
   @override
   Widget build(BuildContext context) {
@@ -298,89 +298,85 @@ class ListSuratByJuz extends StatelessWidget {
       builder: (BuildContext context, WidgetRef ref, Widget? child) {
         bool isLoggedIn = ref.watch(authenticationService).isLoggedIn;
 
-        return OrientationBuilder(
-          builder: (context, orientation) {
-            return Stack(
-              children: <Widget>[
-                Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 30,
-                      ),
-                      alignment: Alignment.centerLeft,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color.fromRGBO(
-                              0,
-                              0,
-                              0,
-                              0.08,
-                            ),
-                            blurRadius: 15,
-                            offset: Offset(4, 4),
-                          ),
-                        ],
-                      ),
-                      child: Text(
-                        parentState.name.isNotEmpty
-                            ? 'Assalamu’alaikum, ${parentState.name}'
-                            : 'Assalamu’alaikum',
-                        textAlign: TextAlign.start,
-                        style: QPTextStyle.getSubHeading4SemiBold(context),
-                      ),
-                    ),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                24,
-                                16,
-                                24,
-                                24,
-                              ),
-                              child: _buildHabitInformationCard(
-                                context,
-                                isLoggedIn,
-                                parentState,
-                                notifier,
-                              ),
-                            ),
-                            if (parentState.juzElements == null ||
-                                parentState.listTaddaburAvailables == null)
-                              const _ListSurahByJuzSkeleton(),
-                            if (parentState.juzElements != null)
-                              _buildSurahByJuzContainer(),
-                          ],
+        return Stack(
+          children: <Widget>[
+            Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 30,
+                  ),
+                  alignment: Alignment.centerLeft,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color.fromRGBO(
+                          0,
+                          0,
+                          0,
+                          0.08,
                         ),
+                        blurRadius: 15,
+                        offset: Offset(4, 4),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                  child: Text(
+                    parentState.name.isNotEmpty
+                        ? 'Assalamu’alaikum, ${parentState.name}'
+                        : 'Assalamu’alaikum',
+                    textAlign: TextAlign.start,
+                    style: QPTextStyle.getSubHeading4SemiBold(context),
+                  ),
                 ),
-                Positioned(
-                  bottom: diameterButtonSearch(context) * 2 / 6,
-                  right: diameterButtonSearch(context) * 2 / 6,
-                  child: Container(
-                    width: diameterButtonSearch(context),
-                    height: diameterButtonSearch(context),
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: darkGreen,
-                    ),
-                    child: _ButtonSearch(
-                      versePagetoAyah: parentState.ayahPage,
-                      state: parentState,
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            24,
+                            16,
+                            24,
+                            24,
+                          ),
+                          child: _buildHabitInformationCard(
+                            context,
+                            isLoggedIn,
+                            parentState,
+                            notifier,
+                          ),
+                        ),
+                        if (parentState.juzElements == null ||
+                            parentState.listTaddaburAvailables == null)
+                          const _ListSurahByJuzSkeleton(),
+                        if (parentState.juzElements != null)
+                          _buildSurahByJuzContainer(),
+                      ],
                     ),
                   ),
                 ),
               ],
-            );
-          },
+            ),
+            Positioned(
+              bottom: diameterButtonSearch * 2 / 6,
+              right: diameterButtonSearch * 2 / 6,
+              child: Container(
+                width: diameterButtonSearch,
+                height: diameterButtonSearch,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: darkGreen,
+                ),
+                child: _ButtonSearch(
+                  versePagetoAyah: parentState.ayahPage,
+                  state: parentState,
+                ),
+              ),
+            ),
+          ],
         );
       },
     );

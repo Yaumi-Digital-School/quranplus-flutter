@@ -432,7 +432,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   void minusFontSize(Orientation orientation) {
     ReadingSettings settings = state.readingSettings!;
 
-    if (settings.fontSizeLandscape > 2) {
+    if (settings.fontSizeLandscape >= 2) {
       settings.fontSizeLandscape--;
     }
 
@@ -465,27 +465,35 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     ReadingSettings readingSettings,
     Orientation orientation,
   ) {
+    print(readingSettings.fontSizeLandscape);
+    print("=======");
+    print(readingSettings.fontSize);
     if (currentLandscapeFontSize != readingSettings.fontSizeLandscape) {
       currentLandscapeFontSize = readingSettings.fontSizeLandscape;
       switch (readingSettings.fontSizeLandscape) {
-        case 2:
+        case 1:
           readingSettings.valueFontSizeLandscape = 16;
           readingSettings.valueFontSizeArabicLandscape = 36;
           readingSettings.valueFontSizeArabicFirstSheetLandscape = 47;
           break;
-        case 3:
+        case 2:
           readingSettings.valueFontSizeLandscape = 20;
           readingSettings.valueFontSizeArabicLandscape = 40;
           readingSettings.valueFontSizeArabicFirstSheetLandscape = 51;
           break;
-        case 4:
+        case 3:
           readingSettings.valueFontSizeLandscape = 24;
           readingSettings.valueFontSizeArabicLandscape = 44;
           readingSettings.valueFontSizeArabicFirstSheetLandscape = 55;
           break;
-        case 5:
+        case 4:
           readingSettings.valueFontSizeLandscape = 28;
           readingSettings.valueFontSizeArabicLandscape = 48;
+          readingSettings.valueFontSizeArabicFirstSheetLandscape = 63;
+          break;
+        case 5:
+          readingSettings.valueFontSizeLandscape = 32;
+          readingSettings.valueFontSizeArabicLandscape = 52;
           readingSettings.valueFontSizeArabicFirstSheetLandscape = 59;
           break;
         default:

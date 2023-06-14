@@ -593,6 +593,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
           style: TextStyle(
             height: 1.5,
             fontFamily: fontFamily,
+            color: Theme.of(context).colorScheme.primary,
           ),
           maxLines: 1,
           maxFontSize: double.infinity,
@@ -620,6 +621,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
             style: TextStyle(
               height: 1.5,
               fontFamily: fontFamily,
+              color: Theme.of(context).colorScheme.primary,
             ),
             maxLines: 1,
             maxFontSize: double.infinity,
