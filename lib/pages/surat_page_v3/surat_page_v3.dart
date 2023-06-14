@@ -155,8 +155,6 @@ class _SuratPageV3State extends State<SuratPageV3> {
         }
         Orientation orientation = MediaQuery.of(context).orientation;
 
-        if (orientation == Orientation.landscape) {}
-
         return WillPopScope(
           onWillPop: () async => _onTapBack(
             notifier: notifier,
@@ -494,7 +492,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
         child: Container(
           child: Column(
             mainAxisSize: MainAxisSize.max,
-            //mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: textInWidgets,
           ),
         ),

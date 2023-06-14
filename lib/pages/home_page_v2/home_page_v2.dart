@@ -290,10 +290,8 @@ class ListSuratByJuz extends StatelessWidget {
   final HomePageStateNotifier notifier;
   final HomePageState parentState;
 
-  double diameterButtonSearch(BuildContext context) =>
-      MediaQuery.of(context).size.width * 1 / 6;
-  double diameterButtonSearchLandscape(BuildContext context) =>
-      MediaQuery.of(context).size.width * 0.1;
+  double diameterButtonSearch(BuildContext context) => 65;
+
   @override
   Widget build(BuildContext context) {
     return Consumer(
@@ -368,12 +366,8 @@ class ListSuratByJuz extends StatelessWidget {
                   bottom: diameterButtonSearch(context) * 2 / 6,
                   right: diameterButtonSearch(context) * 2 / 6,
                   child: Container(
-                    width: orientation == Orientation.portrait
-                        ? diameterButtonSearch(context)
-                        : diameterButtonSearchLandscape(context),
-                    height: orientation == Orientation.portrait
-                        ? diameterButtonSearch(context)
-                        : diameterButtonSearchLandscape(context),
+                    width: diameterButtonSearch(context),
+                    height: diameterButtonSearch(context),
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: darkGreen,
