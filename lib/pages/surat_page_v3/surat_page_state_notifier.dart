@@ -136,7 +136,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   bool? _isBookmarkChanged;
   bool? _isFavoriteAyahChanged;
   bool? _isHabitDailySummaryChanged;
-  int currentLandscapeFontSize = 2;
+
   int currentFontSize = 1;
 
   ValueNotifier<int> recordedPagesAsRead = ValueNotifier(0);
