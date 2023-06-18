@@ -44,6 +44,7 @@ class RegistrationView extends StatelessWidget {
                   Image.asset(
                     IconPath.iconSync,
                     width: 24,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                   const SizedBox(width: 16),
                   Expanded(
@@ -72,6 +73,7 @@ class RegistrationView extends StatelessWidget {
                   Image.asset(
                     IconPath.iconHabitArrow,
                     width: 24,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                   const SizedBox(width: 16),
                   Expanded(
@@ -109,6 +111,7 @@ class RegistrationView extends StatelessWidget {
                   Image.asset(
                     IconPath.iconGroupMember,
                     width: 24,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                   const SizedBox(
                     width: 16,
