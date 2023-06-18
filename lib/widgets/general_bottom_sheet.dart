@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
@@ -168,39 +169,48 @@ class GeneralBottomSheet {
     BuildContext context,
     Function() onRefreshClicked,
   ) {
-    return showGeneralBottomSheet(
-      context,
-      '',
-      Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset(
-              IconPath.iconNoWifi,
-              width: 36,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'No Internet Connection',
-              style: subHeadingSemiBold1,
-            ),
-            const SizedBox(height: 28),
-            TextButton.icon(
-              icon: Image.asset(
-                IconPath.iconRefresh,
-                width: 24,
+    return Future.delayed(Duration.zero, () {
+      showBaseBottomSheet(
+        context: context,
+        widgetChild: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 24),
+          color: QPColors.getColorBasedTheme(
+            dark: QPColors.darkModeMassive,
+            light: QPColors.whiteFair,
+            brown: QPColors.brownModeRoot,
+            context: context,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                IconPath.iconNoWifi,
+                width: 36,
+                color: Theme.of(context).colorScheme.primary,
               ),
-              label: Text(
-                'Refresh',
-                style: captionSemiBold1.apply(color: primary500),
+              const SizedBox(height: 8),
+              Text(
+                'No Internet Connection',
+                style: QPTextStyle.getSubHeading1SemiBold(context),
               ),
-              onPressed: onRefreshClicked,
-            ),
-          ],
+              const SizedBox(height: 28),
+              TextButton.icon(
+                icon: Image.asset(
+                  IconPath.iconRefresh,
+                  width: 24,
+                ),
+                label: Text(
+                  'Refresh',
+                  style: QPTextStyle.getCaption1SemiBold(context)
+                      .copyWith(color: QPColors.primaryGreen500),
+                ),
+                onPressed: onRefreshClicked,
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
