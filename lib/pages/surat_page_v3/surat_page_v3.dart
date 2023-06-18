@@ -462,16 +462,17 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
       }
     }
 
-    while (state.separatorBuilderIndex < state.fullPageSeparators!.length &&
-        state.fullPageSeparators![state.separatorBuilderIndex].page == page) {
+    while (notifier.separatorBuilderIndex < state.fullPageSeparators!.length &&
+        state.fullPageSeparators![notifier.separatorBuilderIndex].page ==
+            page) {
       final FullPageSeparator separator =
-          state.fullPageSeparators![state.separatorBuilderIndex];
+          state.fullPageSeparators![notifier.separatorBuilderIndex];
 
       if (!separator.bismillah) {
         texts[separator.line - 1] = separator.unicode!;
       }
 
-      state.separatorBuilderIndex++;
+      notifier.separatorBuilderIndex++;
     }
 
     List<Widget> textInWidgets = texts
@@ -662,6 +663,8 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
 
       allPages.add(page);
     }
+
+    notifier.resetSeparatorBuilderIndex();
 
     return GestureDetector(
       onTap: () {

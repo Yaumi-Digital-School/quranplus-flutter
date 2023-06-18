@@ -45,7 +45,6 @@ class SuratPageState {
   List<List<String>>? latins;
   PageController? pageController;
   ReadingSettings? readingSettings;
-  int separatorBuilderIndex = 0;
   bool isBookmarkFetched;
   bool isRecording;
   bool isLoading;
@@ -62,8 +61,6 @@ class SuratPageState {
     bool? isRecording,
     bool? isLoading,
   }) {
-    separatorBuilderIndex = 0;
-
     return SuratPageState(
       isBookmarkFetched: isBookmarkFetched ?? this.isBookmarkFetched,
       pages: pages ?? this.pages,
@@ -138,6 +135,10 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   bool? _isHabitDailySummaryChanged;
 
   int currentFontSize = 1;
+  int separatorBuilderIndex = 0;
+  void resetSeparatorBuilderIndex() {
+    separatorBuilderIndex = 0;
+  }
 
   ValueNotifier<int> recordedPagesAsRead = ValueNotifier(0);
   List<int> recordedPagesList = <int>[];
