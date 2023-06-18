@@ -258,9 +258,6 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                     onPressed: () => notifier.setIsInFullPage(
                       !state.readingSettings!.isInFullPage,
                     ),
-                    onPressed: () => notifier.setIsInFullPage(
-                      !state.readingSettings!.isInFullPage,
-                    ),
                   ),
                   IconButton(
                     icon: const Icon(CustomIcons.sliders),
@@ -612,6 +609,23 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
           fontFamily: fontFamily,
           fontSize: 30,
           color: Theme.of(context).colorScheme.primary,
+        ),
+      );
+    }
+    if (orientation == Orientation.landscape) {
+      return SingleChildScrollView(
+        child: Center(
+          child: AutoSizeText(
+            text,
+            style: TextStyle(
+              height: 1.5,
+              fontFamily: fontFamily,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            maxLines: 1,
+            maxFontSize: double.infinity,
+            minFontSize: 50,
+          ),
         ),
       );
     }
