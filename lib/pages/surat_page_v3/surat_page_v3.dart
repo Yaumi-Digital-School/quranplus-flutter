@@ -491,12 +491,11 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
 
     if (orientation == Orientation.landscape) {
       return SingleChildScrollView(
-        child: Container(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: textInWidgets,
-          ),
+        padding: const EdgeInsets.only(top: 40),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: textInWidgets,
         ),
       );
     }
