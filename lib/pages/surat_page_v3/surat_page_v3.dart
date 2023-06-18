@@ -69,7 +69,7 @@ class SuratPageV3Param {
   final bool isStartTracking;
 }
 
-class SuratPageV3 extends StatefulWidget {
+class SuratPageV3 extends ConsumerStatefulWidget {
   const SuratPageV3({
     Key? key,
     required this.param,
@@ -78,13 +78,16 @@ class SuratPageV3 extends StatefulWidget {
   final SuratPageV3Param param;
 
   @override
-  State<StatefulWidget> createState() {
+  ConsumerState<SuratPageV3> createState() {
     return _SuratPageV3State();
   }
 }
 
-class _SuratPageV3State extends State<SuratPageV3> {
+class _SuratPageV3State extends ConsumerState<SuratPageV3> {
   late AutoScrollController scrollController;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  late StateNotifierProvider<SuratPageStateNotifier, SuratPageState>
+      suratPageProvider;
 
   @override
   void initState() {
@@ -93,6 +96,21 @@ class _SuratPageV3State extends State<SuratPageV3> {
     scrollController = AutoScrollController();
     VisibilityDetectorController.instance.updateInterval =
         const Duration(milliseconds: 300);
+    suratPageProvider =
+        StateNotifierProvider<SuratPageStateNotifier, SuratPageState>(
+      (ref) {
+        return SuratPageStateNotifier(
+          startPageInIndex: widget.param.startPageInIndex,
+          sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
+          bookmarkApi: ref.watch(bookmarkApiProvider),
+          bookmarksService: ref.watch(bookmarksService),
+          authenticationService: ref.watch(authenticationService),
+          scrollController: scrollController,
+          isLoggedIn: ref.watch(authenticationService).isLoggedIn,
+          habitDailySummaryService: ref.watch(habitDailySummaryService),
+        );
+      },
+    );
   }
 
   @override
@@ -103,24 +121,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
 
   @override
   Widget build(BuildContext context) {
-    final _scaffoldKey = GlobalKey<ScaffoldState>();
-
     return StateNotifierConnector<SuratPageStateNotifier, SuratPageState>(
-      stateNotifierProvider:
-          StateNotifierProvider<SuratPageStateNotifier, SuratPageState>(
-        (ref) {
-          return SuratPageStateNotifier(
-            startPageInIndex: widget.param.startPageInIndex,
-            sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
-            bookmarkApi: ref.watch(bookmarkApiProvider),
-            bookmarksService: ref.watch(bookmarksService),
-            authenticationService: ref.watch(authenticationService),
-            scrollController: scrollController,
-            isLoggedIn: ref.watch(authenticationService).isLoggedIn,
-            habitDailySummaryService: ref.watch(habitDailySummaryService),
-          );
-        },
-      ),
+      stateNotifierProvider: suratPageProvider,
       onStateNotifierReady: (notifier, ref) async {
         if (widget.param.isStartTracking) {
           Future.delayed(Duration.zero, () {
@@ -253,6 +255,9 @@ class _SuratPageV3State extends State<SuratPageV3> {
                   ),
                   IconButton(
                     icon: const Icon(CustomIcons.book),
+                    onPressed: () => notifier.setIsInFullPage(
+                      !state.readingSettings!.isInFullPage,
+                    ),
                     onPressed: () => notifier.setIsInFullPage(
                       !state.readingSettings!.isInFullPage,
                     ),
@@ -607,24 +612,6 @@ class _SuratPageV3State extends State<SuratPageV3> {
           fontFamily: fontFamily,
           fontSize: 30,
           color: Theme.of(context).colorScheme.primary,
-        ),
-      );
-    }
-
-    if (orientation == Orientation.landscape) {
-      return SingleChildScrollView(
-        child: Center(
-          child: AutoSizeText(
-            text,
-            style: TextStyle(
-              height: 1.5,
-              fontFamily: fontFamily,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            maxLines: 1,
-            maxFontSize: double.infinity,
-            minFontSize: 50,
-          ),
         ),
       );
     }

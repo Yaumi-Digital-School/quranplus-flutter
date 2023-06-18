@@ -41,7 +41,7 @@ class ForceUpdateDialog extends StatelessWidget {
             const SizedBox(
               height: 28,
             ),
-            ButtonSecondary(
+            ButtonPrimary(
               label: 'Update',
               onTap: () {
                 StoreRedirect.redirect(

@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/state_notifiers/theme_state_notifier.dart';
+import 'package:qurantafsir_flutter/widgets/button.dart';
+import 'package:qurantafsir_flutter/widgets/change_theme_bottom_sheet.dart';
+import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
+import 'package:qurantafsir_flutter/widgets/theme_box_option_widget.dart';
 
 enum ContentType {
   arab,
@@ -10,7 +18,7 @@ enum ContentType {
   latins,
 }
 
-class SuratPageSettingsDrawer extends StatefulWidget {
+class SuratPageSettingsDrawer extends ConsumerStatefulWidget {
   const SuratPageSettingsDrawer({
     Key? key,
     required this.onTapTranslation,
@@ -36,10 +44,12 @@ class SuratPageSettingsDrawer extends StatefulWidget {
   final Function() onTapMinus;
 
   @override
-  State<StatefulWidget> createState() => _SuratPageSettingsDrawerState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _SuratPageSettingsDrawerState();
 }
 
-class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
+class _SuratPageSettingsDrawerState
+    extends ConsumerState<SuratPageSettingsDrawer> {
   late bool isWithTranslation;
   late bool isWithTafsir;
   late bool isWithLatins;
@@ -61,7 +71,13 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
         padding: const EdgeInsets.only(top: 60),
         child: ListView(
           padding: EdgeInsets.zero,
-          children: <Widget>[_buildContentSection(), _buildChangeFontSize()],
+          children: <Widget>[
+            _buildContentSection(),
+            _buildDivider(),
+            _buildChangeFontSize(),
+            _buildDivider(),
+            _buildSelectTheme(),
+          ],
         ),
       ),
     );
@@ -120,7 +136,6 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
             ),
           ],
         ),
-        _buildDivider(),
       ],
     );
   }
@@ -230,6 +245,9 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
             ),
           ],
         ),
+        const SizedBox(
+          height: 18,
+        ),
       ],
     );
   }
@@ -259,6 +277,58 @@ class _SuratPageSettingsDrawerState extends State<SuratPageSettingsDrawer> {
           iconButton,
           color: colorIcon,
         ),
+      ),
+    );
+  }
+
+  Widget _buildSelectTheme() {
+    final ThemeStateNotifier themeMode = ref.read(themeProvider.notifier);
+    final QPThemeMode theme = ref.read(themeProvider);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 24,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const SizedBox(
+            height: 24,
+          ),
+          Text(
+            'Selected Theme',
+            style: QPTextStyle.getSubHeading3SemiBold(context).copyWith(
+              color: QPColors.getColorBasedTheme(
+                dark: QPColors.whiteFair,
+                light: QPColors.brandFair,
+                brown: QPColors.brandHeavy,
+                context: context,
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 18,
+          ),
+          SizedBox(
+            width: 98,
+            child: ThemeBoxOptionWidget(
+              theme: theme.label,
+              colorParam: themeMode.getThemeOptionColor(),
+            ),
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          ButtonSecondary(
+            label: 'Change Theme',
+            onTap: () {
+              GeneralBottomSheet.showBaseBottomSheet(
+                context: context,
+                widgetChild: const ChangeThemeBottomSheet(),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

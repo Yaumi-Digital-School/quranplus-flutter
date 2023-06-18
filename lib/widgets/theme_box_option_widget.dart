@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/core/models/theme_option_color_param.dart';
 
 class ThemeBoxOptionWidget extends StatelessWidget {
   const ThemeBoxOptionWidget({
     required this.theme,
-    required this.firstColor,
-    required this.secondColor,
-    required this.thirdColor,
-    required this.isSelected,
-    required this.onTap,
+    required this.colorParam,
+    this.onTap,
+    this.isSelected = false,
     Key? key,
   }) : super(key: key);
   final String theme;
-  final Color firstColor;
-  final Color secondColor;
-  final Color thirdColor;
+  final ThemeOptionColorParam colorParam;
   final bool isSelected;
-  final void Function() onTap;
+  final VoidCallback? onTap;
 
   final int itemCount = 3;
 
@@ -34,11 +31,12 @@ class ThemeBoxOptionWidget extends StatelessWidget {
               left: 12,
             ),
             decoration: BoxDecoration(
-              color: firstColor,
+              color: colorParam.firstColor,
               borderRadius: const BorderRadius.all(Radius.circular(8)),
               border: Border.fromBorderSide(
                 BorderSide(
-                  color: isSelected ? QPColors.brandFair : firstColor,
+                  color:
+                      isSelected ? QPColors.brandFair : colorParam.firstColor,
                   width: 2,
                 ),
               ),
@@ -51,7 +49,7 @@ class ThemeBoxOptionWidget extends StatelessWidget {
                 bottom: 4,
               ),
               decoration: BoxDecoration(
-                color: secondColor,
+                color: colorParam.secondColor,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(8),
                   topRight: Radius.circular(8),
@@ -64,7 +62,7 @@ class ThemeBoxOptionWidget extends StatelessWidget {
                     height: 18,
                     margin: const EdgeInsets.only(bottom: 4),
                     decoration: BoxDecoration(
-                      color: thirdColor,
+                      color: colorParam.thirdColor,
                       borderRadius: const BorderRadius.all(Radius.circular(8)),
                     ),
                   ),

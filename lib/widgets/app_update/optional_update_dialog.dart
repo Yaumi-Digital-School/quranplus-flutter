@@ -48,7 +48,7 @@ class OptionalUpdateDialog extends ConsumerWidget {
             const SizedBox(
               height: 28,
             ),
-            ButtonSecondary(
+            ButtonPrimary(
               label: 'Update',
               onTap: () {
                 StoreRedirect.redirect(
@@ -60,7 +60,7 @@ class OptionalUpdateDialog extends ConsumerWidget {
             const SizedBox(
               height: 12,
             ),
-            ButtonPrimary(
+            ButtonSecondary(
               label: 'No, Later',
               onTap: () {
                 SharedPreferenceService sharedpref =
