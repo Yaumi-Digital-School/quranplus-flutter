@@ -110,13 +110,7 @@ class ButtonSecondary extends StatelessWidget {
           ),
           Text(
             label,
-            style: bodySemibold2
-                .apply(
-                  color: primary500,
-                )
-                .copyWith(
-                  fontSize: labelFontSize,
-                ),
+            style: textStyle ?? labelStyle,
           ),
         ],
       );
