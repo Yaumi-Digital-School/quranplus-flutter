@@ -7,6 +7,24 @@ enum QPThemeMode {
   brown,
 }
 
+final Map<QPThemeMode, String> themeModeToLabelMode = <QPThemeMode, String>{
+  QPThemeMode.dark: 'Dark Mode',
+  QPThemeMode.brown: 'Brown Mode',
+  QPThemeMode.light: 'Light Mode',
+};
+
+final Map<QPThemeMode, String> themeModeToLabel = <QPThemeMode, String>{
+  QPThemeMode.dark: 'Dark',
+  QPThemeMode.brown: 'Brown',
+  QPThemeMode.light: 'Light',
+};
+
+extension QPThemeModeExtension on QPThemeMode {
+  String get labelMode => themeModeToLabelMode[this] ?? '';
+
+  String get label => themeModeToLabel[this] ?? '';
+}
+
 class QPThemeData {
   static ThemeData get lightThemeData {
     return ThemeData(

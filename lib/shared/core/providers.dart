@@ -157,10 +157,13 @@ final StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>
 );
 
 final StateNotifierProvider<ThemeStateNotifier, QPThemeMode> themeProvider =
-    StateNotifierProvider<ThemeStateNotifier, QPThemeMode>(((ref) =>
-        ThemeStateNotifier(
-          sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
-        )));
+    StateNotifierProvider<ThemeStateNotifier, QPThemeMode>(
+  ((ref) => ThemeStateNotifier(
+        sharedPreferenceService: ref.watch(
+          sharedPreferenceServiceProvider,
+        ),
+      )),
+);
 
 final Provider<AliceService> aliceServiceProvider =
     Provider<AliceService>((ref) {

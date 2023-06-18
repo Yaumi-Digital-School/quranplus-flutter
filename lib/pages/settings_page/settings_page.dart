@@ -148,7 +148,7 @@ class SettingsPage extends StatelessWidget {
     SettingsPageStateNotifier notifier,
     WidgetRef ref,
   ) {
-    final stateTheme = ref.watch(themeProvider);
+    final QPThemeMode theme = ref.watch(themeProvider);
 
     return Padding(
       padding: const EdgeInsets.only(right: 24, left: 24, bottom: 24),
@@ -169,7 +169,7 @@ class SettingsPage extends StatelessWidget {
               _onThemesTap(context);
             },
             title: "Themes",
-            subtitle: _getModeString(stateTheme),
+            subtitle: theme.labelMode,
           ),
           const HorizontalDivider(),
           ListItemWidget(
@@ -189,8 +189,8 @@ class SettingsPage extends StatelessWidget {
                 "Quran Plus Version",
                 style: QPTextStyle.getSubHeading3Regular(context).copyWith(
                   color: QPColors.getColorBasedTheme(
-                    dark: QPColors.whiteRoot,
-                    light: QPColors.whiteFair,
+                    dark: QPColors.blackFair,
+                    light: QPColors.blackFair,
                     brown: QPColors.brownModeMassive,
                     context: context,
                   ),
@@ -235,17 +235,6 @@ class SettingsPage extends StatelessWidget {
       param.nextPath ?? '',
       arguments: routeParams,
     );
-  }
-
-  String _getModeString(QPThemeMode mode) {
-    switch (mode) {
-      case QPThemeMode.dark:
-        return "Dark Mode";
-      case QPThemeMode.brown:
-        return "Brown Mode";
-      default:
-        return "Light Mode";
-    }
   }
 
   _onTapButtonSignIn(

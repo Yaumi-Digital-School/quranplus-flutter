@@ -45,7 +45,7 @@ class AccountDeletionInformationView extends StatelessWidget {
                 'Delete Account',
                 style: QPTextStyle.getSubHeading2SemiBold(context),
               ),
-              backgroundColor: QPColors.whiteFair,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               leading: IconButton(
                 onPressed: () => Navigator.of(context).pop(),
                 icon: const Icon(
