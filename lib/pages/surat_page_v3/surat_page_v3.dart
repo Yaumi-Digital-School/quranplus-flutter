@@ -156,6 +156,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
             ),
           );
         }
+        Orientation orientation = MediaQuery.of(context).orientation;
 
         return WillPopScope(
           onWillPop: () async => _onTapBack(
@@ -581,6 +582,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
       }
 
       return _buildBasmalah(
+        orientation: orientation,
         isInFullPage: true,
       );
     }
@@ -610,11 +612,9 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
         ),
       );
     }
-
     if (orientation == Orientation.landscape) {
       return SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 30, right: 30),
+        child: Center(
           child: AutoSizeText(
             text,
             style: TextStyle(
@@ -822,7 +822,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
         key: key,
         child: Column(
           children: <Widget>[
-            if (useBasmalahBeforeAyah) _buildBasmalah(),
+            if (useBasmalahBeforeAyah) _buildBasmalah(orientation: orientation),
             GestureDetector(
               onLongPress: () {
                 GeneralBottomSheet().showGeneralBottomSheet(
@@ -1033,11 +1033,12 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
 
   Widget _buildBasmalah({
     bool isInFullPage = false,
+    required Orientation orientation,
   }) {
     if (isInFullPage) {
       return Image.asset(
         'images/bismillah_v2.png',
-        width: 170,
+        width: orientation == Orientation.landscape ? 300 : 170,
         color: Theme.of(context).colorScheme.primary,
       );
     }
