@@ -122,6 +122,10 @@ class QPTextStyle {
 
   static TextStyle getCaption(BuildContext context) => getBaseTextStyle(context)
       .copyWith(fontWeight: QPFontWeight.light, fontSize: 10);
+
+  static TextStyle getCaption1SemiBold(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.semiBold, fontSize: 12);
 }
 
 class QPFontWeight {
