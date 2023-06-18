@@ -281,7 +281,7 @@ class _HomePageV2State extends State<HomePageV2> {
 }
 
 class ListSuratByJuz extends StatelessWidget {
-  const ListSuratByJuz({
+  ListSuratByJuz({
     Key? key,
     required this.notifier,
     required this.parentState,
@@ -290,8 +290,7 @@ class ListSuratByJuz extends StatelessWidget {
   final HomePageStateNotifier notifier;
   final HomePageState parentState;
 
-  double diameterButtonSearch(BuildContext context) =>
-      MediaQuery.of(context).size.width * 1 / 6;
+  double diameterButtonSearch = 65;
 
   @override
   Widget build(BuildContext context) {
@@ -304,8 +303,10 @@ class ListSuratByJuz extends StatelessWidget {
             Column(
               children: [
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 30,
+                  ),
                   alignment: Alignment.centerLeft,
                   decoration: BoxDecoration(
                     color: Theme.of(context).scaffoldBackgroundColor,
@@ -360,11 +361,11 @@ class ListSuratByJuz extends StatelessWidget {
               ],
             ),
             Positioned(
-              bottom: diameterButtonSearch(context) * 2 / 6,
-              right: diameterButtonSearch(context) * 2 / 6,
+              bottom: diameterButtonSearch * 2 / 6,
+              right: diameterButtonSearch * 2 / 6,
               child: Container(
-                width: diameterButtonSearch(context),
-                height: diameterButtonSearch(context),
+                width: diameterButtonSearch,
+                height: diameterButtonSearch,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: darkGreen,

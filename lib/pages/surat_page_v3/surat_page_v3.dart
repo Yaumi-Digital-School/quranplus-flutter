@@ -69,7 +69,7 @@ class SuratPageV3Param {
   final bool isStartTracking;
 }
 
-class SuratPageV3 extends StatefulWidget {
+class SuratPageV3 extends ConsumerStatefulWidget {
   const SuratPageV3({
     Key? key,
     required this.param,
@@ -78,13 +78,16 @@ class SuratPageV3 extends StatefulWidget {
   final SuratPageV3Param param;
 
   @override
-  State<StatefulWidget> createState() {
+  ConsumerState<SuratPageV3> createState() {
     return _SuratPageV3State();
   }
 }
 
-class _SuratPageV3State extends State<SuratPageV3> {
+class _SuratPageV3State extends ConsumerState<SuratPageV3> {
   late AutoScrollController scrollController;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  late StateNotifierProvider<SuratPageStateNotifier, SuratPageState>
+      suratPageProvider;
 
   @override
   void initState() {
@@ -93,6 +96,21 @@ class _SuratPageV3State extends State<SuratPageV3> {
     scrollController = AutoScrollController();
     VisibilityDetectorController.instance.updateInterval =
         const Duration(milliseconds: 300);
+    suratPageProvider =
+        StateNotifierProvider<SuratPageStateNotifier, SuratPageState>(
+      (ref) {
+        return SuratPageStateNotifier(
+          startPageInIndex: widget.param.startPageInIndex,
+          sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
+          bookmarkApi: ref.watch(bookmarkApiProvider),
+          bookmarksService: ref.watch(bookmarksService),
+          authenticationService: ref.watch(authenticationService),
+          scrollController: scrollController,
+          isLoggedIn: ref.watch(authenticationService).isLoggedIn,
+          habitDailySummaryService: ref.watch(habitDailySummaryService),
+        );
+      },
+    );
   }
 
   @override
@@ -103,24 +121,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
 
   @override
   Widget build(BuildContext context) {
-    final _scaffoldKey = GlobalKey<ScaffoldState>();
-
     return StateNotifierConnector<SuratPageStateNotifier, SuratPageState>(
-      stateNotifierProvider:
-          StateNotifierProvider<SuratPageStateNotifier, SuratPageState>(
-        (ref) {
-          return SuratPageStateNotifier(
-            startPageInIndex: widget.param.startPageInIndex,
-            sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
-            bookmarkApi: ref.watch(bookmarkApiProvider),
-            bookmarksService: ref.watch(bookmarksService),
-            authenticationService: ref.watch(authenticationService),
-            scrollController: scrollController,
-            isLoggedIn: ref.watch(authenticationService).isLoggedIn,
-            habitDailySummaryService: ref.watch(habitDailySummaryService),
-          );
-        },
-      ),
+      stateNotifierProvider: suratPageProvider,
       onStateNotifierReady: (notifier, ref) async {
         if (widget.param.isStartTracking) {
           Future.delayed(Duration.zero, () {
@@ -252,8 +254,9 @@ class _SuratPageV3State extends State<SuratPageV3> {
                   ),
                   IconButton(
                     icon: const Icon(CustomIcons.book),
-                    onPressed: () => notifier
-                        .setIsInFullPage(!state.readingSettings!.isInFullPage),
+                    onPressed: () => notifier.setIsInFullPage(
+                      !state.readingSettings!.isInFullPage,
+                    ),
                   ),
                   IconButton(
                     icon: const Icon(CustomIcons.sliders),
@@ -281,8 +284,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
               onTapTranslation: (value) =>
                   notifier.setIsWithTranslations(value),
               onTapTafsir: (value) => notifier.setIsWithTafsirs(value),
-              onTapAdd: (value) => notifier.addFontSize(value),
-              onTapMinus: (value) => notifier.minusFontSize(value),
+              onTapAdd: () => notifier.addFontSize(),
+              onTapMinus: () => notifier.minusFontSize(),
             ),
           ),
         );
@@ -318,15 +321,18 @@ class _SuratPageV3State extends State<SuratPageV3> {
     required SuratPageStateNotifier sn,
     required BuildContext context,
   }) {
+    Orientation orientation = MediaQuery.of(context).orientation;
     final Widget pages = state.readingSettings!.isInFullPage
         ? _buildPagesInFullPage(
             state: state,
             notifier: sn,
             context: context,
+            orientation: orientation,
           )
         : _buildPages(
             state: state,
             notifier: sn,
+            orientation: orientation,
           );
 
     final double bottomPadding = MediaQuery.of(context).size.height * 0.025;
@@ -444,6 +450,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     required int pageIndex,
     required BuildContext context,
     required SuratPageStateNotifier notifier,
+    required Orientation orientation,
   }) {
     final List<String> texts = List<String>.filled(15, '');
     final int page = pageIndex + 1;
@@ -471,12 +478,26 @@ class _SuratPageV3State extends State<SuratPageV3> {
           (String words) => _buildFullPagePerLine(
             page: page,
             text: words,
+            state: state,
+            orientation: orientation,
           ),
         )
         .toList();
 
     final double bottomPadding = MediaQuery.of(context).size.height * 0.1;
     final double topPadding = MediaQuery.of(context).size.height * 0.05;
+
+    if (orientation == Orientation.landscape) {
+      return SingleChildScrollView(
+        child: Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: textInWidgets,
+          ),
+        ),
+      );
+    }
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
@@ -546,6 +567,8 @@ class _SuratPageV3State extends State<SuratPageV3> {
   Widget _buildFullPagePerLine({
     required String text,
     required int page,
+    required SuratPageState state,
+    required Orientation orientation,
   }) {
     String fontFamily = 'Page$page';
     if (text.length == 1) {
@@ -563,6 +586,20 @@ class _SuratPageV3State extends State<SuratPageV3> {
     }
 
     if (page == 1 || page == 2) {
+      if (orientation == Orientation.landscape) {
+        return AutoSizeText(
+          text,
+          style: TextStyle(
+            height: 1.5,
+            fontFamily: fontFamily,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          maxLines: 1,
+          maxFontSize: double.infinity,
+          minFontSize: 56,
+        );
+      }
+
       return AutoSizeText(
         text,
         style: TextStyle(
@@ -570,6 +607,25 @@ class _SuratPageV3State extends State<SuratPageV3> {
           fontFamily: fontFamily,
           fontSize: 30,
           color: Theme.of(context).colorScheme.primary,
+        ),
+      );
+    }
+
+    if (orientation == Orientation.landscape) {
+      return SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 30, right: 30),
+          child: AutoSizeText(
+            text,
+            style: TextStyle(
+              height: 1.5,
+              fontFamily: fontFamily,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            maxLines: 1,
+            maxFontSize: double.infinity,
+            minFontSize: 50,
+          ),
         ),
       );
     }
@@ -591,6 +647,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     required SuratPageState state,
     required SuratPageStateNotifier notifier,
     required BuildContext context,
+    required Orientation orientation,
   }) {
     List<Widget> allPages = <Widget>[];
 
@@ -600,6 +657,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
         pageIndex: idx,
         context: context,
         notifier: notifier,
+        orientation: orientation,
       );
 
       allPages.add(page);
@@ -632,6 +690,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
   Widget _buildPages({
     required SuratPageState state,
     required SuratPageStateNotifier notifier,
+    required Orientation orientation,
   }) {
     List<Widget> allPages = <Widget>[];
 
@@ -643,6 +702,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
         pageNumberInQuran: pageNumberInQuran,
         state: state,
         notifier: notifier,
+        orientation: orientation,
       );
 
       allPages.add(page);
@@ -669,6 +729,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     required int pageNumberInQuran,
     required SuratPageState state,
     required SuratPageStateNotifier notifier,
+    required Orientation orientation,
   }) {
     List<Widget> ayahs = <Widget>[];
     for (int i = 0; i < quranPageObject.verses.length; i++) {
@@ -679,11 +740,16 @@ class _SuratPageV3State extends State<SuratPageV3> {
         verse: verse,
         useDivider: useDivider,
         fontSize: pageNumberInQuran == 1 || pageNumberInQuran == 2
-            ? state.readingSettings!.valueFontSizeArabicFirstSheet
-            : state.readingSettings!.valueFontSizeArabic,
+            ? orientation == Orientation.landscape
+                ? state.readingSettings!.valueFontSizeArabicFirstSheetLandscape
+                : state.readingSettings!.valueFontSizeArabicFirstSheet
+            : orientation == Orientation.landscape
+                ? state.readingSettings!.valueFontSizeArabicLandscape
+                : state.readingSettings!.valueFontSizeArabic,
         pageNumberInQuran: pageNumberInQuran,
         state: state,
         notifier: notifier,
+        orientation: orientation,
       );
 
       ayahs.add(w);
@@ -707,6 +773,7 @@ class _SuratPageV3State extends State<SuratPageV3> {
     required int pageNumberInQuran,
     required SuratPageState state,
     required SuratPageStateNotifier notifier,
+    required Orientation orientation,
   }) {
     String allVerses = '';
     String fontFamilyPage = 'Page$pageNumberInQuran';
@@ -825,7 +892,9 @@ class _SuratPageV3State extends State<SuratPageV3> {
                   child: Text(
                     latin!,
                     style: QPTextStyle.getDescription1Regular(context).copyWith(
-                      fontSize: state.readingSettings?.valueFontSize,
+                      fontSize: orientation == Orientation.landscape
+                          ? state.readingSettings!.valueFontSizeLandscape
+                          : state.readingSettings?.valueFontSize,
                       color: QPColors.getColorBasedTheme(
                         dark: QPColors.blackSoft,
                         light: QPColors.neutral600,

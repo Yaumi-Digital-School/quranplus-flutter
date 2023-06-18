@@ -12,6 +12,9 @@ class ReadingSettings {
     this.valueFontSize = 12,
     this.valueFontSizeArabic = 24,
     this.valueFontSizeArabicFirstSheet = 35,
+    this.valueFontSizeLandscape = 24,
+    this.valueFontSizeArabicLandscape = 36,
+    this.valueFontSizeArabicFirstSheetLandscape = 47,
     this.isInFullPage = false,
   });
 
@@ -19,9 +22,13 @@ class ReadingSettings {
   bool isWithLatins;
   bool isWithTranslations;
   int fontSize;
+
   double valueFontSize;
   double valueFontSizeArabic;
   double valueFontSizeArabicFirstSheet;
+  double valueFontSizeLandscape;
+  double valueFontSizeArabicLandscape;
+  double valueFontSizeArabicFirstSheetLandscape;
   bool isInFullPage;
 
   factory ReadingSettings.fromJson(Map<String, dynamic> json) =>

@@ -137,6 +137,8 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   bool? _isFavoriteAyahChanged;
   bool? _isHabitDailySummaryChanged;
 
+  int currentFontSize = 1;
+
   ValueNotifier<int> recordedPagesAsRead = ValueNotifier(0);
   List<int> recordedPagesList = <int>[];
   int _startPageOnRecord = 0;
@@ -427,60 +429,79 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     _sharedPreferenceService.setReadingSettings(settings);
   }
 
-  void minusFontSize(int fontSize) {
-    ReadingSettings settings = state.readingSettings!.copyWith(
-      fontSize: fontSize,
-    );
+  void minusFontSize() {
+    ReadingSettings settings = state.readingSettings!;
 
     if (settings.fontSize >= 2) {
       settings.fontSize--;
-      setValueFontSize(settings);
     }
+
+    setValueFontSize(settings);
     state = state.copyWith(readingSettings: settings);
     _sharedPreferenceService.setReadingSettings(settings);
   }
 
-  void addFontSize(int fontSize) {
-    ReadingSettings settings = state.readingSettings!.copyWith(
-      fontSize: fontSize,
-    );
+  void addFontSize() {
+    ReadingSettings settings = state.readingSettings!;
+
     if (settings.fontSize <= 4) {
       settings.fontSize++;
-      setValueFontSize(settings);
     }
+
+    setValueFontSize(settings);
     state = state.copyWith(readingSettings: settings);
     _sharedPreferenceService.setReadingSettings(settings);
   }
 
-  void setValueFontSize(ReadingSettings readingSettings) {
-    switch (readingSettings.fontSize) {
-      case 1:
-        readingSettings.valueFontSize = 12;
-        readingSettings.valueFontSizeArabic = 24;
-        readingSettings.valueFontSizeArabicFirstSheet = 35;
-        break;
-      case 2:
-        readingSettings.valueFontSize = 16;
-        readingSettings.valueFontSizeArabic = 36;
-        readingSettings.valueFontSizeArabicFirstSheet = 47;
-        break;
-      case 3:
-        readingSettings.valueFontSize = 20;
-        readingSettings.valueFontSizeArabic = 40;
-        readingSettings.valueFontSizeArabicFirstSheet = 51;
-        break;
-      case 4:
-        readingSettings.valueFontSize = 24;
-        readingSettings.valueFontSizeArabic = 44;
-        readingSettings.valueFontSizeArabicFirstSheet = 55;
-        break;
-      case 5:
-        readingSettings.valueFontSize = 28;
-        readingSettings.valueFontSizeArabic = 48;
-        readingSettings.valueFontSizeArabicFirstSheet = 59;
-        break;
-      default:
-        break;
+  void setValueFontSize(
+    ReadingSettings readingSettings,
+  ) {
+    if (currentFontSize != readingSettings.fontSize) {
+      currentFontSize = readingSettings.fontSize;
+      switch (readingSettings.fontSize) {
+        case 1:
+          readingSettings.valueFontSize = 12;
+          readingSettings.valueFontSizeArabic = 24;
+          readingSettings.valueFontSizeArabicFirstSheet = 35;
+          readingSettings.valueFontSizeLandscape = 16;
+          readingSettings.valueFontSizeArabicLandscape = 36;
+          readingSettings.valueFontSizeArabicFirstSheetLandscape = 47;
+          break;
+        case 2:
+          readingSettings.valueFontSize = 16;
+          readingSettings.valueFontSizeArabic = 36;
+          readingSettings.valueFontSizeArabicFirstSheet = 47;
+          readingSettings.valueFontSizeLandscape = 20;
+          readingSettings.valueFontSizeArabicLandscape = 40;
+          readingSettings.valueFontSizeArabicFirstSheetLandscape = 51;
+          break;
+        case 3:
+          readingSettings.valueFontSize = 20;
+          readingSettings.valueFontSizeArabic = 40;
+          readingSettings.valueFontSizeArabicFirstSheet = 51;
+          readingSettings.valueFontSizeLandscape = 24;
+          readingSettings.valueFontSizeArabicLandscape = 44;
+          readingSettings.valueFontSizeArabicFirstSheetLandscape = 55;
+          break;
+        case 4:
+          readingSettings.valueFontSize = 24;
+          readingSettings.valueFontSizeArabic = 44;
+          readingSettings.valueFontSizeArabicFirstSheet = 55;
+          readingSettings.valueFontSizeLandscape = 28;
+          readingSettings.valueFontSizeArabicLandscape = 48;
+          readingSettings.valueFontSizeArabicFirstSheetLandscape = 63;
+          break;
+        case 5:
+          readingSettings.valueFontSize = 28;
+          readingSettings.valueFontSizeArabic = 48;
+          readingSettings.valueFontSizeArabicFirstSheet = 59;
+          readingSettings.valueFontSizeLandscape = 32;
+          readingSettings.valueFontSizeArabicLandscape = 52;
+          readingSettings.valueFontSizeArabicFirstSheetLandscape = 59;
+          break;
+        default:
+          break;
+      }
     }
   }
 

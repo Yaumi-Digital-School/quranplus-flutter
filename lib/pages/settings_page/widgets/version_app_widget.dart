@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
 class VersionAppWidget extends StatefulWidget {
@@ -31,7 +33,14 @@ class _VersionAppWidget extends State<VersionAppWidget> {
   Widget build(BuildContext context) {
     return Text(
       _packageInfo == null ? '' : _packageInfo!.version,
-      style: bodyRegular2,
+      style: QPTextStyle.getSubHeading3Regular(context).copyWith(
+        color: QPColors.getColorBasedTheme(
+          dark: QPColors.blackFair,
+          light: QPColors.blackFair,
+          brown: QPColors.brownModeMassive,
+          context: context,
+        ),
+      ),
     );
   }
 }
