@@ -1036,17 +1036,9 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
     required Orientation orientation,
   }) {
     if (isInFullPage) {
-      if (orientation == Orientation.landscape) {
-        return Image.asset(
-          'images/bismillah_v2.png',
-          width: 300,
-          color: Theme.of(context).colorScheme.primary,
-        );
-      }
-
       return Image.asset(
         'images/bismillah_v2.png',
-        width: 170,
+        width: orientation == Orientation.landscape ? 300 : 170,
         color: Theme.of(context).colorScheme.primary,
       );
     }
