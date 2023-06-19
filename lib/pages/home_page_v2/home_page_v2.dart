@@ -673,7 +673,7 @@ class _ListSurahByJuzSkeleton extends StatelessWidget {
           218,
           218,
         ),
-        child: ListView(
+        child: Column(
           children: [
             Container(
               width: double.infinity,
