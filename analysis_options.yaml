@@ -43,14 +43,26 @@ dart_code_metrics:
   rules:
     - prefer-trailing-comma:
         break-on: 4
-    - avoid-border-all
-    - avoid-expanded-as-spacer
-    - avoid-shrink-wrap-in-lists
-    - avoid-unnecessary-setstate
-    - avoid-wrapping-in-padding
-    - prefer-const-border-radius
-    - prefer-using-list-view
-    - avoid-double-slash-imports
-    - avoid-duplicate-exports
-    - newline-before-return
-    - no-boolean-literal-compare
+        severity: error
+    - avoid-border-all:
+        severity: error
+    - avoid-expanded-as-spacer:
+        severity: error
+    - avoid-shrink-wrap-in-lists:
+        severity: error
+    - avoid-unnecessary-setstate:
+        severity: error
+    - avoid-wrapping-in-padding:
+        severity: error
+    - prefer-const-border-radius:
+        severity: error
+    - prefer-using-list-view:
+        severity: error
+    - avoid-double-slash-imports:
+        severity: error
+    - avoid-duplicate-exports:
+        severity: error
+    - newline-before-return:
+        severity: error
+    - no-boolean-literal-compare:
+        severity: error
