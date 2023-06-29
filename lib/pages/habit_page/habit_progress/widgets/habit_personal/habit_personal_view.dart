@@ -91,9 +91,9 @@ class _HabitPersonalState extends State<HabitPersonalView> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(
+                        12,
                         16,
-                        16,
-                        16,
+                        12,
                         24,
                       ),
                       child: Column(
