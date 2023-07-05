@@ -757,14 +757,12 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
       ayahs.add(w);
     }
 
-    return SingleChildScrollView(
+    return ListView(
       padding:
           state.isRecording ? const EdgeInsets.only(top: 20) : EdgeInsets.zero,
       controller: scrollController,
       key: PageStorageKey('page$pageNumberInQuran'),
-      child: Column(
-        children: ayahs,
-      ),
+      children: ayahs,
     );
   }
 

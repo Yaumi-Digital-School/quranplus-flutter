@@ -332,30 +332,28 @@ class ListSuratByJuz extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                            24,
-                            16,
-                            24,
-                            24,
-                          ),
-                          child: _buildHabitInformationCard(
-                            context,
-                            isLoggedIn,
-                            parentState,
-                            notifier,
-                          ),
+                  child: ListView(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                          24,
+                          16,
+                          24,
+                          24,
                         ),
-                        if (parentState.juzElements == null ||
-                            parentState.listTaddaburAvailables == null)
-                          const _ListSurahByJuzSkeleton(),
-                        if (parentState.juzElements != null)
-                          _buildSurahByJuzContainer(),
-                      ],
-                    ),
+                        child: _buildHabitInformationCard(
+                          context,
+                          isLoggedIn,
+                          parentState,
+                          notifier,
+                        ),
+                      ),
+                      if (parentState.juzElements == null ||
+                          parentState.listTaddaburAvailables == null)
+                        const _ListSurahByJuzSkeleton(),
+                      if (parentState.juzElements != null)
+                        _buildSurahByJuzContainer(),
+                    ],
                   ),
                 ),
               ],
@@ -675,56 +673,54 @@ class _ListSurahByJuzSkeleton extends StatelessWidget {
           218,
           218,
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                width: double.infinity,
-                height: 100,
-                color: Colors.white,
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              Container(
-                width: double.infinity,
-                height: 100,
-                color: Colors.white,
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              Container(
-                width: double.infinity,
-                height: 100,
-                color: Colors.white,
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              Container(
-                width: double.infinity,
-                height: 100,
-                color: Colors.white,
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              Container(
-                width: double.infinity,
-                height: 100,
-                color: Colors.white,
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              Container(
-                width: double.infinity,
-                height: 100,
-                color: Colors.white,
-              ),
-            ],
-          ),
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              height: 100,
+              color: Colors.white,
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            Container(
+              width: double.infinity,
+              height: 100,
+              color: Colors.white,
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            Container(
+              width: double.infinity,
+              height: 100,
+              color: Colors.white,
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            Container(
+              width: double.infinity,
+              height: 100,
+              color: Colors.white,
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            Container(
+              width: double.infinity,
+              height: 100,
+              color: Colors.white,
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            Container(
+              width: double.infinity,
+              height: 100,
+              color: Colors.white,
+            ),
+          ],
         ),
       ),
     );
