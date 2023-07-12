@@ -491,6 +491,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
 
     if (orientation == Orientation.landscape) {
       return SingleChildScrollView(
+        controller: scrollController,
         padding: const EdgeInsets.only(top: 40),
         child: Column(
           mainAxisSize: MainAxisSize.max,
