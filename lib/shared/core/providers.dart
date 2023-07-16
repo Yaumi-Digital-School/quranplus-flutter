@@ -213,11 +213,10 @@ final buttonAudioStateProvider =
   return audioPlayer.playerStateStream.map((event) {
     final isPlaying = event.playing;
     final processingState = event.processingState;
-
     if (processingState == ProcessingState.loading ||
         processingState == ProcessingState.buffering) {
       return ButtonAudioState.loading;
-    } else if (!isPlaying) {
+    } else if (!isPlaying || processingState == ProcessingState.completed) {
       return ButtonAudioState.paused;
     } else {
       return ButtonAudioState.playing;

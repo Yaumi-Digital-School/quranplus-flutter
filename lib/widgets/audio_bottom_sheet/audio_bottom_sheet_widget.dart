@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qurantafsir_flutter/shared/constants/button_audio_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
@@ -25,6 +26,7 @@ class _AudioBottomSheetWidgetState
   @override
   Widget build(BuildContext context) {
     final audioPlayer = ref.watch(audioPlayerProvider);
+    final buttonState = ref.watch(buttonAudioStateProvider);
 
     return Column(
       children: [
@@ -64,27 +66,54 @@ class _AudioBottomSheetWidgetState
           child: Row(
             children: [
               const Spacer(),
-              InkWell(
-                onTap: () {
-                  audioPlayer.setUrl(
-                    "https://verses.quran.com/AbdulBaset/Mujawwad/mp3/001001.mp3",
+              buttonState.when(
+                data: (data) {
+                  if (data == ButtonAudioState.loading) {
+                    return const SizedBox(
+                      height: 36,
+                      width: 36,
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+
+                  return InkWell(
+                    onTap: () {
+                      if (data == ButtonAudioState.paused) {
+                        audioPlayer.setUrl(
+                          "https://verses.quran.com/AbdulBaset/Mujawwad/mp3/001001.mp3",
+                        );
+                        audioPlayer.play();
+
+                        return;
+                      }
+                      audioPlayer.stop();
+                    },
+                    child: Container(
+                      height: 36,
+                      width: 36,
+                      decoration: const BoxDecoration(
+                        color: QPColors.brandFair,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Icon(
+                          data == ButtonAudioState.paused
+                              ? Icons.play_arrow
+                              : Icons.pause,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                    ),
                   );
-                  audioPlayer.play();
                 },
-                child: Container(
+                error: (error, stacktrace) {
+                  return Container();
+                },
+                loading: () => const SizedBox(
                   height: 36,
                   width: 36,
-                  decoration: const BoxDecoration(
-                    color: QPColors.brandFair,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.play_arrow,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
+                  child: CircularProgressIndicator(),
                 ),
               ),
               Expanded(
