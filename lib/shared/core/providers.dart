@@ -1,6 +1,4 @@
-import 'package:just_audio/just_audio.dart';
 import 'package:qurantafsir_flutter/main.dart';
-import 'package:qurantafsir_flutter/shared/constants/button_audio_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/tadabbur_api.dart';
 import 'package:qurantafsir_flutter/shared/core/services/alice_service.dart';
@@ -188,38 +186,4 @@ final Provider<TadabburService> tadabburService =
     sharedPreferenceService: sp,
     remoteConfigService: rc,
   );
-});
-
-final audioPlayerProvider = Provider<AudioPlayer>((ref) {
-  return AudioPlayer();
-});
-
-final currentDurationProvider = StreamProvider.autoDispose<Duration>((ref) {
-  final audioPlayer = ref.watch(audioPlayerProvider);
-
-  return audioPlayer.positionStream;
-});
-
-final totalDurationProvider = StreamProvider.autoDispose<Duration?>((ref) {
-  final audioPlayer = ref.watch(audioPlayerProvider);
-
-  return audioPlayer.durationStream;
-});
-
-final buttonAudioStateProvider =
-    StreamProvider.autoDispose<ButtonAudioState>((ref) {
-  final audioPlayer = ref.watch(audioPlayerProvider);
-
-  return audioPlayer.playerStateStream.map((event) {
-    final isPlaying = event.playing;
-    final processingState = event.processingState;
-    if (processingState == ProcessingState.loading ||
-        processingState == ProcessingState.buffering) {
-      return ButtonAudioState.loading;
-    } else if (!isPlaying || processingState == ProcessingState.completed) {
-      return ButtonAudioState.paused;
-    } else {
-      return ButtonAudioState.playing;
-    }
-  });
 });
