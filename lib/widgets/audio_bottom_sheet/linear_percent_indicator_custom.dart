@@ -9,8 +9,10 @@ class LinearPercentIndicatorCustom extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentDuration = ref.watch(currentDurationProvider);
-    final totalDuration = ref.watch(totalDurationProvider);
+    final AsyncValue<Duration> currentDuration =
+        ref.watch(currentDurationProvider);
+    final AsyncValue<Duration?> totalDuration =
+        ref.watch(totalDurationProvider);
 
     return ProgressBar(
       timeLabelTextStyle: QPTextStyle.getDescription2Regular(context),

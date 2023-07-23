@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:qurantafsir_flutter/shared/constants/button_audio_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
@@ -25,8 +26,9 @@ class _AudioBottomSheetWidgetState
     extends ConsumerState<AudioBottomSheetWidget> {
   @override
   Widget build(BuildContext context) {
-    final audioPlayer = ref.watch(audioPlayerProvider);
-    final buttonState = ref.watch(buttonAudioStateProvider);
+    final AudioPlayer audioPlayer = ref.watch(audioPlayerProvider);
+    final AsyncValue<ButtonAudioState> buttonState =
+        ref.watch(buttonAudioStateProvider);
 
     return Column(
       children: [
