@@ -22,6 +22,7 @@ import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart' as date_util;
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_widget.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/alert_dialog.dart';
 import 'package:qurantafsir_flutter/widgets/daily_progress_tracker.dart';
@@ -126,6 +127,15 @@ class _HomePageV2State extends State<HomePageV2> {
   }
 
   Future<void> _launchUrl(String? url) async {
+    // Todo delete this after testing
+    return GeneralBottomSheet.showBaseBottomSheet(
+      context: context,
+      widgetChild: const AudioBottomSheetWidget(
+        surahName: "Al Fatihah",
+        surahId: 1,
+        ayahId: 1,
+      ),
+    );
     final Uri _url = Uri.parse(url ?? '');
     if (!await launchUrl(_url)) {
       throw 'Could not launch $_url';

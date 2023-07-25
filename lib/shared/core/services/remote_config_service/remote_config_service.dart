@@ -7,18 +7,22 @@ class RemoteConfigService {
   FirebaseRemoteConfig? _remoteConfig;
 
   Future<void> init() async {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    try {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
 
-    _remoteConfig = FirebaseRemoteConfig.instance;
+      _remoteConfig = FirebaseRemoteConfig.instance;
 
-    await _remoteConfig!.setConfigSettings(RemoteConfigSettings(
-      fetchTimeout: const Duration(seconds: 10),
-      minimumFetchInterval: const Duration(seconds: 0),
-    ));
+      await _remoteConfig!.setConfigSettings(RemoteConfigSettings(
+        fetchTimeout: const Duration(seconds: 10),
+        minimumFetchInterval: const Duration(seconds: 0),
+      ));
 
-    await _remoteConfig!.fetchAndActivate();
+      await _remoteConfig!.fetchAndActivate();
+    } catch (e) {
+      print(e);
+    }
   }
 
   /*
