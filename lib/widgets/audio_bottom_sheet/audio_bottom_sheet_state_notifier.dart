@@ -85,7 +85,6 @@ class AudioBottomSheetStateNotifier
       });
       state = state.copyWith(isLoading: false);
     } catch (e) {
-      print(e);
       state = state.copyWith(isLoading: false);
     }
   }
