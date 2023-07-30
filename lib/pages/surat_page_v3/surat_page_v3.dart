@@ -3,6 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/read_tadabbur/read_tadabbur_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
@@ -12,8 +13,12 @@ import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_state_notifier.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_widget.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
@@ -869,16 +874,37 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                       ),
                     Align(
                       alignment: Alignment.centerRight,
-                      child: Text(
-                        allVerses,
-                        style: TextStyle(
-                          fontFamily: fontFamilyPage,
-                          fontSize: fontSize,
-                          height: 1.6,
-                          wordSpacing: 2,
-                          color: Theme.of(context).colorScheme.primary,
+                      child: InkWell(
+                        onTap: () {
+                          final AudioPlayer audioPlayer =
+                              ref.watch(audioPlayerProvider);
+                          final AudioApi audioApi = ref.watch(audioApiProvider);
+                          ref.read(audioBottomSheetProvider.notifier).init(
+                                AudioBottomSheetState(
+                                  surahName: verse.surahName,
+                                  surahId: verse.surahNumber,
+                                  ayahId: verse.verseNumber,
+                                  isLoading: true,
+                                ),
+                                audioApi,
+                                audioPlayer,
+                              );
+                          GeneralBottomSheet.showBaseBottomSheet(
+                            context: context,
+                            widgetChild: const AudioBottomSheetWidget(),
+                          );
+                        },
+                        child: Text(
+                          allVerses,
+                          style: TextStyle(
+                            fontFamily: fontFamilyPage,
+                            fontSize: fontSize,
+                            height: 1.6,
+                            wordSpacing: 2,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          textAlign: TextAlign.right,
                         ),
-                        textAlign: TextAlign.right,
                       ),
                     ),
                   ],
