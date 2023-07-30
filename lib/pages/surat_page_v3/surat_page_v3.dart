@@ -883,7 +883,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                                 AudioBottomSheetState(
                                   surahName: verse.surahName,
                                   surahId: verse.surahNumber,
-                                  ayahId: verse.id,
+                                  ayahId: verse.verseNumber,
                                   isLoading: true,
                                 ),
                                 audioApi,

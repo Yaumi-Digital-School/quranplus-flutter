@@ -75,6 +75,7 @@ class AudioBottomSheetStateNotifier
         surahId: initState.surahId,
         ayahNumber: initState.ayahId,
       );
+      _audioPlayer.pause();
 
       _audioPlayer.setUrl(response.data.audioFileUrl);
       playerStateSubscription =
