@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/constants/button_audio_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/linear_percent_indicator_custom.dart';
 
 class AudioBottomSheetWidget extends ConsumerStatefulWidget {
   const AudioBottomSheetWidget({
-    required this.surahName,
-    required this.surahId,
-    required this.ayahId,
     Key? key,
   }) : super(key: key);
-  final String surahName;
-  final int surahId;
-  final int ayahId;
+
   @override
   ConsumerState<AudioBottomSheetWidget> createState() =>
       _AudioBottomSheetWidgetState();
@@ -25,10 +21,16 @@ class AudioBottomSheetWidget extends ConsumerStatefulWidget {
 class _AudioBottomSheetWidgetState
     extends ConsumerState<AudioBottomSheetWidget> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final AudioPlayer audioPlayer = ref.watch(audioPlayerProvider);
     final AsyncValue<ButtonAudioState> buttonState =
         ref.watch(buttonAudioStateProvider);
+    final AudioBottomSheetState audioBottomSheetState =
+        ref.watch(audioBottomSheetProvider);
 
     return Column(
       children: [
@@ -49,11 +51,11 @@ class _AudioBottomSheetWidgetState
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  widget.surahName,
+                  audioBottomSheetState.surahName,
                   style: QPTextStyle.getSubHeading3SemiBold(context),
                 ),
                 Text(
-                  "Ayah ${widget.ayahId}",
+                  "Ayah ${audioBottomSheetState.ayahId}",
                   style: QPTextStyle.getDescription2Regular(context),
                 ),
               ],
@@ -70,7 +72,8 @@ class _AudioBottomSheetWidgetState
               const Spacer(),
               buttonState.when(
                 data: (data) {
-                  if (data == ButtonAudioState.loading) {
+                  if (data == ButtonAudioState.loading ||
+                      audioBottomSheetState.isLoading) {
                     return const SizedBox(
                       height: 36,
                       width: 36,
@@ -81,14 +84,11 @@ class _AudioBottomSheetWidgetState
                   return InkWell(
                     onTap: () {
                       if (data == ButtonAudioState.paused) {
-                        audioPlayer.setUrl(
-                          "https://verses.quran.com/AbdulBaset/Mujawwad/mp3/001001.mp3",
-                        );
-                        audioPlayer.play();
+                        ref.read(audioBottomSheetProvider.notifier).playAudio();
 
                         return;
                       }
-                      audioPlayer.stop();
+                      ref.read(audioBottomSheetProvider.notifier).pauseAudio();
                     },
                     child: Container(
                       height: 36,
@@ -125,6 +125,9 @@ class _AudioBottomSheetWidgetState
                       width: 16,
                     ),
                     InkWell(
+                      onTap: () {
+                        ref.read(audioBottomSheetProvider.notifier).nextSurah();
+                      },
                       child: Container(
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
@@ -149,7 +152,9 @@ class _AudioBottomSheetWidgetState
                             ),
                             const SizedBox(width: 2),
                             Text(
-                              "Al-Baqarah",
+                              surahNumberToSurahNameMap[
+                                      audioBottomSheetState.surahId + 1]
+                                  .toString(),
                               style: QPTextStyle.getBody2Medium(context),
                             ),
                           ],
