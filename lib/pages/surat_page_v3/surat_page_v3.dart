@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/read_tadabbur/read_tadabbur_page.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_state.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/pre_tracking_animation.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/submission_dialog.dart';
@@ -19,6 +20,7 @@ import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_widget.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_minimized_info.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
@@ -113,6 +115,10 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
           scrollController: scrollController,
           isLoggedIn: ref.watch(authenticationService).isLoggedIn,
           habitDailySummaryService: ref.watch(habitDailySummaryService),
+          audioPlayerState: ref.read(audioBottomSheetProvider),
+          audioPlayerNotifier: ref.read(audioBottomSheetProvider.notifier),
+          audioPlayer: ref.read(audioPlayerProvider),
+          audioApi: ref.read(audioApiProvider),
         );
       },
     );
@@ -230,34 +236,19 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                     padding: const EdgeInsets.only(right: 12),
                     child: InkWell(
                       onTap: () async {
-                        final AudioPlayer audioPlayer =
-                            ref.watch(audioPlayerProvider);
-                        final AudioApi audioApi = ref.watch(audioApiProvider);
-                        final verses =
+                        final List<Verse> verses =
                             state.pages![state.currentPage.toInt()].verses;
-                        final verse = verses.firstWhere(
+                        final Verse verse = verses.firstWhere(
                           (element) =>
                               element.id == widget.param.firstPagePointerIndex,
                           orElse: () => verses[0],
                         );
 
+                        notifier.playOnAyah(verse);
                         GeneralBottomSheet.showBaseBottomSheet(
                           context: context,
                           widgetChild: const AudioBottomSheetWidget(),
                         );
-
-                        await ref.read(audioBottomSheetProvider.notifier).init(
-                              AudioBottomSheetState(
-                                surahName: verse.surahName,
-                                surahId: verse.surahNumber,
-                                ayahId: verse.verseNumber,
-                                isLoading: true,
-                              ),
-                              audioApi,
-                              audioPlayer,
-                            );
-
-                        ref.read(audioBottomSheetProvider.notifier).playAudio();
                       },
                       child: Container(
                         height: 24,
@@ -417,61 +408,83 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                 width: MediaQuery.of(context).size.width - 16,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
                     children: [
-                      ValueListenableBuilder(
-                        valueListenable: sn.visibleSuratName,
-                        builder: (context, String value, __) {
-                          final int surahNumber =
-                              surahNameToSurahNumberMap[value] ?? 0;
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ValueListenableBuilder(
+                            valueListenable: sn.visibleSuratName,
+                            builder: (context, String value, __) {
+                              final int surahNumber =
+                                  surahNameToSurahNumberMap[value] ?? 0;
 
-                          if (sn.availableAyahTadabburs[surahNumber] != null) {
-                            return ButtonBrandSoft(
-                              leftWidget: const Icon(
-                                Icons.menu_book,
-                                size: 12,
-                                color: QPColors.brandFair,
-                              ),
-                              title: 'Tadabbur $value',
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  RoutePaths.routeReadTadabbur,
-                                  arguments: ReadTadabburParam(
-                                    surahName: value,
-                                    surahId: surahNumber,
-                                    isFromSurahPage: true,
+                              if (sn.availableAyahTadabburs[surahNumber] !=
+                                  null) {
+                                return ButtonBrandSoft(
+                                  leftWidget: const Icon(
+                                    Icons.menu_book,
+                                    size: 12,
+                                    color: QPColors.brandFair,
                                   ),
+                                  title: 'Tadabbur $value',
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      RoutePaths.routeReadTadabbur,
+                                      arguments: ReadTadabburParam(
+                                        surahName: value,
+                                        surahId: surahNumber,
+                                        isFromSurahPage: true,
+                                      ),
+                                    );
+                                  },
                                 );
+                              }
+
+                              return const SizedBox.shrink();
+                            },
+                          ),
+                          if (!state.isRecording)
+                            ButtonPrimary(
+                              label: 'Start Tracking',
+                              size: ButtonSize.small,
+                              onTap: () {
+                                if (!sn.isLoggedIn) {
+                                  sn.forceLoginToEnableHabit(
+                                    context,
+                                    RoutePaths.routeSurahPage,
+                                    <String, dynamic>{
+                                      'startPageInIndex': sn.currentPage.value,
+                                      'isStartTracking': true,
+                                    },
+                                  );
+
+                                  return;
+                                }
+
+                                _startTracking(context, sn);
                               },
-                            );
-                          }
-
-                          return const SizedBox.shrink();
-                        },
+                            ),
+                        ],
                       ),
-                      if (!state.isRecording)
-                        ButtonPrimary(
-                          label: 'Start Tracking',
-                          size: ButtonSize.small,
-                          onTap: () {
-                            if (!sn.isLoggedIn) {
-                              sn.forceLoginToEnableHabit(
-                                context,
-                                RoutePaths.routeSurahPage,
-                                <String, dynamic>{
-                                  'startPageInIndex': sn.currentPage.value,
-                                  'isStartTracking': true,
-                                },
-                              );
-
-                              return;
-                            }
-
-                            _startTracking(context, sn);
+                      if (state.recitationState?.showMinimized ??
+                          false) ...<Widget>[
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        AudioMinimizedInfo(
+                          onTapContainer: () {
+                            GeneralBottomSheet.showBaseBottomSheet(
+                              context: context,
+                              widgetChild: const AudioBottomSheetWidget(),
+                            );
+                          },
+                          onClose: () {
+                            sn.stopRecitation();
                           },
                         ),
+                      ],
                     ],
                   ),
                 ),
@@ -907,15 +920,18 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                 child: Column(
                   children: [
                     if (isFavorited)
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                          width: 24,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage(
-                                IconPath.iconFavorite,
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            width: 20,
+                            height: 20,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  IconPath.iconFavorite,
+                                ),
                               ),
                             ),
                           ),
@@ -923,37 +939,42 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                       ),
                     Align(
                       alignment: Alignment.centerRight,
-                      child: InkWell(
-                        onTap: () {
-                          final AudioPlayer audioPlayer =
-                              ref.watch(audioPlayerProvider);
-                          final AudioApi audioApi = ref.watch(audioApiProvider);
-                          ref.read(audioBottomSheetProvider.notifier).init(
-                                AudioBottomSheetState(
-                                  surahName: verse.surahName,
-                                  surahId: verse.surahNumber,
-                                  ayahId: verse.verseNumber,
-                                  isLoading: true,
-                                ),
-                                audioApi,
-                                audioPlayer,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          IconButton(
+                            color: QPColors.getColorBasedTheme(
+                              dark: QPColors.blackFair,
+                              light: QPColors.blackFair,
+                              brown: QPColors.brownModeHeavy,
+                              context: context,
+                            ),
+                            padding: const EdgeInsets.all(0),
+                            alignment: Alignment.centerLeft,
+                            icon: const Icon(Icons.play_circle),
+                            iconSize: 20,
+                            onPressed: () {
+                              notifier.playOnAyah(verse);
+                              GeneralBottomSheet.showBaseBottomSheet(
+                                context: context,
+                                widgetChild: const AudioBottomSheetWidget(),
                               );
-                          GeneralBottomSheet.showBaseBottomSheet(
-                            context: context,
-                            widgetChild: const AudioBottomSheetWidget(),
-                          );
-                        },
-                        child: Text(
-                          allVerses,
-                          style: TextStyle(
-                            fontFamily: fontFamilyPage,
-                            fontSize: fontSize,
-                            height: 1.6,
-                            wordSpacing: 2,
-                            color: Theme.of(context).colorScheme.primary,
+                            },
                           ),
-                          textAlign: TextAlign.right,
-                        ),
+                          Expanded(
+                            child: Text(
+                              allVerses,
+                              style: TextStyle(
+                                fontFamily: fontFamilyPage,
+                                fontSize: fontSize,
+                                height: 1.6,
+                                wordSpacing: 2,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              textAlign: TextAlign.right,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],

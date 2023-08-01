@@ -4,8 +4,12 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_recitation_state.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_state.dart';
 
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur_ayah_available.dart';
@@ -21,66 +25,9 @@ import 'package:qurantafsir_flutter/shared/core/services/bookmarks_service.dart'
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_state_notifier.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-
-class SuratPageState {
-  SuratPageState({
-    this.pages,
-    this.pageController,
-    this.translations,
-    this.tafsirs,
-    this.latins,
-    this.readingSettings,
-    this.fullPageSeparators,
-    this.isBookmarkFetched = false,
-    this.isRecording = false,
-    this.isLoading = true,
-  });
-
-  List<QuranPage>? pages;
-  List<FullPageSeparator>? fullPageSeparators;
-  List<List<String>>? translations;
-  List<List<String>>? tafsirs;
-  List<List<String>>? latins;
-  PageController? pageController;
-  ReadingSettings? readingSettings;
-  bool isBookmarkFetched;
-  bool isRecording;
-  bool isLoading;
-
-  SuratPageState copyWith({
-    List<QuranPage>? pages,
-    List<FullPageSeparator>? fullPageSeparators,
-    PageController? pageController,
-    List<List<String>>? translations,
-    List<List<String>>? tafsirs,
-    List<List<String>>? latins,
-    ReadingSettings? readingSettings,
-    bool? isBookmarkFetched,
-    bool? isRecording,
-    bool? isLoading,
-  }) {
-    return SuratPageState(
-      isBookmarkFetched: isBookmarkFetched ?? this.isBookmarkFetched,
-      pages: pages ?? this.pages,
-      pageController: pageController ?? this.pageController,
-      translations: translations ?? this.translations,
-      tafsirs: tafsirs ?? this.tafsirs,
-      latins: latins ?? this.latins,
-      readingSettings: readingSettings ?? this.readingSettings,
-      fullPageSeparators: fullPageSeparators ?? this.fullPageSeparators,
-      isRecording: isRecording ?? this.isRecording,
-      isLoading: isLoading ?? this.isLoading,
-    );
-  }
-
-  SuratPageState refresh() {
-    return copyWith();
-  }
-
-  double get currentPage => pageController!.page!;
-}
 
 class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   SuratPageStateNotifier({
@@ -91,6 +38,10 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     required BookmarkApi bookmarkApi,
     required BookmarksService bookmarksService,
     required AutoScrollController scrollController,
+    required AudioBottomSheetState audioPlayerState,
+    required AudioBottomSheetStateNotifier audioPlayerNotifier,
+    required AudioPlayer audioPlayer,
+    required AudioApi audioApi,
     bool isLoggedIn = false,
   })  : _sharedPreferenceService = sharedPreferenceService,
         _isLoggedIn = isLoggedIn,
@@ -99,11 +50,19 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
         _scrollController = scrollController,
         _authenticationService = authenticationService,
         _habitDailySummaryService = habitDailySummaryService,
+        _audioPlayerState = audioPlayerState,
+        _audioPlayerNotifier = audioPlayerNotifier,
+        _audioPlayer = audioPlayer,
+        _audioApi = audioApi,
         super(SuratPageState());
 
   final AutoScrollController _scrollController;
   final SharedPreferenceService _sharedPreferenceService;
   final HabitDailySummaryService _habitDailySummaryService;
+  final AudioPlayer _audioPlayer;
+  final AudioApi _audioApi;
+  final AudioBottomSheetState _audioPlayerState;
+  final AudioBottomSheetStateNotifier _audioPlayerNotifier;
   final List<int> _firstPageSurahPointer = <int>[];
   final List<int> _bookmarkList = <int>[];
   final List<int> _favoriteAyahList = <int>[];
@@ -199,6 +158,10 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
 
     _scrollController.addListener(() => _listenOnScrollChanges());
 
+    SuratPageRecitationState recitationState = SuratPageRecitationState(
+      showMinimized: !_audioPlayerState.isStopped,
+    );
+
     state = state.copyWith(
       pages: _allPages,
       pageController: pageController,
@@ -209,9 +172,39 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
       fullPageSeparators: _fullPageSeparators,
       isBookmarkFetched: true,
       isLoading: false,
+      recitationState: recitationState,
     );
 
     checkIsBookmarkExists(startPageInIndex + 1);
+  }
+
+  void _setShowMinimizedRecitationInfo(bool value) {
+    state = state.copyWith(
+      recitationState: state.recitationState?.copyWith(
+        showMinimized: value,
+      ),
+    );
+  }
+
+  void stopRecitation() {
+    _audioPlayerNotifier.stop();
+    _setShowMinimizedRecitationInfo(false);
+  }
+
+  Future<void> playOnAyah(Verse verse) async {
+    await _audioPlayerNotifier.init(
+      AudioBottomSheetState(
+        surahName: verse.surahName,
+        surahId: verse.surahNumber,
+        ayahId: verse.verseNumber,
+        isLoading: true,
+      ),
+      _audioApi,
+      _audioPlayer,
+    );
+
+    _audioPlayerNotifier.playAudio();
+    _setShowMinimizedRecitationInfo(true);
   }
 
   Future<void> _getTadabburAyahAvailable() async {
@@ -714,6 +707,10 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     }
 
     return false;
+  }
+
+  void refresh() {
+    state = state.refresh();
   }
 
   void _setIsBookmarkChanged() {
