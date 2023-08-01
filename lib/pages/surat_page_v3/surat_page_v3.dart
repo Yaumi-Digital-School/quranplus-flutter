@@ -227,6 +227,47 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                 ),
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 actions: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: InkWell(
+                      onTap: () {
+                        final AudioPlayer audioPlayer =
+                            ref.watch(audioPlayerProvider);
+                        final AudioApi audioApi = ref.watch(audioApiProvider);
+                        Verse verse =
+                            state.pages![state.currentPage.toInt()].verses[0];
+                        ref.read(audioBottomSheetProvider.notifier).init(
+                              AudioBottomSheetState(
+                                surahName: verse.surahName,
+                                surahId: verse.surahNumber,
+                                ayahId: verse.verseNumber,
+                                isLoading: true,
+                              ),
+                              audioApi,
+                              audioPlayer,
+                            );
+                        GeneralBottomSheet.showBaseBottomSheet(
+                          context: context,
+                          widgetChild: const AudioBottomSheetWidget(),
+                        );
+                      },
+                      child: Container(
+                        height: 24,
+                        width: 24,
+                        decoration: const BoxDecoration(
+                          color: QPColors.brandFair,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.play_arrow,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                   ValueListenableBuilder(
                     valueListenable: notifier.visibleIconBookmark,
                     builder: (context, value, __) {
