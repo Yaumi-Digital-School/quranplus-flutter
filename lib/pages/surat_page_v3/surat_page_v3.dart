@@ -161,7 +161,6 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
             ),
           );
         }
-        Orientation orientation = MediaQuery.of(context).orientation;
 
         return WillPopScope(
           onWillPop: () async => _onTapBack(
@@ -227,6 +226,56 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                 ),
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 actions: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: InkWell(
+                      onTap: () async {
+                        final AudioPlayer audioPlayer =
+                            ref.watch(audioPlayerProvider);
+                        final AudioApi audioApi = ref.watch(audioApiProvider);
+                        final verses =
+                            state.pages![state.currentPage.toInt()].verses;
+                        final verse = verses.firstWhere(
+                          (element) =>
+                              element.id == widget.param.firstPagePointerIndex,
+                          orElse: () => verses[0],
+                        );
+
+                        GeneralBottomSheet.showBaseBottomSheet(
+                          context: context,
+                          widgetChild: const AudioBottomSheetWidget(),
+                        );
+
+                        await ref.read(audioBottomSheetProvider.notifier).init(
+                              AudioBottomSheetState(
+                                surahName: verse.surahName,
+                                surahId: verse.surahNumber,
+                                ayahId: verse.verseNumber,
+                                isLoading: true,
+                              ),
+                              audioApi,
+                              audioPlayer,
+                            );
+
+                        ref.read(audioBottomSheetProvider.notifier).playAudio();
+                      },
+                      child: Container(
+                        height: 24,
+                        width: 24,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.play_arrow,
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            size: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                   ValueListenableBuilder(
                     valueListenable: notifier.visibleIconBookmark,
                     builder: (context, value, __) {
