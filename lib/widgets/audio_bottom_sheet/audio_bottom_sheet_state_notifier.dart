@@ -57,7 +57,7 @@ class AudioBottomSheetStateNotifier
     } catch (e) {}
   }
 
-  void init(
+  Future<void> init(
     AudioBottomSheetState initState,
     AudioApi audioApi,
     AudioPlayer audioPlayer,
