@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_recitation_state.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
@@ -16,7 +15,7 @@ class SuratPageState {
     this.isBookmarkFetched = false,
     this.isRecording = false,
     this.isLoading = true,
-    this.recitationState,
+    this.showMinimizedAudioPlayer = false,
   });
 
   List<QuranPage>? pages;
@@ -29,7 +28,7 @@ class SuratPageState {
   bool isBookmarkFetched;
   bool isRecording;
   bool isLoading;
-  SuratPageRecitationState? recitationState;
+  bool showMinimizedAudioPlayer;
 
   SuratPageState copyWith({
     List<QuranPage>? pages,
@@ -42,7 +41,7 @@ class SuratPageState {
     bool? isBookmarkFetched,
     bool? isRecording,
     bool? isLoading,
-    SuratPageRecitationState? recitationState,
+    bool? showMinimizedAudioPlayer,
   }) {
     return SuratPageState(
       isBookmarkFetched: isBookmarkFetched ?? this.isBookmarkFetched,
@@ -55,7 +54,8 @@ class SuratPageState {
       fullPageSeparators: fullPageSeparators ?? this.fullPageSeparators,
       isRecording: isRecording ?? this.isRecording,
       isLoading: isLoading ?? this.isLoading,
-      recitationState: recitationState ?? this.recitationState,
+      showMinimizedAudioPlayer:
+          showMinimizedAudioPlayer ?? this.showMinimizedAudioPlayer,
     );
   }
 

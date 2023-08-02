@@ -110,7 +110,7 @@ class AudioBottomSheetStateNotifier
     _audioPlayer.pause();
   }
 
-  void stop() {
+  void stopAndResetAudioPlayer() {
     _audioPlayer.stop();
     state = const AudioBottomSheetState(
       surahName: "",

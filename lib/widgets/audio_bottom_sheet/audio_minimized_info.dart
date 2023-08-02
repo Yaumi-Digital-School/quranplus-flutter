@@ -59,9 +59,9 @@ class _AudioMinimizedInfoState extends ConsumerState<AudioMinimizedInfo> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: _buildButton(),
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: _DynamicIconButton(),
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -91,8 +91,13 @@ class _AudioMinimizedInfoState extends ConsumerState<AudioMinimizedInfo> {
       ),
     );
   }
+}
 
-  Widget _buildButton() {
+class _DynamicIconButton extends ConsumerWidget {
+  const _DynamicIconButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<ButtonAudioState> buttonState =
         ref.watch(buttonAudioStateProvider);
 
@@ -107,8 +112,8 @@ class _AudioMinimizedInfoState extends ConsumerState<AudioMinimizedInfo> {
             }
             ref.read(audioBottomSheetProvider.notifier).pauseAudio();
           },
-          child: _buildIcon(
-            buttonState.value == ButtonAudioState.paused
+          child: _IconButton(
+            icon: buttonState.value == ButtonAudioState.paused
                 ? Icons.play_arrow
                 : Icons.pause,
           ),
@@ -118,16 +123,26 @@ class _AudioMinimizedInfoState extends ConsumerState<AudioMinimizedInfo> {
         return const SizedBox.shrink();
       },
       loading: () {
-        return _buildIcon(
-          buttonState.value == ButtonAudioState.paused
+        return _IconButton(
+          icon: buttonState.value == ButtonAudioState.paused
               ? Icons.play_arrow
               : Icons.pause,
         );
       },
     );
   }
+}
 
-  Widget _buildIcon(IconData icon) {
+class _IconButton extends StatelessWidget {
+  const _IconButton({
+    Key? key,
+    required this.icon,
+  }) : super(key: key);
+
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       height: 36,
       width: 36,

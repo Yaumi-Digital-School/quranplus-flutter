@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_recitation_state.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_state.dart';
 
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
@@ -158,10 +157,6 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
 
     _scrollController.addListener(() => _listenOnScrollChanges());
 
-    SuratPageRecitationState recitationState = SuratPageRecitationState(
-      showMinimized: !_audioPlayerState.isStopped,
-    );
-
     state = state.copyWith(
       pages: _allPages,
       pageController: pageController,
@@ -172,7 +167,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
       fullPageSeparators: _fullPageSeparators,
       isBookmarkFetched: true,
       isLoading: false,
-      recitationState: recitationState,
+      showMinimizedAudioPlayer: !_audioPlayerState.isStopped,
     );
 
     checkIsBookmarkExists(startPageInIndex + 1);
@@ -180,14 +175,12 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
 
   void _setShowMinimizedRecitationInfo(bool value) {
     state = state.copyWith(
-      recitationState: state.recitationState?.copyWith(
-        showMinimized: value,
-      ),
+      showMinimizedAudioPlayer: value,
     );
   }
 
   void stopRecitation() {
-    _audioPlayerNotifier.stop();
+    _audioPlayerNotifier.stopAndResetAudioPlayer();
     _setShowMinimizedRecitationInfo(false);
   }
 
@@ -707,10 +700,6 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     }
 
     return false;
-  }
-
-  void refresh() {
-    state = state.refresh();
   }
 
   void _setIsBookmarkChanged() {

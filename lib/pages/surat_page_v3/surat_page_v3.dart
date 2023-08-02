@@ -468,8 +468,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                             ),
                         ],
                       ),
-                      if (state.recitationState?.showMinimized ??
-                          false) ...<Widget>[
+                      if (state.showMinimizedAudioPlayer) ...<Widget>[
                         const SizedBox(
                           height: 20,
                         ),
