@@ -120,26 +120,36 @@ class AudioBottomSheetStateNotifier
     );
   }
 
-  Future<void> nextSurah() async {
-    final int currentSurahId = state.surahId;
-    final int nextSurahId = currentSurahId + 1;
+  Future<void> _startNewSurah(int surahId) async {
     try {
       state = state.copyWith(isLoading: true);
       final response = await _audioApi.getAudioForSpecificReciterAndAyah(
         reciterId: 1,
-        surahId: nextSurahId,
+        surahId: surahId,
         ayahNumber: 1,
       );
       _audioPlayer.setUrl(response.data.audioFileUrl);
       state = state.copyWith(
         ayahId: 1,
-        surahId: nextSurahId,
-        surahName: surahNumberToSurahNameMap[nextSurahId],
+        surahId: surahId,
+        surahName: surahNumberToSurahNameMap[surahId],
         isLoading: false,
       );
     } catch (e) {
       state = state.copyWith(isLoading: false);
     }
+  }
+
+  Future<void> nextSurah() async {
+    final int currentSurahId = state.surahId;
+    final int nextSurahId = currentSurahId + 1;
+    await _startNewSurah(nextSurahId);
+  }
+
+  Future<void> previousSurah() async {
+    final int currentSurahId = state.surahId;
+    final int previousSurahId = currentSurahId - 1;
+    await _startNewSurah(previousSurahId);
   }
 }
 
