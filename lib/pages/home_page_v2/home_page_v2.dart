@@ -504,12 +504,15 @@ class ListSuratByJuz extends StatelessWidget {
         String surahNumberString = surats[index].number;
 
         int suratNumber = int.parse(surahNumberString);
-        int? totalTadabburInSurah = state.listTaddaburAvailables![suratNumber];
+        int? totalTadabburInSurah = state.listTaddaburAvailables == null
+            ? null
+            : state.listTaddaburAvailables![suratNumber];
 
         String surahNameLatin = surats[index].nameLatin;
 
-        final bool hasTadabbur =
-            state.listTaddaburAvailables!.containsKey(suratNumber);
+        final bool hasTadabbur = state.listTaddaburAvailables == null
+            ? false
+            : state.listTaddaburAvailables!.containsKey(suratNumber);
 
         return GestureDetector(
           onTap: () async {
