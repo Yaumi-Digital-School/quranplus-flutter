@@ -1,6 +1,9 @@
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/constants/button_audio_enum.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 
 final Provider<AudioPlayer> audioPlayerProvider = Provider<AudioPlayer>((ref) {
   return AudioPlayer();
@@ -36,4 +39,12 @@ final AutoDisposeStreamProvider<ButtonAudioState> buttonAudioStateProvider =
       return ButtonAudioState.playing;
     }
   });
+});
+
+final Provider<AudioApi> audioApiProvider = Provider<AudioApi>((ref) {
+  final DioService dioService = ref.watch(dioServiceProvider);
+
+  return AudioApi(
+    dioService.getDioWithAccessToken(),
+  );
 });
