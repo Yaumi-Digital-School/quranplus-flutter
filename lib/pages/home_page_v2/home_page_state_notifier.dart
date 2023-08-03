@@ -99,63 +99,56 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
 
   @override
   Future<void> initStateNotifier() async {
-    ConnectivityResult connectivityResult =
-        await Connectivity().checkConnectivity();
-    _getUsername();
-    if (connectivityResult != ConnectivityResult.none) {
-      try {
-        _feedbackUrl = (await _fetchLink()).url ?? '';
-      } catch (e) {
-        _feedbackUrl = "";
-      }
-    }
     try {
+      _getUsername();
+      _isNeedSync();
+      await _getFeedbackUrl();
+      await _getVerseToAyahPage();
+      await _getJuzElements();
+      await _getLastBookmark();
+      await _getDailySummary();
+      await _getLastRecordingData();
       await _getTaddaburSurahAvaliable();
-      await _getJuzElements();
-      await _getVerseToAyahPage();
-
-      final bool isNeedSync = _habitDailySummaryService.isNeedSync();
-
-      _dailySummary = await _habitDailySummaryService
-          .getCurrentDayHabitDailySummaryListLocal();
-
-      await _getJuzElements();
-      await _getVerseToAyahPage();
-      _lastBookmark = await _getLastBookmark();
-      final LastRecordingData? lastRecordingData =
-          await _sharedPreferenceService.getLastRecordingData();
-
-      state = state.copyWith(
-        name: _name,
-        juzElements: _juzElements,
-        feedbackUrl: _feedbackUrl ?? '',
-        ayahPage: _ayahPage,
-        dailySummary: _dailySummary,
-        isNeedSync: isNeedSync,
-        listTaddaburAvailables: _listTaddaburAvailables,
-        lastBookmark: _lastBookmark,
-        lastRecordingData: lastRecordingData,
-      );
     } catch (e) {
       print(e);
     }
   }
 
-  Future<Bookmarks?> _getLastBookmark() async {
+  Future<void> _getLastRecordingData() async {
+    final LastRecordingData? lastRecordingData =
+        await _sharedPreferenceService.getLastRecordingData();
+
+    state = state.copyWith(
+      lastRecordingData: lastRecordingData,
+    );
+  }
+
+  Future<void> _getDailySummary() async {
+    _dailySummary = await _habitDailySummaryService
+        .getCurrentDayHabitDailySummaryListLocal();
+
+    state = state.copyWith(
+      dailySummary: _dailySummary,
+    );
+  }
+
+  Future<void> _getLastBookmark() async {
     final List<dynamic>? result = await db.getBookmarks(limit: 1);
 
     if (result != null && result.isNotEmpty) {
-      return Bookmarks.fromMap(result[0]);
+      _lastBookmark = Bookmarks.fromMap(result[0]);
     }
 
-    return null;
+    state = state.copyWith(
+      lastBookmark: _lastBookmark,
+    );
   }
 
   Future<void> refreshDataOnPopFromSurahPage() async {
     _dailySummary = await _habitDailySummaryService
         .getCurrentDayHabitDailySummaryListLocal();
 
-    _lastBookmark = await _getLastBookmark();
+    await _getLastBookmark();
     final LastRecordingData? lastRecordingData =
         await _sharedPreferenceService.getLastRecordingData();
 
@@ -170,17 +163,47 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     final String ayahPageJsonParse =
         await rootBundle.loadString(AppConstants.ayahPageJson);
     _ayahPage = verseToPageJsonParse(ayahPageJsonParse);
+
+    state = state.copyWith(
+      ayahPage: _ayahPage,
+    );
   }
 
   void _getUsername() {
     _token = _sharedPreferenceService.getApiToken();
     if (_token == null || _token!.isEmpty) {
       _name = '';
-
-      return;
+    } else {
+      _name = _sharedPreferenceService.getUsername();
     }
 
-    _name = _sharedPreferenceService.getUsername();
+    state = state.copyWith(
+      name: _name,
+    );
+  }
+
+  void _isNeedSync() {
+    final bool isNeedSync = _habitDailySummaryService.isNeedSync();
+    state = state.copyWith(
+      isNeedSync: isNeedSync,
+    );
+  }
+
+  Future<void> _getFeedbackUrl() async {
+    ConnectivityResult connectivityResult =
+        await Connectivity().checkConnectivity();
+
+    if (connectivityResult != ConnectivityResult.none) {
+      try {
+        _feedbackUrl = (await _fetchLink()).url ?? '';
+      } catch (e) {
+        _feedbackUrl = "";
+      }
+    }
+
+    state = state.copyWith(
+      feedbackUrl: _feedbackUrl,
+    );
   }
 
   Future<void> _getJuzElements() async {
@@ -192,6 +215,10 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     }
 
     _juzElements = juzFromJson(jsonJuzInString).juz;
+
+    state = state.copyWith(
+      juzElements: _juzElements,
+    );
   }
 
   Future<FormLink> _fetchLink() async {
@@ -229,5 +256,9 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
       tadabburSurahMap[surah['id']] = surah['total_tadabbur'];
     }
     _listTaddaburAvailables = tadabburSurahMap;
+
+    state = state.copyWith(
+      listTaddaburAvailables: _listTaddaburAvailables,
+    );
   }
 }
