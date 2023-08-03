@@ -59,9 +59,5 @@ class SuratPageState {
     );
   }
 
-  SuratPageState refresh() {
-    return copyWith();
-  }
-
   double get currentPage => pageController!.page!;
 }
