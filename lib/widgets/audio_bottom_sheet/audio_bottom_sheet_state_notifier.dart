@@ -66,7 +66,9 @@ class AudioBottomSheetStateNotifier
         ayahId: nextAyahNumber,
         surahName: surahNumberToSurahNameMap[nextSurahId] ?? '',
       );
-    } catch (e) {}
+    } catch (e) {
+      //TODO Add error tracker
+    }
   }
 
   Future<void> init(

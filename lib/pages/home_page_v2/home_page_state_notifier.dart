@@ -137,7 +137,7 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
         lastRecordingData: lastRecordingData,
       );
     } catch (e) {
-      print(e);
+      //TODO add error logger
     }
   }
 

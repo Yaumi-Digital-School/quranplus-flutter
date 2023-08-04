@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/tadabbur_surah_list_page/tadabbur_surah_list_view_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/tadabbur_surah_list_page/widgets/tadabbur_surah_card.dart';
-import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';

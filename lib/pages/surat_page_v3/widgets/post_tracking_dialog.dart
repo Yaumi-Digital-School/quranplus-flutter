@@ -5,7 +5,6 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/animation_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
-import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/widgets/adaptive_theme_dialog.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';

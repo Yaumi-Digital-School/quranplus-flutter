@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/constants/button_audio_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
