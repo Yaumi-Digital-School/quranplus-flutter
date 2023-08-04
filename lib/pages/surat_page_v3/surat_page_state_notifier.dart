@@ -600,7 +600,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     }
 
     _setIsFavoriteAyahChanged();
-    state = state.refresh();
+    state = state.copyWith();
   }
 
   Future<void> _deleteFavoriteAyah(int ayahID) async {
