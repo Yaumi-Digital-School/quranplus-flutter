@@ -57,3 +57,6 @@ app.*.map.json
 # env
 *env.json
 env*.json
+
+# jks
+*.jks

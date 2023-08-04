@@ -67,103 +67,87 @@ class _AudioBottomSheetWidgetState
         const LinearPercentIndicatorCustom(),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 4),
-          child: Row(
+          child: Stack(
             children: [
-              const Spacer(),
-              buttonState.when(
-                data: (data) {
-                  if (data == ButtonAudioState.loading ||
-                      audioBottomSheetState.isLoading) {
-                    return const SizedBox(
-                      height: 36,
-                      width: 36,
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-
-                  return InkWell(
-                    onTap: () {
-                      if (data == ButtonAudioState.paused) {
-                        ref.read(audioBottomSheetProvider.notifier).playAudio();
-
-                        return;
-                      }
-                      ref.read(audioBottomSheetProvider.notifier).pauseAudio();
-                    },
-                    child: Container(
-                      height: 36,
-                      width: 36,
-                      decoration: const BoxDecoration(
-                        color: QPColors.brandFair,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Icon(
-                          data == ButtonAudioState.paused
-                              ? Icons.play_arrow
-                              : Icons.pause,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                      ),
+              if (audioBottomSheetState.surahId > 1)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 5, left: 25),
+                    child: _buildPreviousSurahCTA(
+                      surahNumberToSurahNameMap[
+                              audioBottomSheetState.surahId - 1]
+                          .toString(),
                     ),
-                  );
-                },
-                error: (error, stacktrace) {
-                  return Container();
-                },
-                loading: () => const SizedBox(
-                  height: 36,
-                  width: 36,
-                  child: CircularProgressIndicator(),
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Row(
-                  children: [
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    InkWell(
+              Align(
+                alignment: Alignment.center,
+                child: buttonState.when(
+                  data: (data) {
+                    if (data == ButtonAudioState.loading ||
+                        audioBottomSheetState.isLoading) {
+                      return const SizedBox(
+                        height: 36,
+                        width: 36,
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
+                    return InkWell(
                       onTap: () {
-                        ref.read(audioBottomSheetProvider.notifier).nextSurah();
+                        if (data == ButtonAudioState.paused) {
+                          ref
+                              .read(audioBottomSheetProvider.notifier)
+                              .playAudio();
+
+                          return;
+                        }
+                        ref
+                            .read(audioBottomSheetProvider.notifier)
+                            .pauseAudio();
                       },
                       child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: QPColors.whiteFair,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(100)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 6,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
+                        height: 36,
+                        width: 36,
+                        decoration: const BoxDecoration(
+                          color: QPColors.brandFair,
+                          shape: BoxShape.circle,
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.skip_next,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 2),
-                            Text(
-                              surahNumberToSurahNameMap[
-                                      audioBottomSheetState.surahId + 1]
-                                  .toString(),
-                              style: QPTextStyle.getBody2Medium(context),
-                            ),
-                          ],
+                        child: Center(
+                          child: Icon(
+                            data == ButtonAudioState.paused
+                                ? Icons.play_arrow
+                                : Icons.pause,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    );
+                  },
+                  error: (error, stacktrace) {
+                    return Container();
+                  },
+                  loading: () => const SizedBox(
+                    height: 36,
+                    width: 36,
+                    child: CircularProgressIndicator(),
+                  ),
                 ),
               ),
+              if (audioBottomSheetState.surahId < 114)
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 5, right: 25),
+                    child: _buildNextSurahCTA(
+                      surahNumberToSurahNameMap[
+                              audioBottomSheetState.surahId + 1]
+                          .toString(),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
@@ -189,6 +173,95 @@ class _AudioBottomSheetWidgetState
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildNextSurahCTA(String title) {
+    return InkWell(
+      onTap: () {
+        ref.read(audioBottomSheetProvider.notifier).nextSurah();
+      },
+      child: Container(
+        constraints: const BoxConstraints(
+          maxWidth: 100,
+        ),
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: QPColors.whiteFair,
+          borderRadius: const BorderRadius.all(Radius.circular(100)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 6,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.skip_next,
+              size: 20,
+            ),
+            const SizedBox(width: 2),
+            Expanded(
+              child: Text(
+                title,
+                style: QPTextStyle.getBody2Medium(context),
+                overflow: TextOverflow.fade,
+                softWrap: false,
+                maxLines: 1,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPreviousSurahCTA(String title) {
+    return InkWell(
+      onTap: () {
+        ref.read(audioBottomSheetProvider.notifier).previousSurah();
+      },
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        constraints: const BoxConstraints(
+          maxWidth: 100,
+        ),
+        decoration: BoxDecoration(
+          color: QPColors.whiteFair,
+          borderRadius: const BorderRadius.all(Radius.circular(100)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 6,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Text(
+                title,
+                style: QPTextStyle.getBody2Medium(context),
+                overflow: TextOverflow.fade,
+                softWrap: false,
+                maxLines: 1,
+              ),
+            ),
+            const SizedBox(width: 2),
+            const Icon(
+              Icons.skip_previous,
+              size: 20,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

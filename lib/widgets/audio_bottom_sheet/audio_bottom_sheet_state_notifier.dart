@@ -33,6 +33,8 @@ class AudioBottomSheetState {
       isLoading: isLoading ?? this.isLoading,
     );
   }
+
+  bool get isStopped => surahName.isEmpty;
 }
 
 class AudioBottomSheetStateNotifier
@@ -42,17 +44,27 @@ class AudioBottomSheetStateNotifier
   late AudioPlayer _audioPlayer;
   StreamSubscription<PlayerState>? playerStateSubscription;
 
-  void nextAyah() async {
+  Future<void> nextAyah() async {
     try {
+      final bool shouldGoToNextSurah =
+          state.ayahId + 1 > (surahNumberToTotalAyahMap[state.surahId] ?? 0);
+
+      final int nextSurahId =
+          shouldGoToNextSurah ? state.surahId + 1 : state.surahId;
+      final int nextAyahNumber = shouldGoToNextSurah ? 1 : state.ayahId + 1;
+
       final response = await _audioApi.getAudioForSpecificReciterAndAyah(
         reciterId: 1,
-        surahId: state.surahId,
-        ayahNumber: state.ayahId + 1,
+        surahId: nextSurahId,
+        ayahNumber: nextAyahNumber,
       );
       _audioPlayer.setUrl(response.data.audioFileUrl);
       _audioPlayer.play();
+
       state = state.copyWith(
-        ayahId: state.ayahId + 1,
+        surahId: nextSurahId,
+        ayahId: nextAyahNumber,
+        surahName: surahNumberToSurahNameMap[nextSurahId] ?? '',
       );
     } catch (e) {}
   }
@@ -98,26 +110,46 @@ class AudioBottomSheetStateNotifier
     _audioPlayer.pause();
   }
 
-  void nextSurah() async {
-    final currentSurahId = state.surahId;
-    final nextSurahId = currentSurahId + 1;
+  void stopAndResetAudioPlayer() {
+    _audioPlayer.stop();
+    state = const AudioBottomSheetState(
+      surahName: "",
+      surahId: 1,
+      ayahId: 1,
+      isLoading: true,
+    );
+  }
+
+  Future<void> _startNewSurah(int surahId) async {
     try {
       state = state.copyWith(isLoading: true);
       final response = await _audioApi.getAudioForSpecificReciterAndAyah(
         reciterId: 1,
-        surahId: nextSurahId,
+        surahId: surahId,
         ayahNumber: 1,
       );
       _audioPlayer.setUrl(response.data.audioFileUrl);
       state = state.copyWith(
         ayahId: 1,
-        surahId: nextSurahId,
-        surahName: surahNumberToSurahNameMap[nextSurahId],
+        surahId: surahId,
+        surahName: surahNumberToSurahNameMap[surahId],
         isLoading: false,
       );
     } catch (e) {
       state = state.copyWith(isLoading: false);
     }
+  }
+
+  Future<void> nextSurah() async {
+    final int currentSurahId = state.surahId;
+    final int nextSurahId = currentSurahId + 1;
+    await _startNewSurah(nextSurahId);
+  }
+
+  Future<void> previousSurah() async {
+    final int currentSurahId = state.surahId;
+    final int previousSurahId = currentSurahId - 1;
+    await _startNewSurah(previousSurahId);
   }
 }
 
