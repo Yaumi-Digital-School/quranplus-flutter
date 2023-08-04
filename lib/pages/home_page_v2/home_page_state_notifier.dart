@@ -110,7 +110,7 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
       await _getLastRecordingData();
       await _getTaddaburSurahAvaliable();
     } catch (e) {
-      print(e);
+      //TODO add error logger
     }
   }
 

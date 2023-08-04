@@ -8,8 +8,6 @@ import 'package:qurantafsir_flutter/pages/habit_page/habit_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
-import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
-import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';

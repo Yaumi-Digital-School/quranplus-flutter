@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/add_daily_progress_manual/add_daily_progress_manual_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
-import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_progress.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_progress.dart';
