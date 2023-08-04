@@ -93,6 +93,7 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
   String? _token, _name, _feedbackUrl;
   HabitDailySummary? _dailySummary;
   late Map<int, int>? _listTaddaburAvailables;
+  bool _shouldOpenFeedbackUrl = false;
   DbLocal db = DbLocal();
 
   Bookmarks? _lastBookmark;
@@ -102,7 +103,6 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     try {
       _getUsername();
       _isNeedSync();
-      await _getFeedbackUrl();
       await _getVerseToAyahPage();
       await _getJuzElements();
       await _getLastBookmark();
@@ -189,14 +189,18 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     );
   }
 
-  Future<void> _getFeedbackUrl() async {
+  Future<void> getFeedbackUrl() async {
     ConnectivityResult connectivityResult =
         await Connectivity().checkConnectivity();
 
     if (connectivityResult != ConnectivityResult.none) {
       try {
         _feedbackUrl = (await _fetchLink()).url ?? '';
+        if (!(_feedbackUrl?.isEmpty ?? true)) {
+          _shouldOpenFeedbackUrl = true;
+        }
       } catch (e) {
+        _shouldOpenFeedbackUrl = false;
         _feedbackUrl = "";
       }
     }
@@ -204,6 +208,14 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     state = state.copyWith(
       feedbackUrl: _feedbackUrl,
     );
+  }
+
+  bool getShouldSOpenFeedbackUrl() {
+    final bool result = _shouldOpenFeedbackUrl;
+
+    _shouldOpenFeedbackUrl = false;
+
+    return result && !(_feedbackUrl?.isEmpty ?? true);
   }
 
   Future<void> _getJuzElements() async {
