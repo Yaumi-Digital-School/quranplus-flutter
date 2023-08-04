@@ -39,10 +39,11 @@ class _AudioBottomSheetWidgetState
             Expanded(
               child: InkWell(
                 onTap: () => Navigator.pop(context),
-                child: const Align(
+                child: Align(
                   alignment: Alignment.centerLeft,
                   child: Icon(
                     Icons.keyboard_arrow_down,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ),
@@ -187,7 +188,12 @@ class _AudioBottomSheetWidgetState
         ),
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          color: QPColors.whiteFair,
+          color: QPColors.getColorBasedTheme(
+            dark: QPColors.blackHeavy,
+            light: QPColors.whiteMassive,
+            brown: QPColors.brownModeSoft,
+            context: context,
+          ),
           borderRadius: const BorderRadius.all(Radius.circular(100)),
           boxShadow: [
             BoxShadow(
@@ -200,9 +206,10 @@ class _AudioBottomSheetWidgetState
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.skip_next,
               size: 20,
+              color: Theme.of(context).colorScheme.primary,
             ),
             const SizedBox(width: 2),
             Expanded(
@@ -231,7 +238,12 @@ class _AudioBottomSheetWidgetState
           maxWidth: 100,
         ),
         decoration: BoxDecoration(
-          color: QPColors.whiteFair,
+          color: QPColors.getColorBasedTheme(
+            dark: QPColors.blackHeavy,
+            light: QPColors.whiteMassive,
+            brown: QPColors.brownModeSoft,
+            context: context,
+          ),
           borderRadius: const BorderRadius.all(Radius.circular(100)),
           boxShadow: [
             BoxShadow(
@@ -255,9 +267,10 @@ class _AudioBottomSheetWidgetState
               ),
             ),
             const SizedBox(width: 2),
-            const Icon(
+            Icon(
               Icons.skip_previous,
               size: 20,
+              color: Theme.of(context).colorScheme.primary,
             ),
           ],
         ),
