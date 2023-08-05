@@ -103,12 +103,12 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     try {
       _getUsername();
       _isNeedSync();
-      await _getVerseToAyahPage();
-      await _getJuzElements();
-      await _getLastBookmark();
-      await _getDailySummary();
-      await _getLastRecordingData();
-      await _getTaddaburSurahAvaliable();
+      _getVerseToAyahPage();
+      _getJuzElements();
+      _getLastRecordingData();
+      _getLastBookmark();
+      _getDailySummary();
+      _getTaddaburSurahAvaliable();
     } catch (e) {
       //TODO add error logger
     }
