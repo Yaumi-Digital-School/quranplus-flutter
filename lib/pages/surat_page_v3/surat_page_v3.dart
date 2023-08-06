@@ -67,11 +67,13 @@ class SuratPageV3Param {
     required this.startPageInIndex,
     this.firstPagePointerIndex = 0,
     this.isStartTracking = false,
+    this.isPlayAudio = false,
   });
 
   final int startPageInIndex;
   final int firstPagePointerIndex;
   final bool isStartTracking;
+  final bool isPlayAudio;
 }
 
 class SuratPageV3 extends ConsumerStatefulWidget {
@@ -149,6 +151,21 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
             widget.param.firstPagePointerIndex,
             preferPosition: AutoScrollPosition.begin,
             duration: const Duration(milliseconds: 200),
+          );
+        }
+
+        if (widget.param.isPlayAudio) {
+          final List<Verse> verses =
+              notifier.state.pages![widget.param.startPageInIndex].verses;
+          final Verse verse = verses.firstWhere(
+            (element) => element.id == widget.param.firstPagePointerIndex,
+            orElse: () => verses[0],
+          );
+
+          notifier.playOnAyah(verse);
+          GeneralBottomSheet.showBaseBottomSheet(
+            context: context,
+            widgetChild: const AudioBottomSheetWidget(),
           );
         }
       },
