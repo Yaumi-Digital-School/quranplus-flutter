@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:global_configuration/global_configuration.dart';
@@ -30,7 +31,16 @@ Future<void> main() async {
   await sharedPreferenceService.init();
 
   await GlobalConfiguration().loadFromAsset('env');
-
+  FlutterError.onError = (errorDetails) {
+    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+  };
+  bool weWantFatalErrorRecording = true;
+  FlutterError.onError = (errorDetails) {
+    if (weWantFatalErrorRecording) {
+      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+    }
+    FirebaseCrashlytics.instance.recordFlutterError(errorDetails);
+  };
   runApp(
     ProviderScope(
       overrides: [
