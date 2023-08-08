@@ -51,16 +51,20 @@ class SplashPageStateNotifier extends BaseStateNotifier<SplashPageState> {
   Future<void> initStateNotifier({
     ConnectivityResult? conn,
   }) async {
-    await _deepLinkService.init(navigatorKey);
-    await _authenticationService.initRepository();
+    try {
+      await _deepLinkService.init(navigatorKey);
+      await _authenticationService.initRepository();
 
-    if (conn != null && conn.isOnInternetConnection) {
-      await _remoteConfigService.init();
-      await _tadabburService.syncTadabburPerAyahInformations();
+      if (conn != null && conn.isOnInternetConnection) {
+        await _remoteConfigService.init();
+        await _tadabburService.syncTadabburPerAyahInformations();
 
-      if (_authenticationService.isLoggedIn) {
-        await _habitDailySummaryService.syncHabit();
+        if (_authenticationService.isLoggedIn) {
+          await _habitDailySummaryService.syncHabit();
+        }
       }
+    } catch (e) {
+      print(e);
     }
   }
 

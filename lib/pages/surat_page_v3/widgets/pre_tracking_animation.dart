@@ -6,7 +6,6 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifie
 import 'package:qurantafsir_flutter/shared/constants/animation_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
-import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
 import 'package:qurantafsir_flutter/widgets/button.dart';
 

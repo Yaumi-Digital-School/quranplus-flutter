@@ -306,8 +306,6 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
   Widget _buildEmptyState({
     required String message,
   }) {
-    final double deviceWidth = MediaQuery.of(context).size.width;
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,

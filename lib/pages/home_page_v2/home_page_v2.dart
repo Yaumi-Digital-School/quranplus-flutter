@@ -79,6 +79,10 @@ class _HomePageV2State extends State<HomePageV2> {
           _showInvalidLinkBottomSheet();
         }
 
+        if (notifier.getShouldSOpenFeedbackUrl()) {
+          _launchUrl(state.feedbackUrl);
+        }
+
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(54.0),
@@ -104,7 +108,7 @@ class _HomePageV2State extends State<HomePageV2> {
                     SizedBox(
                       width: 100,
                       child: IconButton(
-                        onPressed: () => _launchUrl(state.feedbackUrl),
+                        onPressed: () => _onFeedbackPress(state, notifier),
                         icon: Image.asset(
                           IconPath.iconForm,
                         ),
@@ -123,6 +127,17 @@ class _HomePageV2State extends State<HomePageV2> {
         );
       },
     );
+  }
+
+  Future<void> _onFeedbackPress(
+    HomePageState state,
+    HomePageStateNotifier notifier,
+  ) async {
+    if (state.feedbackUrl?.isEmpty ?? true) {
+      notifier.getFeedbackUrl();
+    } else {
+      _launchUrl(state.feedbackUrl);
+    }
   }
 
   Future<void> _launchUrl(String? url) async {
@@ -494,12 +509,15 @@ class ListSuratByJuz extends StatelessWidget {
         String surahNumberString = surats[index].number;
 
         int suratNumber = int.parse(surahNumberString);
-        int? totalTadabburInSurah = state.listTaddaburAvailables![suratNumber];
+        int? totalTadabburInSurah = state.listTaddaburAvailables == null
+            ? null
+            : state.listTaddaburAvailables![suratNumber];
 
         String surahNameLatin = surats[index].nameLatin;
 
-        final bool hasTadabbur =
-            state.listTaddaburAvailables!.containsKey(suratNumber);
+        final bool hasTadabbur = state.listTaddaburAvailables == null
+            ? false
+            : state.listTaddaburAvailables!.containsKey(suratNumber);
 
         return GestureDetector(
           onTap: () async {
