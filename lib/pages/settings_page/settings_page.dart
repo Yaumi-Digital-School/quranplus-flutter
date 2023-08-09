@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/account_page/account_page.dart';
@@ -199,10 +198,6 @@ class SettingsPage extends StatelessWidget {
               ),
               const VersionAppWidget(),
             ],
-          ),
-          TextButton(
-            onPressed: () => throw Exception(),
-            child: const Text("Throw Test Exception"),
           ),
         ],
       ),

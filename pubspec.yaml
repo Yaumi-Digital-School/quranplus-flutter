@@ -70,6 +70,9 @@ dependencies:
   version: ^3.0.2
   store_redirect: ^2.0.1
   flutter_svg: ^1.0.3
+  firebase_crashlytics: ^3.0.17
+  just_audio: ^0.9.32
+  audio_video_progress_bar: ^1.0.1
 
 dev_dependencies:
   flutter_test:
