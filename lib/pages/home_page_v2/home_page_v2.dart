@@ -552,21 +552,13 @@ class ListSuratByJuz extends StatelessWidget {
   ) {
     return GestureDetector(
       onTap: () async {
-        int page = surats[index].startPageToInt;
-        int startPageInIndexValue = page - 1;
-
-        final dynamic param = await Navigator.pushNamed(
+        navigateToSurahPage(
+          surats,
+          index,
           context,
-          RoutePaths.routeSurahPage,
-          arguments: SuratPageV3Param(
-            startPageInIndex: startPageInIndexValue,
-            firstPagePointerIndex: surats[index].startPageID,
-          ),
+          notifier,
+          false,
         );
-
-        if (param != null && param is SuratPageV3OnPopParam) {
-          notifier.refreshDataOnPopFromSurahPage();
-        }
       },
       child: Container(
         decoration: const BoxDecoration(),
@@ -661,56 +653,42 @@ class ListSuratByJuz extends StatelessWidget {
                           width: 10,
                         ),
                         Container(
-                          child: (notifier.state.audioSuratLoaded ==
-                                  surats[index])
-                              ? const Padding(
-                                  padding: EdgeInsets.all(16),
-                                  child: SizedBox(
-                                    height: 16,
-                                    width: 16,
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                )
-                              : IconButton(
-                                  color: QPColors.getColorBasedTheme(
-                                    dark: QPColors.brandFair,
-                                    light: QPColors.brandFair,
-                                    brown: QPColors.brandFair,
-                                    context: context,
-                                  ),
-                                  padding: const EdgeInsets.all(6),
-                                  alignment: Alignment.center,
-                                  icon: const Icon(Icons.play_circle),
-                                  iconSize: 20,
-                                  onPressed: () async {
-                                    notifier.playOnAyah(
-                                      surats[index],
-                                      () async {
-                                        int page = surats[index].startPageToInt;
-                                        int startPageInIndexValue = page - 1;
-
-                                        final dynamic param =
-                                            await Navigator.pushNamed(
-                                          context,
-                                          RoutePaths.routeSurahPage,
-                                          arguments: SuratPageV3Param(
-                                            startPageInIndex:
-                                                startPageInIndexValue,
-                                            firstPagePointerIndex:
-                                                surats[index].startPageID,
-                                            isShowBottomSheet: true,
-                                          ),
+                          child:
+                              notifier.state.audioSuratLoaded == surats[index]
+                                  ? const Padding(
+                                      padding: EdgeInsets.all(16),
+                                      child: SizedBox(
+                                        height: 16,
+                                        width: 16,
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    )
+                                  : IconButton(
+                                      color: QPColors.getColorBasedTheme(
+                                        dark: QPColors.brandFair,
+                                        light: QPColors.brandFair,
+                                        brown: QPColors.brandFair,
+                                        context: context,
+                                      ),
+                                      padding: const EdgeInsets.all(6),
+                                      alignment: Alignment.center,
+                                      icon: const Icon(Icons.play_circle),
+                                      iconSize: 20,
+                                      onPressed: () async {
+                                        notifier.playOnAyah(
+                                          surats[index],
+                                          () async {
+                                            navigateToSurahPage(
+                                              surats,
+                                              index,
+                                              context,
+                                              notifier,
+                                              true,
+                                            );
+                                          },
                                         );
-
-                                        if (param != null &&
-                                            param is SuratPageV3OnPopParam) {
-                                          notifier
-                                              .refreshDataOnPopFromSurahPage();
-                                        }
                                       },
-                                    );
-                                  },
-                                ),
+                                    ),
                         ),
                       ],
                     ),
@@ -746,6 +724,31 @@ class ListSuratByJuz extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> navigateToSurahPage(
+    List<SuratByJuz> surats,
+    int index,
+    BuildContext context,
+    HomePageStateNotifier notifier,
+    bool isShowBottomSheet,
+  ) async {
+    int page = surats[index].startPageToInt;
+    int startPageInIndexValue = page - 1;
+
+    final dynamic param = await Navigator.pushNamed(
+      context,
+      RoutePaths.routeSurahPage,
+      arguments: SuratPageV3Param(
+        startPageInIndex: startPageInIndexValue,
+        firstPagePointerIndex: surats[index].startPageID,
+        isShowBottomSheet: isShowBottomSheet,
+      ),
+    );
+
+    if (param != null && param is SuratPageV3OnPopParam) {
+      notifier.refreshDataOnPopFromSurahPage();
+    }
   }
 }
 
