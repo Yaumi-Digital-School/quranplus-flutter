@@ -200,6 +200,11 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     _setShowMinimizedRecitationInfo(true);
   }
 
+  Future<void> playAyahAudio() async {
+    _audioPlayerNotifier.playAudio();
+    _setShowMinimizedRecitationInfo(true);
+  }
+
   Future<void> _getTadabburAyahAvailable() async {
     final List<dynamic> res = await db.getTadabburAyahAvailables();
     for (int i = 0; i < res.length; i++) {

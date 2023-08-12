@@ -15,6 +15,8 @@ import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
+import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_state_notifier.dart';
 
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
@@ -54,6 +56,9 @@ class _HomePageV2State extends State<HomePageV2> {
             habitDailySummaryService: ref.read(habitDailySummaryService),
             authenticationService: ref.read(authenticationService),
             mainPageProvider: ref.read(mainPageProvider),
+            audioPlayerNotifier: ref.read(audioBottomSheetProvider.notifier),
+            audioPlayer: ref.read(audioPlayerProvider),
+            audioApi: ref.read(audioApiProvider),
           );
         },
       ),
@@ -655,35 +660,57 @@ class ListSuratByJuz extends StatelessWidget {
                         const SizedBox(
                           width: 10,
                         ),
-                        IconButton(
-                          color: QPColors.getColorBasedTheme(
-                            dark: QPColors.brandFair,
-                            light: QPColors.brandFair,
-                            brown: QPColors.brandFair,
-                            context: context,
-                          ),
-                          padding: const EdgeInsets.all(6),
-                          alignment: Alignment.center,
-                          icon: const Icon(Icons.play_circle),
-                          iconSize: 20,
-                          onPressed: () async {
-                            int page = surats[index].startPageToInt;
-                            int startPageInIndexValue = page - 1;
+                        Container(
+                          child: (notifier.state.audioSuratLoaded ==
+                                  surats[index])
+                              ? const Padding(
+                                  padding: EdgeInsets.all(16),
+                                  child: SizedBox(
+                                    height: 16,
+                                    width: 16,
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                )
+                              : IconButton(
+                                  color: QPColors.getColorBasedTheme(
+                                    dark: QPColors.brandFair,
+                                    light: QPColors.brandFair,
+                                    brown: QPColors.brandFair,
+                                    context: context,
+                                  ),
+                                  padding: const EdgeInsets.all(6),
+                                  alignment: Alignment.center,
+                                  icon: const Icon(Icons.play_circle),
+                                  iconSize: 20,
+                                  onPressed: () async {
+                                    notifier.playOnAyah(
+                                      surats[index],
+                                      () async {
+                                        int page = surats[index].startPageToInt;
+                                        int startPageInIndexValue = page - 1;
 
-                            final dynamic param = await Navigator.pushNamed(
-                              context,
-                              RoutePaths.routeSurahPage,
-                              arguments: SuratPageV3Param(
-                                startPageInIndex: startPageInIndexValue,
-                                firstPagePointerIndex: surats[index].startPageID,
-                                isPlayAudio: true,
-                              ),
-                            );
+                                        final dynamic param =
+                                            await Navigator.pushNamed(
+                                          context,
+                                          RoutePaths.routeSurahPage,
+                                          arguments: SuratPageV3Param(
+                                            startPageInIndex:
+                                                startPageInIndexValue,
+                                            firstPagePointerIndex:
+                                                surats[index].startPageID,
+                                            isShowBottomSheet: true,
+                                          ),
+                                        );
 
-                            if (param != null && param is SuratPageV3OnPopParam) {
-                              notifier.refreshDataOnPopFromSurahPage();
-                            }
-                          },
+                                        if (param != null &&
+                                            param is SuratPageV3OnPopParam) {
+                                          notifier
+                                              .refreshDataOnPopFromSurahPage();
+                                        }
+                                      },
+                                    );
+                                  },
+                                ),
                         ),
                       ],
                     ),

@@ -67,13 +67,13 @@ class SuratPageV3Param {
     required this.startPageInIndex,
     this.firstPagePointerIndex = 0,
     this.isStartTracking = false,
-    this.isPlayAudio = false,
+    this.isShowBottomSheet = false,
   });
 
   final int startPageInIndex;
   final int firstPagePointerIndex;
   final bool isStartTracking;
-  final bool isPlayAudio;
+  final bool isShowBottomSheet;
 }
 
 class SuratPageV3 extends ConsumerStatefulWidget {
@@ -154,15 +154,8 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
           );
         }
 
-        if (widget.param.isPlayAudio) {
-          final List<Verse> verses =
-              notifier.state.pages![widget.param.startPageInIndex].verses;
-          final Verse verse = verses.firstWhere(
-            (element) => element.id == widget.param.firstPagePointerIndex,
-            orElse: () => verses[0],
-          );
-
-          notifier.playOnAyah(verse);
+        if (widget.param.isShowBottomSheet) {
+          notifier.playAyahAudio();
           GeneralBottomSheet.showBaseBottomSheet(
             context: context,
             widgetChild: const AudioBottomSheetWidget(),
