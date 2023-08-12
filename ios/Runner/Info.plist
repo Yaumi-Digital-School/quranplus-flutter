@@ -59,5 +59,9 @@
 	<false/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>The application does not use this feature</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 </dict>
 </plist>
