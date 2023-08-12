@@ -958,7 +958,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                             ),
                             padding: const EdgeInsets.all(0),
                             alignment: Alignment.centerLeft,
-                            icon: const Icon(Icons.play_circle),
+                            icon: const Icon(Icons.play_circle_outline),
                             iconSize: 20,
                             onPressed: () {
                               notifier.playOnAyah(verse);
