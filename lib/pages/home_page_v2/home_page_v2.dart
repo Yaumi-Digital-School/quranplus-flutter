@@ -557,7 +557,6 @@ class ListSuratByJuz extends StatelessWidget {
           index,
           context,
           notifier,
-          false,
         );
       },
       child: Container(
@@ -675,17 +674,21 @@ class ListSuratByJuz extends StatelessWidget {
                                       icon: const Icon(Icons.play_circle),
                                       iconSize: 20,
                                       onPressed: () async {
-                                        notifier.playOnAyah(
+                                        notifier.initAyahAudio(
                                           surats[index],
-                                          () async {
-                                            navigateToSurahPage(
-                                              surats,
-                                              index,
-                                              context,
-                                              notifier,
-                                              true,
-                                            );
+                                          () => navigateToSurahPage(
+                                            surats,
+                                            index,
+                                            context,
+                                            notifier,
+                                            isShowBottomSheet: true,
+                                          ),
+                                          () {
+                                            // TODO: show no internet bottom sheet
                                           },
+                                          () => showInitSurahAudioErrorSnackbar(
+                                            context,
+                                          ),
                                         );
                                       },
                                     ),
@@ -726,13 +729,52 @@ class ListSuratByJuz extends StatelessWidget {
     );
   }
 
+  void showInitSurahAudioErrorSnackbar(BuildContext context) {
+    final snackBar = SnackBar(
+      backgroundColor: QPColors.blackFair,
+      padding: const EdgeInsets.only(left: 24),
+      content: Row(
+        children: [
+          Expanded(
+            child: Text(
+              'An error has occured. Please try again.',
+              style: QPTextStyle.getBody3Medium(context).copyWith(
+                // Todo: check color based on theme
+                color: QPColors.whiteMassive,
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          IconButton(
+            padding: const EdgeInsets.all(3.33),
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            },
+            icon: const Icon(
+              Icons.close,
+              size: 16,
+              color: QPColors.whiteMassive,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    // Find the ScaffoldMessenger in the widget tree
+    // and use it to show a SnackBar.
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   Future<void> navigateToSurahPage(
     List<SuratByJuz> surats,
     int index,
     BuildContext context,
-    HomePageStateNotifier notifier,
-    bool isShowBottomSheet,
-  ) async {
+    HomePageStateNotifier notifier, {
+    bool isShowBottomSheet = false,
+  }) async {
     int page = surats[index].startPageToInt;
     int startPageInIndexValue = page - 1;
 

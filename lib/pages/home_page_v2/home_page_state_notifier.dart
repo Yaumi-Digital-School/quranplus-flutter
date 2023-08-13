@@ -131,14 +131,13 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     }
   }
 
-  Future<void> playOnAyah(
+  Future<void> initAyahAudio(
     SuratByJuz surat,
-    Future<void> Function() callback,
+    Function() onSuccess,
+    Function() onLoadError,
+    Function() onPlayBackError,
   ) async {
-    state = state.copyWith(
-      audioSuratLoaded: surat,
-    );
-
+    _setAudioSuratLoaded(surat);
     await audioPlayerNotifier.init(
       AudioBottomSheetState(
         surahName: surat.nameLatin,
@@ -148,13 +147,33 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
       ),
       _audioApi,
       _audioPlayer,
+      onSuccess: () async {
+        _resetAudioSuratLoaded();
+        onSuccess();
+      },
+      onLoadError: () async {
+        _resetAudioSuratLoaded();
+        onLoadError();
+      },
+      onPlayBackError: () async {
+        _resetAudioSuratLoaded();
+        onPlayBackError();
+      },
     );
+  }
 
+  void _setAudioSuratLoaded(
+    SuratByJuz surat,
+  ) {
+    state = state.copyWith(
+      audioSuratLoaded: surat,
+    );
+  }
+
+  void _resetAudioSuratLoaded() {
     state = state.copyWith(
       audioSuratLoaded: null,
     );
-
-    callback();
   }
 
   Future<void> _getLastRecordingData() async {

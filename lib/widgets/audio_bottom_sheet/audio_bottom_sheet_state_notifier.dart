@@ -74,8 +74,11 @@ class AudioBottomSheetStateNotifier
   Future<void> init(
     AudioBottomSheetState initState,
     AudioApi audioApi,
-    AudioPlayer audioPlayer,
-  ) async {
+    AudioPlayer audioPlayer, {
+    Function()? onSuccess,
+    Function()? onLoadError,
+    Function()? onPlayBackError,
+  }) async {
     _audioApi = audioApi;
     state = initState;
     _audioPlayer = audioPlayer;
@@ -99,9 +102,19 @@ class AudioBottomSheetStateNotifier
         }
       });
       state = state.copyWith(isLoading: false);
+      if (onSuccess != null) onSuccess();
     } catch (e) {
       state = state.copyWith(isLoading: false);
+      if (onLoadError != null) onLoadError();
     }
+
+    // Catching errors during playback (e.g. lost network connection)
+    _audioPlayer.playbackEventStream.listen(
+      (event) {},
+      onError: (Object e, StackTrace st) {
+        if (onPlayBackError != null) onPlayBackError();
+      },
+    );
   }
 
   void playAudio() {
