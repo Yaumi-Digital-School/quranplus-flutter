@@ -18,6 +18,9 @@ import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_ser
 import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_state_notifier.dart';
 import 'package:http/http.dart' as http;
 
 class HomePageState {
@@ -32,6 +35,7 @@ class HomePageState {
     this.listTaddaburAvailables,
     this.lastBookmark,
     this.lastRecordingData,
+    this.audioSuratLoaded,
   });
 
   String token;
@@ -44,6 +48,7 @@ class HomePageState {
   Map<int, int>? listTaddaburAvailables;
   Bookmarks? lastBookmark;
   LastRecordingData? lastRecordingData;
+  SuratByJuz? audioSuratLoaded;
 
   HomePageState copyWith({
     String? token,
@@ -56,6 +61,7 @@ class HomePageState {
     Map<int, int>? listTaddaburAvailables,
     Bookmarks? lastBookmark,
     LastRecordingData? lastRecordingData,
+    SuratByJuz? audioSuratLoaded,
   }) {
     return HomePageState(
       token: token ?? this.token,
@@ -69,6 +75,7 @@ class HomePageState {
           listTaddaburAvailables ?? this.listTaddaburAvailables,
       lastBookmark: lastBookmark ?? this.lastBookmark,
       lastRecordingData: lastRecordingData ?? this.lastRecordingData,
+      audioSuratLoaded: audioSuratLoaded,
     );
   }
 }
@@ -79,8 +86,14 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     required SharedPreferenceService sharedPreferenceService,
     required this.mainPageProvider,
     required this.authenticationService,
+    required AudioBottomSheetStateNotifier audioPlayerNotifier,
+    required AudioPlayer audioPlayer,
+    required AudioApi audioApi,
   })  : _sharedPreferenceService = sharedPreferenceService,
         _habitDailySummaryService = habitDailySummaryService,
+        audioPlayerNotifier = audioPlayerNotifier,
+        _audioPlayer = audioPlayer,
+        _audioApi = audioApi,
         super(HomePageState(isNeedSync: false));
 
   final SharedPreferenceService _sharedPreferenceService;
@@ -95,6 +108,10 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
   late Map<int, int>? _listTaddaburAvailables;
   bool _shouldOpenFeedbackUrl = false;
   DbLocal db = DbLocal();
+
+  final AudioPlayer _audioPlayer;
+  final AudioApi _audioApi;
+  final AudioBottomSheetStateNotifier audioPlayerNotifier;
 
   Bookmarks? _lastBookmark;
 
@@ -112,6 +129,51 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     } catch (e) {
       //TODO add error logger
     }
+  }
+
+  Future<void> initAyahAudio({
+    required SuratByJuz surat,
+    required Function() onSuccess,
+    required Function() onLoadError,
+    required Function() onPlayBackError,
+  }) async {
+    _setAudioSuratLoaded(surat);
+    await audioPlayerNotifier.init(
+      AudioBottomSheetState(
+        surahName: surat.nameLatin,
+        surahId: int.parse(surat.number),
+        ayahId: int.parse(surat.startAyat),
+        isLoading: true,
+      ),
+      _audioApi,
+      _audioPlayer,
+      onSuccess: () async {
+        _resetAudioSuratLoaded();
+        onSuccess();
+      },
+      onLoadError: () async {
+        _resetAudioSuratLoaded();
+        onLoadError();
+      },
+      onPlayBackError: () async {
+        _resetAudioSuratLoaded();
+        onPlayBackError();
+      },
+    );
+  }
+
+  void _setAudioSuratLoaded(
+    SuratByJuz surat,
+  ) {
+    state = state.copyWith(
+      audioSuratLoaded: surat,
+    );
+  }
+
+  void _resetAudioSuratLoaded() {
+    state = state.copyWith(
+      audioSuratLoaded: null,
+    );
   }
 
   Future<void> _getLastRecordingData() async {
