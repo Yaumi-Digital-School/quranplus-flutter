@@ -131,12 +131,12 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     }
   }
 
-  Future<void> initAyahAudio(
-    SuratByJuz surat,
-    Function() onSuccess,
-    Function() onLoadError,
-    Function() onPlayBackError,
-  ) async {
+  Future<void> initAyahAudio({
+    required SuratByJuz surat,
+    required Function() onSuccess,
+    required Function() onLoadError,
+    required Function() onPlayBackError,
+  }) async {
     _setAudioSuratLoaded(surat);
     await audioPlayerNotifier.init(
       AudioBottomSheetState(

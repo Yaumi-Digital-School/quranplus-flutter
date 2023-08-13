@@ -675,18 +675,19 @@ class ListSuratByJuz extends StatelessWidget {
                                       iconSize: 20,
                                       onPressed: () async {
                                         notifier.initAyahAudio(
-                                          surats[index],
-                                          () => navigateToSurahPage(
+                                          surat: surats[index],
+                                          onSuccess: () => navigateToSurahPage(
                                             surats,
                                             index,
                                             context,
                                             notifier,
                                             isShowBottomSheet: true,
                                           ),
-                                          () {
+                                          onLoadError: () {
                                             // TODO: show no internet bottom sheet
                                           },
-                                          () => showInitSurahAudioErrorSnackbar(
+                                          onPlayBackError: () =>
+                                              showInitSurahAudioErrorSnackbar(
                                             context,
                                           ),
                                         );
