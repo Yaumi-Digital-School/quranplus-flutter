@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/habit_progress_view.dart';
@@ -11,6 +10,7 @@ import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
+import 'package:qurantafsir_flutter/shared/utils/internet_utils.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/registration_view.dart';
@@ -132,8 +132,8 @@ class HabitPage extends StatelessWidget {
     required SignInType type,
   }) {
     return () async {
-      var connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult != ConnectivityResult.none) {
+      bool isConnected = await InternetUtils.isInternetAvailable();
+      if (isConnected) {
         notifier.signIn(
           type: type,
           ref: ref,
@@ -141,9 +141,7 @@ class HabitPage extends StatelessWidget {
             SignInBottomSheet.showAccountDeletedInfo(context: context);
           },
           onSuccess: () async {
-            await ref.read(habitDailySummaryService).syncHabit(
-                  connectivityResult: connectivityResult,
-                );
+            await ref.read(habitDailySummaryService).syncHabit();
             ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
             final BottomNavigationBar navbar =
                 mainNavbarGlobalKey.currentWidget as BottomNavigationBar;

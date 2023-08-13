@@ -1,4 +1,3 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
@@ -14,6 +13,7 @@ import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
+import 'package:qurantafsir_flutter/shared/utils/internet_utils.dart';
 
 class BookmarkPageV2 extends StatefulWidget {
   const BookmarkPageV2({Key? key}) : super(key: key);
@@ -46,12 +46,9 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
           },
         ),
         onStateNotifierReady: (notifier, ref) async {
-          final ConnectivityResult connectivity =
-              await Connectivity().checkConnectivity();
+          bool isConnected = await InternetUtils.isInternetAvailable();
 
-          await notifier.initStateNotifier(
-            connectivityResult: connectivity,
-          );
+          await notifier.initStateNotifier(isConnected: isConnected);
         },
         builder: (
           BuildContext context,
@@ -486,23 +483,20 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
     SuratPageV3OnPopParam onPopParam,
     BookmarkPageStateNotifier notifier,
   ) async {
-    final ConnectivityResult connectivityResult =
-        await Connectivity().checkConnectivity();
+    bool isConnected = await InternetUtils.isInternetAvailable();
 
     final bool bookmarkChanged = onPopParam.isBookmarkChanged;
     final bool favoriteAyahChanged = onPopParam.isFavoriteAyahChanged;
 
     if (!bookmarkChanged && favoriteAyahChanged) {
-      await notifier.initFavoriteAyahSection(
-        connectivityResult: connectivityResult,
-      );
+      await notifier.initFavoriteAyahSection();
     } else if (bookmarkChanged && !favoriteAyahChanged) {
       await notifier.initBookmarkSection(
-        connectivityResult: connectivityResult,
+        isConnected: isConnected,
       );
     } else {
       await notifier.initStateNotifier(
-        connectivityResult: connectivityResult,
+        isConnected: isConnected,
       );
     }
   }

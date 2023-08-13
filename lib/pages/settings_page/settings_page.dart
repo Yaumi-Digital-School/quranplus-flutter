@@ -6,6 +6,7 @@ import 'package:qurantafsir_flutter/pages/account_page/account_page.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/utils/internet_utils.dart';
 import 'package:qurantafsir_flutter/widgets/change_theme_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/widgets/list_item_widget.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/widgets/version_app_widget.dart';
@@ -23,7 +24,6 @@ import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:qurantafsir_flutter/widgets/horizontal_divider.dart';
 import 'package:qurantafsir_flutter/widgets/registration_view.dart';
 import 'package:qurantafsir_flutter/widgets/sign_in_bottom_sheet.dart';
@@ -244,8 +244,8 @@ class SettingsPage extends StatelessWidget {
     required SignInType type,
   }) {
     return () async {
-      var connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult != ConnectivityResult.none) {
+      bool isConnected = await InternetUtils.isInternetAvailable();
+      if (isConnected) {
         notifier.signIn(
           ref: ref,
           type: type,
@@ -253,9 +253,7 @@ class SettingsPage extends StatelessWidget {
             SignInBottomSheet.showAccountDeletedInfo(context: context);
           },
           onSuccess: () async {
-            await ref.read(habitDailySummaryService).syncHabit(
-                  connectivityResult: connectivityResult,
-                );
+            await ref.read(habitDailySummaryService).syncHabit();
             await ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
 
             ref.read(dioServiceProvider.notifier).state = DioService(
@@ -288,8 +286,8 @@ class SettingsPage extends StatelessWidget {
   }
 
   void _onAccountTap(BuildContext context) async {
-    var connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult != ConnectivityResult.none) {
+    bool isConnected = await InternetUtils.isInternetAvailable();
+    if (isConnected) {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return AccountPage();
       }));
@@ -313,8 +311,8 @@ class SettingsPage extends StatelessWidget {
     SettingsPageStateNotifier notifier,
     WidgetRef ref,
   ) async {
-    var connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult != ConnectivityResult.none) {
+    bool isConnected = await InternetUtils.isInternetAvailable();
+    if (isConnected) {
       notifier.signOut(() {
         ref.read(dioServiceProvider.notifier).state = DioService(
           baseUrl: EnvConstants.baseUrl!,

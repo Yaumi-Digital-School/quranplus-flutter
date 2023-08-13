@@ -9,7 +9,7 @@ import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/form_status.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:qurantafsir_flutter/shared/utils/internet_utils.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 
@@ -422,8 +422,8 @@ class AccountPage extends StatelessWidget {
   ) {
     if (formStatus == FormStatus.valid) {
       return () async {
-        var connectivityResult = await Connectivity().checkConnectivity();
-        if (connectivityResult != ConnectivityResult.none) {
+        final isConnected = await InternetUtils.isInternetAvailable();
+        if (isConnected) {
           notifier.saveButtonChecked(() {
             Navigator.of(context).pop();
           });

@@ -1,4 +1,3 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/tadabbur_surah_list_page/tadabbur_surah_list_view_state_notifier.dart';
@@ -7,6 +6,7 @@ import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
+import 'package:qurantafsir_flutter/shared/utils/internet_utils.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 
 class TadabburSurahListView extends StatelessWidget {
@@ -26,15 +26,14 @@ class TadabburSurahListView extends StatelessWidget {
         TadabburSurahListViewStateNotifier notifier,
         _,
       ) async {
-        final ConnectivityResult connectivityResult =
-            await Connectivity().checkConnectivity();
-        if (connectivityResult == ConnectivityResult.none) {
+        bool isConnected = await InternetUtils.isInternetAvailable();
+        if (isConnected) {
+          notifier.initStateNotifier();
+        } else {
           GeneralBottomSheet().showNoInternetBottomSheet(
             context,
             () => notifier.initStateNotifier(),
           );
-        } else {
-          notifier.initStateNotifier();
         }
       },
       builder: (

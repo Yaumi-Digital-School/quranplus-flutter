@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
@@ -15,8 +14,8 @@ import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
-import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/utils/internet_utils.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_widget.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_minimized_info.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
@@ -139,11 +138,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
           });
         }
 
-        final ConnectivityResult connectivityResult =
-            await Connectivity().checkConnectivity();
-        await notifier.initStateNotifier(
-          connectivityResult: connectivityResult,
-        );
+        await notifier.initStateNotifier();
         if (widget.param.firstPagePointerIndex != 0) {
           scrollController.scrollToIndex(
             widget.param.firstPagePointerIndex,
@@ -280,11 +275,11 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                         return IconButton(
                           icon: const Icon(Icons.bookmark_outlined),
                           onPressed: () async {
-                            final ConnectivityResult connectivityResult =
-                                await Connectivity().checkConnectivity();
+                            bool isConnected =
+                                await InternetUtils.isInternetAvailable();
                             notifier.deleteBookmark(
                               notifier.currentPage.value,
-                              connectivityResult,
+                              isConnected,
                             );
                           },
                         );
@@ -292,12 +287,12 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                         return IconButton(
                           icon: const Icon(Icons.bookmark_outline),
                           onPressed: () async {
-                            final ConnectivityResult connectivityResult =
-                                await Connectivity().checkConnectivity();
+                            bool isConnected =
+                                await InternetUtils.isInternetAvailable();
                             notifier.insertBookmark(
                               notifier.visibleSuratName.value,
                               notifier.currentPage.value,
-                              connectivityResult,
+                              isConnected,
                             );
                           },
                         );
@@ -903,15 +898,11 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                   verse.surahNameAndAyatKey,
                   FavoriteAyahCTA(
                     onTap: () async {
-                      final ConnectivityResult connectivityResult =
-                          await Connectivity().checkConnectivity();
-
                       await notifier.toggleFavoriteAyah(
                         surahNumber: verse.surahNumber,
                         ayahNumber: verse.verseNumber,
                         ayahID: verse.id,
                         page: pageNumberInQuran,
-                        connectivityResult: connectivityResult,
                       );
                     },
                     isFavorited: notifier.isAyahFavorited(

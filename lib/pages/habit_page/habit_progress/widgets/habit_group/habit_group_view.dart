@@ -1,4 +1,3 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/habit_group/widgets/habit_group_empty_group_view.dart';
@@ -27,18 +26,6 @@ class HabitGroupView extends StatelessWidget {
         },
       ),
       onStateNotifierReady: (notifier, ref) async {
-        final ConnectivityResult connection =
-            await Connectivity().checkConnectivity();
-
-        if (connection == ConnectivityResult.none) {
-          await GeneralBottomSheet().showNoInternetBottomSheet(
-            context,
-            () async {
-              Navigator.pop(context);
-            },
-          );
-        }
-
         await notifier.initStateNotifier();
       },
       builder: (
@@ -47,6 +34,16 @@ class HabitGroupView extends StatelessWidget {
         HabitGroupStateNotifier notifier,
         WidgetRef ref,
       ) {
+        if (!state.hasInternet && state.showBottomShowNoInternet) {
+          GeneralBottomSheet().showNoInternetBottomSheet(
+            context,
+            () async {
+              notifier.hideBottomSheetNoInternet();
+              Navigator.pop(context);
+            },
+          );
+        }
+
         if (state.isLoading) {
           return const Center(
             child: CircularProgressIndicator(),

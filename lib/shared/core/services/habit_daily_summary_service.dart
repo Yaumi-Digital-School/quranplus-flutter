@@ -1,9 +1,9 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/habit_api.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_sync.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
+import 'package:qurantafsir_flutter/shared/utils/internet_utils.dart';
 import 'package:retrofit/retrofit.dart';
 
 const threeHourInSeconds = 10800;
@@ -35,15 +35,13 @@ class HabitDailySummaryService {
     );
   }
 
-  Future<void> syncHabit({
-    ConnectivityResult? connectivityResult,
-  }) async {
-    connectivityResult ??= await Connectivity().checkConnectivity();
+  Future<void> syncHabit() async {
+    bool isConnected = await InternetUtils.isInternetAvailable();
 
     try {
       final HabitSyncRequest request = await _getLocalDataRequest();
 
-      if (connectivityResult == ConnectivityResult.none) {
+      if (!isConnected) {
         final habitNeedToSyncTimer =
             sharedPreferenceService.getHabitNeedToSyncTimer();
         if (habitNeedToSyncTimer == "" && request.dailySummaries.isNotEmpty) {

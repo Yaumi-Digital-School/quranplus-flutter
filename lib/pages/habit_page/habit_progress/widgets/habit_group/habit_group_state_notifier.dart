@@ -10,6 +10,7 @@ class HabitGroupState {
   List<GetHabitGroupsItem> listGroup;
   bool isLoading;
   bool hasInternet;
+  bool showBottomShowNoInternet;
   bool isSuccessLoad;
 
   HabitGroupState({
@@ -17,6 +18,7 @@ class HabitGroupState {
     this.isLoading = true,
     this.hasInternet = true,
     this.isSuccessLoad = true,
+    this.showBottomShowNoInternet = false,
   });
 
   HabitGroupState copyWith({
@@ -24,12 +26,15 @@ class HabitGroupState {
     bool? isLoading,
     bool? hasInternet,
     bool? isSuccessLoad,
+    bool? showBottomShowNoInternet,
   }) {
     return HabitGroupState(
       listGroup: listGroup ?? this.listGroup,
       isLoading: isLoading ?? this.isLoading,
       hasInternet: hasInternet ?? this.hasInternet,
       isSuccessLoad: isSuccessLoad ?? this.isSuccessLoad,
+      showBottomShowNoInternet:
+          showBottomShowNoInternet ?? this.showBottomShowNoInternet,
     );
   }
 }
@@ -46,6 +51,10 @@ class HabitGroupStateNotifier extends BaseStateNotifier<HabitGroupState> {
   Future<void> initStateNotifier() async {
     state = state.copyWith(isLoading: true);
     await _getAllGroups();
+  }
+
+  void hideBottomSheetNoInternet() {
+    state = state.copyWith(showBottomShowNoInternet: false);
   }
 
   Future<void> createGroup(String groupName) async {
@@ -91,9 +100,15 @@ class HabitGroupStateNotifier extends BaseStateNotifier<HabitGroupState> {
         return;
       }
 
-      state = state.copyWith(isSuccessLoad: false);
+      state = state.copyWith(
+        isSuccessLoad: false,
+        hasInternet: true,
+      );
     } on SocketException catch (_) {
-      state = state.copyWith(hasInternet: false);
+      state = state.copyWith(
+        hasInternet: false,
+        showBottomShowNoInternet: true,
+      );
     } catch (e) {
       state = state.copyWith(isSuccessLoad: false);
     }

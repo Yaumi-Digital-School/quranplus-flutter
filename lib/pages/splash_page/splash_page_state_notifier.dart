@@ -1,4 +1,3 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/widgets.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
@@ -12,7 +11,6 @@ import 'package:qurantafsir_flutter/shared/core/services/shared_preference_servi
 import 'package:qurantafsir_flutter/shared/core/services/tadabbur_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/utils/app_update.dart';
-import 'package:qurantafsir_flutter/shared/utils/internet_connection.dart';
 import 'package:version/version.dart';
 
 class SplashPageState {}
@@ -48,14 +46,12 @@ class SplashPageStateNotifier extends BaseStateNotifier<SplashPageState> {
   late AppUpdateType? appUpdateType;
 
   @override
-  Future<void> initStateNotifier({
-    ConnectivityResult? conn,
-  }) async {
+  Future<void> initStateNotifier({bool? isConnected}) async {
     try {
       await _deepLinkService.init(navigatorKey);
       await _authenticationService.initRepository();
 
-      if (conn != null && conn.isOnInternetConnection) {
+      if (isConnected ?? false) {
         await _remoteConfigService.init();
         await _tadabburService.syncTadabburPerAyahInformations();
 
@@ -70,11 +66,11 @@ class SplashPageStateNotifier extends BaseStateNotifier<SplashPageState> {
 
   Future<AppUpdateInfo?> getAppUpdateStatus({
     required BuildContext context,
-    required ConnectivityResult conn,
+    required bool isConnected,
   }) async {
     AppUpdateInfo? appUpdateInfo;
 
-    if (conn.isOnInternetConnection) {
+    if (isConnected) {
       PackageInfo info = await PackageInfo.fromPlatform();
 
       appUpdateInfo = AppUpdateUtil.showAppUpdateStatus(

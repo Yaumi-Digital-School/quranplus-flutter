@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
@@ -13,16 +12,14 @@ import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart'
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart';
 import 'package:qurantafsir_flutter/shared/core/models/verse-topage.dart';
-import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
 import 'package:http/http.dart' as http;
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/utils/internet_utils.dart';
 
 class HomePageState {
   HomePageState({
@@ -245,10 +242,9 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
   }
 
   Future<void> getFeedbackUrl() async {
-    ConnectivityResult connectivityResult =
-        await Connectivity().checkConnectivity();
+    bool isConnected = await InternetUtils.isInternetAvailable();
 
-    if (connectivityResult != ConnectivityResult.none) {
+    if (isConnected) {
       try {
         _feedbackUrl = (await _fetchLink()).url ?? '';
         if (!(_feedbackUrl?.isEmpty ?? true)) {
@@ -260,6 +256,8 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
       }
     }
 
+    // TODO: if has no internet should be show bottom sheet no internet maybe.
+    // TODO: Need confirm to product team
     state = state.copyWith(
       feedbackUrl: _feedbackUrl,
     );
