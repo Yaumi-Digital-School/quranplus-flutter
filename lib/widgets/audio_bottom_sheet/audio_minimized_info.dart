@@ -24,7 +24,7 @@ class _AudioMinimizedInfoState extends ConsumerState<AudioMinimizedInfo> {
 
   @override
   void initState() {
-    audioPlayerNotifier = ref.read(audioBottomSheetProvider.notifier);
+    audioPlayerNotifier = ref.read(audioRecitationProvider.notifier);
 
     super.initState();
   }
@@ -32,7 +32,7 @@ class _AudioMinimizedInfoState extends ConsumerState<AudioMinimizedInfo> {
   @override
   Widget build(BuildContext context) {
     final AudioRecitationState audioPlayerState =
-        ref.watch(audioBottomSheetProvider);
+        ref.watch(audioRecitationProvider);
 
     return GestureDetector(
       onTap: widget.onTapContainer,

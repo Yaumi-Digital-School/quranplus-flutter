@@ -30,7 +30,7 @@ class _AudioBottomSheetWidgetState
     final AsyncValue<ButtonAudioState> buttonState =
         ref.watch(buttonAudioStateProvider);
     final AudioRecitationState audioBottomSheetState =
-        ref.watch(audioBottomSheetProvider);
+        ref.watch(audioRecitationProvider);
 
     return Column(
       children: [
@@ -99,14 +99,12 @@ class _AudioBottomSheetWidgetState
                       onTap: () {
                         if (data == ButtonAudioState.paused) {
                           ref
-                              .read(audioBottomSheetProvider.notifier)
+                              .read(audioRecitationProvider.notifier)
                               .playAudio();
 
                           return;
                         }
-                        ref
-                            .read(audioBottomSheetProvider.notifier)
-                            .pauseAudio();
+                        ref.read(audioRecitationProvider.notifier).pauseAudio();
                       },
                       child: Container(
                         height: 36,
@@ -180,7 +178,7 @@ class _AudioBottomSheetWidgetState
   Widget _buildNextSurahCTA(String title) {
     return InkWell(
       onTap: () {
-        ref.read(audioBottomSheetProvider.notifier).nextSurah();
+        ref.read(audioRecitationProvider.notifier).nextSurah();
       },
       child: Container(
         constraints: const BoxConstraints(
@@ -230,7 +228,7 @@ class _AudioBottomSheetWidgetState
   Widget _buildPreviousSurahCTA(String title) {
     return InkWell(
       onTap: () {
-        ref.read(audioBottomSheetProvider.notifier).previousSurah();
+        ref.read(audioRecitationProvider.notifier).previousSurah();
       },
       child: Container(
         padding: const EdgeInsets.all(4),

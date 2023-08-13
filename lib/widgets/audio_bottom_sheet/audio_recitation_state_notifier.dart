@@ -205,7 +205,7 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
   }
 }
 
-final audioBottomSheetProvider =
+final audioRecitationProvider =
     StateNotifierProvider<AudioRecitationStateNotifier, AudioRecitationState>(
   (ref) {
     final AudioApi _audioApi = ref.read(audioApiProvider);

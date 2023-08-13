@@ -18,11 +18,11 @@ class AudioMinimizedInfoIconButton extends ConsumerWidget {
         return InkWell(
           onTap: () {
             if (buttonState.value == ButtonAudioState.paused) {
-              ref.read(audioBottomSheetProvider.notifier).playAudio();
+              ref.read(audioRecitationProvider.notifier).playAudio();
 
               return;
             }
-            ref.read(audioBottomSheetProvider.notifier).pauseAudio();
+            ref.read(audioRecitationProvider.notifier).pauseAudio();
           },
           child: _IconButton(
             icon: buttonState.value == ButtonAudioState.paused

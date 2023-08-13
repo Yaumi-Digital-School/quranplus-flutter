@@ -57,7 +57,7 @@ class _HomePageV2State extends State<HomePageV2> {
             authenticationService: ref.read(authenticationService),
             mainPageProvider: ref.read(mainPageProvider),
             audioRecitationStateNotifier:
-                ref.read(audioBottomSheetProvider.notifier),
+                ref.read(audioRecitationProvider.notifier),
           );
         },
       ),

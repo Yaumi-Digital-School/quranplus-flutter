@@ -115,8 +115,8 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
           scrollController: scrollController,
           isLoggedIn: ref.watch(authenticationService).isLoggedIn,
           habitDailySummaryService: ref.watch(habitDailySummaryService),
-          audioPlayerState: ref.read(audioBottomSheetProvider),
-          audioPlayerNotifier: ref.read(audioBottomSheetProvider.notifier),
+          audioPlayerState: ref.read(audioRecitationProvider),
+          audioPlayerNotifier: ref.read(audioRecitationProvider.notifier),
         );
       },
     );
