@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
-import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_state_notifier.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_minimized_info_icon_button.dart';
 
 class AudioMinimizedInfo extends ConsumerStatefulWidget {
@@ -20,19 +20,19 @@ class AudioMinimizedInfo extends ConsumerStatefulWidget {
 }
 
 class _AudioMinimizedInfoState extends ConsumerState<AudioMinimizedInfo> {
-  late AudioBottomSheetStateNotifier audioPlayerNotifier;
+  late AudioRecitationStateNotifier audioPlayerNotifier;
 
   @override
   void initState() {
-    audioPlayerNotifier = ref.read(audioBottomSheetProvider.notifier);
+    audioPlayerNotifier = ref.read(audioRecitationProvider.notifier);
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final AudioBottomSheetState audioPlayerState =
-        ref.watch(audioBottomSheetProvider);
+    final AudioRecitationState audioPlayerState =
+        ref.watch(audioRecitationProvider);
 
     return GestureDetector(
       onTap: widget.onTapContainer,

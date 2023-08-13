@@ -16,7 +16,7 @@ import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
-import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_state_notifier.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_widget.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_minimized_info.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
@@ -115,10 +115,8 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
           scrollController: scrollController,
           isLoggedIn: ref.watch(authenticationService).isLoggedIn,
           habitDailySummaryService: ref.watch(habitDailySummaryService),
-          audioPlayerState: ref.read(audioBottomSheetProvider),
-          audioPlayerNotifier: ref.read(audioBottomSheetProvider.notifier),
-          audioPlayer: ref.read(audioPlayerProvider),
-          audioApi: ref.read(audioApiProvider),
+          audioPlayerState: ref.read(audioRecitationProvider),
+          audioPlayerNotifier: ref.read(audioRecitationProvider.notifier),
         );
       },
     );

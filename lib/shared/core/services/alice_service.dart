@@ -12,7 +12,7 @@ class AliceService {
     _alice = Alice(
       navigatorKey: _navigatorKey,
       showNotification: false,
-      showInspectorOnShake: false,
+      showInspectorOnShake: true,
     );
   }
 
