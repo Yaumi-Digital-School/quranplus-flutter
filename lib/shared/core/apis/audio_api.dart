@@ -15,4 +15,7 @@ abstract class AudioApi {
     @Path('surah_id') required int surahId,
     @Path('ayah_number') required int ayahNumber,
   });
+
+  @GET('/api/reciters}')
+  Future<HttpResponse<List<ListReciterResponse>>> getListReciter();
 }

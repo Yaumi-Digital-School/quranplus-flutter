@@ -5,8 +5,11 @@ import 'package:qurantafsir_flutter/shared/constants/button_audio_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/Select_Recitator_buttom_sheet.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/Select_Reciter_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/linear_percent_indicator_custom.dart';
+import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 
 class AudioBottomSheetWidget extends ConsumerStatefulWidget {
   const AudioBottomSheetWidget({
@@ -31,6 +34,8 @@ class _AudioBottomSheetWidgetState
         ref.watch(buttonAudioStateProvider);
     final AudioBottomSheetState audioBottomSheetState =
         ref.watch(audioBottomSheetProvider);
+    final SelectReciterBottomSheetState selectReciterState =
+        ref.watch(SelectReciterBottomSheetProvider);
 
     return Column(
       children: [
@@ -153,25 +158,37 @@ class _AudioBottomSheetWidgetState
           ),
         ),
         const SizedBox(height: 30),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Reciter",
-                  style: QPTextStyle.getDescription2Regular(context),
-                ),
-                Text(
-                  "Mishari Rashid al-`Afasy",
-                  style: QPTextStyle.getBody2Medium(context),
-                ),
-              ],
-            ),
-            const Icon(Icons.keyboard_arrow_right, size: 24),
-          ],
+        GestureDetector(
+          onTap: () async {
+            await ref
+                .read(SelectReciterBottomSheetProvider.notifier)
+                .initStateNotifier();
+            GeneralBottomSheet.showBaseBottomSheet(
+              context: context,
+              widgetChild: SelectRecitatorWidget(1),
+            );
+            print(selectReciterState.listReciter);
+          },
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Reciter",
+                    style: QPTextStyle.getDescription2Regular(context),
+                  ),
+                  Text(
+                    "Mishari Rashid al-`Afasy",
+                    style: QPTextStyle.getBody2Medium(context),
+                  ),
+                ],
+              ),
+              const Icon(Icons.keyboard_arrow_right, size: 24),
+            ],
+          ),
         ),
       ],
     );
