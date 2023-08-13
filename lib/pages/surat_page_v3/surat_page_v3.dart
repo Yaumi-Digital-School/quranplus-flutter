@@ -67,11 +67,13 @@ class SuratPageV3Param {
     required this.startPageInIndex,
     this.firstPagePointerIndex = 0,
     this.isStartTracking = false,
+    this.isShowBottomSheet = false,
   });
 
   final int startPageInIndex;
   final int firstPagePointerIndex;
   final bool isStartTracking;
+  final bool isShowBottomSheet;
 }
 
 class SuratPageV3 extends ConsumerStatefulWidget {
@@ -147,6 +149,14 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
             widget.param.firstPagePointerIndex,
             preferPosition: AutoScrollPosition.begin,
             duration: const Duration(milliseconds: 200),
+          );
+        }
+
+        if (widget.param.isShowBottomSheet) {
+          notifier.playAyahAudio();
+          GeneralBottomSheet.showBaseBottomSheet(
+            context: context,
+            widgetChild: const AudioBottomSheetWidget(),
           );
         }
       },

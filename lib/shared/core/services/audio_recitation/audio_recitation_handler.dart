@@ -16,10 +16,15 @@ class AudioRecitationHandler extends BaseAudioHandler {
   final AudioPlayer _player = AudioPlayer();
   VoidCallback? onSkipNext;
   VoidCallback? onSkipPrevious;
+  VoidCallback? onPlaybackError;
   Uri? icon;
 
   void setOnSkipNext(VoidCallback callback) {
     onSkipNext = callback;
+  }
+
+  void setOnPlaybackError(VoidCallback callback) {
+    onPlaybackError = callback;
   }
 
   void setOnSkipPrevious(VoidCallback callback) {
@@ -40,32 +45,37 @@ class AudioRecitationHandler extends BaseAudioHandler {
   }
 
   void _initHandler() {
-    _player.playbackEventStream.listen((PlaybackEvent event) {
-      final bool isPlaying = _player.playing;
-      playbackState.add(
-        playbackState.value.copyWith(
-          controls: [
-            MediaControl.skipToPrevious,
-            if (isPlaying) MediaControl.pause,
-            if (!isPlaying) MediaControl.play,
-            MediaControl.stop,
-            MediaControl.skipToNext,
-          ],
-          systemActions: {},
-          processingState: const {
-            ProcessingState.idle: AudioProcessingState.idle,
-            ProcessingState.loading: AudioProcessingState.loading,
-            ProcessingState.buffering: AudioProcessingState.buffering,
-            ProcessingState.ready: AudioProcessingState.ready,
-            ProcessingState.completed: AudioProcessingState.completed,
-          }[_player.processingState]!,
-          playing: isPlaying,
-          updatePosition: _player.position,
-          bufferedPosition: _player.bufferedPosition,
-          speed: _player.speed,
-        ),
-      );
-    });
+    _player.playbackEventStream.listen(
+      (PlaybackEvent event) {
+        final bool isPlaying = _player.playing;
+        playbackState.add(
+          playbackState.value.copyWith(
+            controls: [
+              MediaControl.skipToPrevious,
+              if (isPlaying) MediaControl.pause,
+              if (!isPlaying) MediaControl.play,
+              MediaControl.stop,
+              MediaControl.skipToNext,
+            ],
+            systemActions: {},
+            processingState: const {
+              ProcessingState.idle: AudioProcessingState.idle,
+              ProcessingState.loading: AudioProcessingState.loading,
+              ProcessingState.buffering: AudioProcessingState.buffering,
+              ProcessingState.ready: AudioProcessingState.ready,
+              ProcessingState.completed: AudioProcessingState.completed,
+            }[_player.processingState]!,
+            playing: isPlaying,
+            updatePosition: _player.position,
+            bufferedPosition: _player.bufferedPosition,
+            speed: _player.speed,
+          ),
+        );
+      },
+      onError: (_) {
+        if (onPlaybackError != null) onPlaybackError!();
+      },
+    );
   }
 
   StreamSubscription<PlayerState> getStreamOnFinishedEvent(

@@ -95,8 +95,11 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
   }
 
   Future<void> init(
-    AudioRecitationState initState,
-  ) async {
+    AudioRecitationState initState, {
+    Function()? onSuccess,
+    Function()? onLoadError,
+    Function()? onPlayBackError,
+  }) async {
     state = initState;
 
     _audioHandler.setOnSkipNext(nextSurah);
@@ -131,8 +134,14 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
       );
 
       state = state.copyWith(isLoading: false);
+      if (onSuccess != null) onSuccess();
     } catch (e) {
       state = state.copyWith(isLoading: false);
+      if (onLoadError != null) onLoadError();
+    }
+
+    if (onPlayBackError != null) {
+      _audioHandler.setOnPlaybackError(onPlayBackError);
     }
   }
 

@@ -13,12 +13,16 @@ import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart'
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart';
 import 'package:qurantafsir_flutter/shared/core/models/verse-topage.dart';
+import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
 import 'package:http/http.dart' as http;
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 
 class HomePageState {
   HomePageState({
@@ -32,6 +36,7 @@ class HomePageState {
     this.listTaddaburAvailables,
     this.lastBookmark,
     this.lastRecordingData,
+    this.audioSuratLoaded,
   });
 
   String token;
@@ -44,6 +49,7 @@ class HomePageState {
   Map<int, int>? listTaddaburAvailables;
   Bookmarks? lastBookmark;
   LastRecordingData? lastRecordingData;
+  SuratByJuz? audioSuratLoaded;
 
   HomePageState copyWith({
     String? token,
@@ -56,6 +62,7 @@ class HomePageState {
     Map<int, int>? listTaddaburAvailables,
     Bookmarks? lastBookmark,
     LastRecordingData? lastRecordingData,
+    SuratByJuz? audioSuratLoaded,
   }) {
     return HomePageState(
       token: token ?? this.token,
@@ -69,6 +76,7 @@ class HomePageState {
           listTaddaburAvailables ?? this.listTaddaburAvailables,
       lastBookmark: lastBookmark ?? this.lastBookmark,
       lastRecordingData: lastRecordingData ?? this.lastRecordingData,
+      audioSuratLoaded: audioSuratLoaded,
     );
   }
 }
@@ -79,8 +87,10 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     required SharedPreferenceService sharedPreferenceService,
     required this.mainPageProvider,
     required this.authenticationService,
+    required AudioRecitationStateNotifier audioRecitationStateNotifier,
   })  : _sharedPreferenceService = sharedPreferenceService,
         _habitDailySummaryService = habitDailySummaryService,
+        _audioRecitationNotifier = audioRecitationStateNotifier,
         super(HomePageState(isNeedSync: false));
 
   final SharedPreferenceService _sharedPreferenceService;
@@ -95,6 +105,8 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
   late Map<int, int>? _listTaddaburAvailables;
   bool _shouldOpenFeedbackUrl = false;
   DbLocal db = DbLocal();
+
+  final AudioRecitationStateNotifier _audioRecitationNotifier;
 
   Bookmarks? _lastBookmark;
 
@@ -112,6 +124,49 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     } catch (e) {
       //TODO add error logger
     }
+  }
+
+  Future<void> initAyahAudio({
+    required SuratByJuz surat,
+    required Function() onSuccess,
+    required Function() onLoadError,
+    required Function() onPlayBackError,
+  }) async {
+    _setAudioSuratLoaded(surat);
+    await _audioRecitationNotifier.init(
+      AudioRecitationState(
+        surahName: surat.nameLatin,
+        surahId: int.parse(surat.number),
+        ayahId: int.parse(surat.startAyat),
+        isLoading: true,
+      ),
+      onSuccess: () async {
+        _resetAudioSuratLoaded();
+        onSuccess();
+      },
+      onLoadError: () async {
+        _resetAudioSuratLoaded();
+        onLoadError();
+      },
+      onPlayBackError: () async {
+        _resetAudioSuratLoaded();
+        onPlayBackError();
+      },
+    );
+  }
+
+  void _setAudioSuratLoaded(
+    SuratByJuz surat,
+  ) {
+    state = state.copyWith(
+      audioSuratLoaded: surat,
+    );
+  }
+
+  void _resetAudioSuratLoaded() {
+    state = state.copyWith(
+      audioSuratLoaded: null,
+    );
   }
 
   Future<void> _getLastRecordingData() async {
