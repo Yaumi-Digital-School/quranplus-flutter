@@ -54,7 +54,6 @@ class AudioRecitationHandler extends BaseAudioHandler {
               MediaControl.skipToPrevious,
               if (isPlaying) MediaControl.pause,
               if (!isPlaying) MediaControl.play,
-              MediaControl.stop,
               MediaControl.skipToNext,
             ],
             systemActions: {},
@@ -120,6 +119,10 @@ class AudioRecitationHandler extends BaseAudioHandler {
   @override
   Future<void> play() async {
     _player.play();
+  }
+
+  bool isPlaying() {
+    return _player.playing;
   }
 
   @override
