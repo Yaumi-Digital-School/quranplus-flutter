@@ -674,22 +674,11 @@ class ListSuratByJuz extends StatelessWidget {
                                       icon: const Icon(Icons.play_circle),
                                       iconSize: 20,
                                       onPressed: () async {
-                                        notifier.initAyahAudio(
-                                          surat: surats[index],
-                                          onSuccess: () => navigateToSurahPage(
-                                            surats,
-                                            index,
-                                            context,
-                                            notifier,
-                                            isShowBottomSheet: true,
-                                          ),
-                                          onLoadError: () {
-                                            // TODO: show no internet bottom sheet
-                                          },
-                                          onPlayBackError: () =>
-                                              showInitSurahAudioErrorSnackbar(
-                                            context,
-                                          ),
+                                        onPlayAudioPressed(
+                                          notifier,
+                                          surats,
+                                          index,
+                                          context,
                                         );
                                       },
                                     ),
@@ -726,6 +715,41 @@ class ListSuratByJuz extends StatelessWidget {
               ),
           ],
         ),
+      ),
+    );
+  }
+
+  Future<void> onPlayAudioPressed(
+    HomePageStateNotifier notifier,
+    List<SuratByJuz> surats,
+    int index,
+    BuildContext context,
+  ) {
+    return notifier.initAyahAudio(
+      surat: surats[index],
+      onSuccess: () => navigateToSurahPage(
+        surats,
+        index,
+        context,
+        notifier,
+        isShowBottomSheet: true,
+      ),
+      onLoadError: () {
+        GeneralBottomSheet().showNoInternetBottomSheet(
+          context,
+          () {
+            Navigator.pop(context);
+            onPlayAudioPressed(
+              notifier,
+              surats,
+              index,
+              context,
+            );
+          },
+        );
+      },
+      onPlayBackError: () => showInitSurahAudioErrorSnackbar(
+        context,
       ),
     );
   }
