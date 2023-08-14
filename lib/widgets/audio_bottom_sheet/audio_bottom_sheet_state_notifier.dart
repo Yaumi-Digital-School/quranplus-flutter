@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/Select_Reciter_state_notifier.dart';
 
 @immutable
 class AudioBottomSheetState {
@@ -13,24 +14,32 @@ class AudioBottomSheetState {
     required this.surahId,
     required this.ayahId,
     required this.isLoading,
+    this.id,
+    this.nameReciter,
   });
 
   final String surahName;
   final int surahId;
   final int ayahId;
   final bool isLoading;
+  final int? id;
+  final String? nameReciter;
 
   AudioBottomSheetState copyWith({
     String? surahName,
     int? surahId,
     int? ayahId,
     bool? isLoading,
+    int? id,
+    String? nameReciter,
   }) {
     return AudioBottomSheetState(
       surahName: surahName ?? this.surahName,
       surahId: surahId ?? this.surahId,
       ayahId: ayahId ?? this.ayahId,
       isLoading: isLoading ?? this.isLoading,
+      id: id ?? this.id,
+      nameReciter: nameReciter ?? this.nameReciter,
     );
   }
 
@@ -54,7 +63,7 @@ class AudioBottomSheetStateNotifier
       final int nextAyahNumber = shouldGoToNextSurah ? 1 : state.ayahId + 1;
 
       final response = await _audioApi.getAudioForSpecificReciterAndAyah(
-        reciterId: 1,
+        reciterId: state.id!,
         surahId: nextSurahId,
         ayahNumber: nextAyahNumber,
       );
@@ -152,6 +161,12 @@ class AudioBottomSheetStateNotifier
     final int currentSurahId = state.surahId;
     final int previousSurahId = currentSurahId - 1;
     await _startNewSurah(previousSurahId);
+  }
+
+  Future<void> changeReciter(
+    SelectReciterStateNotifier _selectReciterNotifier,
+  ) async {
+    await _selectReciterNotifier.fetchData(_audioApi);
   }
 }
 

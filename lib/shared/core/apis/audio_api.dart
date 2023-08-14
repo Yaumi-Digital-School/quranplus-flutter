@@ -16,6 +16,6 @@ abstract class AudioApi {
     @Path('ayah_number') required int ayahNumber,
   });
 
-  @GET('/api/reciters}')
+  @GET('/api/reciters')
   Future<HttpResponse<List<ListReciterResponse>>> getListReciter();
 }

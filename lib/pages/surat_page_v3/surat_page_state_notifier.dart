@@ -10,6 +10,7 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_state.
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur_ayah_available.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
@@ -185,12 +186,28 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   }
 
   Future<void> playOnAyah(Verse verse) async {
+    //get Data Reciter from shared Preference
+    int id;
+    String nameReciter;
+    final ListReciterResponse? response1 =
+        await _sharedPreferenceService.getLastDataReciter();
+    //check apakah null atau tidak, if null return id:1 , nameReciter: Mishari Rashid Al-Afasy, else return
+    if (response1 != null) {
+      id = response1.id;
+      nameReciter = response1.name;
+    } else {
+      id = 1;
+      nameReciter = "Mishari Rashid Al-Afasy";
+    }
+
     await _audioPlayerNotifier.init(
       AudioBottomSheetState(
         surahName: verse.surahName,
         surahId: verse.surahNumber,
         ayahId: verse.verseNumber,
         isLoading: true,
+        id: id,
+        nameReciter: nameReciter,
       ),
       _audioApi,
       _audioPlayer,

@@ -160,12 +160,12 @@ class _AudioBottomSheetWidgetState
         const SizedBox(height: 30),
         GestureDetector(
           onTap: () async {
-            await ref
-                .read(SelectReciterBottomSheetProvider.notifier)
-                .initStateNotifier();
+            ref.read(audioBottomSheetProvider.notifier).changeReciter(
+                  ref.read(SelectReciterBottomSheetProvider.notifier),
+                );
             GeneralBottomSheet.showBaseBottomSheet(
               context: context,
-              widgetChild: SelectRecitatorWidget(1),
+              widgetChild: SelectRecitatorWidget(audioBottomSheetState.id),
             );
             print(selectReciterState.listReciter);
           },
@@ -181,7 +181,7 @@ class _AudioBottomSheetWidgetState
                     style: QPTextStyle.getDescription2Regular(context),
                   ),
                   Text(
-                    "Mishari Rashid al-`Afasy",
+                    audioBottomSheetState.nameReciter!,
                     style: QPTextStyle.getBody2Medium(context),
                   ),
                 ],

@@ -24,4 +24,5 @@ class ListReciterResponse {
   factory ListReciterResponse.fromjson(Map<String, dynamic> json) {
     return _$ListReciterResponseFromJson(json);
   }
+  Map<String, dynamic> toJson() => _$ListReciterResponseToJson(this);
 }
