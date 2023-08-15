@@ -93,8 +93,9 @@ class AudioBottomSheetStateNotifier
       if (playerStateSubscription != null) {
         playerStateSubscription?.cancel();
       }
+      print("hit API");
       final response = await _audioApi.getAudioForSpecificReciterAndAyah(
-        reciterId: 1,
+        reciterId: state.id!,
         surahId: initState.surahId,
         ayahNumber: initState.ayahId,
       );
@@ -109,6 +110,8 @@ class AudioBottomSheetStateNotifier
       });
       state = state.copyWith(isLoading: false);
     } catch (e) {
+      print("yah error");
+      print(e);
       state = state.copyWith(isLoading: false);
     }
   }
@@ -166,7 +169,15 @@ class AudioBottomSheetStateNotifier
   Future<void> changeReciter(
     SelectReciterStateNotifier _selectReciterNotifier,
   ) async {
-    await _selectReciterNotifier.fetchData(_audioApi);
+    await _selectReciterNotifier.fetchData(
+      state.surahName,
+      state.surahId,
+      state.ayahId,
+      _audioApi,
+      state.id,
+      state.nameReciter,
+      _audioPlayer,
+    );
   }
 }
 

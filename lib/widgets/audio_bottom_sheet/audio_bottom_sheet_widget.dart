@@ -163,10 +163,13 @@ class _AudioBottomSheetWidgetState
             ref.read(audioBottomSheetProvider.notifier).changeReciter(
                   ref.read(SelectReciterBottomSheetProvider.notifier),
                 );
+            ref.read(audioBottomSheetProvider.notifier).pauseAudio();
+
             GeneralBottomSheet.showBaseBottomSheet(
               context: context,
               widgetChild: SelectRecitatorWidget(audioBottomSheetState.id),
             );
+
             print(selectReciterState.listReciter);
           },
           child: Row(

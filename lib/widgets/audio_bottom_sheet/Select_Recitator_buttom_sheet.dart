@@ -5,7 +5,10 @@ import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/Select_Reciter_state_notifier.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_state_notifier.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_widget.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
+import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 
 class SelectRecitatorWidget extends ConsumerStatefulWidget {
   const SelectRecitatorWidget(this.idReciter, {Key? key}) : super(key: key);
@@ -16,8 +19,6 @@ class SelectRecitatorWidget extends ConsumerStatefulWidget {
   ConsumerState<SelectRecitatorWidget> createState() =>
       _SelectRecitatorWidgetState();
 }
-
-enum SingingCharacter { lafayette, jefferson }
 
 class _SelectRecitatorWidgetState extends ConsumerState<SelectRecitatorWidget> {
   int id = 1; //harus dibuat dinamis sesuai dengan pilihan akhir user
@@ -63,12 +64,26 @@ class _SelectRecitatorWidgetState extends ConsumerState<SelectRecitatorWidget> {
             onTap: () async {
               await ref
                   .read(SelectReciterBottomSheetProvider.notifier)
-                  .saveDataReciter(id, nameReciter);
+                  .saveDataReciter(
+                    selectReciterState.idReciter!,
+                    selectReciterState.nameReciter!,
+                  );
               print("ini ada dibutton");
               print(id);
               print(nameReciter);
               print("-------");
+              await ref
+                  .read(SelectReciterBottomSheetProvider.notifier)
+                  .backToAudioBottomSheet(
+                    id,
+                    nameReciter,
+                    ref.watch(audioBottomSheetProvider.notifier),
+                  );
               Navigator.pop(context);
+              GeneralBottomSheet.showBaseBottomSheet(
+                context: context,
+                widgetChild: const AudioBottomSheetWidget(),
+              );
             },
           ),
         ],
@@ -95,10 +110,10 @@ class _SelectRecitatorWidgetState extends ConsumerState<SelectRecitatorWidget> {
                 flex: 7,
                 child: RadioListTile<dynamic>(
                   value: state.listReciter![index].id,
-                  groupValue: id,
+                  groupValue: state.idReciter,
                   onChanged: (value) {
                     setState(() {
-                      id = value;
+                      state.idReciter = value;
                       nameReciter = state.listReciter![index].name;
                       print("haiiii");
                       print(id);
