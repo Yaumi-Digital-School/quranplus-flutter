@@ -4,30 +4,32 @@ import 'package:qurantafsir_flutter/shared/constants/button_audio_enum.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
+import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
 
-final Provider<AudioPlayer> audioPlayerProvider = Provider<AudioPlayer>((ref) {
-  return AudioPlayer();
+final Provider<AudioRecitationHandler> audioHandler =
+    Provider<AudioRecitationHandler>((ref) {
+  return AudioRecitationHandler();
 });
 
 final AutoDisposeStreamProvider<Duration> currentDurationProvider =
     StreamProvider.autoDispose<Duration>((ref) {
-  final audioPlayer = ref.watch(audioPlayerProvider);
+  final AudioRecitationHandler _audioHandler = ref.watch(audioHandler);
 
-  return audioPlayer.positionStream;
+  return _audioHandler.getPositionStream();
 });
 
 final AutoDisposeStreamProvider<Duration?> totalDurationProvider =
     StreamProvider.autoDispose<Duration?>((ref) {
-  final audioPlayer = ref.watch(audioPlayerProvider);
+  final AudioRecitationHandler _audioHandler = ref.watch(audioHandler);
 
-  return audioPlayer.durationStream;
+  return _audioHandler.getDurationStream();
 });
 
 final AutoDisposeStreamProvider<ButtonAudioState> buttonAudioStateProvider =
     StreamProvider.autoDispose<ButtonAudioState>((ref) {
-  final audioPlayer = ref.watch(audioPlayerProvider);
+  final AudioRecitationHandler _audioHandler = ref.watch(audioHandler);
 
-  return audioPlayer.playerStateStream.map((event) {
+  return _audioHandler.getPlayerStateStream().map((event) {
     final isPlaying = event.playing;
     final processingState = event.processingState;
     if (processingState == ProcessingState.loading ||

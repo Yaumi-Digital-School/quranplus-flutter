@@ -1,31 +1,32 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
+import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
+import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/Select_Reciter_state_notifier.dart';
 
-@immutable
-class AudioBottomSheetState {
-  const AudioBottomSheetState({
-    required this.surahName,
-    required this.surahId,
-    required this.ayahId,
-    required this.isLoading,
+class AudioRecitationState {
+  AudioRecitationState({
+    this.surahName = '',
+    this.surahId = 1,
+    this.ayahId = 1,
+    this.isLoading = true,
     this.id,
     this.nameReciter,
   });
 
-  final String surahName;
-  final int surahId;
-  final int ayahId;
-  final bool isLoading;
+  String surahName;
+  int surahId;
+  int ayahId;
+  bool isLoading;
   final int? id;
   final String? nameReciter;
 
-  AudioBottomSheetState copyWith({
+  AudioRecitationState copyWith({
     String? surahName,
     int? surahId,
     int? ayahId,
@@ -33,7 +34,7 @@ class AudioBottomSheetState {
     int? id,
     String? nameReciter,
   }) {
-    return AudioBottomSheetState(
+    return AudioRecitationState(
       surahName: surahName ?? this.surahName,
       surahId: surahId ?? this.surahId,
       ayahId: ayahId ?? this.ayahId,
@@ -46,11 +47,22 @@ class AudioBottomSheetState {
   bool get isStopped => surahName.isEmpty;
 }
 
-class AudioBottomSheetStateNotifier
-    extends StateNotifier<AudioBottomSheetState> {
-  AudioBottomSheetStateNotifier(AudioBottomSheetState state) : super(state);
-  late AudioApi _audioApi;
-  late AudioPlayer _audioPlayer;
+class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
+  AudioRecitationStateNotifier({
+    required AudioApi audioApi,
+    required AudioRecitationHandler audioHandler,
+  })  : _audioApi = audioApi,
+        _audioHandler = audioHandler,
+        super(
+          AudioRecitationState(),
+        );
+
+  final AudioApi _audioApi;
+  final AudioRecitationHandler _audioHandler;
+
+  // replace with dynamic reciter id
+  // final int reciterId = 1;
+
   StreamSubscription<PlayerState>? playerStateSubscription;
 
   Future<void> nextAyah() async {
@@ -67,8 +79,19 @@ class AudioBottomSheetStateNotifier
         surahId: nextSurahId,
         ayahNumber: nextAyahNumber,
       );
-      _audioPlayer.setUrl(response.data.audioFileUrl);
-      _audioPlayer.play();
+
+      _audioHandler.setMediaItem(
+        MediaItem(
+          id: '${state.surahId}-${state.ayahId}-${state.id}',
+          title: '${state.surahName} - Ayat: ${state.ayahId}',
+          // replace with dynamic reciter name (done)
+          artist: state.nameReciter,
+          extras: <String, dynamic>{
+            'url': response.data.audioFileUrl,
+          },
+        ),
+      );
+      _audioHandler.play();
 
       state = state.copyWith(
         surahId: nextSurahId,
@@ -81,57 +104,67 @@ class AudioBottomSheetStateNotifier
   }
 
   Future<void> init(
-    AudioBottomSheetState initState,
-    AudioApi audioApi,
-    AudioPlayer audioPlayer,
-  ) async {
-    _audioApi = audioApi;
+    AudioRecitationState initState, {
+    Function()? onSuccess,
+    Function()? onLoadError,
+    Function()? onPlayBackError,
+  }) async {
     state = initState;
-    _audioPlayer = audioPlayer;
+
+    _audioHandler.setOnSkipNext(nextSurah);
+    _audioHandler.setOnSkipPrevious(previousSurah);
 
     try {
       if (playerStateSubscription != null) {
         playerStateSubscription?.cancel();
       }
-      print("hit API");
+
       final response = await _audioApi.getAudioForSpecificReciterAndAyah(
         reciterId: state.id!,
         surahId: initState.surahId,
         ayahNumber: initState.ayahId,
       );
-      _audioPlayer.pause();
+      _audioHandler.pause();
+      _audioHandler.setMediaItem(
+        MediaItem(
+          id: '${initState.surahId}-${initState.ayahId}-${state.id}',
+          title: '${initState.surahName} - Ayat: ${initState.ayahId}',
+          artUri: Uri.directory('images/logogram.png', windows: false),
+          // replace with dynamic reciter name
+          artist: state.nameReciter,
+          extras: <String, dynamic>{
+            'url': response.data.audioFileUrl,
+          },
+        ),
+      );
 
-      _audioPlayer.setUrl(response.data.audioFileUrl);
-      playerStateSubscription =
-          _audioPlayer.playerStateStream.listen((playerState) {
-        if (playerState.processingState == ProcessingState.completed) {
-          nextAyah();
-        }
-      });
+      playerStateSubscription = _audioHandler.getStreamOnFinishedEvent(
+        () => nextAyah(),
+      );
+
       state = state.copyWith(isLoading: false);
+      if (onSuccess != null) onSuccess();
     } catch (e) {
-      print("yah error");
-      print(e);
       state = state.copyWith(isLoading: false);
+      if (onLoadError != null) onLoadError();
+    }
+
+    if (onPlayBackError != null) {
+      _audioHandler.setOnPlaybackError(onPlayBackError);
     }
   }
 
   void playAudio() {
-    _audioPlayer.play();
+    _audioHandler.play();
   }
 
   void pauseAudio() {
-    _audioPlayer.pause();
+    _audioHandler.pause();
   }
 
   void stopAndResetAudioPlayer() {
-    _audioPlayer.stop();
-    state = const AudioBottomSheetState(
-      surahName: "",
-      surahId: 1,
-      ayahId: 1,
-      isLoading: true,
-    );
+    _audioHandler.stop();
+    state = AudioRecitationState();
   }
 
   Future<void> _startNewSurah(int surahId) async {
@@ -142,7 +175,21 @@ class AudioBottomSheetStateNotifier
         surahId: surahId,
         ayahNumber: 1,
       );
-      _audioPlayer.setUrl(response.data.audioFileUrl);
+
+      final String surahName = surahNumberToSurahNameMap[surahId] ?? '';
+
+      _audioHandler.setMediaItem(
+        MediaItem(
+          id: '$surahId-1-${state.id}',
+          title: '$surahName - Ayat: 1',
+          // replace with dynamic reciter name
+          artist: state.nameReciter,
+          extras: <String, dynamic>{
+            'url': response.data.audioFileUrl,
+          },
+        ),
+      );
+
       state = state.copyWith(
         ayahId: 1,
         surahId: surahId,
@@ -176,19 +223,20 @@ class AudioBottomSheetStateNotifier
       _audioApi,
       state.id,
       state.nameReciter,
-      _audioPlayer,
     );
   }
 }
 
-final audioBottomSheetProvider =
-    StateNotifierProvider<AudioBottomSheetStateNotifier, AudioBottomSheetState>(
+final audioRecitationProvider =
+    StateNotifierProvider<AudioRecitationStateNotifier, AudioRecitationState>(
   (ref) {
-    return AudioBottomSheetStateNotifier(const AudioBottomSheetState(
-      surahName: "",
-      surahId: 1,
-      ayahId: 1,
-      isLoading: true,
-    ));
+    final AudioApi _audioApi = ref.read(audioApiProvider);
+    final AudioRecitationHandler _audioRecitationHandler =
+        ref.read(audioHandler);
+
+    return AudioRecitationStateNotifier(
+      audioApi: _audioApi,
+      audioHandler: _audioRecitationHandler,
+    );
   },
 );
