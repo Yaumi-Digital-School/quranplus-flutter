@@ -3,8 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/constants/button_audio_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
-import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
+
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/Select_Reciter_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_widget.dart';
@@ -26,7 +25,7 @@ class _SelectRecitatorWidgetState extends ConsumerState<SelectRecitatorWidget> {
     final AsyncValue<ButtonAudioState> buttonState =
         ref.watch(buttonAudioStateProvider);
     final SelectReciterBottomSheetState selectReciterState =
-        ref.watch(SelectReciterBottomSheetProvider);
+        ref.watch(selectReciterBottomSheetProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,27 +57,26 @@ class _SelectRecitatorWidgetState extends ConsumerState<SelectRecitatorWidget> {
         ButtonSecondary(
           label: "Save",
           onTap: () async {
+            ref.read(audioRecitationProvider.notifier).pauseAudio();
             await ref
-                .read(SelectReciterBottomSheetProvider.notifier)
+                .read(selectReciterBottomSheetProvider.notifier)
                 .saveDataReciter(
                   selectReciterState.idReciter!,
                   selectReciterState.nameReciter!,
                 );
-            print("ini ada dibutton");
-            print(selectReciterState.idReciter);
-            print(selectReciterState.nameReciter);
-            print("-------");
+
             await ref
-                .read(SelectReciterBottomSheetProvider.notifier)
+                .read(selectReciterBottomSheetProvider.notifier)
                 .backToAudioBottomSheet(
                   selectReciterState.idReciter!,
                   selectReciterState.nameReciter!,
                   ref.watch(audioRecitationProvider.notifier),
                 );
+
             Navigator.pop(context);
             GeneralBottomSheet.showBaseBottomSheet(
               context: context,
-              widgetChild: AudioBottomSheetWidget(),
+              widgetChild: const AudioBottomSheetWidget(),
             );
           },
         ),
@@ -90,10 +88,6 @@ class _SelectRecitatorWidgetState extends ConsumerState<SelectRecitatorWidget> {
     SelectReciterBottomSheetState state,
     final AsyncValue<ButtonAudioState> buttonState,
   ) {
-    print("xxxxxxx");
-    print(state.idReciter);
-    print(state.nameReciter);
-
     return ListView.builder(
       itemCount: state.listReciter.length,
       itemBuilder: (context, index) {
@@ -120,9 +114,6 @@ class _SelectRecitatorWidgetState extends ConsumerState<SelectRecitatorWidget> {
                       setState(() {
                         state.idReciter = value;
                         state.nameReciter = state.listReciter[index].name;
-                        print("haiiii ini sedang pilih reciter");
-                        print(state.idReciter);
-                        print(state.nameReciter);
                       });
                     },
                     title: Text(
@@ -144,7 +135,7 @@ class _SelectRecitatorWidgetState extends ConsumerState<SelectRecitatorWidget> {
                               .read(audioRecitationProvider.notifier)
                               .stopAndResetAudioPlayer();
                           await ref
-                              .read(SelectReciterBottomSheetProvider.notifier)
+                              .read(selectReciterBottomSheetProvider.notifier)
                               .playPreviewAudio(
                                 state.listReciter[index].id,
                                 ayatIdPreview,

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
+
 import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
@@ -11,7 +11,6 @@ import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
 import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
-import 'package:retrofit/dio.dart';
 
 class SelectReciterBottomSheetState {
   SelectReciterBottomSheetState({
@@ -94,7 +93,6 @@ class SelectReciterStateNotifier
   Future<void> saveDataReciter(int id, String name) async {
     await _sharedPreferenceService
         .setReciterId(ListReciterResponse(id: id, name: name));
-    print("save");
 
     //tambah trigger ke audiobottomsheetstate
   }
@@ -116,8 +114,6 @@ class SelectReciterStateNotifier
     await _audioPlayerNotifier.init(newState);
 
     _audioPlayerNotifier.playAudio();
-    print("halo in back too");
-    // _setShowMinimizedRecitationInfo(true);
   }
 
   Future<void> playPreviewAudio(int id, int ayahId) async {
@@ -145,20 +141,17 @@ class SelectReciterStateNotifier
       );
       _audioHandler.play();
 
-      playerStateSubscription = _audioHandler.getStreamOnFinishedEvent(
-        () => nextAyah(ayahId, id),
-      );
+      playerStateSubscription = _audioHandler.getStreamOnFinishedEvent(() => {
+            nextAyah(ayahId, id),
+          });
     }
-
-    playerStateSubscription = _audioHandler.getStreamOnFinishedEvent(
-      () => _audioHandler.stop(),
-    );
-
-    //stopAndResetAudioPlayer();
   }
 
   Future<void> nextAyah(int ayahId, int reciterId) async {
     try {
+      if (playerStateSubscription != null) {
+        playerStateSubscription?.cancel();
+      }
       final int nextAyahNumber = ayahId + 1;
 
       final response = await _audioApi.getAudioForSpecificReciterAndAyah(
@@ -179,9 +172,9 @@ class SelectReciterStateNotifier
         ),
       );
       _audioHandler.play();
-      playerStateSubscription = _audioHandler.getStreamOnFinishedEvent(
-        () => playPreviewAudio(reciterId, nextAyahNumber),
-      );
+      playerStateSubscription = _audioHandler.getStreamOnFinishedEvent(() => {
+            _audioHandler.stop(),
+          });
     } catch (e) {
       //TODO Add error tracker
     }
@@ -192,7 +185,7 @@ class SelectReciterStateNotifier
   }
 }
 
-final SelectReciterBottomSheetProvider = StateNotifierProvider<
+final selectReciterBottomSheetProvider = StateNotifierProvider<
     SelectReciterStateNotifier, SelectReciterBottomSheetState>(
   (ref) {
     return SelectReciterStateNotifier(

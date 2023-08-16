@@ -32,8 +32,7 @@ class _AudioBottomSheetWidgetState
   Widget build(BuildContext context) {
     final AsyncValue<ButtonAudioState> buttonState =
         ref.watch(buttonAudioStateProvider);
-    final SelectReciterBottomSheetState selectReciterState =
-        ref.watch(SelectReciterBottomSheetProvider);
+
     final AudioRecitationState audioBottomSheetState =
         ref.watch(audioRecitationProvider);
 
@@ -159,17 +158,15 @@ class _AudioBottomSheetWidgetState
         GestureDetector(
           onTap: () async {
             ref.read(audioRecitationProvider.notifier).changeReciter(
-                  ref.read(SelectReciterBottomSheetProvider.notifier),
+                  ref.read(selectReciterBottomSheetProvider.notifier),
                 );
             ref.read(audioRecitationProvider.notifier).pauseAudio();
 
             Navigator.pop(context);
             GeneralBottomSheet.showBaseBottomSheet(
               context: context,
-              widgetChild: SelectRecitatorWidget(),
+              widgetChild: const SelectRecitatorWidget(),
             );
-
-            print(selectReciterState.listReciter);
           },
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
