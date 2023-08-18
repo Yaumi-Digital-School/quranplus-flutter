@@ -17,15 +17,6 @@ class RadioButtonSelectReciter extends ConsumerStatefulWidget {
 
 class _RadioButtonSelectReciterWidgetState
     extends ConsumerState<RadioButtonSelectReciter> {
-  late SelectReciterStateNotifier selectReciterNotifier;
-
-  @override
-  void initState() {
-    selectReciterNotifier = ref.read(selectReciterBottomSheetProvider.notifier);
-
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     final AsyncValue<ButtonAudioState> buttonState =
@@ -58,11 +49,12 @@ class _RadioButtonSelectReciterWidgetState
                       value: selectReciter.listReciter[index].id,
                       groupValue: selectReciter.reciterId,
                       onChanged: (value) {
-                        setState(() {
-                          selectReciter.reciterId = value;
-                          selectReciter.reciterName =
-                              selectReciter.listReciter[index].name;
-                        });
+                        ref
+                            .read(selectReciterBottomSheetProvider.notifier)
+                            .updateRadioButton(
+                              value,
+                              selectReciter.listReciter[index].name,
+                            );
                       },
                       title: Text(
                         selectReciter.listReciter[index].name,

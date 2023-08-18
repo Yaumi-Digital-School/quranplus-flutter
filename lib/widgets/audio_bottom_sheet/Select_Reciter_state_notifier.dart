@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 
@@ -12,6 +13,7 @@ import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 
+@immutable
 class SelectReciterBottomSheetState {
   SelectReciterBottomSheetState({
     required this.listReciter,
@@ -179,6 +181,13 @@ class SelectReciterStateNotifier
     } catch (e) {
       //TODO Add error tracker
     }
+  }
+
+  Future<void> updateRadioButton(int reciterId, String reciterName) async {
+    state = state.copyWith(
+      reciterId: reciterId,
+      reciterName: reciterName,
+    );
   }
 }
 
