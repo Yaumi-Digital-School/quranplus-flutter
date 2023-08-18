@@ -54,31 +54,35 @@ class _SelectRecitatorWidgetState extends ConsumerState<SelectRecitatorWidget> {
         ),
         ButtonSecondary(
           label: "Save",
-          onTap: () async {
-            ref.read(audioRecitationProvider.notifier).pauseAudio();
-            await ref
-                .read(selectReciterBottomSheetProvider.notifier)
-                .saveDataReciter(
-                  selectReciterState.reciterId!,
-                  selectReciterState.reciterName!,
-                );
-
-            await ref
-                .read(selectReciterBottomSheetProvider.notifier)
-                .backToAudioBottomSheet(
-                  selectReciterState.reciterId!,
-                  selectReciterState.reciterName!,
-                  ref.watch(audioRecitationProvider.notifier),
-                );
-
-            Navigator.pop(context);
-            GeneralBottomSheet.showBaseBottomSheet(
-              context: context,
-              widgetChild: const AudioBottomSheetWidget(),
-            );
-          },
+          onTap: _onTapSaveReciterOption(selectReciterState),
         ),
       ],
     );
+  }
+
+  _onTapSaveReciterOption(
+    SelectReciterBottomSheetState selectReciterState,
+  ) {
+    return () async {
+      ref.read(audioRecitationProvider.notifier).pauseAudio();
+      await ref.read(selectReciterBottomSheetProvider.notifier).saveDataReciter(
+            selectReciterState.reciterId!,
+            selectReciterState.reciterName!,
+          );
+
+      await ref
+          .read(selectReciterBottomSheetProvider.notifier)
+          .backToAudioBottomSheet(
+            selectReciterState.reciterId!,
+            selectReciterState.reciterName!,
+            ref.watch(audioRecitationProvider.notifier),
+          );
+
+      Navigator.pop(context);
+      GeneralBottomSheet.showBaseBottomSheet(
+        context: context,
+        widgetChild: const AudioBottomSheetWidget(),
+      );
+    };
   }
 }

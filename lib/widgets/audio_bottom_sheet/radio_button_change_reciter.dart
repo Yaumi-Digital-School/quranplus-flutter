@@ -76,23 +76,11 @@ class _RadioButtonSelectReciterWidgetState
                   child: buttonState.when(
                     data: (data) {
                       return InkWell(
-                        onTap: () async {
-                          if (data == ButtonAudioState.paused) {
-                            ref
-                                .read(audioRecitationProvider.notifier)
-                                .stopAndResetAudioPlayer();
-                            await ref
-                                .read(selectReciterBottomSheetProvider.notifier)
-                                .playPreviewAudio(
-                                  selectReciter.listReciter[index].id,
-                                );
-
-                            return;
-                          }
-                          ref
-                              .read(audioRecitationProvider.notifier)
-                              .pauseAudio();
-                        },
+                        onTap: _onTapAudioPreviewReciter(
+                          data,
+                          selectReciter,
+                          index,
+                        ),
                         child: Icon(
                           data == ButtonAudioState.paused
                               ? Icons.play_circle_fill_rounded
@@ -123,5 +111,25 @@ class _RadioButtonSelectReciterWidgetState
         },
       ),
     );
+  }
+
+  _onTapAudioPreviewReciter(
+    ButtonAudioState data,
+    SelectReciterBottomSheetState selectReciter,
+    int index,
+  ) {
+    return () async {
+      if (data == ButtonAudioState.paused) {
+        ref.read(audioRecitationProvider.notifier).stopAndResetAudioPlayer();
+        await ref
+            .read(selectReciterBottomSheetProvider.notifier)
+            .playPreviewAudio(
+              selectReciter.listReciter[index].id,
+            );
+
+        return;
+      }
+      ref.read(audioRecitationProvider.notifier).pauseAudio();
+    };
   }
 }
