@@ -17,5 +17,5 @@ abstract class AudioApi {
   });
 
   @GET('/api/reciters')
-  Future<HttpResponse<List<ListReciterResponse>>> getListReciter();
+  Future<HttpResponse<List<ReciterItemResponse>>> getListReciter();
 }

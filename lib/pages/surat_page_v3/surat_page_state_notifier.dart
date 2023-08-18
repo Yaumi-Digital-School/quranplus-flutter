@@ -181,17 +181,17 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
 
   Future<void> playOnAyah(Verse verse) async {
     //get Data Reciter from shared Preference
-    int id;
-    String nameReciter;
-    final ListReciterResponse? response1 =
+    int reciterId;
+    String reciterName;
+    final ReciterItemResponse? listReciterResponse =
         await _sharedPreferenceService.getLastDataReciter();
     //check apakah null atau tidak, if null return id:1 , nameReciter: Mishari Rashid Al-Afasy, else return
-    if (response1 != null) {
-      id = response1.id;
-      nameReciter = response1.name;
+    if (listReciterResponse != null) {
+      reciterId = listReciterResponse.id;
+      reciterName = listReciterResponse.name;
     } else {
-      id = 1;
-      nameReciter = "Mishari Rashid Al-Afasy";
+      reciterId = 1;
+      reciterName = "Mishari Rashid Al-Afasy";
     }
 
     final AudioRecitationState newState = AudioRecitationState(
@@ -199,8 +199,8 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
       surahId: verse.surahNumber,
       ayahId: verse.verseNumber,
       isLoading: true,
-      id: id,
-      nameReciter: nameReciter,
+      reciterId: reciterId,
+      reciterName: reciterName,
     );
 
     await _audioPlayerNotifier.init(newState);

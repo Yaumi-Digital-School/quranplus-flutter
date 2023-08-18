@@ -14,15 +14,14 @@ class AudioSpecificAyahResponse {
 }
 
 @JsonSerializable()
-class ListReciterResponse {
+class ReciterItemResponse {
   final int id;
-  @JsonKey(name: 'name')
   final String name;
 
-  ListReciterResponse({required this.id, required this.name});
+  ReciterItemResponse({required this.id, required this.name});
 
-  factory ListReciterResponse.fromjson(Map<String, dynamic> json) {
-    return _$ListReciterResponseFromJson(json);
+  factory ReciterItemResponse.fromjson(Map<String, dynamic> json) {
+    return _$ReciterItemResponseFromJson(json);
   }
-  Map<String, dynamic> toJson() => _$ListReciterResponseToJson(this);
+  Map<String, dynamic> toJson() => _$ReciterItemResponseToJson(this);
 }

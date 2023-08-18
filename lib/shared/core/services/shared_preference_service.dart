@@ -185,18 +185,18 @@ class SharedPreferenceService {
     await _sharedPreferences.clear();
   }
 
-  Future<void> setReciterId(ListReciterResponse param) async {
+  Future<void> setReciterId(ReciterItemResponse param) async {
     final String encodedParam = json.encode(param.toJson());
     await _sharedPreferences.setString(_dataReciter, encodedParam);
   }
 
-  Future<ListReciterResponse?> getLastDataReciter() async {
+  Future<ReciterItemResponse?> getLastDataReciter() async {
     final String res = _sharedPreferences.getString(_dataReciter) ?? '';
     if (res.isEmpty) {
       return null;
     }
 
-    return ListReciterResponse.fromjson(
+    return ReciterItemResponse.fromjson(
       json.decode(res),
     );
   }

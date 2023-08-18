@@ -18,32 +18,32 @@ class SelectReciterBottomSheetState {
     required this.currentSurahId,
     required this.currentSurahName,
     required this.currentAyahId,
-    this.idReciter,
-    this.nameReciter,
+    this.reciterId,
+    this.reciterName,
   });
 
-  List<ListReciterResponse> listReciter;
+  List<ReciterItemResponse> listReciter;
   final int currentSurahId;
   final String currentSurahName;
   final int currentAyahId;
-  int? idReciter;
-  String? nameReciter;
+  int? reciterId;
+  String? reciterName;
 
   SelectReciterBottomSheetState copyWith({
-    List<ListReciterResponse>? listReciter,
+    List<ReciterItemResponse>? listReciter,
     int? currentAyahId,
     int? currentSurahId,
     String? currentSurahName,
-    int? idReciter,
-    String? nameReciter,
+    int? reciterId,
+    String? reciterName,
   }) {
     return SelectReciterBottomSheetState(
       listReciter: listReciter ?? this.listReciter,
       currentAyahId: currentAyahId ?? this.currentAyahId,
       currentSurahId: currentSurahId ?? this.currentSurahId,
       currentSurahName: currentSurahName ?? this.currentSurahName,
-      idReciter: idReciter ?? this.idReciter,
-      nameReciter: nameReciter ?? this.nameReciter,
+      reciterId: reciterId ?? this.reciterId,
+      reciterName: reciterName ?? this.reciterName,
     );
   }
 }
@@ -67,8 +67,8 @@ class SelectReciterStateNotifier
     int surahId,
     int ayahId,
     AudioApi audioApi,
-    int? idReciter,
-    String? nameReciter,
+    int? reciterId,
+    String? reciterName,
   ) async {
     _audioApi = audioApi;
 
@@ -81,8 +81,8 @@ class SelectReciterStateNotifier
           currentAyahId: ayahId,
           currentSurahId: surahId,
           currentSurahName: surahName,
-          idReciter: idReciter,
-          nameReciter: nameReciter,
+          reciterId: reciterId,
+          reciterName: reciterName,
         );
       }
     } catch (e) {
@@ -92,14 +92,14 @@ class SelectReciterStateNotifier
 
   Future<void> saveDataReciter(int id, String name) async {
     await _sharedPreferenceService
-        .setReciterId(ListReciterResponse(id: id, name: name));
+        .setReciterId(ReciterItemResponse(id: id, name: name));
 
     //tambah trigger ke audiobottomsheetstate
   }
 
   Future<void> backToAudioBottomSheet(
-    int id,
-    String name,
+    int reciterId,
+    String reciterName,
     AudioRecitationStateNotifier _audioPlayerNotifier,
   ) async {
     final AudioRecitationState newState = AudioRecitationState(
@@ -107,8 +107,8 @@ class SelectReciterStateNotifier
       surahId: state.currentSurahId,
       ayahId: state.currentAyahId,
       isLoading: true,
-      id: id,
-      nameReciter: name,
+      reciterId: reciterId,
+      reciterName: reciterName,
     );
 
     await _audioPlayerNotifier.init(newState);
@@ -116,13 +116,14 @@ class SelectReciterStateNotifier
     _audioPlayerNotifier.playAudio();
   }
 
-  Future<void> playPreviewAudio(int id, int ayahId) async {
+  Future<void> playPreviewAudio(int reciterId) async {
+    int ayahId = 1;
     if (playerStateSubscription != null) {
       playerStateSubscription?.cancel();
     }
 
     final response = await _audioApi.getAudioForSpecificReciterAndAyah(
-      reciterId: id,
+      reciterId: reciterId,
       surahId: 1,
       ayahNumber: 1,
     );
@@ -130,10 +131,10 @@ class SelectReciterStateNotifier
     if (ayahId < 2) {
       _audioHandler.setMediaItem(
         MediaItem(
-          id: '${1}-${1}-$id',
+          id: '${1}-${1}-$reciterId',
           title: '${1} - Ayat: ${1}',
           // replace with dynamic reciter name (done)
-          artist: state.listReciter[id].name,
+          artist: state.listReciter[reciterId].name,
           extras: <String, dynamic>{
             'url': response.data.audioFileUrl,
           },
@@ -142,12 +143,12 @@ class SelectReciterStateNotifier
       _audioHandler.play();
 
       playerStateSubscription = _audioHandler.getStreamOnFinishedEvent(() => {
-            nextAyah(ayahId, id),
+            nextPreviewAyah(ayahId, reciterId),
           });
     }
   }
 
-  Future<void> nextAyah(int ayahId, int reciterId) async {
+  Future<void> nextPreviewAyah(int ayahId, int reciterId) async {
     try {
       if (playerStateSubscription != null) {
         playerStateSubscription?.cancel();
@@ -179,10 +180,6 @@ class SelectReciterStateNotifier
       //TODO Add error tracker
     }
   }
-
-  void stopAndResetAudioPlayer() {
-    _audioHandler.stop();
-  }
 }
 
 final selectReciterBottomSheetProvider = StateNotifierProvider<
@@ -200,3 +197,8 @@ final selectReciterBottomSheetProvider = StateNotifierProvider<
     );
   },
 );
+// final listReciterProvider = StateProvider<List<ReciterItemResponse>>((ref) {
+//   final stateReiter = ref.watch(selectReciterBottomSheetProvider);
+
+//   return stateReiter.listReciter;
+// });

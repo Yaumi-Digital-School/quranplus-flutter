@@ -5,7 +5,7 @@ import 'package:qurantafsir_flutter/shared/constants/button_audio_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
-import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/Select_Recitator_buttom_sheet.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/select_Recitator_buttom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/Select_Reciter_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/linear_percent_indicator_custom.dart';
@@ -180,7 +180,7 @@ class _AudioBottomSheetWidgetState
                     style: QPTextStyle.getDescription2Regular(context),
                   ),
                   Text(
-                    audioBottomSheetState.nameReciter!,
+                    audioBottomSheetState.reciterName!,
                     style: QPTextStyle.getBody2Medium(context),
                   ),
                 ],
