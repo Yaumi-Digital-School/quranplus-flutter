@@ -94,7 +94,7 @@ class SelectReciterStateNotifier
 
   Future<void> saveDataReciter(int id, String name) async {
     await _sharedPreferenceService
-        .setReciterId(ReciterItemResponse(id: id, name: name));
+        .setSelectedReciter(ReciterItemResponse(id: id, name: name));
 
     //tambah trigger ke audiobottomsheetstate
   }
