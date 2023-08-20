@@ -24,84 +24,82 @@ class _RadioButtonSelectReciterWidgetState
     SelectReciterBottomSheetState selectReciter =
         ref.watch(selectReciterBottomSheetProvider);
 
-    return SizedBox(
-      height: 258,
-      child: ListView.builder(
-        itemCount: selectReciter.listReciter.length,
-        itemBuilder: (context, index) {
-          return SizedBox(
-            height: 50,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  flex: 7,
-                  child: Theme(
-                    data: Theme.of(context).copyWith(
-                      unselectedWidgetColor: QPColors.getColorBasedTheme(
-                        dark: QPColors.brandFair,
-                        light: QPColors.brandFair,
-                        brown: QPColors.brownModeMassive,
-                        context: context,
-                      ),
+    return ListView.builder(
+      itemCount: selectReciter.listReciter.length,
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        return SizedBox(
+          height: 50,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                flex: 7,
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    unselectedWidgetColor: QPColors.getColorBasedTheme(
+                      dark: QPColors.brandFair,
+                      light: QPColors.brandFair,
+                      brown: QPColors.brownModeMassive,
+                      context: context,
                     ),
-                    child: RadioListTile<dynamic>(
-                      value: selectReciter.listReciter[index].id,
-                      groupValue: selectReciter.reciterId,
-                      onChanged: (value) {
-                        ref
-                            .read(selectReciterBottomSheetProvider.notifier)
-                            .updateRadioButton(
-                              value,
-                              selectReciter.listReciter[index].name,
-                            );
-                      },
-                      title: Text(
-                        selectReciter.listReciter[index].name,
-                        style: QPTextStyle.getSubHeading3Medium(context),
-                      ),
+                  ),
+                  child: RadioListTile<dynamic>(
+                    value: selectReciter.listReciter[index].id,
+                    groupValue: selectReciter.reciterId,
+                    onChanged: (value) {
+                      ref
+                          .read(selectReciterBottomSheetProvider.notifier)
+                          .updateRadioButton(
+                            value,
+                            selectReciter.listReciter[index].name,
+                          );
+                    },
+                    title: Text(
+                      selectReciter.listReciter[index].name,
+                      style: QPTextStyle.getSubHeading3Medium(context),
                     ),
                   ),
                 ),
-                Expanded(
-                  flex: 1,
-                  child: buttonState.when(
-                    data: (data) {
-                      return InkWell(
-                        onTap: _onTapAudioPreviewReciter(
-                          data,
-                          selectReciter,
-                          index,
+              ),
+              Expanded(
+                flex: 1,
+                child: buttonState.when(
+                  data: (data) {
+                    return InkWell(
+                      onTap: _onTapAudioPreviewReciter(
+                        data,
+                        selectReciter,
+                        index,
+                      ),
+                      child: Icon(
+                        data == ButtonAudioState.paused
+                            ? Icons.play_circle_fill_rounded
+                            : Icons.pause_circle_filled_rounded,
+                        color: QPColors.getColorBasedTheme(
+                          dark: QPColors.brandFair,
+                          light: QPColors.brandFair,
+                          brown: QPColors.brownModeMassive,
+                          context: context,
                         ),
-                        child: Icon(
-                          data == ButtonAudioState.paused
-                              ? Icons.play_circle_fill_rounded
-                              : Icons.pause_circle_filled_rounded,
-                          color: QPColors.getColorBasedTheme(
-                            dark: QPColors.brandFair,
-                            light: QPColors.brandFair,
-                            brown: QPColors.brownModeMassive,
-                            context: context,
-                          ),
-                          size: 20,
-                        ),
-                      );
-                    },
-                    error: (error, stacktrace) {
-                      return Container();
-                    },
-                    loading: () => const SizedBox(
-                      height: 36,
-                      width: 36,
-                      child: CircularProgressIndicator(),
-                    ),
+                        size: 20,
+                      ),
+                    );
+                  },
+                  error: (error, stacktrace) {
+                    return Container();
+                  },
+                  loading: () => const SizedBox(
+                    height: 36,
+                    width: 36,
+                    child: CircularProgressIndicator(),
                   ),
                 ),
-              ],
-            ),
-          );
-        },
-      ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 

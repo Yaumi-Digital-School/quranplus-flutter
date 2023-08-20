@@ -31,9 +31,6 @@ class _SelectRecitatorWidgetState extends ConsumerState<SelectRecitatorWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(
-          height: 32,
-        ),
         Text(
           "Select Reciter",
           style: QPTextStyle.getSubHeading2SemiBold(context),
