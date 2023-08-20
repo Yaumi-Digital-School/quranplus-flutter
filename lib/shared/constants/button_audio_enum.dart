@@ -1,1 +1,1 @@
-enum ButtonAudioState { paused, playing, loading }
+enum ButtonAudioState { paused, playing, loading, stop }

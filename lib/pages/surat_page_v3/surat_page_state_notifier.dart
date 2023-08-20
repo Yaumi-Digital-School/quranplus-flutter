@@ -10,6 +10,7 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_state.
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur_ayah_available.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
@@ -179,11 +180,21 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   }
 
   Future<void> playOnAyah(Verse verse) async {
+    int reciterId;
+    String reciterName;
+    final ReciterItemResponse? listReciterResponse =
+        await _sharedPreferenceService.getSelectedReciter();
+
+    reciterId = listReciterResponse?.id ?? 1;
+    reciterName = listReciterResponse?.name ?? "Mishari Rashid Al-Afasy";
+
     final AudioRecitationState newState = AudioRecitationState(
       surahName: verse.surahName,
       surahId: verse.surahNumber,
       ayahId: verse.verseNumber,
       isLoading: true,
+      reciterId: reciterId,
+      reciterName: reciterName,
     );
 
     await _audioPlayerNotifier.init(newState);

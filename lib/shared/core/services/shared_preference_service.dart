@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart';
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
@@ -22,6 +23,7 @@ class SharedPreferenceService {
   final String _shownOptionalUpdateMinVersion =
       "shown-optional-update-min-version";
   final String _themeKey = "theme";
+  final String _dataReciter = "dataReciter";
 
   Future<void> init() async {
     _sharedPreferences = await SharedPreferences.getInstance();
@@ -181,5 +183,21 @@ class SharedPreferenceService {
 
   Future<void> clear() async {
     await _sharedPreferences.clear();
+  }
+
+  Future<void> setSelectedReciter(ReciterItemResponse param) async {
+    final String encodedParam = json.encode(param.toJson());
+    await _sharedPreferences.setString(_dataReciter, encodedParam);
+  }
+
+  Future<ReciterItemResponse?> getSelectedReciter() async {
+    final String res = _sharedPreferences.getString(_dataReciter) ?? '';
+    if (res.isEmpty) {
+      return null;
+    }
+
+    return ReciterItemResponse.fromjson(
+      json.decode(res),
+    );
   }
 }
