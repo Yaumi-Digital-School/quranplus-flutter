@@ -196,7 +196,7 @@ class SharedPreferenceService {
       return null;
     }
 
-    return ReciterItemResponse.fromjson(
+    return ReciterItemResponse.fromJson(
       json.decode(res),
     );
   }

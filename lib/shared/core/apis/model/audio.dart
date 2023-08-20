@@ -20,7 +20,7 @@ class ReciterItemResponse {
 
   ReciterItemResponse({required this.id, required this.name});
 
-  factory ReciterItemResponse.fromjson(Map<String, dynamic> json) {
+  factory ReciterItemResponse.fromJson(Map<String, dynamic> json) {
     return _$ReciterItemResponseFromJson(json);
   }
   Map<String, dynamic> toJson() => _$ReciterItemResponseToJson(this);
