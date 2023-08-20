@@ -15,7 +15,6 @@ import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
-import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_widget.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_minimized_info.dart';
@@ -132,33 +131,35 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
   Widget build(BuildContext context) {
     return StateNotifierConnector<SuratPageStateNotifier, SuratPageState>(
       stateNotifierProvider: suratPageProvider,
-      onStateNotifierReady: (notifier, ref) async {
-        if (widget.param.isStartTracking) {
-          Future.delayed(Duration.zero, () {
-            _startTracking(context, notifier);
-          });
-        }
+      onStateNotifierReady: (notifier, ref) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          if (widget.param.isStartTracking) {
+            Future.delayed(Duration.zero, () {
+              _startTracking(context, notifier);
+            });
+          }
 
-        final ConnectivityResult connectivityResult =
-            await Connectivity().checkConnectivity();
-        await notifier.initStateNotifier(
-          connectivityResult: connectivityResult,
-        );
-        if (widget.param.firstPagePointerIndex != 0) {
-          scrollController.scrollToIndex(
-            widget.param.firstPagePointerIndex,
-            preferPosition: AutoScrollPosition.begin,
-            duration: const Duration(milliseconds: 200),
+          final ConnectivityResult connectivityResult =
+              await Connectivity().checkConnectivity();
+          await notifier.initStateNotifier(
+            connectivityResult: connectivityResult,
           );
-        }
+          if (widget.param.firstPagePointerIndex != 0) {
+            scrollController.scrollToIndex(
+              widget.param.firstPagePointerIndex,
+              preferPosition: AutoScrollPosition.begin,
+              duration: const Duration(milliseconds: 200),
+            );
+          }
 
-        if (widget.param.isShowBottomSheet) {
-          notifier.playAyahAudio();
-          GeneralBottomSheet.showBaseBottomSheet(
-            context: context,
-            widgetChild: const AudioBottomSheetWidget(),
-          );
-        }
+          if (widget.param.isShowBottomSheet && context.mounted) {
+            notifier.playAyahAudio();
+            GeneralBottomSheet.showBaseBottomSheet(
+              context: context,
+              widgetChild: const AudioBottomSheetWidget(),
+            );
+          }
+        });
       },
       builder: (
         BuildContext context,
@@ -889,7 +890,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
     ValueKey key = ValueKey(verse.surahNameAndAyatKey);
 
     for (Word word in verse.words) {
-      allVerses += word.code + ' ';
+      allVerses += '${word.code} ';
     }
 
     return AutoScrollTag(

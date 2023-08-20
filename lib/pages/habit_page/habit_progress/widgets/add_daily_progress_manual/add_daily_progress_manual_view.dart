@@ -43,8 +43,10 @@ class _AddDailyProgressManualViewState
           );
         },
       ),
-      onStateNotifierReady: (notifier, ref) async =>
-          await notifier.initStateNotifier(),
+      onStateNotifierReady: (notifier, ref) =>
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await notifier.initStateNotifier();
+      }),
       builder: (
         BuildContext context,
         AddDailyProgressManualState state,
@@ -117,7 +119,10 @@ class _AddDailyProgressManualViewState
                           await notifier
                               .addDailyProgressManual(int.parse(inputPages));
                         }
-                        Navigator.pop(context, true);
+
+                        if (context.mounted) {
+                          Navigator.pop(context, true);
+                        }
                       },
                     ),
                   ],

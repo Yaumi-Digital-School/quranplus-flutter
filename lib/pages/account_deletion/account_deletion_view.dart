@@ -134,30 +134,35 @@ class AccountDeletionInformationView extends StatelessWidget {
                               accessToken: '',
                             );
 
-                            Navigator.popUntil(
-                              context,
-                              (route) => route.isFirst,
-                            );
+                            if (context.mounted) {
+                              Navigator.popUntil(
+                                context,
+                                (route) => route.isFirst,
+                              );
+                            }
 
                             final BottomNavigationBar navbar =
                                 mainNavbarGlobalKey.currentWidget
                                     as BottomNavigationBar;
                             navbar.onTap!(0);
 
-                            GeneralSnackBar.showModalSnackBar(
-                              context: context,
-                              text: 'Your account has been deleted',
-                            );
+                            if (context.mounted) {
+                              GeneralSnackBar.showModalSnackBar(
+                                context: context,
+                                text: 'Your account has been deleted',
+                              );
+                            }
 
                             return;
                           }
 
-                          Navigator.pop(context);
-
-                          GeneralSnackBar.showModalSnackBar(
-                            context: context,
-                            text: 'An error has occurred, please try again',
-                          );
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                            GeneralSnackBar.showModalSnackBar(
+                              context: context,
+                              text: 'An error has occurred, please try again',
+                            );
+                          }
                         },
                       );
                     },

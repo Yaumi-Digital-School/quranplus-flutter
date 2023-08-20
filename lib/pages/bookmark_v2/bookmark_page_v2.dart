@@ -19,7 +19,7 @@ class BookmarkPageV2 extends StatefulWidget {
   const BookmarkPageV2({Key? key}) : super(key: key);
 
   @override
-  _BookmarkPageV2State createState() => _BookmarkPageV2State();
+  State<BookmarkPageV2> createState() => _BookmarkPageV2State();
 }
 
 class _BookmarkPageV2State extends State<BookmarkPageV2> {
@@ -45,13 +45,15 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
             );
           },
         ),
-        onStateNotifierReady: (notifier, ref) async {
-          final ConnectivityResult connectivity =
-              await Connectivity().checkConnectivity();
+        onStateNotifierReady: (notifier, ref) {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            final ConnectivityResult connectivity =
+                await Connectivity().checkConnectivity();
 
-          await notifier.initStateNotifier(
-            connectivityResult: connectivity,
-          );
+            await notifier.initStateNotifier(
+              connectivityResult: connectivity,
+            );
+          });
         },
         builder: (
           BuildContext context,

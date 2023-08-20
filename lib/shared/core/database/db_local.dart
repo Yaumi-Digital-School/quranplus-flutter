@@ -18,8 +18,6 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
 
-import 'db_habit_daily_summary.dart';
-
 class DbLocal {
   static final DbLocal _instance = DbLocal._internal();
   static Database? _database;
@@ -56,13 +54,6 @@ class DbLocal {
         );
       },
     );
-  }
-
-  Future<void> _deleteDb() async {
-    String databasePath = await getDatabasesPath();
-    String path = join(databasePath, 'bookmarks.db');
-
-    databaseFactory.deleteDatabase(path);
   }
 
   //membuat tabel dan field-fieldnya
@@ -697,7 +688,7 @@ class DbLocal {
     return resultQuery;
   }
 
-  Future<List> GetTadabburSurahAvailable() async {
+  Future<List> getTadabburSurahAvailable() async {
     var dbClient = await _db;
     final resultQueryTadabburAvailable =
         await dbClient.query(TadabburTable.tableName);

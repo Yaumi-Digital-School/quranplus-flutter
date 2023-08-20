@@ -10,7 +10,7 @@ class HabitGroupCreateGroupBottomSheet {
     required BuildContext context,
     required Function(String) onSubmit,
   }) {
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
     String groupName = "";
 
     GeneralBottomSheet.showBaseBottomSheet(
@@ -29,7 +29,7 @@ class HabitGroupCreateGroupBottomSheet {
           ),
           const SizedBox(height: 8),
           Form(
-            key: _formKey,
+            key: formKey,
             child: FormFieldWidget(
               hintTextForm: "Input your group name",
               iconForm: const Icon(
@@ -53,7 +53,7 @@ class HabitGroupCreateGroupBottomSheet {
           ButtonSecondary(
             label: "Save",
             onTap: () {
-              if (!_formKey.currentState!.validate()) {
+              if (!formKey.currentState!.validate()) {
                 return;
               }
 

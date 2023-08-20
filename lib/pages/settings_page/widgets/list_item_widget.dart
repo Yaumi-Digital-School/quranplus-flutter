@@ -29,7 +29,10 @@ class ListItemWidget extends StatelessWidget {
           children: [
             SvgPicture.asset(
               iconPath,
-              color: customColor ?? Theme.of(context).colorScheme.primary,
+              colorFilter: ColorFilter.mode(
+                customColor ?? Theme.of(context).colorScheme.primary,
+                BlendMode.srcIn,
+              ),
               width: 24,
               height: 24,
             ),

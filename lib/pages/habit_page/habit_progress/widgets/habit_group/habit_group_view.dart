@@ -26,20 +26,22 @@ class HabitGroupView extends StatelessWidget {
           );
         },
       ),
-      onStateNotifierReady: (notifier, ref) async {
-        final ConnectivityResult connection =
-            await Connectivity().checkConnectivity();
+      onStateNotifierReady: (notifier, ref) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          final ConnectivityResult connection =
+              await Connectivity().checkConnectivity();
 
-        if (connection == ConnectivityResult.none) {
-          await GeneralBottomSheet().showNoInternetBottomSheet(
-            context,
-            () async {
-              Navigator.pop(context);
-            },
-          );
-        }
+          if (connection == ConnectivityResult.none && context.mounted) {
+            await GeneralBottomSheet().showNoInternetBottomSheet(
+              context,
+              () async {
+                Navigator.pop(context);
+              },
+            );
+          }
 
-        await notifier.initStateNotifier();
+          await notifier.initStateNotifier();
+        });
       },
       builder: (
         BuildContext context,

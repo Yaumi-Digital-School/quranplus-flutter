@@ -39,8 +39,10 @@ class _HabitPersonalState extends State<HabitPersonalView> {
           );
         },
       ),
-      onStateNotifierReady: (notifier, ref) async =>
-          await notifier.initStateNotifier(),
+      onStateNotifierReady: (notifier, ref) =>
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await notifier.initStateNotifier();
+      }),
       builder: (
         BuildContext context,
         HabitPersonalState state,
@@ -224,7 +226,7 @@ class _HabitPersonalState extends State<HabitPersonalView> {
   Widget _buildProgressDaily(List<HabitDailySummary>? summary) {
     List<Widget> rowChildren = [];
     if (summary == null || summary.isEmpty) {
-      return Row();
+      return const Row();
     }
     for (HabitDailySummary item in summary) {
       rowChildren.add(_buildProgressDailyItem(item));

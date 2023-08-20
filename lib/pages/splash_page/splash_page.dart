@@ -38,23 +38,30 @@ class _SplashPageState extends State<SplashPage> {
           );
         },
       ),
-      onStateNotifierReady: (notifier, _) async {
-        Connectivity cn = Connectivity();
-        ConnectivityResult conn = await cn.checkConnectivity();
+      onStateNotifierReady: (notifier, _) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          Connectivity cn = Connectivity();
+          ConnectivityResult conn = await cn.checkConnectivity();
 
-        await notifier.initStateNotifier(
-          conn: conn,
-        );
+          await notifier.initStateNotifier(
+            conn: conn,
+          );
 
-        AppUpdateInfo? updateInfo = await notifier.getAppUpdateStatus(
-          context: context,
-          conn: conn,
-        );
-        if (updateInfo != null) {
-          await buildAppUpdateDialog(updateInfo);
-        }
+          if (context.mounted) {
+            AppUpdateInfo? updateInfo = await notifier.getAppUpdateStatus(
+              context: context,
+              conn: conn,
+            );
 
-        Navigator.of(context).pushReplacementNamed(RoutePaths.routeMain);
+            if (updateInfo != null) {
+              await buildAppUpdateDialog(updateInfo);
+            }
+
+            if (context.mounted) {
+              Navigator.of(context).pushReplacementNamed(RoutePaths.routeMain);
+            }
+          }
+        });
       },
       builder: (
         _,

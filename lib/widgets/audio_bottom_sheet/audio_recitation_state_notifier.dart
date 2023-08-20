@@ -7,7 +7,7 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
 import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
-import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/select_reciter_bottom_sheet/select_reciter_state_notifier.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/select_reciter_state_notifier.dart';
 
 class AudioRecitationState {
   AudioRecitationState({
@@ -243,9 +243,9 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
   }
 
   Future<void> changeReciter(
-    SelectReciterStateNotifier _selectReciterNotifier,
+    SelectReciterStateNotifier selectReciterNotifier,
   ) async {
-    await _selectReciterNotifier.fetchData(
+    await selectReciterNotifier.fetchData(
       state.surahName,
       state.surahId,
       state.ayahId,
@@ -259,13 +259,13 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
 final audioRecitationProvider =
     StateNotifierProvider<AudioRecitationStateNotifier, AudioRecitationState>(
   (ref) {
-    final AudioApi _audioApi = ref.read(audioApiProvider);
-    final AudioRecitationHandler _audioRecitationHandler =
+    final AudioApi audioApi = ref.read(audioApiProvider);
+    final AudioRecitationHandler audioRecitationHandler =
         ref.read(audioHandler);
 
     return AudioRecitationStateNotifier(
-      audioApi: _audioApi,
-      audioHandler: _audioRecitationHandler,
+      audioApi: audioApi,
+      audioHandler: audioRecitationHandler,
     );
   },
 );

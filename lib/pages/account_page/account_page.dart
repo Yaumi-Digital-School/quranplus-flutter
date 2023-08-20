@@ -31,8 +31,10 @@ class AccountPage extends StatelessWidget {
           );
         },
       ),
-      onStateNotifierReady: (notifier, ref) async =>
-          await notifier.initStateNotifier(),
+      onStateNotifierReady: (notifier, ref) =>
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await notifier.initStateNotifier();
+      }),
       builder: (
         BuildContext context,
         AccountPageState state,
@@ -427,7 +429,7 @@ class AccountPage extends StatelessWidget {
           notifier.saveButtonChecked(() {
             Navigator.of(context).pop();
           });
-        } else {
+        } else if (context.mounted) {
           _generalBottomSheet.showNoInternetBottomSheet(
             // TODO changes to refresh action
             context,

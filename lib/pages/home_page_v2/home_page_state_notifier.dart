@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
-import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 
 import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
@@ -12,16 +12,13 @@ import 'package:qurantafsir_flutter/shared/core/models/form.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart';
-import 'package:qurantafsir_flutter/shared/core/models/verse-topage.dart';
-import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
+import 'package:qurantafsir_flutter/shared/core/models/verse_topage.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
 import 'package:http/http.dart' as http;
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 
@@ -299,7 +296,7 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
   Future<FormLink> _fetchLink() async {
     try {
       final response = await http.get(
-        Uri.parse(EnvConstants.baseUrl! + '/api/resource/form-feedback'),
+        Uri.parse('${EnvConstants.baseUrl!}/api/resource/form-feedback'),
       );
 
       if (response.statusCode == 200) {
@@ -324,7 +321,7 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
   }
 
   Future<void> _getTaddaburSurahAvaliable() async {
-    List<dynamic> taddaburSurahAvailable = await db.GetTadabburSurahAvailable();
+    List<dynamic> taddaburSurahAvailable = await db.getTadabburSurahAvailable();
 
     Map<int, int>? tadabburSurahMap = {};
     for (var surah in taddaburSurahAvailable) {

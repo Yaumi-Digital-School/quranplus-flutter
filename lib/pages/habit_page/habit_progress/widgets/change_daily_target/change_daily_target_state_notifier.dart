@@ -1,4 +1,4 @@
-import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 

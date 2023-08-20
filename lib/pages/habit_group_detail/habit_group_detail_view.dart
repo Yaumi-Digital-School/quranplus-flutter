@@ -61,14 +61,16 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
           );
         },
       ),
-      onStateNotifierReady: (notifier, ref) async {
-        await notifier.initStateNotifier();
+      onStateNotifierReady: (notifier, ref) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          await notifier.initStateNotifier();
 
-        if (widget.param.isSuccessJoinGroup) {
-          Future.delayed(const Duration(seconds: 1), () {
-            HabitGroupBottomSheet.showModalSuccessJoinGroup(context: context);
-          });
-        }
+          if (widget.param.isSuccessJoinGroup) {
+            Future.delayed(const Duration(seconds: 1), () {
+              HabitGroupBottomSheet.showModalSuccessJoinGroup(context: context);
+            });
+          }
+        });
       },
       builder: (
         _,
@@ -397,10 +399,13 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
   ) async {
     final uri =
         await DynamicLinkHelper().createDynamicLinkInvite(id: widget.param.id);
-    HabitGroupBottomSheet.showModalInviteMemberGroup(
-      context: context,
-      url: uri.toString(),
-      currentGroupName: state.groupName,
-    );
+
+    if (mounted) {
+      HabitGroupBottomSheet.showModalInviteMemberGroup(
+        context: context,
+        url: uri.toString(),
+        currentGroupName: state.groupName,
+      );
+    }
   }
 }
