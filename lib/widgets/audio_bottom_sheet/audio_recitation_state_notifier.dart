@@ -60,9 +60,6 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
   final AudioApi _audioApi;
   final AudioRecitationHandler _audioHandler;
 
-  // replace with dynamic reciter id
-  // final int reciterId = 1;
-
   StreamSubscription<PlayerState>? playerStateSubscription;
 
   Future<void> nextAyah() async {

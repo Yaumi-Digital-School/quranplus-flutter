@@ -242,19 +242,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                     padding: const EdgeInsets.only(right: 12),
                     child: InkWell(
                       onTap: () async {
-                        final List<Verse> verses =
-                            state.pages![state.currentPage.toInt()].verses;
-                        final Verse verse = verses.firstWhere(
-                          (element) =>
-                              element.id == widget.param.firstPagePointerIndex,
-                          orElse: () => verses[0],
-                        );
-
-                        notifier.playOnAyah(verse);
-                        GeneralBottomSheet.showBaseBottomSheet(
-                          context: context,
-                          widgetChild: const AudioBottomSheetWidget(),
-                        );
+                        _onPlayRecitationAppBar(state, notifier);
                       },
                       child: Container(
                         height: 24,
@@ -342,6 +330,39 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
           ),
         );
       },
+    );
+  }
+
+  Future<void> _onPlayRecitationAppBar(
+    SuratPageState state,
+    SuratPageStateNotifier notifier,
+  ) async {
+    final ConnectivityResult connectivityResult =
+        await Connectivity().checkConnectivity();
+
+    if (connectivityResult != ConnectivityResult.mobile &&
+        connectivityResult != ConnectivityResult.wifi) {
+      GeneralBottomSheet().showNoInternetBottomSheet(
+        context,
+        () {
+          Navigator.pop(context);
+          _onPlayRecitationAppBar(state, notifier);
+        },
+      );
+
+      return;
+    }
+
+    final List<Verse> verses = state.pages![state.currentPage.toInt()].verses;
+    final Verse verse = verses.firstWhere(
+      (element) => element.id == widget.param.firstPagePointerIndex,
+      orElse: () => verses[0],
+    );
+
+    notifier.playOnAyah(verse);
+    GeneralBottomSheet.showBaseBottomSheet(
+      context: context,
+      widgetChild: const AudioBottomSheetWidget(),
     );
   }
 
@@ -958,13 +979,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                             alignment: Alignment.centerLeft,
                             icon: const Icon(Icons.play_circle_outline),
                             iconSize: 20,
-                            onPressed: () {
-                              notifier.playOnAyah(verse);
-                              GeneralBottomSheet.showBaseBottomSheet(
-                                context: context,
-                                widgetChild: const AudioBottomSheetWidget(),
-                              );
-                            },
+                            onPressed: () => _playOnAyah(notifier, verse),
                           ),
                           Expanded(
                             child: Text(
@@ -1096,6 +1111,30 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> _playOnAyah(SuratPageStateNotifier notifier, Verse verse) async {
+    final ConnectivityResult connectivityResult =
+        await Connectivity().checkConnectivity();
+
+    if (connectivityResult != ConnectivityResult.mobile &&
+        connectivityResult != ConnectivityResult.wifi) {
+      GeneralBottomSheet().showNoInternetBottomSheet(
+        context,
+        () {
+          Navigator.pop(context);
+          _playOnAyah(notifier, verse);
+        },
+      );
+
+      return;
+    }
+
+    notifier.playOnAyah(verse);
+    GeneralBottomSheet.showBaseBottomSheet(
+      context: context,
+      widgetChild: const AudioBottomSheetWidget(),
     );
   }
 

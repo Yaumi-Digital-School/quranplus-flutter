@@ -80,9 +80,13 @@ class GeneralBottomSheet {
     required Widget widgetChild,
     MainAxisSize mainAxisSize = MainAxisSize.min,
     VoidCallback? onClose,
+    bool isBarrierDismissable = true,
+    bool isDraggable = true,
   }) {
     showModalBottomSheet(
+      isDismissible: isBarrierDismissable,
       isScrollControlled: true,
+      enableDrag: isDraggable,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(8),
