@@ -15,6 +15,7 @@ import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart'
 import 'package:qurantafsir_flutter/shared/core/models/verse-topage.dart';
 import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
@@ -133,13 +134,25 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     required Function() onPlayBackError,
   }) async {
     _setAudioSuratLoaded(surat);
+    int reciterId;
+    String reciterName;
+    final ReciterItemResponse? listReciterResponse =
+        await _sharedPreferenceService.getSelectedReciter();
+
+    reciterId = listReciterResponse?.id ?? 1;
+    reciterName = listReciterResponse?.name ?? "Mishari Rashid Al-Afasy";
+
+    final AudioRecitationState newState = AudioRecitationState(
+      surahName: surat.nameLatin,
+      surahId: int.parse(surat.number),
+      ayahId: int.parse(surat.startAyat),
+      isLoading: true,
+      reciterId: reciterId,
+      reciterName: reciterName,
+    );
+
     await _audioRecitationNotifier.init(
-      AudioRecitationState(
-        surahName: surat.nameLatin,
-        surahId: int.parse(surat.number),
-        ayahId: int.parse(surat.startAyat),
-        isLoading: true,
-      ),
+      newState,
       onSuccess: () async {
         _resetAudioSuratLoaded();
         onSuccess();
