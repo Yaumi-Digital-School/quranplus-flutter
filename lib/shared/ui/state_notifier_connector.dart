@@ -22,7 +22,7 @@ class StateNotifierConnector<T extends StateNotifier<P>, P>
   final void Function(T, WidgetRef)? onStateNotifierReady;
 
   @override
-  _StateNotifierConnectorState<T, P> createState() =>
+  ConsumerState<StateNotifierConnector<T, P>> createState() =>
       _StateNotifierConnectorState();
 }
 
@@ -30,8 +30,11 @@ class _StateNotifierConnectorState<T extends StateNotifier<P>, P>
     extends ConsumerState<StateNotifierConnector<T, P>> with RouteAware {
   @override
   void initState() {
-    final T notifier = ref.read(widget.stateNotifierProvider.notifier);
-    widget.onStateNotifierReady?.call(notifier, ref);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final T notifier = ref.read(widget.stateNotifierProvider.notifier);
+      widget.onStateNotifierReady?.call(notifier, ref);
+    });
+
     super.initState();
   }
 

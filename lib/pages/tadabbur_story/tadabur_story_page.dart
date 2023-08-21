@@ -40,10 +40,8 @@ class _TadabburStoryPageState extends State<TadabburStoryPage> {
       onStateNotifierReady: (
         TadabburStoryPageStateNotifier notifier,
         WidgetRef ref,
-      ) {
-        WidgetsBinding.instance.addPostFrameCallback((_) async {
-          await notifier.initStateNotifier();
-        });
+      ) async {
+        await notifier.initStateNotifier();
       },
       stateNotifierProvider: StateNotifierProvider<
           TadabburStoryPageStateNotifier, TadabburStoryPageState>((ref) {

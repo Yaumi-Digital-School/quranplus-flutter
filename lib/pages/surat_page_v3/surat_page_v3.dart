@@ -131,35 +131,33 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
   Widget build(BuildContext context) {
     return StateNotifierConnector<SuratPageStateNotifier, SuratPageState>(
       stateNotifierProvider: suratPageProvider,
-      onStateNotifierReady: (notifier, ref) {
-        WidgetsBinding.instance.addPostFrameCallback((_) async {
-          if (widget.param.isStartTracking) {
-            Future.delayed(Duration.zero, () {
-              _startTracking(context, notifier);
-            });
-          }
+      onStateNotifierReady: (notifier, ref) async {
+        if (widget.param.isStartTracking) {
+          Future.delayed(Duration.zero, () {
+            _startTracking(context, notifier);
+          });
+        }
 
-          final ConnectivityResult connectivityResult =
-              await Connectivity().checkConnectivity();
-          await notifier.initStateNotifier(
-            connectivityResult: connectivityResult,
+        final ConnectivityResult connectivityResult =
+            await Connectivity().checkConnectivity();
+        await notifier.initStateNotifier(
+          connectivityResult: connectivityResult,
+        );
+        if (widget.param.firstPagePointerIndex != 0) {
+          scrollController.scrollToIndex(
+            widget.param.firstPagePointerIndex,
+            preferPosition: AutoScrollPosition.begin,
+            duration: const Duration(milliseconds: 200),
           );
-          if (widget.param.firstPagePointerIndex != 0) {
-            scrollController.scrollToIndex(
-              widget.param.firstPagePointerIndex,
-              preferPosition: AutoScrollPosition.begin,
-              duration: const Duration(milliseconds: 200),
-            );
-          }
+        }
 
-          if (widget.param.isShowBottomSheet && context.mounted) {
-            notifier.playAyahAudio();
-            GeneralBottomSheet.showBaseBottomSheet(
-              context: context,
-              widgetChild: const AudioBottomSheetWidget(),
-            );
-          }
-        });
+        if (widget.param.isShowBottomSheet && context.mounted) {
+          notifier.playAyahAudio();
+          GeneralBottomSheet.showBaseBottomSheet(
+            context: context,
+            widgetChild: const AudioBottomSheetWidget(),
+          );
+        }
       },
       builder: (
         BuildContext context,

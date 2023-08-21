@@ -31,10 +31,8 @@ class AccountPage extends StatelessWidget {
           );
         },
       ),
-      onStateNotifierReady: (notifier, ref) =>
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await notifier.initStateNotifier();
-      }),
+      onStateNotifierReady: (notifier, ref) async =>
+          await notifier.initStateNotifier(),
       builder: (
         BuildContext context,
         AccountPageState state,

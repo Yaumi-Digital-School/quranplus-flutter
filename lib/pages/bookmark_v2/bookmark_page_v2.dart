@@ -45,15 +45,13 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
             );
           },
         ),
-        onStateNotifierReady: (notifier, ref) {
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
-            final ConnectivityResult connectivity =
-                await Connectivity().checkConnectivity();
+        onStateNotifierReady: (notifier, ref) async {
+          final ConnectivityResult connectivity =
+              await Connectivity().checkConnectivity();
 
-            await notifier.initStateNotifier(
-              connectivityResult: connectivity,
-            );
-          });
+          await notifier.initStateNotifier(
+            connectivityResult: connectivity,
+          );
         },
         builder: (
           BuildContext context,

@@ -25,20 +25,17 @@ class TadabburSurahListView extends StatelessWidget {
       onStateNotifierReady: (
         TadabburSurahListViewStateNotifier notifier,
         _,
-      ) {
-        WidgetsBinding.instance.addPostFrameCallback((_) async {
-          final ConnectivityResult connectivityResult =
-              await Connectivity().checkConnectivity();
-          if (connectivityResult == ConnectivityResult.none &&
-              context.mounted) {
-            GeneralBottomSheet().showNoInternetBottomSheet(
-              context,
-              () => notifier.initStateNotifier(),
-            );
-          } else {
-            notifier.initStateNotifier();
-          }
-        });
+      ) async {
+        final ConnectivityResult connectivityResult =
+            await Connectivity().checkConnectivity();
+        if (connectivityResult == ConnectivityResult.none && context.mounted) {
+          GeneralBottomSheet().showNoInternetBottomSheet(
+            context,
+            () => notifier.initStateNotifier(),
+          );
+        } else {
+          notifier.initStateNotifier();
+        }
       },
       builder: (
         _,
