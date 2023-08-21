@@ -13,6 +13,7 @@ import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart'
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart';
 import 'package:qurantafsir_flutter/shared/core/models/verse-topage.dart';
+import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
@@ -20,8 +21,8 @@ import 'package:qurantafsir_flutter/shared/core/services/shared_preference_servi
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
-import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_state_notifier.dart';
 import 'package:http/http.dart' as http;
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 
 class HomePageState {
   HomePageState({
@@ -86,14 +87,10 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     required SharedPreferenceService sharedPreferenceService,
     required this.mainPageProvider,
     required this.authenticationService,
-    required AudioBottomSheetStateNotifier audioPlayerNotifier,
-    required AudioPlayer audioPlayer,
-    required AudioApi audioApi,
+    required AudioRecitationStateNotifier audioRecitationStateNotifier,
   })  : _sharedPreferenceService = sharedPreferenceService,
         _habitDailySummaryService = habitDailySummaryService,
-        audioPlayerNotifier = audioPlayerNotifier,
-        _audioPlayer = audioPlayer,
-        _audioApi = audioApi,
+        _audioRecitationNotifier = audioRecitationStateNotifier,
         super(HomePageState(isNeedSync: false));
 
   final SharedPreferenceService _sharedPreferenceService;
@@ -109,9 +106,7 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
   bool _shouldOpenFeedbackUrl = false;
   DbLocal db = DbLocal();
 
-  final AudioPlayer _audioPlayer;
-  final AudioApi _audioApi;
-  final AudioBottomSheetStateNotifier audioPlayerNotifier;
+  final AudioRecitationStateNotifier _audioRecitationNotifier;
 
   Bookmarks? _lastBookmark;
 
@@ -138,15 +133,13 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     required Function() onPlayBackError,
   }) async {
     _setAudioSuratLoaded(surat);
-    await audioPlayerNotifier.init(
-      AudioBottomSheetState(
+    await _audioRecitationNotifier.init(
+      AudioRecitationState(
         surahName: surat.nameLatin,
         surahId: int.parse(surat.number),
         ayahId: int.parse(surat.startAyat),
         isLoading: true,
       ),
-      _audioApi,
-      _audioPlayer,
       onSuccess: () async {
         _resetAudioSuratLoaded();
         onSuccess();

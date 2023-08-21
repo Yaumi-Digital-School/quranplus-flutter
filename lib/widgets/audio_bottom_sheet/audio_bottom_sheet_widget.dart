@@ -5,8 +5,11 @@ import 'package:qurantafsir_flutter/shared/constants/button_audio_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
-import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_state_notifier.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/select_reciter_buttom_sheet.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/Select_Reciter_state_notifier.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/linear_percent_indicator_custom.dart';
+import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 
 class AudioBottomSheetWidget extends ConsumerStatefulWidget {
   const AudioBottomSheetWidget({
@@ -29,8 +32,9 @@ class _AudioBottomSheetWidgetState
   Widget build(BuildContext context) {
     final AsyncValue<ButtonAudioState> buttonState =
         ref.watch(buttonAudioStateProvider);
-    final AudioBottomSheetState audioBottomSheetState =
-        ref.watch(audioBottomSheetProvider);
+
+    final AudioRecitationState audioBottomSheetState =
+        ref.watch(audioRecitationProvider);
 
     return Column(
       children: [
@@ -99,14 +103,12 @@ class _AudioBottomSheetWidgetState
                       onTap: () {
                         if (data == ButtonAudioState.paused) {
                           ref
-                              .read(audioBottomSheetProvider.notifier)
+                              .read(audioRecitationProvider.notifier)
                               .playAudio();
 
                           return;
                         }
-                        ref
-                            .read(audioBottomSheetProvider.notifier)
-                            .pauseAudio();
+                        ref.read(audioRecitationProvider.notifier).pauseAudio();
                       },
                       child: Container(
                         height: 36,
@@ -153,25 +155,48 @@ class _AudioBottomSheetWidgetState
           ),
         ),
         const SizedBox(height: 30),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Reciter",
-                  style: QPTextStyle.getDescription2Regular(context),
+        GestureDetector(
+          onTap: () async {
+            ref.read(audioRecitationProvider.notifier).changeReciter(
+                  ref.read(selectReciterBottomSheetProvider.notifier),
+                );
+            ref.read(audioRecitationProvider.notifier).pauseAudio();
+
+            Navigator.pop(context);
+            GeneralBottomSheet.showBaseBottomSheet(
+              context: context,
+              widgetChild: const SelectRecitatorWidget(),
+            );
+          },
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Reciter",
+                    style: QPTextStyle.getDescription2Regular(context),
+                  ),
+                  Text(
+                    audioBottomSheetState.reciterName!,
+                    style: QPTextStyle.getBody2Medium(context),
+                  ),
+                ],
+              ),
+              Icon(
+                Icons.keyboard_arrow_right,
+                size: 24,
+                color: QPColors.getColorBasedTheme(
+                  dark: QPColors.whiteFair,
+                  light: QPColors.blackFair,
+                  brown: QPColors.brownModeMassive,
+                  context: context,
                 ),
-                Text(
-                  "Mishari Rashid al-`Afasy",
-                  style: QPTextStyle.getBody2Medium(context),
-                ),
-              ],
-            ),
-            const Icon(Icons.keyboard_arrow_right, size: 24),
-          ],
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -180,7 +205,7 @@ class _AudioBottomSheetWidgetState
   Widget _buildNextSurahCTA(String title) {
     return InkWell(
       onTap: () {
-        ref.read(audioBottomSheetProvider.notifier).nextSurah();
+        ref.read(audioRecitationProvider.notifier).nextSurah();
       },
       child: Container(
         constraints: const BoxConstraints(
@@ -230,7 +255,7 @@ class _AudioBottomSheetWidgetState
   Widget _buildPreviousSurahCTA(String title) {
     return InkWell(
       onTap: () {
-        ref.read(audioBottomSheetProvider.notifier).previousSurah();
+        ref.read(audioRecitationProvider.notifier).previousSurah();
       },
       child: Container(
         padding: const EdgeInsets.all(4),

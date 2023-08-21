@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:global_configuration/global_configuration.dart';
@@ -14,9 +15,11 @@ import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
 import 'firebase_options.dart';
 import 'pages/read_tadabbur/read_tadabbur_page.dart';
 
@@ -29,11 +32,24 @@ Future<void> main() async {
       SharedPreferenceService();
   await sharedPreferenceService.init();
 
+  final AudioRecitationHandler _audioHandler =
+      await AudioService.init<AudioRecitationHandler>(
+    builder: () => AudioRecitationHandler(),
+    config: const AudioServiceConfig(
+      androidNotificationChannelId: 'com.yaumi.qurantafsir.id',
+      androidNotificationChannelName: 'Quran Plus',
+      androidStopForegroundOnPause: true,
+    ),
+  );
+
   await GlobalConfiguration().loadFromAsset('env');
 
   runApp(
     ProviderScope(
       overrides: [
+        audioHandler.overrideWithValue(
+          _audioHandler,
+        ),
         sharedPreferenceServiceProvider.overrideWithValue(
           sharedPreferenceService,
         ),

@@ -10,6 +10,7 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_state.
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur_ayah_available.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
@@ -24,7 +25,7 @@ import 'package:qurantafsir_flutter/shared/core/services/bookmarks_service.dart'
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
-import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_state_notifier.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -37,10 +38,8 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     required BookmarkApi bookmarkApi,
     required BookmarksService bookmarksService,
     required AutoScrollController scrollController,
-    required AudioBottomSheetState audioPlayerState,
-    required AudioBottomSheetStateNotifier audioPlayerNotifier,
-    required AudioPlayer audioPlayer,
-    required AudioApi audioApi,
+    required AudioRecitationState audioPlayerState,
+    required AudioRecitationStateNotifier audioPlayerNotifier,
     bool isLoggedIn = false,
   })  : _sharedPreferenceService = sharedPreferenceService,
         _isLoggedIn = isLoggedIn,
@@ -51,17 +50,13 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
         _habitDailySummaryService = habitDailySummaryService,
         _audioPlayerState = audioPlayerState,
         _audioPlayerNotifier = audioPlayerNotifier,
-        _audioPlayer = audioPlayer,
-        _audioApi = audioApi,
         super(SuratPageState());
 
   final AutoScrollController _scrollController;
   final SharedPreferenceService _sharedPreferenceService;
   final HabitDailySummaryService _habitDailySummaryService;
-  final AudioPlayer _audioPlayer;
-  final AudioApi _audioApi;
-  final AudioBottomSheetState _audioPlayerState;
-  final AudioBottomSheetStateNotifier _audioPlayerNotifier;
+  final AudioRecitationState _audioPlayerState;
+  final AudioRecitationStateNotifier _audioPlayerNotifier;
   final List<int> _firstPageSurahPointer = <int>[];
   final List<int> _bookmarkList = <int>[];
   final List<int> _favoriteAyahList = <int>[];
@@ -185,16 +180,24 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   }
 
   Future<void> playOnAyah(Verse verse) async {
-    await _audioPlayerNotifier.init(
-      AudioBottomSheetState(
-        surahName: verse.surahName,
-        surahId: verse.surahNumber,
-        ayahId: verse.verseNumber,
-        isLoading: true,
-      ),
-      _audioApi,
-      _audioPlayer,
+    int reciterId;
+    String reciterName;
+    final ReciterItemResponse? listReciterResponse =
+        await _sharedPreferenceService.getSelectedReciter();
+
+    reciterId = listReciterResponse?.id ?? 1;
+    reciterName = listReciterResponse?.name ?? "Mishari Rashid Al-Afasy";
+
+    final AudioRecitationState newState = AudioRecitationState(
+      surahName: verse.surahName,
+      surahId: verse.surahNumber,
+      ayahId: verse.verseNumber,
+      isLoading: true,
+      reciterId: reciterId,
+      reciterName: reciterName,
     );
+
+    await _audioPlayerNotifier.init(newState);
 
     _audioPlayerNotifier.playAudio();
     _setShowMinimizedRecitationInfo(true);

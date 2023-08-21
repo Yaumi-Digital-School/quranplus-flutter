@@ -12,3 +12,16 @@ class AudioSpecificAyahResponse {
   factory AudioSpecificAyahResponse.fromJson(Map<String, dynamic> json) =>
       _$AudioSpecificAyahResponseFromJson(json);
 }
+
+@JsonSerializable()
+class ReciterItemResponse {
+  final int id;
+  final String name;
+
+  ReciterItemResponse({required this.id, required this.name});
+
+  factory ReciterItemResponse.fromJson(Map<String, dynamic> json) {
+    return _$ReciterItemResponseFromJson(json);
+  }
+  Map<String, dynamic> toJson() => _$ReciterItemResponseToJson(this);
+}
