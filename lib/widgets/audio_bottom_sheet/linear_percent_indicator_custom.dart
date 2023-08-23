@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +6,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
+import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
 
 class LinearPercentIndicatorCustom extends ConsumerWidget {
   const LinearPercentIndicatorCustom({Key? key}) : super(key: key);
@@ -15,14 +17,14 @@ class LinearPercentIndicatorCustom extends ConsumerWidget {
         ref.watch(currentDurationProvider);
     final AsyncValue<Duration?> totalDuration =
         ref.watch(totalDurationProvider);
-    final AudioPlayer _player = ref.read(audioPlayerProvider);
+    final AudioHandler _audioHandler = ref.watch(audioHandler);
 
     return ProgressBar(
       baseBarColor: QPColors.brandRoot,
       progressBarColor: QPColors.brandFair,
       thumbRadius: 0,
       onSeek: ((Duration value) {
-        _player.seek(value);
+        _audioHandler.seek(value);
       }),
       timeLabelTextStyle: QPTextStyle.getDescription2Regular(context),
       progress: currentDuration.when(
