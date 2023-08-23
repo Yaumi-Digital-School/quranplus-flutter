@@ -10,6 +10,7 @@ import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/Select_Reciter_st
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/linear_percent_indicator_custom.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
+import 'package:qurantafsir_flutter/widgets/utils/general_dialog.dart';
 
 class AudioBottomSheetWidget extends ConsumerStatefulWidget {
   const AudioBottomSheetWidget({
@@ -156,6 +157,7 @@ class _AudioBottomSheetWidgetState
         ),
         const SizedBox(height: 30),
         GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTap: () async {
             ref.read(audioRecitationProvider.notifier).changeReciter(
                   ref.read(selectReciterBottomSheetProvider.notifier),
@@ -165,6 +167,8 @@ class _AudioBottomSheetWidgetState
             Navigator.pop(context);
             GeneralBottomSheet.showBaseBottomSheet(
               context: context,
+              isBarrierDismissable: false,
+              isDraggable: false,
               widgetChild: const SelectRecitatorWidget(),
             );
           },
@@ -180,7 +184,7 @@ class _AudioBottomSheetWidgetState
                     style: QPTextStyle.getDescription2Regular(context),
                   ),
                   Text(
-                    audioBottomSheetState.reciterName!,
+                    audioBottomSheetState.reciterName ?? '',
                     style: QPTextStyle.getBody2Medium(context),
                   ),
                 ],

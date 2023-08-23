@@ -13,7 +13,6 @@ import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 
-@immutable
 class SelectReciterBottomSheetState {
   SelectReciterBottomSheetState({
     required this.listReciter,
@@ -131,17 +130,7 @@ class SelectReciterStateNotifier
     );
     _audioHandler.pause();
     if (ayahId < 2) {
-      _audioHandler.setMediaItem(
-        MediaItem(
-          id: '${1}-${1}-$reciterId',
-          title: '${1} - Ayat: ${1}',
-          // replace with dynamic reciter name (done)
-          artist: state.listReciter[reciterId].name,
-          extras: <String, dynamic>{
-            'url': response.data.audioFileUrl,
-          },
-        ),
-      );
+      _audioHandler.setUrl(response.data.audioFileUrl);
       _audioHandler.play();
 
       playerStateSubscription = _audioHandler.getStreamOnFinishedEvent(() => {
@@ -163,17 +152,7 @@ class SelectReciterStateNotifier
         ayahNumber: nextAyahNumber,
       );
 
-      _audioHandler.setMediaItem(
-        MediaItem(
-          id: '${1}-$ayahId-$reciterId',
-          title: '${1} - Ayat: $ayahId',
-          // replace with dynamic reciter name (done)
-          artist: state.listReciter[reciterId].name,
-          extras: <String, dynamic>{
-            'url': response.data.audioFileUrl,
-          },
-        ),
-      );
+      _audioHandler.setUrl(response.data.audioFileUrl);
       _audioHandler.play();
       playerStateSubscription = _audioHandler.getStreamOnFinishedEvent(() => {
             _audioHandler.stop(),

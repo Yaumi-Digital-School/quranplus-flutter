@@ -90,6 +90,10 @@ class AudioRecitationHandler extends BaseAudioHandler {
     return res;
   }
 
+  Future<void> setUrl(String url) async {
+    await _player.setUrl(url);
+  }
+
   Future<void> setMediaItem(MediaItem item) async {
     icon ??= await _getIcon();
 

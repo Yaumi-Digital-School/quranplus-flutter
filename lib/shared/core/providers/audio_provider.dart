@@ -35,6 +35,8 @@ final AutoDisposeStreamProvider<ButtonAudioState> buttonAudioStateProvider =
     if (processingState == ProcessingState.loading ||
         processingState == ProcessingState.buffering) {
       return ButtonAudioState.loading;
+    } else if (!isPlaying && processingState == ProcessingState.idle) {
+      return ButtonAudioState.stop;
     } else if (!isPlaying || processingState == ProcessingState.completed) {
       return ButtonAudioState.paused;
     } else {
