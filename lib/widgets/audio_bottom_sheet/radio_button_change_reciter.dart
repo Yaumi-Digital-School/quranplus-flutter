@@ -7,6 +7,7 @@ import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/Select_Reciter_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_preveiw_reciter_icon_button.dart';
 
 class RadioButtonSelectReciter extends ConsumerStatefulWidget {
   const RadioButtonSelectReciter({Key? key}) : super(key: key);
@@ -97,7 +98,7 @@ class _RadioButtonSelectReciterWidgetState
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(12),
-                        child: _IconButton(
+                        child: AudioPreviewReciterIconButton(
                           icon: icon,
                         ),
                       ),
@@ -143,38 +144,5 @@ class _RadioButtonSelectReciterWidgetState
 
       playedId = 0;
     };
-  }
-}
-
-class _IconButton extends StatelessWidget {
-  const _IconButton({
-    Key? key,
-    required this.icon,
-  }) : super(key: key);
-
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 18,
-      width: 18,
-      decoration: BoxDecoration(
-        color: QPColors.getColorBasedTheme(
-          dark: QPColors.brandFair,
-          light: QPColors.brandFair,
-          brown: QPColors.brownModeMassive,
-          context: context,
-        ),
-        shape: BoxShape.circle,
-      ),
-      child: Center(
-        child: Icon(
-          icon,
-          color: QPColors.whiteFair,
-          size: 12,
-        ),
-      ),
-    );
   }
 }
