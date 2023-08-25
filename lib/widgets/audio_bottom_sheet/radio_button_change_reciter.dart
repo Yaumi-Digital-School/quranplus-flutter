@@ -86,8 +86,8 @@ class _RadioButtonSelectReciterWidgetState
                   data: (data) {
                     IconData icon =
                         item.id == playedId && data != ButtonAudioState.stop
-                            ? Icons.pause_circle_filled_rounded
-                            : Icons.play_circle_fill_rounded;
+                            ? Icons.pause
+                            : Icons.play_arrow;
 
                     return InkWell(
                       onTap: _onTapAudioPreviewReciter(
@@ -97,15 +97,8 @@ class _RadioButtonSelectReciterWidgetState
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(12),
-                        child: Icon(
-                          icon,
-                          color: QPColors.getColorBasedTheme(
-                            dark: QPColors.brandFair,
-                            light: QPColors.brandFair,
-                            brown: QPColors.brownModeMassive,
-                            context: context,
-                          ),
-                          size: 20,
+                        child: _IconButton(
+                          icon: icon,
                         ),
                       ),
                     );
@@ -150,5 +143,38 @@ class _RadioButtonSelectReciterWidgetState
 
       playedId = 0;
     };
+  }
+}
+
+class _IconButton extends StatelessWidget {
+  const _IconButton({
+    Key? key,
+    required this.icon,
+  }) : super(key: key);
+
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 18,
+      width: 18,
+      decoration: BoxDecoration(
+        color: QPColors.getColorBasedTheme(
+          dark: QPColors.brandFair,
+          light: QPColors.brandFair,
+          brown: QPColors.brownModeMassive,
+          context: context,
+        ),
+        shape: BoxShape.circle,
+      ),
+      child: Center(
+        child: Icon(
+          icon,
+          color: QPColors.whiteFair,
+          size: 12,
+        ),
+      ),
+    );
   }
 }
