@@ -291,6 +291,7 @@ class _AudioBottomSheetWidgetState
                 title,
                 style: QPTextStyle.getBody2Medium(context),
                 overflow: TextOverflow.fade,
+                textAlign: TextAlign.right,
                 softWrap: false,
                 maxLines: 1,
               ),

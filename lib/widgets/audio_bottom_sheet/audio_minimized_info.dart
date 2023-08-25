@@ -83,6 +83,12 @@ class _AudioMinimizedInfoState extends ConsumerState<AudioMinimizedInfo> {
               icon: const Icon(Icons.close),
               iconSize: 24,
               onPressed: widget.onClose,
+              color: QPColors.getColorBasedTheme(
+                dark: QPColors.whiteFair,
+                light: QPColors.blackMassive,
+                brown: QPColors.brownModeMassive,
+                context: context,
+              ),
             ),
           ],
         ),

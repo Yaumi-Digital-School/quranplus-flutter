@@ -7,6 +7,7 @@ import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/Select_Reciter_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_preveiw_reciter_icon_button.dart';
 
 class RadioButtonSelectReciter extends ConsumerStatefulWidget {
   const RadioButtonSelectReciter({Key? key}) : super(key: key);
@@ -86,8 +87,8 @@ class _RadioButtonSelectReciterWidgetState
                   data: (data) {
                     IconData icon =
                         item.id == playedId && data != ButtonAudioState.stop
-                            ? Icons.pause_circle_filled_rounded
-                            : Icons.play_circle_fill_rounded;
+                            ? Icons.pause
+                            : Icons.play_arrow;
 
                     return InkWell(
                       onTap: _onTapAudioPreviewReciter(
@@ -97,15 +98,8 @@ class _RadioButtonSelectReciterWidgetState
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(12),
-                        child: Icon(
-                          icon,
-                          color: QPColors.getColorBasedTheme(
-                            dark: QPColors.brandFair,
-                            light: QPColors.brandFair,
-                            brown: QPColors.brownModeMassive,
-                            context: context,
-                          ),
-                          size: 20,
+                        child: AudioPreviewReciterIconButton(
+                          icon: icon,
                         ),
                       ),
                     );
