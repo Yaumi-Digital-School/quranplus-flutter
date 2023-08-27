@@ -183,7 +183,7 @@ class _AudioBottomSheetWidgetState
                     style: QPTextStyle.getDescription2Regular(context),
                   ),
                   Text(
-                    audioBottomSheetState.reciterName ?? '',
+                    audioBottomSheetState.reciterName,
                     style: QPTextStyle.getBody2Medium(context),
                   ),
                 ],
