@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 
-class AudioPreviewReciterIconButton extends StatelessWidget {
-  const AudioPreviewReciterIconButton({
+class SelectReciterAudioPreviewButton extends StatelessWidget {
+  const SelectReciterAudioPreviewButton({
     Key? key,
     required this.icon,
   }) : super(key: key);

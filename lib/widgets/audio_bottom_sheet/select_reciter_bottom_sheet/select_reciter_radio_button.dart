@@ -5,20 +5,20 @@ import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
-import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/Select_Reciter_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
-import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_preveiw_reciter_icon_button.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/select_reciter_bottom_sheet/select_reciter_audio_preview_button.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/select_reciter_bottom_sheet/select_reciter_state_notifier.dart';
 
-class RadioButtonSelectReciter extends ConsumerStatefulWidget {
-  const RadioButtonSelectReciter({Key? key}) : super(key: key);
+class SelectReciterRadioButton extends ConsumerStatefulWidget {
+  const SelectReciterRadioButton({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<RadioButtonSelectReciter> createState() =>
+  ConsumerState<SelectReciterRadioButton> createState() =>
       _RadioButtonSelectReciterWidgetState();
 }
 
 class _RadioButtonSelectReciterWidgetState
-    extends ConsumerState<RadioButtonSelectReciter> {
+    extends ConsumerState<SelectReciterRadioButton> {
   int playedId = 0;
 
   @override
@@ -98,7 +98,7 @@ class _RadioButtonSelectReciterWidgetState
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(12),
-                        child: AudioPreviewReciterIconButton(
+                        child: SelectReciterAudioPreviewButton(
                           icon: icon,
                         ),
                       ),
