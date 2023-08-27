@@ -179,6 +179,8 @@ class _HabitPersonalState extends State<HabitPersonalView> {
 
   Widget _buildProgressDailyItem(HabitDailySummary item) {
     final nameOfDay = DateFormat('EEEE').format(item.date).substring(0, 3);
+    final width = MediaQuery.of(context).size.width;
+    final paddingHorizontal = width >= 380 ? 9 : 7;
     final numberOfDay = DateFormat('d').format(item.date);
     final now = DateTime.now();
     final cleanDate = DateTime(now.year, now.month, now.day);
@@ -190,7 +192,10 @@ class _HabitPersonalState extends State<HabitPersonalView> {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 9),
+      padding: EdgeInsets.symmetric(
+        vertical: 6,
+        horizontal: paddingHorizontal.toDouble(),
+      ),
       decoration: BoxDecoration(
         color: QPColors.getColorBasedTheme(
           dark: Colors.transparent,
