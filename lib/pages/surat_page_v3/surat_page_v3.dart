@@ -340,7 +340,8 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
         await Connectivity().checkConnectivity();
 
     if (connectivityResult != ConnectivityResult.mobile &&
-        connectivityResult != ConnectivityResult.wifi) {
+        connectivityResult != ConnectivityResult.wifi &&
+        context.mounted) {
       GeneralBottomSheet().showNoInternetBottomSheet(
         context,
         () {
@@ -359,10 +360,12 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
     );
 
     notifier.playOnAyah(verse);
-    GeneralBottomSheet.showBaseBottomSheet(
-      context: context,
-      widgetChild: const AudioBottomSheetWidget(),
-    );
+    if (mounted) {
+      GeneralBottomSheet.showBaseBottomSheet(
+        context: context,
+        widgetChild: const AudioBottomSheetWidget(),
+      );
+    }
   }
 
   bool _onTapBack({
