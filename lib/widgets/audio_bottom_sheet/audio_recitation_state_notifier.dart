@@ -77,6 +77,12 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
         ayahNumber: nextAyahNumber,
       );
 
+      state = state.copyWith(
+        surahId: nextSurahId,
+        ayahId: nextAyahNumber,
+        surahName: surahNumberToSurahNameMap[nextSurahId] ?? '',
+      );
+
       _audioHandler.setMediaItem(
         MediaItem(
           id: '${state.surahId}-${state.ayahId}-${state.reciterId}',
@@ -89,12 +95,6 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
         ),
       );
       _audioHandler.play();
-
-      state = state.copyWith(
-        surahId: nextSurahId,
-        ayahId: nextAyahNumber,
-        surahName: surahNumberToSurahNameMap[nextSurahId] ?? '',
-      );
     } catch (e) {
       //TODO Add error tracker
     }
