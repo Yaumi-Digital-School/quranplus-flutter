@@ -5,12 +5,11 @@ import 'package:qurantafsir_flutter/shared/constants/button_audio_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
-import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/select_reciter_buttom_sheet.dart';
-import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/Select_Reciter_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/linear_percent_indicator_custom.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/select_reciter_bottom_sheet/select_reciter_buttom_sheet.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/select_reciter_bottom_sheet/select_reciter_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
-import 'package:qurantafsir_flutter/widgets/utils/general_dialog.dart';
 
 class AudioBottomSheetWidget extends ConsumerStatefulWidget {
   const AudioBottomSheetWidget({
