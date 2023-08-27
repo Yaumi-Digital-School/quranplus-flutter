@@ -100,7 +100,7 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
           shouldGoToNextSurah ? state.surahId + 1 : state.surahId;
       final int nextAyahNumber = shouldGoToNextSurah ? 1 : state.ayahId + 1;
 
-      MediaItem nextMedia = localPlaylist[localPlaylist.length - 1];
+      MediaItem nextMedia = localPlaylist.last;
 
       _audioHandler.setMediaItem(nextMedia);
       _audioHandler.play();
