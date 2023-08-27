@@ -15,8 +15,8 @@ class AudioRecitationState {
     this.surahId = 1,
     this.ayahId = 1,
     this.isLoading = true,
-    this.reciterId,
-    this.reciterName,
+    this.reciterId = 1,
+    this.reciterName = 'Mishari Rashid Al-Afasy',
   });
 
   String surahName;

@@ -134,21 +134,16 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     required Function() onPlayBackError,
   }) async {
     _setAudioSuratLoaded(surat);
-    int reciterId;
-    String reciterName;
     final ReciterItemResponse? listReciterResponse =
         await _sharedPreferenceService.getSelectedReciter();
-
-    reciterId = listReciterResponse?.id ?? 1;
-    reciterName = listReciterResponse?.name ?? "Mishari Rashid Al-Afasy";
 
     final AudioRecitationState newState = AudioRecitationState(
       surahName: surat.nameLatin,
       surahId: int.parse(surat.number),
       ayahId: int.parse(surat.startAyat),
       isLoading: true,
-      reciterId: reciterId,
-      reciterName: reciterName,
+      reciterId: listReciterResponse?.id,
+      reciterName: listReciterResponse?.name,
     );
 
     await _audioRecitationNotifier.init(
