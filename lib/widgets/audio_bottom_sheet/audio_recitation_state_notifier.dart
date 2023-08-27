@@ -24,8 +24,8 @@ class AudioRecitationState {
   int surahId;
   int ayahId;
   bool isLoading;
-  final int? reciterId;
-  final String? reciterName;
+  final int reciterId;
+  final String reciterName;
 
   AudioRecitationState copyWith({
     String? surahName,
@@ -74,7 +74,7 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
     final int nextAyahNumber = shouldGoToNextSurah ? 1 : state.ayahId + 1;
 
     final response = await _audioApi.getAudioForSpecificReciterAndAyah(
-      reciterId: state.reciterId!,
+      reciterId: state.reciterId,
       surahId: nextSurahId,
       ayahNumber: nextAyahNumber,
     );
@@ -136,7 +136,7 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
       }
 
       final response = await _audioApi.getAudioForSpecificReciterAndAyah(
-        reciterId: state.reciterId!,
+        reciterId: state.reciterId,
         surahId: initState.surahId,
         ayahNumber: initState.ayahId,
       );
@@ -151,6 +151,8 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
       state = state.copyWith(isLoading: false);
       if (onSuccess != null) onSuccess();
     } catch (e) {
+      // TODO: add log tracker
+      print(e);
       state = state.copyWith(isLoading: false);
       if (onLoadError != null) onLoadError();
     }
