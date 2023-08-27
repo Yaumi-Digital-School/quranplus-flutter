@@ -57,8 +57,10 @@ class AudioRecitationHandler extends BaseAudioHandler {
               MediaControl.skipToNext,
             ],
             systemActions: {},
-            processingState: const {
-              ProcessingState.idle: AudioProcessingState.idle,
+            processingState: {
+              ProcessingState.idle: Platform.isIOS
+                  ? AudioProcessingState.ready
+                  : AudioProcessingState.idle,
               ProcessingState.loading: AudioProcessingState.loading,
               ProcessingState.buffering: AudioProcessingState.buffering,
               ProcessingState.ready: AudioProcessingState.ready,
