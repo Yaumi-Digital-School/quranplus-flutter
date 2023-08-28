@@ -166,7 +166,7 @@ class AccountPage extends StatelessWidget {
                             ),
                           ),
                           maxLength: 2,
-                          style: bodyMedium2,
+                          style: QPTextStyle.getSubHeading3Medium(context),
                           onChanged: (value) {
                             if (value.isNotEmpty) {
                               if (int.parse(value) > 31) {
@@ -214,7 +214,7 @@ class AccountPage extends StatelessWidget {
                             ),
                           ),
                           maxLength: 2,
-                          style: bodyMedium2,
+                          style: QPTextStyle.getSubHeading3Medium(context),
                           onChanged: (value) {
                             if (value.isNotEmpty) {
                               if (int.parse(value) > 12) {
@@ -262,7 +262,7 @@ class AccountPage extends StatelessWidget {
                             ),
                           ),
                           maxLength: 4,
-                          style: bodyMedium2,
+                          style: QPTextStyle.getSubHeading3Medium(context),
                           onChanged: (value) {
                             if (value.isNotEmpty) {
                               var year = DateFormat.y().format(DateTime.now());
