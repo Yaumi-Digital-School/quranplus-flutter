@@ -202,7 +202,7 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
     try {
       state = state.copyWith(isLoading: true);
       final response = await _audioApi.getAudioForSpecificReciterAndAyah(
-        reciterId: 1,
+        reciterId: state.reciterId,
         surahId: surahId,
         ayahNumber: 1,
       );
