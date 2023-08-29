@@ -124,6 +124,7 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
     Function()? onLoadError,
     Function()? onPlayBackError,
   }) async {
+    _audioHandler.pause();
     localPlaylist.clear();
     state = initState;
 
@@ -166,7 +167,6 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
     AudioRecitationState newState,
     String url,
   ) async {
-    _audioHandler.pause();
     MediaItem item = MediaItem(
       id: '${newState.surahId}-${newState.ayahId}-${state.reciterId}',
       title: '${newState.surahName} - Ayat: ${newState.ayahId}',
@@ -200,6 +200,7 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
 
   Future<void> _startNewSurah(int surahId) async {
     try {
+      localPlaylist.clear();
       state = state.copyWith(isLoading: true);
       final response = await _audioApi.getAudioForSpecificReciterAndAyah(
         reciterId: state.reciterId,
@@ -228,6 +229,8 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
         surahName: surahNumberToSurahNameMap[surahId],
         isLoading: false,
       );
+
+      await getNextAyahMedia();
     } catch (e) {
       state = state.copyWith(isLoading: false);
     }
