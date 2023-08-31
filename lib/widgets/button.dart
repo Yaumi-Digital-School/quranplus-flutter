@@ -52,6 +52,8 @@ class ButtonSecondary extends StatelessWidget {
       width: width,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
+          foregroundColor: Colors.red,
+          backgroundColor: backgroundColor,
           shape: RoundedRectangleBorder(
             borderRadius: const BorderRadius.all(Radius.circular(10)),
             side: BorderSide(
@@ -60,8 +62,6 @@ class ButtonSecondary extends StatelessWidget {
             ),
           ),
           padding: const EdgeInsets.all(10.0),
-          primary: backgroundColor,
-          onPrimary: Colors.red,
           elevation: 1,
         ),
         onPressed: onTap,
@@ -160,13 +160,13 @@ class ButtonNeutral extends StatelessWidget {
       width: width,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
+          foregroundColor: primary500,
           shape: RoundedRectangleBorder(
             borderRadius: const BorderRadius.all(Radius.circular(10)),
             side: BorderSide(color: contentColor, width: 1),
           ),
+          backgroundColor: Colors.transparent,
           padding: const EdgeInsets.all(10.0),
-          primary: Colors.transparent,
-          onPrimary: primary500,
           elevation: 0,
         ),
         onPressed: onTap,
@@ -213,12 +213,12 @@ class ButtonPrimary extends StatelessWidget {
       width: width,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
+          foregroundColor: Colors.white,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
+          backgroundColor: darkGreen,
           padding: const EdgeInsets.all(10.0),
-          primary: darkGreen,
-          onPrimary: Colors.white,
         ),
         onPressed: onTap,
         child: Text(
@@ -297,7 +297,7 @@ class ButtonPill extends StatelessWidget {
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(24)),
         ),
-        primary: Theme.of(context).colorScheme.primaryContainer,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       ),
       onPressed: onTap,
       child: Padding(

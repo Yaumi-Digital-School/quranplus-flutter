@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
-import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/widgets/adaptive_theme_dialog.dart';

@@ -6,15 +6,10 @@ class AliceService {
       : _navigatorKey = navigatorKey;
 
   final GlobalKey<NavigatorState> _navigatorKey;
-  late Alice _alice;
 
-  void init() {
-    _alice = Alice(
-      navigatorKey: _navigatorKey,
-      showNotification: false,
-      showInspectorOnShake: true,
-    );
-  }
-
-  Alice get alice => _alice;
+  Alice get alice => Alice(
+        navigatorKey: _navigatorKey,
+        showNotification: false,
+        showInspectorOnShake: true,
+      );
 }

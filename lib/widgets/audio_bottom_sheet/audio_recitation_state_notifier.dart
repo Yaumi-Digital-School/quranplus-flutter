@@ -7,7 +7,8 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
 import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
-import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/select_reciter_bottom_sheet/select_reciter_state_notifier.dart';
+
+import 'select_reciter_bottom_sheet/select_reciter_state_notifier.dart';
 
 class AudioRecitationState {
   AudioRecitationState({
@@ -23,8 +24,8 @@ class AudioRecitationState {
   int surahId;
   int ayahId;
   bool isLoading;
-  final int? reciterId;
-  final String? reciterName;
+  final int reciterId;
+  final String reciterName;
 
   AudioRecitationState copyWith({
     String? surahName,
@@ -73,7 +74,7 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
     final int nextAyahNumber = shouldGoToNextSurah ? 1 : state.ayahId + 1;
 
     final response = await _audioApi.getAudioForSpecificReciterAndAyah(
-      reciterId: state.reciterId!,
+      reciterId: state.reciterId,
       surahId: nextSurahId,
       ayahNumber: nextAyahNumber,
     );
@@ -123,6 +124,7 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
     Function()? onLoadError,
     Function()? onPlayBackError,
   }) async {
+    _audioHandler.pause();
     localPlaylist.clear();
     state = initState;
 
@@ -135,7 +137,7 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
       }
 
       final response = await _audioApi.getAudioForSpecificReciterAndAyah(
-        reciterId: state.reciterId!,
+        reciterId: state.reciterId,
         surahId: initState.surahId,
         ayahNumber: initState.ayahId,
       );
@@ -150,6 +152,8 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
       state = state.copyWith(isLoading: false);
       if (onSuccess != null) onSuccess();
     } catch (e) {
+      // TODO: add log tracker
+      print(e);
       state = state.copyWith(isLoading: false);
       if (onLoadError != null) onLoadError();
     }
@@ -163,7 +167,6 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
     AudioRecitationState newState,
     String url,
   ) async {
-    _audioHandler.pause();
     MediaItem item = MediaItem(
       id: '${newState.surahId}-${newState.ayahId}-${state.reciterId}',
       title: '${newState.surahName} - Ayat: ${newState.ayahId}',
@@ -197,9 +200,10 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
 
   Future<void> _startNewSurah(int surahId) async {
     try {
+      localPlaylist.clear();
       state = state.copyWith(isLoading: true);
       final response = await _audioApi.getAudioForSpecificReciterAndAyah(
-        reciterId: 1,
+        reciterId: state.reciterId,
         surahId: surahId,
         ayahNumber: 1,
       );
@@ -225,6 +229,8 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
         surahName: surahNumberToSurahNameMap[surahId],
         isLoading: false,
       );
+
+      await getNextAyahMedia();
     } catch (e) {
       state = state.copyWith(isLoading: false);
     }
@@ -243,9 +249,9 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
   }
 
   Future<void> changeReciter(
-    SelectReciterStateNotifier _selectReciterNotifier,
+    SelectReciterStateNotifier selectReciterNotifier,
   ) async {
-    await _selectReciterNotifier.fetchData(
+    await selectReciterNotifier.fetchData(
       state.surahName,
       state.surahId,
       state.ayahId,
@@ -259,13 +265,13 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
 final audioRecitationProvider =
     StateNotifierProvider<AudioRecitationStateNotifier, AudioRecitationState>(
   (ref) {
-    final AudioApi _audioApi = ref.read(audioApiProvider);
-    final AudioRecitationHandler _audioRecitationHandler =
+    final AudioApi audioApi = ref.read(audioApiProvider);
+    final AudioRecitationHandler audioRecitationHandler =
         ref.read(audioHandler);
 
     return AudioRecitationStateNotifier(
-      audioApi: _audioApi,
-      audioHandler: _audioRecitationHandler,
+      audioApi: audioApi,
+      audioHandler: audioRecitationHandler,
     );
   },
 );

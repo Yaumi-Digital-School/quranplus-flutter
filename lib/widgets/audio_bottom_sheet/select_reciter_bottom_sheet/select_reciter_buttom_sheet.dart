@@ -69,11 +69,13 @@ class _SelectRecitatorWidgetState extends ConsumerState<SelectRecitatorWidget> {
             ref.watch(audioRecitationProvider.notifier),
           );
 
-      Navigator.pop(context);
-      GeneralBottomSheet.showBaseBottomSheet(
-        context: context,
-        widgetChild: const AudioBottomSheetWidget(),
-      );
+      if (context.mounted) {
+        Navigator.pop(context);
+        GeneralBottomSheet.showBaseBottomSheet(
+          context: context,
+          widgetChild: const AudioBottomSheetWidget(),
+        );
+      }
     };
   }
 }

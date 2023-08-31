@@ -4,14 +4,12 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_state.dart';
 
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
-import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur_ayah_available.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
@@ -180,7 +178,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   }
 
   Future<void> playOnAyah(Verse verse) async {
-    final ReciterItemResponse? listReciterResponse =
+    final ReciterItemResponse reciterItemResponse =
         await _sharedPreferenceService.getSelectedReciter();
 
     final AudioRecitationState newState = AudioRecitationState(
@@ -188,8 +186,8 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
       surahId: verse.surahNumber,
       ayahId: verse.verseNumber,
       isLoading: true,
-      reciterId: listReciterResponse?.id,
-      reciterName: listReciterResponse?.name,
+      reciterId: reciterItemResponse.id,
+      reciterName: reciterItemResponse.name,
     );
 
     await _audioPlayerNotifier.init(newState);
@@ -523,14 +521,14 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
       ),
     );
 
-    if (connectivityResult != ConnectionState.none && _isLoggedIn) {
+    if (connectivityResult != ConnectivityResult.none && _isLoggedIn) {
       _toggleBookmark(
         surahName: surahName,
         page: page,
       );
     }
 
-    if (connectivityResult == ConnectionState.none) {
+    if (connectivityResult == ConnectivityResult.none) {
       _bookmarksService.setIsMerged(false);
     }
 
@@ -727,10 +725,5 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
       redirectTo: redirectTo,
       arguments: arguments,
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }

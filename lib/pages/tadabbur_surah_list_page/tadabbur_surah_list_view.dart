@@ -28,7 +28,7 @@ class TadabburSurahListView extends StatelessWidget {
       ) async {
         final ConnectivityResult connectivityResult =
             await Connectivity().checkConnectivity();
-        if (connectivityResult == ConnectivityResult.none) {
+        if (connectivityResult == ConnectivityResult.none && context.mounted) {
           GeneralBottomSheet().showNoInternetBottomSheet(
             context,
             () => notifier.initStateNotifier(),

@@ -117,7 +117,10 @@ class _AddDailyProgressManualViewState
                           await notifier
                               .addDailyProgressManual(int.parse(inputPages));
                         }
-                        Navigator.pop(context, true);
+
+                        if (context.mounted) {
+                          Navigator.pop(context, true);
+                        }
                       },
                     ),
                   ],

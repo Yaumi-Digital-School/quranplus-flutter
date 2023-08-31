@@ -19,17 +19,19 @@ class HabitGroupBottomSheet {
     required String url,
     required String currentGroupName,
   }) {
-    final TextEditingController _textController =
+    final TextEditingController textController =
         TextEditingController(text: url);
 
     // This function is triggered when the copy icon is pressed
-    Future<void> _copyToClipboard() async {
-      await Clipboard.setData(ClipboardData(text: _textController.text));
-      Navigator.pop(context);
-      GeneralSnackBar.showModalSnackBar(
-        context: context,
-        text: "Group link successfully copied",
-      );
+    Future<void> copyToClipboard() async {
+      await Clipboard.setData(ClipboardData(text: textController.text));
+      if (context.mounted) {
+        Navigator.pop(context);
+        GeneralSnackBar.showModalSnackBar(
+          context: context,
+          text: "Group link successfully copied",
+        );
+      }
     }
 
     GeneralBottomSheet.showBaseBottomSheet(
@@ -61,7 +63,7 @@ class HabitGroupBottomSheet {
             style: QPTextStyle.getSubHeading3Regular(context).copyWith(
               color: QPColors.blackMassive,
             ),
-            controller: _textController,
+            controller: textController,
             decoration: InputDecoration(
               border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -74,7 +76,7 @@ class HabitGroupBottomSheet {
               fillColor: QPColors.whiteRoot,
               suffixIconColor: QPColors.blackHeavy,
               suffixIcon: IconButton(
-                onPressed: _copyToClipboard,
+                onPressed: copyToClipboard,
                 icon: const Icon(Icons.copy),
               ),
             ),
@@ -90,7 +92,7 @@ class HabitGroupBottomSheet {
     required Function(String) onSubmit,
     String currentGroupName = '',
   }) {
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
     String groupName = currentGroupName;
 
     GeneralBottomSheet.showBaseBottomSheet(
@@ -109,7 +111,7 @@ class HabitGroupBottomSheet {
           ),
           const SizedBox(height: 8),
           Form(
-            key: _formKey,
+            key: formKey,
             child: FormFieldWidget(
               initialValue: groupName,
               hintTextForm: "Input your group name",
@@ -134,7 +136,7 @@ class HabitGroupBottomSheet {
           ButtonSecondary(
             label: "Save",
             onTap: () {
-              if (!_formKey.currentState!.validate()) {
+              if (!formKey.currentState!.validate()) {
                 return;
               }
 
@@ -193,13 +195,15 @@ class HabitGroupBottomSheet {
                 label: 'Leave',
                 onTap: () async {
                   await onTap();
-                  Navigator.pop(context);
-                  final bool canPop = Navigator.canPop(context);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    final bool canPop = Navigator.canPop(context);
 
-                  if (canPop) {
-                    Navigator.pop(context, notifier.isLeaveGrup);
+                    if (canPop) {
+                      Navigator.pop(context, notifier.isLeaveGrup);
 
-                    return;
+                      return;
+                    }
                   }
 
                   const HabitProgressTab selectedTabOnPop =
@@ -209,13 +213,15 @@ class HabitGroupBottomSheet {
                       .read(mainPageProvider)
                       .setHabitGroupProgressSelectedTab(selectedTabOnPop);
 
-                  Navigator.pushReplacementNamed(
-                    context,
-                    RoutePaths.routeMain,
-                    arguments: MainPageParam(
-                      initialSelectedIdx: selectedTabOnPop.index,
-                    ),
-                  );
+                  if (context.mounted) {
+                    Navigator.pushReplacementNamed(
+                      context,
+                      RoutePaths.routeMain,
+                      arguments: MainPageParam(
+                        initialSelectedIdx: selectedTabOnPop.index,
+                      ),
+                    );
+                  }
                 },
                 size: ButtonSize.regular,
                 textStyle: QPTextStyle.getButton1SemiBold(context)

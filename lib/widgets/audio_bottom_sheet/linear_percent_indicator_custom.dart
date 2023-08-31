@@ -15,14 +15,14 @@ class LinearPercentIndicatorCustom extends ConsumerWidget {
         ref.watch(currentDurationProvider);
     final AsyncValue<Duration?> totalDuration =
         ref.watch(totalDurationProvider);
-    final AudioHandler _audioHandler = ref.watch(audioHandler);
+    final AudioHandler currentAudioHandler = ref.watch(audioHandler);
 
     return ProgressBar(
       baseBarColor: QPColors.brandRoot,
       progressBarColor: QPColors.brandFair,
       thumbRadius: 0,
       onSeek: ((Duration value) {
-        _audioHandler.seek(value);
+        currentAudioHandler.seek(value);
       }),
       timeLabelTextStyle: QPTextStyle.getDescription2Regular(context),
       progress: currentDuration.when(

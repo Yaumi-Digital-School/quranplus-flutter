@@ -311,19 +311,14 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
 
         navigationBar.onTap!(1);
       },
-      child: Text(
-        'See Details',
-        style: QPTextStyle.getSubHeading4SemiBold(context).copyWith(
-          color: QPColors.getColorBasedTheme(
-            dark: QPColors.whiteFair,
-            light: QPColors.brandFair,
-            brown: QPColors.brownModeMassive,
-            context: context,
-          ),
-        ),
-      ),
       style: ElevatedButton.styleFrom(
         elevation: 0,
+        backgroundColor: QPColors.getColorBasedTheme(
+          dark: QPColors.blackHeavy,
+          light: QPColors.whiteMassive,
+          brown: QPColors.brownModeRoot,
+          context: context,
+        ),
         shape: RoundedRectangleBorder(
           borderRadius: const BorderRadius.all(Radius.circular(24)),
           side: BorderSide(
@@ -336,11 +331,16 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
             width: 1,
           ),
         ),
-        primary: QPColors.getColorBasedTheme(
-          dark: QPColors.blackHeavy,
-          light: QPColors.whiteMassive,
-          brown: QPColors.brownModeRoot,
-          context: context,
+      ),
+      child: Text(
+        'See Details',
+        style: QPTextStyle.getSubHeading4SemiBold(context).copyWith(
+          color: QPColors.getColorBasedTheme(
+            dark: QPColors.whiteFair,
+            light: QPColors.brandFair,
+            brown: QPColors.brownModeMassive,
+            context: context,
+          ),
         ),
       ),
     );

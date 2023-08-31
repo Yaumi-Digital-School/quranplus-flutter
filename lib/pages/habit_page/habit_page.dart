@@ -159,7 +159,7 @@ class HabitPage extends StatelessWidget {
               );
           },
         );
-      } else {
+      } else if (context.mounted) {
         _generalBottomSheet.showNoInternetBottomSheet(
           context,
           () => Navigator.pop(context),

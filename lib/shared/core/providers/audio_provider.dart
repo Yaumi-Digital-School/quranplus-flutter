@@ -13,23 +13,23 @@ final Provider<AudioRecitationHandler> audioHandler =
 
 final AutoDisposeStreamProvider<Duration> currentDurationProvider =
     StreamProvider.autoDispose<Duration>((ref) {
-  final AudioRecitationHandler _audioHandler = ref.watch(audioHandler);
+  final AudioRecitationHandler currentAudioHandler = ref.watch(audioHandler);
 
-  return _audioHandler.getPositionStream();
+  return currentAudioHandler.getPositionStream();
 });
 
 final AutoDisposeStreamProvider<Duration?> totalDurationProvider =
     StreamProvider.autoDispose<Duration?>((ref) {
-  final AudioRecitationHandler _audioHandler = ref.watch(audioHandler);
+  final AudioRecitationHandler currentAudioHandler = ref.watch(audioHandler);
 
-  return _audioHandler.getDurationStream();
+  return currentAudioHandler.getDurationStream();
 });
 
 final AutoDisposeStreamProvider<ButtonAudioState> buttonAudioStateProvider =
     StreamProvider.autoDispose<ButtonAudioState>((ref) {
-  final AudioRecitationHandler _audioHandler = ref.watch(audioHandler);
+  final AudioRecitationHandler currentAudioHandler = ref.watch(audioHandler);
 
-  return _audioHandler.getPlayerStateStream().map((event) {
+  return currentAudioHandler.getPlayerStateStream().map((event) {
     final isPlaying = event.playing;
     final processingState = event.processingState;
     if (processingState == ProcessingState.loading ||

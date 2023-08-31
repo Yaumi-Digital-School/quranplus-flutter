@@ -25,7 +25,7 @@ class _OnBoardingWidgetState extends State<OnBoardingWidget> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       initSharedPreferences();
     });
   }

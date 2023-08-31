@@ -29,7 +29,7 @@ class UserSummaryBottomSheet {
       progress = 1;
     }
 
-    final _emptyState = Column(
+    final emptyState = Column(
       children: [
         const Icon(
           Icons.history,
@@ -45,7 +45,7 @@ class UserSummaryBottomSheet {
         ),
         const SizedBox(height: 12),
         Text(
-          "It seems that ${isCurrentUser ? "you have" : data.user.name + " has"} not made any progress",
+          "It seems that ${isCurrentUser ? "you have" : "${data.user.name} has"} not made any progress",
           style: QPTextStyle.getSubHeading4Regular(context)
               // Todo: check color based on theme
               .copyWith(color: QPColors.blackFair),
@@ -159,7 +159,7 @@ class UserSummaryBottomSheet {
             height: 180,
             width: double.infinity,
             child:
-                data.habitProgresses.isEmpty ? _emptyState : listProgressWidget,
+                data.habitProgresses.isEmpty ? emptyState : listProgressWidget,
           ),
         ],
       ),
