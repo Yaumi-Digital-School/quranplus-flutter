@@ -1,7 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-enum ConnectivityStatus { isConnected, isDisconnected }
+import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 
 class InternetConnectionStatus extends StateNotifier<ConnectivityStatus> {
   late ConnectivityStatus lastResult;
