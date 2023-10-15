@@ -88,20 +88,20 @@ class StartHabitCard extends StatelessWidget {
 
                 navigationBar.onTap!(1);
               },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: primary500,
+                backgroundColor: Colors.white,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+                elevation: 1,
+              ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 9),
                 child: Text(
                   'Start Now',
                   style: TextStyle(fontSize: 12, fontWeight: semiBold),
                 ),
-              ),
-              style: ElevatedButton.styleFrom(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-                primary: Colors.white,
-                onPrimary: primary500,
-                elevation: 1,
               ),
             ),
           ),

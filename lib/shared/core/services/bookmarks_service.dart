@@ -1,6 +1,6 @@
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
-import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -18,34 +18,34 @@ class BookmarksService {
 
   Future<List<Bookmarks>> getBookmarkFromLocal() async {
     var bookmarkFromDb = await _db.getBookmarks();
-    List<Bookmarks> _listBookmark = [];
+    List<Bookmarks> listBookmark = [];
 
-    _listBookmark.clear();
+    listBookmark.clear();
 
     for (var bookmark in bookmarkFromDb!) {
-      _listBookmark.add(Bookmarks.fromMap(bookmark));
+      listBookmark.add(Bookmarks.fromMap(bookmark));
     }
 
-    return _listBookmark;
+    return listBookmark;
   }
 
   Future<List<Bookmarks>> _getBookmarkList() async {
-    List<Bookmarks> _listBookmark = <Bookmarks>[];
+    List<Bookmarks> listBookmark = <Bookmarks>[];
 
     HttpResponse<GetBookmarkListResponse> response =
         await _bookmarkApi.getBookmarkList();
 
     if (response.response.statusCode == 200 && response.data.data != null) {
-      _listBookmark = response.data.data!;
+      listBookmark = response.data.data!;
     }
 
-    return _listBookmark;
+    return listBookmark;
   }
 
   Future<void> clearBookmarkAndMergeFromServer() async {
     await _db.clearTableBookmarks();
-    final List<Bookmarks> _serverBookmarks = await _getBookmarkList();
-    await _db.bulkCreateBookmarks(_serverBookmarks);
+    final List<Bookmarks> serverBookmarks = await _getBookmarkList();
+    await _db.bulkCreateBookmarks(serverBookmarks);
     setIsMerged(true);
   }
 
@@ -54,17 +54,17 @@ class BookmarksService {
       return;
     }
 
-    final List<Bookmarks> _localBookmarks = await getBookmarkFromLocal();
-    if (_localBookmarks.isEmpty) {
-      final List<Bookmarks> _serverBookmarks = await _getBookmarkList();
-      await _db.bulkCreateBookmarks(_serverBookmarks);
+    final List<Bookmarks> localBookmarks = await getBookmarkFromLocal();
+    if (localBookmarks.isEmpty) {
+      final List<Bookmarks> serverBookmarks = await _getBookmarkList();
+      await _db.bulkCreateBookmarks(serverBookmarks);
       setIsMerged(true);
 
       return;
     }
 
     final List<MergeBookmarkRequest> request = <MergeBookmarkRequest>[];
-    for (Bookmarks bookmark in _localBookmarks) {
+    for (Bookmarks bookmark in localBookmarks) {
       request.add(
         MergeBookmarkRequest(
           surahID: surahNameToSurahNumberMap[bookmark.surahName] ?? 0,
@@ -79,9 +79,9 @@ class BookmarksService {
       request: request,
     );
 
-    final List<Bookmarks> _serverBookmarks = await _getBookmarkList();
+    final List<Bookmarks> serverBookmarks = await _getBookmarkList();
     await _db.clearTableBookmarks();
-    await _db.bulkCreateBookmarks(_serverBookmarks);
+    await _db.bulkCreateBookmarks(serverBookmarks);
     setIsMerged(true);
   }
 }

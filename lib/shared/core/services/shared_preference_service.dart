@@ -190,10 +190,10 @@ class SharedPreferenceService {
     await _sharedPreferences.setString(_dataReciter, encodedParam);
   }
 
-  Future<ReciterItemResponse?> getSelectedReciter() async {
+  Future<ReciterItemResponse> getSelectedReciter() async {
     final String res = _sharedPreferences.getString(_dataReciter) ?? '';
     if (res.isEmpty) {
-      return null;
+      return ReciterItemResponse(id: 1, name: "Mishari Rashid Al-Afasy");
     }
 
     return ReciterItemResponse.fromJson(

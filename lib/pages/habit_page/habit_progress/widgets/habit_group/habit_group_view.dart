@@ -30,7 +30,7 @@ class HabitGroupView extends StatelessWidget {
         final ConnectivityResult connection =
             await Connectivity().checkConnectivity();
 
-        if (connection == ConnectivityResult.none) {
+        if (connection == ConnectivityResult.none && context.mounted) {
           await GeneralBottomSheet().showNoInternetBottomSheet(
             context,
             () async {

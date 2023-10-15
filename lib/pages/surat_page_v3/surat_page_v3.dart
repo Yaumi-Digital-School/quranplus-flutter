@@ -15,7 +15,6 @@ import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
-import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_widget.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_minimized_info.dart';
@@ -152,7 +151,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
           );
         }
 
-        if (widget.param.isShowBottomSheet) {
+        if (widget.param.isShowBottomSheet && context.mounted) {
           notifier.playAyahAudio();
           GeneralBottomSheet.showBaseBottomSheet(
             context: context,
@@ -242,19 +241,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                     padding: const EdgeInsets.only(right: 12),
                     child: InkWell(
                       onTap: () async {
-                        final List<Verse> verses =
-                            state.pages![state.currentPage.toInt()].verses;
-                        final Verse verse = verses.firstWhere(
-                          (element) =>
-                              element.id == widget.param.firstPagePointerIndex,
-                          orElse: () => verses[0],
-                        );
-
-                        notifier.playOnAyah(verse);
-                        GeneralBottomSheet.showBaseBottomSheet(
-                          context: context,
-                          widgetChild: const AudioBottomSheetWidget(),
-                        );
+                        _onPlayRecitationAppBar(state, notifier);
                       },
                       child: Container(
                         height: 24,
@@ -343,6 +330,42 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
         );
       },
     );
+  }
+
+  Future<void> _onPlayRecitationAppBar(
+    SuratPageState state,
+    SuratPageStateNotifier notifier,
+  ) async {
+    final ConnectivityResult connectivityResult =
+        await Connectivity().checkConnectivity();
+
+    if (connectivityResult != ConnectivityResult.mobile &&
+        connectivityResult != ConnectivityResult.wifi &&
+        context.mounted) {
+      GeneralBottomSheet().showNoInternetBottomSheet(
+        context,
+        () {
+          Navigator.pop(context);
+          _onPlayRecitationAppBar(state, notifier);
+        },
+      );
+
+      return;
+    }
+
+    final List<Verse> verses = state.pages![state.currentPage.toInt()].verses;
+    final Verse verse = verses.firstWhere(
+      (element) => element.id == widget.param.firstPagePointerIndex,
+      orElse: () => verses[0],
+    );
+
+    notifier.playOnAyah(verse);
+    if (mounted) {
+      GeneralBottomSheet.showBaseBottomSheet(
+        context: context,
+        widgetChild: const AudioBottomSheetWidget(),
+      );
+    }
   }
 
   bool _onTapBack({
@@ -868,7 +891,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
     ValueKey key = ValueKey(verse.surahNameAndAyatKey);
 
     for (Word word in verse.words) {
-      allVerses += word.code + ' ';
+      allVerses += '${word.code} ';
     }
 
     return AutoScrollTag(
@@ -958,13 +981,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                             alignment: Alignment.centerLeft,
                             icon: const Icon(Icons.play_circle_outline),
                             iconSize: 20,
-                            onPressed: () {
-                              notifier.playOnAyah(verse);
-                              GeneralBottomSheet.showBaseBottomSheet(
-                                context: context,
-                                widgetChild: const AudioBottomSheetWidget(),
-                              );
-                            },
+                            onPressed: () => _playOnAyah(notifier, verse),
                           ),
                           Expanded(
                             child: Text(
@@ -1097,6 +1114,33 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
         ),
       ),
     );
+  }
+
+  Future<void> _playOnAyah(SuratPageStateNotifier notifier, Verse verse) async {
+    final ConnectivityResult connectivityResult =
+        await Connectivity().checkConnectivity();
+
+    if (connectivityResult != ConnectivityResult.mobile &&
+        connectivityResult != ConnectivityResult.wifi &&
+        context.mounted) {
+      GeneralBottomSheet().showNoInternetBottomSheet(
+        context,
+        () {
+          Navigator.pop(context);
+          _playOnAyah(notifier, verse);
+        },
+      );
+
+      return;
+    }
+
+    notifier.playOnAyah(verse);
+    if (mounted) {
+      GeneralBottomSheet.showBaseBottomSheet(
+        context: context,
+        widgetChild: const AudioBottomSheetWidget(),
+      );
+    }
   }
 
   Widget _buildIsTadabburAvailableFlag() {

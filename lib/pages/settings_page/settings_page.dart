@@ -209,7 +209,7 @@ class SettingsPage extends StatelessWidget {
     required SettingsPageStateNotifier notifier,
   }) async {
     final ForceLoginParam? param = await notifier.getForceLoginInformation();
-    if (param == null) {
+    if (param == null && context.mounted) {
       Navigator.of(context).pushReplacementNamed(
         RoutePaths.routeMain,
       );
@@ -217,10 +217,10 @@ class SettingsPage extends StatelessWidget {
       return;
     }
 
-    Map<String, dynamic> routeArgs = param.arguments ?? <String, dynamic>{};
+    Map<String, dynamic> routeArgs = param?.arguments ?? <String, dynamic>{};
     Object? routeParams;
 
-    switch (param.nextPath) {
+    switch (param?.nextPath) {
       case RoutePaths.routeSurahPage:
         routeParams = SuratPageV3Param(
           startPageInIndex: routeArgs['startPageInIndex'],
@@ -230,11 +230,13 @@ class SettingsPage extends StatelessWidget {
       default:
     }
 
-    Navigator.pushNamed(
-      context,
-      param.nextPath ?? '',
-      arguments: routeParams,
-    );
+    if (context.mounted) {
+      Navigator.pushNamed(
+        context,
+        param?.nextPath ?? '',
+        arguments: routeParams,
+      );
+    }
   }
 
   _onTapButtonSignIn(
@@ -278,7 +280,7 @@ class SettingsPage extends StatelessWidget {
               );
           },
         );
-      } else {
+      } else if (context.mounted) {
         _generalBottomSheet.showNoInternetBottomSheet(
           context,
           () => Navigator.pop(context),
@@ -289,11 +291,11 @@ class SettingsPage extends StatelessWidget {
 
   void _onAccountTap(BuildContext context) async {
     var connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult != ConnectivityResult.none) {
+    if (connectivityResult != ConnectivityResult.none && context.mounted) {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return AccountPage();
       }));
-    } else {
+    } else if (context.mounted) {
       _generalBottomSheet.showNoInternetBottomSheet(
         context,
         () => Navigator.pop(context),
@@ -330,7 +332,7 @@ class SettingsPage extends StatelessWidget {
             ),
           );
       });
-    } else {
+    } else if (context.mounted) {
       _generalBottomSheet.showNoInternetBottomSheet(
         context,
         () => Navigator.pop(context),

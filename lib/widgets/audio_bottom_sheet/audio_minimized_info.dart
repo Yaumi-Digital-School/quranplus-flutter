@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
-import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_minimized_info_icon_button.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 
 class AudioMinimizedInfo extends ConsumerStatefulWidget {
   const AudioMinimizedInfo({
@@ -83,6 +83,12 @@ class _AudioMinimizedInfoState extends ConsumerState<AudioMinimizedInfo> {
               icon: const Icon(Icons.close),
               iconSize: 24,
               onPressed: widget.onClose,
+              color: QPColors.getColorBasedTheme(
+                dark: QPColors.whiteFair,
+                light: QPColors.blackMassive,
+                brown: QPColors.brownModeMassive,
+                context: context,
+              ),
             ),
           ],
         ),

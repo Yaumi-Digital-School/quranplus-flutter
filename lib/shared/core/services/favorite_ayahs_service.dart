@@ -1,4 +1,4 @@
-import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
 
 class FavoriteAyahsService {

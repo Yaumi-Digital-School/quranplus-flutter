@@ -2,7 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/widgets.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
-import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 import 'package:qurantafsir_flutter/shared/core/models/app_update_info.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/deep_link_service.dart';
@@ -77,12 +77,14 @@ class SplashPageStateNotifier extends BaseStateNotifier<SplashPageState> {
     if (conn.isOnInternetConnection) {
       PackageInfo info = await PackageInfo.fromPlatform();
 
-      appUpdateInfo = AppUpdateUtil.showAppUpdateStatus(
-        context: context,
-        remoteConfigService: _remoteConfigService,
-        currentVersion: Version.parse(info.version),
-        sharedPreferenceService: _sharedPreferenceService,
-      );
+      if (context.mounted) {
+        appUpdateInfo = AppUpdateUtil.showAppUpdateStatus(
+          context: context,
+          remoteConfigService: _remoteConfigService,
+          currentVersion: Version.parse(info.version),
+          sharedPreferenceService: _sharedPreferenceService,
+        );
+      }
     }
 
     return appUpdateInfo;

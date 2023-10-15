@@ -118,7 +118,7 @@ class AuthenticationService {
 
       return SignInResult.success;
     } catch (error) {
-      throw Exception('SignIn error: ' + error.toString());
+      throw Exception('SignIn error: $error');
     }
   }
 
@@ -147,13 +147,13 @@ class AuthenticationService {
       var data = response.data.data;
       if (data == null) {
         throw Exception(
-          'getUserProfile error: ' + response.data.errorMessage.toString(),
+          'getUserProfile error: ${response.data.errorMessage}',
         );
       }
 
       return data;
     } catch (error) {
-      throw Exception('getUserProfile error: ' + error.toString());
+      throw Exception('getUserProfile error: $error');
     }
   }
 
@@ -173,7 +173,7 @@ class AuthenticationService {
 
       return true;
     } catch (error) {
-      throw Exception('updateUserProfile error: ' + error.toString());
+      throw Exception('updateUserProfile error: $error');
     }
   }
 

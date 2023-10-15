@@ -1,10 +1,6 @@
 import 'dart:async';
-
-import 'package:audio_service/audio_service.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
-
 import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
@@ -13,9 +9,8 @@ import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 
-@immutable
 class SelectReciterBottomSheetState {
-  SelectReciterBottomSheetState({
+  const SelectReciterBottomSheetState({
     required this.listReciter,
     required this.currentSurahId,
     required this.currentSurahName,
@@ -24,12 +19,12 @@ class SelectReciterBottomSheetState {
     this.reciterName,
   });
 
-  List<ReciterItemResponse> listReciter;
+  final List<ReciterItemResponse> listReciter;
   final int currentSurahId;
   final String currentSurahName;
   final int currentAyahId;
-  int? reciterId;
-  String? reciterName;
+  final int? reciterId;
+  final String? reciterName;
 
   SelectReciterBottomSheetState copyWith({
     List<ReciterItemResponse>? listReciter,
@@ -102,7 +97,7 @@ class SelectReciterStateNotifier
   Future<void> backToAudioBottomSheet(
     int reciterId,
     String reciterName,
-    AudioRecitationStateNotifier _audioPlayerNotifier,
+    AudioRecitationStateNotifier audioPlayerNotifier,
   ) async {
     final AudioRecitationState newState = AudioRecitationState(
       surahName: state.currentSurahName,
@@ -113,9 +108,9 @@ class SelectReciterStateNotifier
       reciterName: reciterName,
     );
 
-    await _audioPlayerNotifier.init(newState);
+    await audioPlayerNotifier.init(newState);
 
-    _audioPlayerNotifier.playAudio();
+    audioPlayerNotifier.playAudio();
   }
 
   Future<void> playPreviewAudio(int reciterId) async {
@@ -131,22 +126,12 @@ class SelectReciterStateNotifier
     );
     _audioHandler.pause();
     if (ayahId < 2) {
-      _audioHandler.setMediaItem(
-        MediaItem(
-          id: '${1}-${1}-$reciterId',
-          title: '${1} - Ayat: ${1}',
-          // replace with dynamic reciter name (done)
-          artist: state.listReciter[reciterId].name,
-          extras: <String, dynamic>{
-            'url': response.data.audioFileUrl,
-          },
-        ),
-      );
+      _audioHandler.setUrl(response.data.audioFileUrl);
       _audioHandler.play();
 
-      playerStateSubscription = _audioHandler.getStreamOnFinishedEvent(() => {
-            nextPreviewAyah(ayahId, reciterId),
-          });
+      playerStateSubscription = _audioHandler.getStreamOnFinishedEvent(
+        () => nextPreviewAyah(ayahId, reciterId),
+      );
     }
   }
 
@@ -163,21 +148,11 @@ class SelectReciterStateNotifier
         ayahNumber: nextAyahNumber,
       );
 
-      _audioHandler.setMediaItem(
-        MediaItem(
-          id: '${1}-$ayahId-$reciterId',
-          title: '${1} - Ayat: $ayahId',
-          // replace with dynamic reciter name (done)
-          artist: state.listReciter[reciterId].name,
-          extras: <String, dynamic>{
-            'url': response.data.audioFileUrl,
-          },
-        ),
-      );
+      _audioHandler.setUrl(response.data.audioFileUrl);
       _audioHandler.play();
-      playerStateSubscription = _audioHandler.getStreamOnFinishedEvent(() => {
-            _audioHandler.stop(),
-          });
+      playerStateSubscription = _audioHandler.getStreamOnFinishedEvent(
+        () => _audioHandler.stop(),
+      );
     } catch (e) {
       //TODO Add error tracker
     }
@@ -196,7 +171,7 @@ final selectReciterBottomSheetProvider = StateNotifierProvider<
   (ref) {
     return SelectReciterStateNotifier(
       ref.read(audioHandler),
-      SelectReciterBottomSheetState(
+      const SelectReciterBottomSheetState(
         currentSurahName: "",
         currentSurahId: 1,
         currentAyahId: 1,

@@ -7,7 +7,8 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
 import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
-import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/Select_Reciter_state_notifier.dart';
+
+import 'select_reciter_bottom_sheet/select_reciter_state_notifier.dart';
 
 class AudioRecitationState {
   AudioRecitationState({
@@ -15,16 +16,16 @@ class AudioRecitationState {
     this.surahId = 1,
     this.ayahId = 1,
     this.isLoading = true,
-    this.reciterId,
-    this.reciterName,
+    this.reciterId = 1,
+    this.reciterName = 'Mishari Rashid Al-Afasy',
   });
 
   String surahName;
   int surahId;
   int ayahId;
   bool isLoading;
-  final int? reciterId;
-  final String? reciterName;
+  final int reciterId;
+  final String reciterName;
 
   AudioRecitationState copyWith({
     String? surahName,
@@ -60,10 +61,36 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
   final AudioApi _audioApi;
   final AudioRecitationHandler _audioHandler;
 
-  // replace with dynamic reciter id
-  // final int reciterId = 1;
+  final List<MediaItem> localPlaylist = [];
 
   StreamSubscription<PlayerState>? playerStateSubscription;
+
+  Future<void> getNextAyahMedia() async {
+    final bool shouldGoToNextSurah =
+        state.ayahId + 1 > (surahNumberToTotalAyahMap[state.surahId] ?? 0);
+
+    final int nextSurahId =
+        shouldGoToNextSurah ? state.surahId + 1 : state.surahId;
+    final int nextAyahNumber = shouldGoToNextSurah ? 1 : state.ayahId + 1;
+
+    final response = await _audioApi.getAudioForSpecificReciterAndAyah(
+      reciterId: state.reciterId,
+      surahId: nextSurahId,
+      ayahNumber: nextAyahNumber,
+    );
+
+    final MediaItem item = MediaItem(
+      id: '$nextSurahId-$nextAyahNumber-${state.reciterId}',
+      title:
+          '${surahNumberToSurahNameMap[nextSurahId]} - Ayat: $nextAyahNumber',
+      artist: state.reciterName,
+      extras: <String, dynamic>{
+        'url': response.data.audioFileUrl,
+      },
+    );
+
+    localPlaylist.add(item);
+  }
 
   Future<void> nextAyah() async {
     try {
@@ -74,23 +101,9 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
           shouldGoToNextSurah ? state.surahId + 1 : state.surahId;
       final int nextAyahNumber = shouldGoToNextSurah ? 1 : state.ayahId + 1;
 
-      final response = await _audioApi.getAudioForSpecificReciterAndAyah(
-        reciterId: state.reciterId!,
-        surahId: nextSurahId,
-        ayahNumber: nextAyahNumber,
-      );
+      MediaItem nextMedia = localPlaylist.last;
 
-      _audioHandler.setMediaItem(
-        MediaItem(
-          id: '${state.surahId}-${state.ayahId}-${state.reciterId}',
-          title: '${state.surahName} - Ayat: ${state.ayahId}',
-          // replace with dynamic reciter name (done)
-          artist: state.reciterName,
-          extras: <String, dynamic>{
-            'url': response.data.audioFileUrl,
-          },
-        ),
-      );
+      _audioHandler.setMediaItem(nextMedia);
       _audioHandler.play();
 
       state = state.copyWith(
@@ -98,6 +111,8 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
         ayahId: nextAyahNumber,
         surahName: surahNumberToSurahNameMap[nextSurahId] ?? '',
       );
+
+      getNextAyahMedia();
     } catch (e) {
       //TODO Add error tracker
     }
@@ -109,6 +124,8 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
     Function()? onLoadError,
     Function()? onPlayBackError,
   }) async {
+    _audioHandler.pause();
+    localPlaylist.clear();
     state = initState;
 
     _audioHandler.setOnSkipNext(nextSurah);
@@ -120,31 +137,23 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
       }
 
       final response = await _audioApi.getAudioForSpecificReciterAndAyah(
-        reciterId: state.reciterId!,
+        reciterId: state.reciterId,
         surahId: initState.surahId,
         ayahNumber: initState.ayahId,
       );
-      _audioHandler.pause();
-      _audioHandler.setMediaItem(
-        MediaItem(
-          id: '${initState.surahId}-${initState.ayahId}-${state.reciterId}',
-          title: '${initState.surahName} - Ayat: ${initState.ayahId}',
-          artUri: Uri.directory('images/logogram.png', windows: false),
-          // replace with dynamic reciter name
-          artist: state.reciterName,
-          extras: <String, dynamic>{
-            'url': response.data.audioFileUrl,
-          },
-        ),
+
+      _initAudioHandlerState(
+        initState,
+        response.data.audioFileUrl,
       );
 
-      playerStateSubscription = _audioHandler.getStreamOnFinishedEvent(
-        () => nextAyah(),
-      );
+      await getNextAyahMedia();
 
       state = state.copyWith(isLoading: false);
       if (onSuccess != null) onSuccess();
     } catch (e) {
+      // TODO: add log tracker
+      print(e);
       state = state.copyWith(isLoading: false);
       if (onLoadError != null) onLoadError();
     }
@@ -152,6 +161,28 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
     if (onPlayBackError != null) {
       _audioHandler.setOnPlaybackError(onPlayBackError);
     }
+  }
+
+  Future<void> _initAudioHandlerState(
+    AudioRecitationState newState,
+    String url,
+  ) async {
+    MediaItem item = MediaItem(
+      id: '${newState.surahId}-${newState.ayahId}-${state.reciterId}',
+      title: '${newState.surahName} - Ayat: ${newState.ayahId}',
+      artUri: Uri.directory('images/logogram.png', windows: false),
+      artist: state.reciterName,
+      extras: <String, dynamic>{
+        'url': url,
+      },
+    );
+
+    _audioHandler.setMediaItem(item);
+    localPlaylist.add(item);
+
+    playerStateSubscription = _audioHandler.getStreamOnFinishedEvent(
+      () => nextAyah(),
+    );
   }
 
   void playAudio() {
@@ -169,26 +200,28 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
 
   Future<void> _startNewSurah(int surahId) async {
     try {
+      localPlaylist.clear();
       state = state.copyWith(isLoading: true);
       final response = await _audioApi.getAudioForSpecificReciterAndAyah(
-        reciterId: 1,
+        reciterId: state.reciterId,
         surahId: surahId,
         ayahNumber: 1,
       );
 
       final String surahName = surahNumberToSurahNameMap[surahId] ?? '';
 
-      _audioHandler.setMediaItem(
-        MediaItem(
-          id: '$surahId-1-${state.reciterId}',
-          title: '$surahName - Ayat: 1',
-          // replace with dynamic reciter name
-          artist: state.reciterName,
-          extras: <String, dynamic>{
-            'url': response.data.audioFileUrl,
-          },
-        ),
+      MediaItem item = MediaItem(
+        id: '$surahId-1-${state.reciterId}',
+        title: '$surahName - Ayat: 1',
+        // replace with dynamic reciter name
+        artist: state.reciterName,
+        extras: <String, dynamic>{
+          'url': response.data.audioFileUrl,
+        },
       );
+
+      _audioHandler.setMediaItem(item);
+      localPlaylist.add(item);
 
       state = state.copyWith(
         ayahId: 1,
@@ -196,6 +229,8 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
         surahName: surahNumberToSurahNameMap[surahId],
         isLoading: false,
       );
+
+      await getNextAyahMedia();
     } catch (e) {
       state = state.copyWith(isLoading: false);
     }
@@ -214,9 +249,9 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
   }
 
   Future<void> changeReciter(
-    SelectReciterStateNotifier _selectReciterNotifier,
+    SelectReciterStateNotifier selectReciterNotifier,
   ) async {
-    await _selectReciterNotifier.fetchData(
+    await selectReciterNotifier.fetchData(
       state.surahName,
       state.surahId,
       state.ayahId,
@@ -230,13 +265,13 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
 final audioRecitationProvider =
     StateNotifierProvider<AudioRecitationStateNotifier, AudioRecitationState>(
   (ref) {
-    final AudioApi _audioApi = ref.read(audioApiProvider);
-    final AudioRecitationHandler _audioRecitationHandler =
+    final AudioApi audioApi = ref.read(audioApiProvider);
+    final AudioRecitationHandler audioRecitationHandler =
         ref.read(audioHandler);
 
     return AudioRecitationStateNotifier(
-      audioApi: _audioApi,
-      audioHandler: _audioRecitationHandler,
+      audioApi: audioApi,
+      audioHandler: audioRecitationHandler,
     );
   },
 );

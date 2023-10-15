@@ -89,25 +89,29 @@ class _TrackingSubmissionDialogState extends State<TrackingSubmissionDialog> {
 
                     final bool isComplete =
                         await widget.notifier.stopRecording();
-                    Navigator.pop(context);
 
-                    if (widget.isFromTapBack) {
-                      HabitProgressPostTrackingDialog.onTapBackTrackingDialog(
+                    if (context.mounted) {
+                      Navigator.pop(context);
+
+                      if (widget.isFromTapBack) {
+                        HabitProgressPostTrackingDialog.onTapBackTrackingDialog(
+                          context: context,
+                          sharedPreferenceService:
+                              widget.notifier.sharedPreferenceService,
+                          isComplete: isComplete,
+                        );
+
+                        return;
+                      }
+
+                      HabitProgressPostTrackingDialog
+                          .onSubmitPostTrackingDialog(
                         context: context,
                         sharedPreferenceService:
                             widget.notifier.sharedPreferenceService,
                         isComplete: isComplete,
                       );
-
-                      return;
                     }
-
-                    HabitProgressPostTrackingDialog.onSubmitPostTrackingDialog(
-                      context: context,
-                      sharedPreferenceService:
-                          widget.notifier.sharedPreferenceService,
-                      isComplete: isComplete,
-                    );
                   },
                 ),
               ],

@@ -123,7 +123,9 @@ class _ChangeDailyTargetViewState extends State<ChangeDailyTargetView> {
                           );
                         }
 
-                        Navigator.pop(context, true);
+                        if (context.mounted) {
+                          Navigator.pop(context, true);
+                        }
                       },
                     ),
                   ],

@@ -1,5 +1,7 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:global_configuration/global_configuration.dart';
@@ -17,12 +19,14 @@ import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
+import 'package:qurantafsir_flutter/shared/core/services/alice_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
 import 'firebase_options.dart';
 import 'pages/read_tadabbur/read_tadabbur_page.dart';
+import 'package:stack_trace/stack_trace.dart' as stack_trace;
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -33,7 +37,7 @@ Future<void> main() async {
       SharedPreferenceService();
   await sharedPreferenceService.init();
 
-  final AudioRecitationHandler _audioHandler =
+  final AudioRecitationHandler currentAudioHandler =
       await AudioService.init<AudioRecitationHandler>(
     builder: () => AudioRecitationHandler(),
     config: const AudioServiceConfig(
@@ -44,29 +48,37 @@ Future<void> main() async {
   );
 
   await GlobalConfiguration().loadFromAsset('env');
+
   FlutterError.onError = (errorDetails) {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
   };
-  bool weWantFatalErrorRecording = true;
-  FlutterError.onError = (errorDetails) {
-    if (weWantFatalErrorRecording) {
-      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-    }
-    FirebaseCrashlytics.instance.recordFlutterError(errorDetails);
+  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+
+    return true;
   };
   runApp(
     ProviderScope(
       overrides: [
         audioHandler.overrideWithValue(
-          _audioHandler,
+          currentAudioHandler,
         ),
         sharedPreferenceServiceProvider.overrideWithValue(
           sharedPreferenceService,
         ),
+        aliceServiceProvider.overrideWithValue(AliceService(navigatorKey)),
       ],
       child: const MyApp(),
     ),
   );
+
+  FlutterError.demangleStackTrace = (StackTrace stack) {
+    if (stack is stack_trace.Trace) return stack.vmTrace;
+    if (stack is stack_trace.Chain) return stack.toTrace().vmTrace;
+
+    return stack;
+  };
 }
 
 class MyApp extends ConsumerStatefulWidget {
@@ -83,7 +95,9 @@ class MyApp extends ConsumerStatefulWidget {
 class _MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
-    ref.read(aliceServiceProvider).init();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(themeProvider.notifier).initStateNotifier();
+    });
 
     super.initState();
   }
@@ -104,8 +118,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     final SharedPreferenceService sp =
         ref.watch(sharedPreferenceServiceProvider);
     final AuthenticationService ur = ref.watch(authenticationService);
-    final themeStateNotifier = ref.read(themeProvider.notifier);
-    themeStateNotifier.initStateNotifier();
+
     final mode = ref.watch(themeProvider);
     if (sp.getApiToken().isNotEmpty) {
       ur.setIsLoggedIn(true);

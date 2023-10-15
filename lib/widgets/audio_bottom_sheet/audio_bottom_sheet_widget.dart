@@ -5,10 +5,10 @@ import 'package:qurantafsir_flutter/shared/constants/button_audio_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
-import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/select_reciter_buttom_sheet.dart';
-import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/Select_Reciter_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/linear_percent_indicator_custom.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/select_reciter_bottom_sheet/select_reciter_buttom_sheet.dart';
+import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/select_reciter_bottom_sheet/select_reciter_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 
 class AudioBottomSheetWidget extends ConsumerStatefulWidget {
@@ -156,6 +156,7 @@ class _AudioBottomSheetWidgetState
         ),
         const SizedBox(height: 30),
         GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTap: () async {
             ref.read(audioRecitationProvider.notifier).changeReciter(
                   ref.read(selectReciterBottomSheetProvider.notifier),
@@ -165,6 +166,8 @@ class _AudioBottomSheetWidgetState
             Navigator.pop(context);
             GeneralBottomSheet.showBaseBottomSheet(
               context: context,
+              isBarrierDismissable: false,
+              isDraggable: false,
               widgetChild: const SelectRecitatorWidget(),
             );
           },
@@ -180,7 +183,7 @@ class _AudioBottomSheetWidgetState
                     style: QPTextStyle.getDescription2Regular(context),
                   ),
                   Text(
-                    audioBottomSheetState.reciterName!,
+                    audioBottomSheetState.reciterName,
                     style: QPTextStyle.getBody2Medium(context),
                   ),
                 ],
@@ -287,6 +290,7 @@ class _AudioBottomSheetWidgetState
                 title,
                 style: QPTextStyle.getBody2Medium(context),
                 overflow: TextOverflow.fade,
+                textAlign: TextAlign.right,
                 softWrap: false,
                 maxLines: 1,
               ),

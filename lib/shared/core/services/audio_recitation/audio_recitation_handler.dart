@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:audio_service/audio_service.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
@@ -36,7 +35,7 @@ class AudioRecitationHandler extends BaseAudioHandler {
     final ByteBuffer buffer = byteData.buffer;
     Directory tempDir = await getApplicationDocumentsDirectory();
     String tempPath = tempDir.path;
-    String filePath = tempPath + '/logo.png';
+    String filePath = '$tempPath/logo.png';
 
     return (await File(filePath).writeAsBytes(
       buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
@@ -57,8 +56,10 @@ class AudioRecitationHandler extends BaseAudioHandler {
               MediaControl.skipToNext,
             ],
             systemActions: {},
-            processingState: const {
-              ProcessingState.idle: AudioProcessingState.idle,
+            processingState: {
+              ProcessingState.idle: Platform.isIOS
+                  ? AudioProcessingState.ready
+                  : AudioProcessingState.idle,
               ProcessingState.loading: AudioProcessingState.loading,
               ProcessingState.buffering: AudioProcessingState.buffering,
               ProcessingState.ready: AudioProcessingState.ready,
@@ -88,6 +89,10 @@ class AudioRecitationHandler extends BaseAudioHandler {
     });
 
     return res;
+  }
+
+  Future<void> setUrl(String url) async {
+    await _player.setUrl(url);
   }
 
   Future<void> setMediaItem(MediaItem item) async {

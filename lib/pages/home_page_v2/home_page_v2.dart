@@ -15,7 +15,6 @@ import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
-import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
 
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
@@ -101,12 +100,18 @@ class _HomePageV2State extends State<HomePageV2> {
                   children: <Widget>[
                     SvgPicture.asset(
                       IconPath.iconQuranPlus,
-                      color: Theme.of(context).colorScheme.primary,
+                      colorFilter: ColorFilter.mode(
+                        Theme.of(context).colorScheme.primary,
+                        BlendMode.srcIn,
+                      ),
                     ),
                     const SizedBox(width: 8),
                     SvgPicture.asset(
                       ImagePath.quranPlusText,
-                      color: Theme.of(context).colorScheme.primary,
+                      colorFilter: ColorFilter.mode(
+                        Theme.of(context).colorScheme.primary,
+                        BlendMode.srcIn,
+                      ),
                     ),
                     const Spacer(),
                     SizedBox(
@@ -145,9 +150,9 @@ class _HomePageV2State extends State<HomePageV2> {
   }
 
   Future<void> _launchUrl(String? url) async {
-    final Uri _url = Uri.parse(url ?? '');
-    if (!await launchUrl(_url)) {
-      throw 'Could not launch $_url';
+    final Uri url0 = Uri.parse(url ?? '');
+    if (!await launchUrl(url0)) {
+      throw 'Could not launch $url0';
     }
   }
 
@@ -185,7 +190,7 @@ class _HomePageV2State extends State<HomePageV2> {
           type: type,
         );
 
-    if (result == SignInResult.failedAccountDeleted) {
+    if (result == SignInResult.failedAccountDeleted && context.mounted) {
       Navigator.pop(context);
       await Future.delayed(const Duration(seconds: 1), () {
         SignInBottomSheet.showAccountDeletedInfo(context: context);
@@ -209,7 +214,9 @@ class _HomePageV2State extends State<HomePageV2> {
         req.response.statusCode == 200 &&
         param != null;
 
-    Navigator.pop(context);
+    if (context.mounted) {
+      Navigator.pop(context);
+    }
 
     if (shouldRedirect) {
       Object? args;
@@ -221,11 +228,13 @@ class _HomePageV2State extends State<HomePageV2> {
           );
       }
 
-      Navigator.pushNamed(
-        context,
-        param.nextPath ?? '',
-        arguments: args,
-      );
+      if (context.mounted) {
+        Navigator.pushNamed(
+          context,
+          param.nextPath ?? '',
+          arguments: args,
+        );
+      }
     }
 
     if (req.response.statusCode == 400) {
@@ -299,8 +308,10 @@ class _HomePageV2State extends State<HomePageV2> {
   }
 }
 
+const double diameterButtonSearch = 65;
+
 class ListSuratByJuz extends StatelessWidget {
-  ListSuratByJuz({
+  const ListSuratByJuz({
     Key? key,
     required this.notifier,
     required this.parentState,
@@ -308,8 +319,6 @@ class ListSuratByJuz extends StatelessWidget {
 
   final HomePageStateNotifier notifier;
   final HomePageState parentState;
-
-  double diameterButtonSearch = 65;
 
   @override
   Widget build(BuildContext context) {
@@ -528,6 +537,7 @@ class ListSuratByJuz extends StatelessWidget {
           index,
           context,
           notifier,
+          state,
           hasTadabbur,
           surahNumberString,
           surahNameLatin,
@@ -543,6 +553,7 @@ class ListSuratByJuz extends StatelessWidget {
     int index,
     BuildContext context,
     HomePageStateNotifier notifier,
+    HomePageState state,
     bool hasTadabbur,
     String surahNumberString,
     String surahNameLatin,
@@ -651,36 +662,35 @@ class ListSuratByJuz extends StatelessWidget {
                           width: 10,
                         ),
                         Container(
-                          child:
-                              notifier.state.audioSuratLoaded == surats[index]
-                                  ? const Padding(
-                                      padding: EdgeInsets.all(16),
-                                      child: SizedBox(
-                                        height: 16,
-                                        width: 16,
-                                        child: CircularProgressIndicator(),
-                                      ),
-                                    )
-                                  : IconButton(
-                                      color: QPColors.getColorBasedTheme(
-                                        dark: QPColors.brandFair,
-                                        light: QPColors.brandFair,
-                                        brown: QPColors.brandFair,
-                                        context: context,
-                                      ),
-                                      padding: const EdgeInsets.all(6),
-                                      alignment: Alignment.center,
-                                      icon: const Icon(Icons.play_circle),
-                                      iconSize: 20,
-                                      onPressed: () async {
-                                        onPlayAudioPressed(
-                                          notifier,
-                                          surats,
-                                          index,
-                                          context,
-                                        );
-                                      },
-                                    ),
+                          child: state.audioSuratLoaded == surats[index]
+                              ? const Padding(
+                                  padding: EdgeInsets.all(16),
+                                  child: SizedBox(
+                                    height: 16,
+                                    width: 16,
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                )
+                              : IconButton(
+                                  color: QPColors.getColorBasedTheme(
+                                    dark: QPColors.brandFair,
+                                    light: QPColors.brandFair,
+                                    brown: QPColors.brandFair,
+                                    context: context,
+                                  ),
+                                  padding: const EdgeInsets.all(6),
+                                  alignment: Alignment.center,
+                                  icon: const Icon(Icons.play_circle),
+                                  iconSize: 20,
+                                  onPressed: () async {
+                                    onPlayAudioPressed(
+                                      notifier,
+                                      surats,
+                                      index,
+                                      context,
+                                    );
+                                  },
+                                ),
                         ),
                       ],
                     ),

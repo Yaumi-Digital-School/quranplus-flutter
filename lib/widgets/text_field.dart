@@ -269,7 +269,12 @@ class FormFieldWidget extends StatelessWidget {
               hintStyle: QPTextStyle.getSubHeading4Regular(context)
                   .copyWith(color: QPColors.blackFair),
               filled: true,
-              fillColor: Colors.white,
+              fillColor: QPColors.getColorBasedTheme(
+                dark: QPColors.darkModeMassive,
+                light: QPColors.background,
+                brown: QPColors.brownModeRoot,
+                context: context,
+              ),
               enabledBorder: const OutlineInputBorder(
                 borderSide: BorderSide(color: neutral500, width: 0.5),
                 borderRadius: BorderRadius.all(Radius.circular(8)),
