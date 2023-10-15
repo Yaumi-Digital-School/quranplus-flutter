@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -549,8 +550,12 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
           page: page,
         ),
       );
-    } catch (e) {
-      // TODO(yumnanaruto): add logging here
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on _toggleBookmark() method',
+      );
     }
   }
 

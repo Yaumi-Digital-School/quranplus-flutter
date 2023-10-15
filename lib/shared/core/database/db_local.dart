@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_favorite_ayahs.dart';
@@ -608,7 +609,13 @@ class DbLocal {
       }
 
       return result;
-    } catch (e) {
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on getLocalDbToSync() method',
+      );
+
       return [];
     }
   }

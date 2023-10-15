@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/habit_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/habit_group_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
@@ -189,7 +190,13 @@ class HabitGroupDetailStateNotifier
         userSummaryResponse: response.data,
         isCurrentUser: isCurrentUser,
       );
-    } catch (e) {
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on onSelectUserSummary() method',
+      );
+
       state = state.copyWith(isFetchUserSummary: false);
     }
   }

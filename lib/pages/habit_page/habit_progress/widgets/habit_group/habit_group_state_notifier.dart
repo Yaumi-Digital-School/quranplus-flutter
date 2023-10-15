@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/habit_group_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
@@ -94,7 +95,13 @@ class HabitGroupStateNotifier extends BaseStateNotifier<HabitGroupState> {
       state = state.copyWith(isSuccessLoad: false);
     } on SocketException catch (_) {
       state = state.copyWith(hasInternet: false);
-    } catch (e) {
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on _getAllGroups() method',
+      );
+
       state = state.copyWith(isSuccessLoad: false);
     }
   }

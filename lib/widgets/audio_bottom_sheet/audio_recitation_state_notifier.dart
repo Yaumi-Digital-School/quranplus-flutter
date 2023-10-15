@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
@@ -113,8 +114,12 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
       );
 
       getNextAyahMedia();
-    } catch (e) {
-      //TODO Add error tracker
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on nextAyat() method',
+      );
     }
   }
 
@@ -151,9 +156,13 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
 
       state = state.copyWith(isLoading: false);
       if (onSuccess != null) onSuccess();
-    } catch (e) {
-      // TODO: add log tracker
-      print(e);
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on init() method audio recitation',
+      );
+      print(error);
       state = state.copyWith(isLoading: false);
       if (onLoadError != null) onLoadError();
     }
@@ -231,7 +240,12 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
       );
 
       await getNextAyahMedia();
-    } catch (e) {
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on _startNewSurah() method',
+      );
       state = state.copyWith(isLoading: false);
     }
   }

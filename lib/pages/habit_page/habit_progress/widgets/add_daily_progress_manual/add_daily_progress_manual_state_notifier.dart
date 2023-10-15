@@ -1,4 +1,5 @@
-import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_progress.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_progress.dart';
@@ -64,7 +65,13 @@ class AddDailyProgressManualStateNotifier
         isError: false,
         progressHistory: list,
       );
-    } catch (e) {
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on initStateNotifier() method in daily progress manual',
+      );
+
       state = state.copyWith(
         isLoading: false,
         isError: true,
@@ -114,7 +121,13 @@ class AddDailyProgressManualStateNotifier
         isSuccessSubmit: true,
         isError: false,
       );
-    } catch (e) {
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on addDailyProgressManual() method',
+      );
+
       state = state.copyWith(
         isLoading: false,
         isError: true,

@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:qurantafsir_flutter/pages/tadabbur_story/tadabur_story_page.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
@@ -265,9 +266,13 @@ class TadabburStoryPageStateNotifier
       if (response.response.statusCode == 200) {
         return response.data;
       }
-    } catch (e) {
-      // ignore: avoid_print
-      print(e);
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on _getListTadabburContent() method',
+      );
+      print(error);
     }
 
     return null;

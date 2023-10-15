@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/tadabbur_api.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
@@ -50,8 +51,14 @@ class ReadTadabburStateNotifier extends BaseStateNotifier<ReadTadabburState> {
       final HttpResponse<List<TadabburItemResponse>> result =
           await _tadabburApi.getListTadabburOfSurah(surahId: surahId);
       state = state.copyWith(isLoading: false, listTadabbur: result.data);
-    } catch (e) {
-      log(e.toString());
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on _getListTadabbur() method',
+      );
+
+      log(error.toString());
       state = state.copyWith(isLoading: false, isError: true);
     }
   }

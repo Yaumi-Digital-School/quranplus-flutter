@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/tadabbur_api.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
@@ -57,7 +58,12 @@ class TadabburSurahListViewStateNotifier
         tadabburSurahList: [],
         isLoading: false,
       );
-    } catch (e) {
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on _getAvailableTadabburSurahList() method',
+      );
       state = state.copyWith(
         tadabburSurahList: [],
         isLoading: false,

@@ -1,5 +1,6 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:intl/intl.dart';
-import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
@@ -75,7 +76,13 @@ class HabitPersonalStateNotifier extends BaseStateNotifier<HabitPersonalState> {
         currentProgress: currentProgress,
         isNeedSync: isNeedSync,
       );
-    } catch (e) {
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on fetchData() method',
+      );
+
       state = state.copyWith(isLoading: false, isError: true);
     }
   }

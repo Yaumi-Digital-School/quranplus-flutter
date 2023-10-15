@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
-import 'package:qurantafsir_flutter/shared/core/database/dbLocal.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 
 import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
@@ -12,15 +13,13 @@ import 'package:qurantafsir_flutter/shared/core/models/form.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart';
-import 'package:qurantafsir_flutter/shared/core/models/verse-topage.dart';
-import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
+import 'package:qurantafsir_flutter/shared/core/models/verse_topage.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
 import 'package:http/http.dart' as http;
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 
@@ -121,8 +120,12 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
       _getLastBookmark();
       _getDailySummary();
       _getTaddaburSurahAvaliable();
-    } catch (e) {
-      //TODO add error logger
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on initStateNotifier() method',
+      );
     }
   }
 
@@ -133,13 +136,20 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     required Function() onPlayBackError,
   }) async {
     _setAudioSuratLoaded(surat);
+    final ReciterItemResponse reciterItemResponse =
+        await _sharedPreferenceService.getSelectedReciter();
+
+    final AudioRecitationState newState = AudioRecitationState(
+      surahName: surat.nameLatin,
+      surahId: int.parse(surat.number),
+      ayahId: int.parse(surat.startAyat),
+      isLoading: true,
+      reciterId: reciterItemResponse.id,
+      reciterName: reciterItemResponse.name,
+    );
+
     await _audioRecitationNotifier.init(
-      AudioRecitationState(
-        surahName: surat.nameLatin,
-        surahId: int.parse(surat.number),
-        ayahId: int.parse(surat.startAyat),
-        isLoading: true,
-      ),
+      newState,
       onSuccess: () async {
         _resetAudioSuratLoaded();
         onSuccess();
@@ -254,7 +264,13 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
         if (!(_feedbackUrl?.isEmpty ?? true)) {
           _shouldOpenFeedbackUrl = true;
         }
-      } catch (e) {
+      } catch (error, stackTrace) {
+        FirebaseCrashlytics.instance.recordError(
+          error,
+          stackTrace,
+          reason: 'error on getFeedbackUrl() method',
+        );
+
         _shouldOpenFeedbackUrl = false;
         _feedbackUrl = "";
       }
@@ -291,7 +307,7 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
   Future<FormLink> _fetchLink() async {
     try {
       final response = await http.get(
-        Uri.parse(EnvConstants.baseUrl! + '/api/resource/form-feedback'),
+        Uri.parse('${EnvConstants.baseUrl!}/api/resource/form-feedback'),
       );
 
       if (response.statusCode == 200) {
@@ -299,7 +315,13 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
       } else {
         throw Exception('Failed to load form link');
       }
-    } catch (e) {
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on _fetchLink() method',
+      );
+
       throw Exception('Failed to load form link');
     }
   }
@@ -316,7 +338,7 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
   }
 
   Future<void> _getTaddaburSurahAvaliable() async {
-    List<dynamic> taddaburSurahAvailable = await db.GetTadabburSurahAvailable();
+    List<dynamic> taddaburSurahAvailable = await db.getTadabburSurahAvailable();
 
     Map<int, int>? tadabburSurahMap = {};
     for (var surah in taddaburSurahAvailable) {

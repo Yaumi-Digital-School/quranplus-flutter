@@ -1,4 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
@@ -63,8 +64,13 @@ class SplashPageStateNotifier extends BaseStateNotifier<SplashPageState> {
           await _habitDailySummaryService.syncHabit();
         }
       }
-    } catch (e) {
-      print(e);
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on initstate() method in splash screen',
+      );
+      print(error);
     }
   }
 
