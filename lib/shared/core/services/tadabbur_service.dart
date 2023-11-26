@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/tadabbur_api.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
@@ -51,8 +52,13 @@ class TadabburService {
 
         _sharedPreferenceService.setLastSyncTadabburInformation(curr);
       }
-    } catch (e) {
-      // add logger
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on syncTadabburPerAyahInformations() method',
+      );
+
       return;
     }
   }

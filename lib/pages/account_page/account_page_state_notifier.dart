@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/core/models/user.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
@@ -179,7 +180,13 @@ class AccountPageStateNotifier extends BaseStateNotifier<AccountPageState> {
           DateFormat('d-M-yyyy').parseStrict('$dateOfMonth-$month-$year');
 
       return formattedDate.toString();
-    } catch (e) {
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on _isDate() method',
+      );
+
       return '';
     }
   }
@@ -217,7 +224,13 @@ class AccountPageStateNotifier extends BaseStateNotifier<AccountPageState> {
             : '',
         gender: user.gender.isNotEmpty ? user.gender : '',
       );
-    } catch (_) {
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on _getUserProfile() method',
+      );
+
       state = state.copyWith(resultStatus: ResultStatus.failure);
     }
   }
@@ -241,7 +254,13 @@ class AccountPageStateNotifier extends BaseStateNotifier<AccountPageState> {
       } else {
         state = state.copyWith(resultStatus: ResultStatus.failure);
       }
-    } catch (_) {
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on _updateUserProfile() method',
+      );
+
       state = state.copyWith(resultStatus: ResultStatus.failure);
     }
   }

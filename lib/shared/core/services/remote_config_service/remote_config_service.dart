@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:qurantafsir_flutter/firebase_options.dart';
 import 'package:qurantafsir_flutter/shared/core/services/remote_config_service/constants.dart';
@@ -20,8 +21,13 @@ class RemoteConfigService {
       ));
 
       await _remoteConfig!.fetchAndActivate();
-    } catch (e) {
-      print(e);
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on _init() method in remote config ',
+      );
+      print(error);
     }
   }
 

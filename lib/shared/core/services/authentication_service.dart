@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -117,7 +118,12 @@ class AuthenticationService {
       ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
 
       return SignInResult.success;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on initRepository() method',
+      );
       throw Exception('SignIn error: $error');
     }
   }
@@ -152,7 +158,12 @@ class AuthenticationService {
       }
 
       return data;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on getUserProfile() method',
+      );
       throw Exception('getUserProfile error: $error');
     }
   }
@@ -172,7 +183,12 @@ class AuthenticationService {
       }
 
       return true;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on updateUserProfile() method',
+      );
       throw Exception('updateUserProfile error: $error');
     }
   }
