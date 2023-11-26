@@ -1,5 +1,5 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/services/bookmarks_service.dart';
@@ -41,15 +41,12 @@ class BookmarkPageStateNotifier extends BaseStateNotifier<BookmarkPageState> {
   final bool _isLoggedIn;
   List<Bookmarks>? _localBookmarks;
   List<FavoriteAyahs>? _localFavoriteAyahs;
-  late ConnectivityResult _connectivityResult;
 
   @override
   Future<void> initStateNotifier({
-    ConnectivityResult? connectivityResult,
+    ConnectivityStatus? connectivityStatus,
   }) async {
-    _connectivityResult = connectivityResult ?? ConnectivityResult.none;
-
-    if (_isLoggedIn && _connectivityResult != ConnectivityResult.none) {
+    if (_isLoggedIn && connectivityStatus == ConnectivityStatus.isConnected) {
       await _bookmarksService.mergeBookmarkToServer();
     }
 
@@ -63,14 +60,7 @@ class BookmarkPageStateNotifier extends BaseStateNotifier<BookmarkPageState> {
     );
   }
 
-  Future<void> initFavoriteAyahSection({
-    ConnectivityResult? connectivityResult,
-  }) async {
-    _connectivityResult = connectivityResult ?? ConnectivityResult.none;
-    // if (_isLoggedIn && _connectivityResult != ConnectivityResult.none) {
-    //   await _bookmarksService.mergeBookmarkToServer();
-    // }
-
+  Future<void> initFavoriteAyahSection() async {
     _localFavoriteAyahs =
         await _favoriteAyahsService.getFavoriteAyahListLocal();
 
@@ -80,11 +70,9 @@ class BookmarkPageStateNotifier extends BaseStateNotifier<BookmarkPageState> {
   }
 
   Future<void> initBookmarkSection({
-    ConnectivityResult? connectivityResult,
+    ConnectivityStatus? connectivityStatus,
   }) async {
-    _connectivityResult = connectivityResult ?? ConnectivityResult.none;
-
-    if (_isLoggedIn && _connectivityResult != ConnectivityResult.none) {
+    if (_isLoggedIn && connectivityStatus == ConnectivityStatus.isConnected) {
       await _bookmarksService.mergeBookmarkToServer();
     }
 

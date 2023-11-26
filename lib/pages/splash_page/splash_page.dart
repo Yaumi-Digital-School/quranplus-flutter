@@ -1,4 +1,3 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/splash_page/splash_page_state_notifier.dart';
@@ -7,6 +6,7 @@ import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/models/app_update_info.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/widgets/app_update/force_update_dialog.dart';
 import 'package:qurantafsir_flutter/widgets/app_update/optional_update_dialog.dart';
@@ -38,18 +38,17 @@ class _SplashPageState extends State<SplashPage> {
           );
         },
       ),
-      onStateNotifierReady: (notifier, _) async {
-        Connectivity cn = Connectivity();
-        ConnectivityResult conn = await cn.checkConnectivity();
+      onStateNotifierReady: (notifier, ref) async {
+        final connectivityStatus = ref.read(internetConnectionStatusProviders);
 
         await notifier.initStateNotifier(
-          conn: conn,
+          connectivityStatus: connectivityStatus,
         );
 
         if (context.mounted) {
           AppUpdateInfo? updateInfo = await notifier.getAppUpdateStatus(
             context: context,
-            conn: conn,
+            connectivityStatus: connectivityStatus,
           );
 
           if (updateInfo != null) {

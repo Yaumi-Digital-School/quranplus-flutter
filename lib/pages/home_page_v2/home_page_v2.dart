@@ -9,6 +9,7 @@ import 'package:qurantafsir_flutter/pages/read_tadabbur/read_tadabbur_page.dart'
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
+import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
@@ -19,6 +20,7 @@ import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart' as date_util;
@@ -86,6 +88,8 @@ class _HomePageV2State extends State<HomePageV2> {
           _launchUrl(state.feedbackUrl);
         }
 
+        final connectivityStatus = ref.watch(internetConnectionStatusProviders);
+
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(54.0),
@@ -117,7 +121,11 @@ class _HomePageV2State extends State<HomePageV2> {
                     SizedBox(
                       width: 100,
                       child: IconButton(
-                        onPressed: () => _onFeedbackPress(state, notifier),
+                        onPressed: () => _onFeedbackPress(
+                          state,
+                          notifier,
+                          connectivityStatus,
+                        ),
                         icon: Image.asset(
                           IconPath.iconForm,
                         ),
@@ -141,9 +149,10 @@ class _HomePageV2State extends State<HomePageV2> {
   Future<void> _onFeedbackPress(
     HomePageState state,
     HomePageStateNotifier notifier,
+    ConnectivityStatus connectivityStatus,
   ) async {
     if (state.feedbackUrl?.isEmpty ?? true) {
-      notifier.getFeedbackUrl();
+      notifier.getFeedbackUrl(connectivityStatus);
     } else {
       _launchUrl(state.feedbackUrl);
     }
