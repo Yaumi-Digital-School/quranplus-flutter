@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/account_page/account_page.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
+import 'package:qurantafsir_flutter/pages/prayer_time_page/prayer_times_notifier.dart';
+import 'package:qurantafsir_flutter/pages/prayer_time_page/prayer_time.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/widgets/change_theme_bottom_sheet.dart';
@@ -170,6 +172,22 @@ class SettingsPage extends StatelessWidget {
             },
             title: "Themes",
             subtitle: theme.labelMode,
+          ),
+          ListItemWidget(
+            iconPath: IconPath.iconPrayerTime,
+            onTap: () async {
+              await ref.read(prayerTimeProvider.notifier).checkGpsServices();
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const PrayerTimePage();
+                  },
+                ),
+              );
+            },
+            title: 'Prayer Times',
           ),
           const HorizontalDivider(),
           ListItemWidget(

@@ -119,6 +119,9 @@ class QPTextStyle {
   static TextStyle getDescription2Regular(BuildContext context) =>
       getBaseTextStyle(context)
           .copyWith(fontWeight: QPFontWeight.regular, fontSize: 10);
+  static TextStyle getDescription2Medium(BuildContext context) =>
+      getBaseTextStyle(context)
+          .copyWith(fontWeight: QPFontWeight.medium, fontSize: 10);
 
   static TextStyle getCaption(BuildContext context) => getBaseTextStyle(context)
       .copyWith(fontWeight: QPFontWeight.light, fontSize: 10);

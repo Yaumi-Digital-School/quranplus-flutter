@@ -1,5 +1,6 @@
 class IconPath {
   IconPath();
+
   static String iconForm = 'images/icon_form.png';
   static String iconBookmark = 'images/icon_bookmark.png';
   static String iconFavorite = 'images/icon_favorite.png';
@@ -21,4 +22,6 @@ class IconPath {
   static String iconEditSquare = 'images/icon_edit_square.png';
   static String iconTheme = "images/svg/theme-icon.svg";
   static String iconQuranPlus = "images/svg/logo-quran-plus.svg";
+  static String iconPrayerTime = "images/svg/icon_prayer_time.svg";
+  static String iconFajrTimes = "images/svg/" ;
 }
