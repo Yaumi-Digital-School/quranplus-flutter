@@ -28,5 +28,4 @@ jobs:
 
       - name: Bump build number
         run: |
-          cd ../..
           ./scripts/increment_build.sh
