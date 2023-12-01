@@ -1,5 +1,5 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/habit_api.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
@@ -37,14 +37,12 @@ class HabitDailySummaryService {
   }
 
   Future<void> syncHabit({
-    ConnectivityResult? connectivityResult,
+    ConnectivityStatus? connectivityStatus,
   }) async {
-    connectivityResult ??= await Connectivity().checkConnectivity();
-
     try {
       final HabitSyncRequest request = await _getLocalDataRequest();
 
-      if (connectivityResult == ConnectivityResult.none) {
+      if (connectivityStatus == ConnectivityStatus.isDisconnected) {
         final habitNeedToSyncTimer =
             sharedPreferenceService.getHabitNeedToSyncTimer();
         if (habitNeedToSyncTimer == "" && request.dailySummaries.isNotEmpty) {

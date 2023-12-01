@@ -1,14 +1,15 @@
 import 'dart:io';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/habit_progress_view.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
+import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
@@ -131,9 +132,10 @@ class HabitPage extends StatelessWidget {
     WidgetRef ref, {
     required SignInType type,
   }) {
+    final connectivityStatus = ref.watch(internetConnectionStatusProviders);
+
     return () async {
-      var connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult != ConnectivityResult.none) {
+      if (connectivityStatus == ConnectivityStatus.isConnected) {
         notifier.signIn(
           type: type,
           ref: ref,
@@ -142,7 +144,7 @@ class HabitPage extends StatelessWidget {
           },
           onSuccess: () async {
             await ref.read(habitDailySummaryService).syncHabit(
-                  connectivityResult: connectivityResult,
+                  connectivityStatus: connectivityStatus,
                 );
             ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
             final BottomNavigationBar navbar =

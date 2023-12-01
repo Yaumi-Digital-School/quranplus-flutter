@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/pages/account_page/account_page_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/form_status.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 
@@ -37,8 +38,10 @@ class AccountPage extends StatelessWidget {
         BuildContext context,
         AccountPageState state,
         AccountPageStateNotifier notifier,
-        _,
+        WidgetRef ref,
       ) {
+        final connectivityStatus = ref.watch(internetConnectionStatusProviders);
+
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(54.0),
@@ -387,6 +390,7 @@ class AccountPage extends StatelessWidget {
                       state.formStatus,
                       context,
                       notifier,
+                      connectivityStatus,
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -419,11 +423,11 @@ class AccountPage extends StatelessWidget {
     FormStatus formStatus,
     BuildContext context,
     AccountPageStateNotifier notifier,
+    ConnectivityStatus connectivityStatus,
   ) {
     if (formStatus == FormStatus.valid) {
       return () async {
-        var connectivityResult = await Connectivity().checkConnectivity();
-        if (connectivityResult != ConnectivityResult.none) {
+        if (connectivityStatus == ConnectivityStatus.isConnected) {
           notifier.saveButtonChecked(() {
             Navigator.of(context).pop();
           });

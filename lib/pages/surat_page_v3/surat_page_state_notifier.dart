@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -8,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_state.dart';
 
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
+import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
@@ -106,9 +106,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   Map<int, List<int>> get availableAyahTadabburs => _availableAyahTadabburs;
 
   @override
-  Future<void> initStateNotifier({
-    ConnectivityResult? connectivityResult,
-  }) async {
+  Future<void> initStateNotifier() async {
     _allPages = await getPages();
 
     pageController = PageController(
@@ -513,7 +511,7 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
   Future<void> insertBookmark(
     String surahName,
     int page,
-    ConnectivityResult connectivityResult,
+    ConnectivityStatus connectivityStatus,
   ) async {
     await db.saveBookmark(
       Bookmarks(
@@ -522,14 +520,14 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
       ),
     );
 
-    if (connectivityResult != ConnectivityResult.none && _isLoggedIn) {
+    if (connectivityStatus == ConnectivityStatus.isConnected && _isLoggedIn) {
       _toggleBookmark(
         surahName: surahName,
         page: page,
       );
     }
 
-    if (connectivityResult == ConnectivityResult.none) {
+    if (connectivityStatus == ConnectivityStatus.isDisconnected) {
       _bookmarksService.setIsMerged(false);
     }
 
@@ -591,7 +589,6 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     required int ayahNumber,
     required int ayahID,
     required int page,
-    required ConnectivityResult connectivityResult,
   }) async {
     if (isAyahFavorited(ayahID)) {
       await _deleteFavoriteAyah(ayahID);
@@ -601,7 +598,6 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
         ayahNumber: ayahNumber,
         ayahID: ayahID,
         page: page,
-        connectivityResult: connectivityResult,
       );
     }
 
@@ -619,7 +615,6 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
     required int ayahNumber,
     required int ayahID,
     required int page,
-    required ConnectivityResult connectivityResult,
   }) async {
     await db.saveFavoriteAyahs(
       FavoriteAyahs(
@@ -645,9 +640,9 @@ class SuratPageStateNotifier extends BaseStateNotifier<SuratPageState> {
 
   Future<void> deleteBookmark(
     int page,
-    ConnectivityResult connectivityResult,
+    ConnectivityStatus connectivityStatus,
   ) async {
-    if (connectivityResult != ConnectivityResult.none && _isLoggedIn) {
+    if (connectivityStatus == ConnectivityStatus.isConnected && _isLoggedIn) {
       await _toggleBookmark(
         page: page,
       );

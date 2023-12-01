@@ -1,4 +1,3 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
@@ -6,6 +5,7 @@ import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_state_notifi
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
+import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
@@ -13,16 +13,13 @@ import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 
-class BookmarkPageV2 extends StatefulWidget {
+// TODO: we need to refactor this file into separate file
+class BookmarkPageV2 extends StatelessWidget {
   const BookmarkPageV2({Key? key}) : super(key: key);
 
-  @override
-  State<BookmarkPageV2> createState() => _BookmarkPageV2State();
-}
-
-class _BookmarkPageV2State extends State<BookmarkPageV2> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -46,11 +43,11 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
           },
         ),
         onStateNotifierReady: (notifier, ref) async {
-          final ConnectivityResult connectivity =
-              await Connectivity().checkConnectivity();
+          final connectivityStatus =
+              ref.watch(internetConnectionStatusProviders);
 
           await notifier.initStateNotifier(
-            connectivityResult: connectivity,
+            connectivityStatus: connectivityStatus,
           );
         },
         builder: (
@@ -59,6 +56,9 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
           BookmarkPageStateNotifier notifier,
           WidgetRef ref,
         ) {
+          final connectivityStatus =
+              ref.watch(internetConnectionStatusProviders);
+
           return DefaultTabController(
             length: 2,
             child: Scaffold(
@@ -146,10 +146,14 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
                           _buildBookmarkSection(
                             notifier: notifier,
                             state: state,
+                            context: context,
+                            connectivityStatus: connectivityStatus,
                           ),
                           _buildFavoriteSection(
                             notifier: notifier,
                             state: state,
+                            context: context,
+                            connectivityStatus: connectivityStatus,
                           ),
                         ],
                       ),
@@ -167,6 +171,8 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
   Widget _buildFavoriteSection({
     required BookmarkPageState state,
     required BookmarkPageStateNotifier notifier,
+    required BuildContext context,
+    required ConnectivityStatus connectivityStatus,
   }) {
     if (state.listFavoriteAyah == null) {
       return const Center(
@@ -182,6 +188,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
             context: context,
             favoriteAyah: state.listFavoriteAyah![index],
             notifier: notifier,
+            connectivityStatus: connectivityStatus,
           );
         },
       );
@@ -189,12 +196,15 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
 
     return _buildEmptyState(
       message: 'There is no favorite ayah yet',
+      context: context,
     );
   }
 
   Widget _buildBookmarkSection({
     required BookmarkPageState state,
     required BookmarkPageStateNotifier notifier,
+    required BuildContext context,
+    required ConnectivityStatus connectivityStatus,
   }) {
     if (state.listBookmarks == null) {
       return const Center(
@@ -210,6 +220,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
             context: context,
             bookmark: state.listBookmarks![index],
             notifier: notifier,
+            connectivityStatus: connectivityStatus,
           );
         },
       );
@@ -217,6 +228,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
 
     return _buildEmptyState(
       message: 'There is no bookmark ayah yet',
+      context: context,
     );
   }
 
@@ -224,6 +236,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
     required BuildContext context,
     required FavoriteAyahs favoriteAyah,
     required BookmarkPageStateNotifier notifier,
+    required ConnectivityStatus connectivityStatus,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -284,6 +297,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
             _onPopFromSurahPage(
               onPopParam,
               notifier,
+              connectivityStatus,
             );
           }
         },
@@ -291,7 +305,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
     );
   }
 
-  String _getEmptyStateImageUrl() {
+  String _getEmptyStateImageUrl(BuildContext context) {
     final mode = QPThemeData.getThemeModeBasedContext(context);
     switch (mode) {
       case QPThemeMode.brown:
@@ -305,6 +319,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
 
   Widget _buildEmptyState({
     required String message,
+    required BuildContext context,
   }) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -324,7 +339,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
               ),
             ),
             child: Image.asset(
-              _getEmptyStateImageUrl(),
+              _getEmptyStateImageUrl(context),
             ),
           ),
         ),
@@ -409,6 +424,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
     required BuildContext context,
     required Bookmarks bookmark,
     required BookmarkPageStateNotifier notifier,
+    required ConnectivityStatus connectivityStatus,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -475,6 +491,7 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
             _onPopFromSurahPage(
               onPopParam,
               notifier,
+              connectivityStatus,
             );
           }
         },
@@ -485,24 +502,20 @@ class _BookmarkPageV2State extends State<BookmarkPageV2> {
   Future<void> _onPopFromSurahPage(
     SuratPageV3OnPopParam onPopParam,
     BookmarkPageStateNotifier notifier,
+    ConnectivityStatus connectivityStatus,
   ) async {
-    final ConnectivityResult connectivityResult =
-        await Connectivity().checkConnectivity();
-
     final bool bookmarkChanged = onPopParam.isBookmarkChanged;
     final bool favoriteAyahChanged = onPopParam.isFavoriteAyahChanged;
 
     if (!bookmarkChanged && favoriteAyahChanged) {
-      await notifier.initFavoriteAyahSection(
-        connectivityResult: connectivityResult,
-      );
+      await notifier.initFavoriteAyahSection();
     } else if (bookmarkChanged && !favoriteAyahChanged) {
       await notifier.initBookmarkSection(
-        connectivityResult: connectivityResult,
+        connectivityStatus: connectivityStatus,
       );
     } else {
       await notifier.initStateNotifier(
-        connectivityResult: connectivityResult,
+        connectivityStatus: connectivityStatus,
       );
     }
   }
