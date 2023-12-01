@@ -6,8 +6,6 @@
 name: bump_build
 
 on:
-  push:
-    branches: [ "chore/add_bump_build_script" ]
   workflow_dispatch:
 
 jobs:
