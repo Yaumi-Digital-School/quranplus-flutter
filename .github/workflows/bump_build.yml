@@ -1,12 +1,11 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 name: bump_build
 
 on:
   workflow_dispatch:
+    inputs:
+      branch:
+        description: 'branch name to run job'
+        default: "master"
 
 jobs:
   build:
