@@ -23,8 +23,8 @@ jobs:
 
       - name: Set git config
         run: |
-          git config --global user.name "yumnapratista24"
-          git config --global user.email "yumnanaruto@@gmail.com"
+          git config --global user.name "${{ secrets.GIT_USER_NAME }}"
+          git config --global user.email "${{ secrets.GIT_USER_EMAIL }}"
       
       - name: Checkout to branch
         run : git checkout ${{ github.ref_name }}
