@@ -23,15 +23,14 @@ jobs:
         run: |
           git config --global user.name "yumnapratista24"
           git config --global user.email "yumnanaruto@@gmail.com"
+      
+      - name: Checkout to branch
+        run : git checkout ${{ github.ref_name }}
 
       - name: Bump build number & push to branch
         run: |
-          ./scripts/increment_build.sh
-
-      - name: Merge branch to master
-        run: |
+          cider bump build
           BUILD_NUMBER=$(echo $(cider version) | cut -d '+' -f 2)
-          BRANCH_NAME="build$BUILD_NUMBER"
-          echo $BRANCH_NAME
-          git checkout master
-          git merge --ff $BRANCH_NAME -m "merged bumped build number"
+          git add pubspec.yaml
+          git commit -m "chore: bump build number to $BUILD_NUMBER"
+          git push origin ${{ github.ref_name }}
