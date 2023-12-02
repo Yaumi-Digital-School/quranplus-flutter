@@ -32,5 +32,6 @@ jobs:
         run: |
           BUILD_NUMBER=$(echo $(cider version) | cut -d '+' -f 2)
           BRANCH_NAME="build$BUILD_NUMBER"
+          echo $BRANCH_NAME
           git checkout master
-          git merge --no-ff $BRANCH_NAME -m "merged bumped build number"
+          git merge -ff $BRANCH_NAME -m "merged bumped build number"
