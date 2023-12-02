@@ -11,10 +11,10 @@ class PrayerTimesList {
     "Isya",
   ];
   static List<String> listIconPrayerTimes = [
-    IconPath.iconPrayerTime,
-    IconPath.iconPrayerTime,
-    IconPath.iconPrayerTime,
-    IconPath.iconPrayerTime,
-    IconPath.iconPrayerTime,
+    IconPath.iconFajrTime,
+    IconPath.iconDhuhrTime,
+    IconPath.iconAsrTime,
+    IconPath.iconMagribTime,
+    IconPath.iconIsyaTime,
   ];
 }

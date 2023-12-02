@@ -23,5 +23,9 @@ class IconPath {
   static String iconTheme = "images/svg/theme-icon.svg";
   static String iconQuranPlus = "images/svg/logo-quran-plus.svg";
   static String iconPrayerTime = "images/svg/icon_prayer_time.svg";
-  static String iconFajrTimes = "images/svg/" ;
+  static String iconFajrTime = "images/svg/icon_fajr_times.svg";
+  static String iconDhuhrTime = "images/svg/icon_dhuhr_time.svg";
+  static String iconAsrTime = "images/svg/icon_asr_time.svg";
+  static String iconMagribTime = "images/svg/Icon_isya&magrib_times.svg";
+  static String iconIsyaTime = "images/svg/Icon_isya&magrib_times.svg";
 }
