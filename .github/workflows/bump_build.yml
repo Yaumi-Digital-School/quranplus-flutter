@@ -25,4 +25,6 @@ jobs:
 
       - name: Bump build number
         run: |
+          git config --global user.name "yumnapratista24"
+          git config --global user.email "yumnanaruto@@gmail.com"
           ./scripts/increment_build.sh
