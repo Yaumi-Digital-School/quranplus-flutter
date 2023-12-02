@@ -2,10 +2,6 @@ name: bump_build
 
 on:
   workflow_dispatch:
-    inputs:
-      branch:
-        description: 'branch name to run job'
-        default: "master"
 
 jobs:
   build:
