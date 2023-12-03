@@ -104,9 +104,9 @@ class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
                                   Radius.circular(16),
                                 ),
                                 color: QPColors.getColorBasedTheme(
-                                  dark: QPColors.whiteFair,
-                                  light: QPColors.brandSoft,
-                                  brown: QPColors.brownModeMassive,
+                                  dark: QPColors.darkModeFair,
+                                  light: QPColors.brandRoot,
+                                  brown: QPColors.brownModeHeavy,
                                   context: context,
                                 ),
                               ),
@@ -144,8 +144,8 @@ class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
                         SizedBox(
                           height: 90,
                           width: 91,
-                          child: Image(
-                            image: AssetImage(ImagePath.prayerTiimeIlustration),
+                          child: SvgPicture.asset(
+                            ImagePath.prayerTimeIlustration,
                           ),
                         ),
                       ],
@@ -283,17 +283,17 @@ class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
                 height: 24,
                 decoration: BoxDecoration(
                   color: QPColors.getColorBasedTheme(
-                    dark: QPColors.whiteFair,
-                    light: QPColors.brandSoft,
-                    brown: QPColors.brownModeMassive,
+                    dark: QPColors.darkModeFair,
+                    light: QPColors.brandRoot,
+                    brown: QPColors.brownModeHeavy,
                     context: context,
                   ),
                   shape: BoxShape.circle,
                 ),
                 child: SvgPicture.asset(
                   PrayerTimesList.listIconPrayerTimes[i],
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).colorScheme.primary,
+                  colorFilter: const ColorFilter.mode(
+                    QPColors.brandHeavy,
                     BlendMode.srcIn,
                   ),
                   width: 20,
@@ -304,11 +304,31 @@ class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
               const SizedBox(
                 height: 8,
               ),
-              Text(PrayerTimesList.listPrayerTimes[i]),
+              Text(
+                PrayerTimesList.listPrayerTimes[i],
+                style: QPTextStyle.baseTextStyle.copyWith(
+                  color: QPColors.getColorBasedTheme(
+                    dark: QPColors.whiteRoot,
+                    light: QPColors.blackMassive,
+                    brown: QPColors.brownModeMassive,
+                    context: context,
+                  ),
+                ),
+              ),
               const SizedBox(
                 height: 8,
               ),
-              const Text("__:__"),
+              Text(
+                "__:__",
+                style: QPTextStyle.baseTextStyle.copyWith(
+                  color: QPColors.getColorBasedTheme(
+                    dark: QPColors.whiteRoot,
+                    light: QPColors.blackMassive,
+                    brown: QPColors.brownModeMassive,
+                    context: context,
+                  ),
+                ),
+              ),
             ],
           ),
         ),

@@ -1,8 +1,6 @@
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 
 class PrayerTimesList {
-  PrayerTimesList();
-
   static List<String> listPrayerTimes = [
     "Fajr",
     "Dzuhur",
