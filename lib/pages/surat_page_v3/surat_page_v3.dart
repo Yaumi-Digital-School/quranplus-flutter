@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
@@ -10,11 +9,13 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifie
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/pre_tracking_animation.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/submission_dialog.dart';
 import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
+import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_widget.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_minimized_info.dart';
@@ -138,11 +139,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
           });
         }
 
-        final ConnectivityResult connectivityResult =
-            await Connectivity().checkConnectivity();
-        await notifier.initStateNotifier(
-          connectivityResult: connectivityResult,
-        );
+        await notifier.initStateNotifier();
         if (widget.param.firstPagePointerIndex != 0) {
           scrollController.scrollToIndex(
             widget.param.firstPagePointerIndex,
@@ -163,7 +160,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
         BuildContext context,
         SuratPageState state,
         SuratPageStateNotifier notifier,
-        _,
+        WidgetRef ref,
       ) {
         if (state.isLoading) {
           return const Scaffold(
@@ -172,6 +169,8 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
             ),
           );
         }
+
+        final connectivityStatus = ref.watch(internetConnectionStatusProviders);
 
         return WillPopScope(
           onWillPop: () async => _onTapBack(
@@ -241,7 +240,11 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                     padding: const EdgeInsets.only(right: 12),
                     child: InkWell(
                       onTap: () async {
-                        _onPlayRecitationAppBar(state, notifier);
+                        _onPlayRecitationAppBar(
+                          state,
+                          notifier,
+                          connectivityStatus,
+                        );
                       },
                       child: Container(
                         height: 24,
@@ -267,11 +270,9 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                         return IconButton(
                           icon: const Icon(Icons.bookmark_outlined),
                           onPressed: () async {
-                            final ConnectivityResult connectivityResult =
-                                await Connectivity().checkConnectivity();
                             notifier.deleteBookmark(
                               notifier.currentPage.value,
-                              connectivityResult,
+                              connectivityStatus,
                             );
                           },
                         );
@@ -279,12 +280,10 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                         return IconButton(
                           icon: const Icon(Icons.bookmark_outline),
                           onPressed: () async {
-                            final ConnectivityResult connectivityResult =
-                                await Connectivity().checkConnectivity();
                             notifier.insertBookmark(
                               notifier.visibleSuratName.value,
                               notifier.currentPage.value,
-                              connectivityResult,
+                              connectivityStatus,
                             );
                           },
                         );
@@ -335,18 +334,15 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
   Future<void> _onPlayRecitationAppBar(
     SuratPageState state,
     SuratPageStateNotifier notifier,
+    ConnectivityStatus connectivityStatus,
   ) async {
-    final ConnectivityResult connectivityResult =
-        await Connectivity().checkConnectivity();
-
-    if (connectivityResult != ConnectivityResult.mobile &&
-        connectivityResult != ConnectivityResult.wifi &&
+    if (connectivityStatus == ConnectivityStatus.isDisconnected &&
         context.mounted) {
       GeneralBottomSheet().showNoInternetBottomSheet(
         context,
         () {
           Navigator.pop(context);
-          _onPlayRecitationAppBar(state, notifier);
+          _onPlayRecitationAppBar(state, notifier, connectivityStatus);
         },
       );
 
@@ -926,15 +922,11 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                   verse.surahNameAndAyatKey,
                   FavoriteAyahCTA(
                     onTap: () async {
-                      final ConnectivityResult connectivityResult =
-                          await Connectivity().checkConnectivity();
-
                       await notifier.toggleFavoriteAyah(
                         surahNumber: verse.surahNumber,
                         ayahNumber: verse.verseNumber,
                         ayahID: verse.id,
                         page: pageNumberInQuran,
-                        connectivityResult: connectivityResult,
                       );
                     },
                     isFavorited: notifier.isAyahFavorited(
@@ -1117,11 +1109,8 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
   }
 
   Future<void> _playOnAyah(SuratPageStateNotifier notifier, Verse verse) async {
-    final ConnectivityResult connectivityResult =
-        await Connectivity().checkConnectivity();
-
-    if (connectivityResult != ConnectivityResult.mobile &&
-        connectivityResult != ConnectivityResult.wifi &&
+    final connectivityStatus = ref.read(internetConnectionStatusProviders);
+    if (connectivityStatus == ConnectivityStatus.isDisconnected &&
         context.mounted) {
       GeneralBottomSheet().showNoInternetBottomSheet(
         context,

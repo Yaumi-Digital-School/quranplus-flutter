@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/core/models/user.dart';
@@ -96,7 +97,12 @@ class HabitPageStateNotifier extends BaseStateNotifier<HabitPageState> {
         resultStatus: ResultStatus.success,
       );
       onSuccess.call();
-    } catch (_) {
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on signIn() method',
+      );
       state = state.copyWith(
         authenticationStatus: AuthenticationStatus.unauthenticated,
         resultStatus: ResultStatus.failure,

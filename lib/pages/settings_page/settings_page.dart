@@ -7,7 +7,9 @@ import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/prayer_time_page/prayer_times_notifier.dart';
 import 'package:qurantafsir_flutter/pages/prayer_time_page/prayer_time.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
 import 'package:qurantafsir_flutter/widgets/change_theme_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/widgets/list_item_widget.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/widgets/version_app_widget.dart';
@@ -25,7 +27,6 @@ import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:qurantafsir_flutter/widgets/horizontal_divider.dart';
 import 'package:qurantafsir_flutter/widgets/registration_view.dart';
 import 'package:qurantafsir_flutter/widgets/sign_in_bottom_sheet.dart';
@@ -151,6 +152,7 @@ class SettingsPage extends StatelessWidget {
     WidgetRef ref,
   ) {
     final QPThemeMode theme = ref.watch(themeProvider);
+    final connectivityStatus = ref.watch(internetConnectionStatusProviders);
 
     return Padding(
       padding: const EdgeInsets.only(right: 24, left: 24, bottom: 24),
@@ -160,7 +162,7 @@ class SettingsPage extends StatelessWidget {
           ListItemWidget(
             iconPath: IconPath.iconAccount,
             onTap: () {
-              _onAccountTap(context);
+              _onAccountTap(context, connectivityStatus);
             },
             title: 'Account',
           ),
@@ -193,7 +195,12 @@ class SettingsPage extends StatelessWidget {
           ListItemWidget(
             iconPath: IconPath.iconLogout,
             onTap: () {
-              _onLogoutTap(context, notifier, ref);
+              _onLogoutTap(
+                context,
+                notifier,
+                ref,
+                connectivityStatus,
+              );
             },
             title: "Sign out",
             customColor: QPColors.errorFair,
@@ -264,8 +271,8 @@ class SettingsPage extends StatelessWidget {
     required SignInType type,
   }) {
     return () async {
-      var connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult != ConnectivityResult.none) {
+      final connectivityStatus = ref.watch(internetConnectionStatusProviders);
+      if (connectivityStatus == ConnectivityStatus.isConnected) {
         notifier.signIn(
           ref: ref,
           type: type,
@@ -274,7 +281,7 @@ class SettingsPage extends StatelessWidget {
           },
           onSuccess: () async {
             await ref.read(habitDailySummaryService).syncHabit(
-                  connectivityResult: connectivityResult,
+                  connectivityStatus: connectivityStatus,
                 );
             await ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
 
@@ -307,9 +314,12 @@ class SettingsPage extends StatelessWidget {
     };
   }
 
-  void _onAccountTap(BuildContext context) async {
-    var connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult != ConnectivityResult.none && context.mounted) {
+  void _onAccountTap(
+    BuildContext context,
+    ConnectivityStatus connectivityStatus,
+  ) {
+    if (connectivityStatus == ConnectivityStatus.isConnected &&
+        context.mounted) {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return AccountPage();
       }));
@@ -332,9 +342,9 @@ class SettingsPage extends StatelessWidget {
     BuildContext context,
     SettingsPageStateNotifier notifier,
     WidgetRef ref,
+    ConnectivityStatus connectivityStatus,
   ) async {
-    var connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult != ConnectivityResult.none) {
+    if (connectivityStatus == ConnectivityStatus.isConnected) {
       notifier.signOut(() {
         ref.read(dioServiceProvider.notifier).state = DioService(
           baseUrl: EnvConstants.baseUrl!,

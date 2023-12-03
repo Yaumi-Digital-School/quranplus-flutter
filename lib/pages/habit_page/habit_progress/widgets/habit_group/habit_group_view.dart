@@ -1,10 +1,11 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/habit_group/widgets/habit_group_empty_group_view.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/habit_group/widgets/habit_group_list_view.dart';
+import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 
@@ -27,10 +28,10 @@ class HabitGroupView extends StatelessWidget {
         },
       ),
       onStateNotifierReady: (notifier, ref) async {
-        final ConnectivityResult connection =
-            await Connectivity().checkConnectivity();
+        final connectivityStatus = ref.watch(internetConnectionStatusProviders);
 
-        if (connection == ConnectivityResult.none && context.mounted) {
+        if (connectivityStatus == ConnectivityStatus.isDisconnected &&
+            context.mounted) {
           await GeneralBottomSheet().showNoInternetBottomSheet(
             context,
             () async {

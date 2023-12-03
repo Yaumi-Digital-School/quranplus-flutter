@@ -1,8 +1,9 @@
 import 'dart:convert';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
+import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 
 import 'package:qurantafsir_flutter/shared/core/env.dart';
@@ -119,8 +120,12 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
       _getLastBookmark();
       _getDailySummary();
       _getTaddaburSurahAvaliable();
-    } catch (e) {
-      //TODO add error logger
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on initStateNotifier() method',
+      );
     }
   }
 
@@ -249,17 +254,20 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     );
   }
 
-  Future<void> getFeedbackUrl() async {
-    ConnectivityResult connectivityResult =
-        await Connectivity().checkConnectivity();
-
-    if (connectivityResult != ConnectivityResult.none) {
+  Future<void> getFeedbackUrl(ConnectivityStatus connectivityStatus) async {
+    if (connectivityStatus == ConnectivityStatus.isConnected) {
       try {
         _feedbackUrl = (await _fetchLink()).url ?? '';
         if (!(_feedbackUrl?.isEmpty ?? true)) {
           _shouldOpenFeedbackUrl = true;
         }
-      } catch (e) {
+      } catch (error, stackTrace) {
+        FirebaseCrashlytics.instance.recordError(
+          error,
+          stackTrace,
+          reason: 'error on getFeedbackUrl() method',
+        );
+
         _shouldOpenFeedbackUrl = false;
         _feedbackUrl = "";
       }
@@ -304,7 +312,13 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
       } else {
         throw Exception('Failed to load form link');
       }
-    } catch (e) {
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on _fetchLink() method',
+      );
+
       throw Exception('Failed to load form link');
     }
   }

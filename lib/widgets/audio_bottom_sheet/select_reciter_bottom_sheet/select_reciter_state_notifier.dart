@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
@@ -82,8 +83,13 @@ class SelectReciterStateNotifier
           reciterName: reciterName,
         );
       }
-    } catch (e) {
-      print(e);
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on _getListTadabbur() method',
+      );
+      print(error);
     }
   }
 
@@ -153,8 +159,12 @@ class SelectReciterStateNotifier
       playerStateSubscription = _audioHandler.getStreamOnFinishedEvent(
         () => _audioHandler.stop(),
       );
-    } catch (e) {
-      //TODO Add error tracker
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on nextPreviewAyah() method',
+      );
     }
   }
 

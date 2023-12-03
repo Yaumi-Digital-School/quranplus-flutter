@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
@@ -106,7 +107,12 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
         resultStatus: ResultStatus.success,
       );
       onSuccess.call();
-    } catch (_) {
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on _getListTadabbur() method',
+      );
       state = state.copyWith(
         authenticationStatus: AuthenticationStatus.unauthenticated,
         resultStatus: ResultStatus.failure,
