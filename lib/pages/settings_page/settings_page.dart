@@ -164,6 +164,22 @@ class SettingsPage extends StatelessWidget {
           ),
           const HorizontalDivider(),
           ListItemWidget(
+            iconPath: IconPath.iconNotification,
+            onTap: () {
+              // todo: onNotificatinoTap
+            },
+            title: 'Notifications',
+          ),
+          const HorizontalDivider(),
+          ListItemWidget(
+            iconPath: IconPath.iconPrayerTime,
+            onTap: () {
+              // todo: onPrayerTimeTap
+            },
+            title: 'Prayer Times',
+          ),
+          const HorizontalDivider(),
+          ListItemWidget(
             iconPath: IconPath.iconTheme,
             onTap: () {
               _onThemesTap(context);
@@ -173,14 +189,27 @@ class SettingsPage extends StatelessWidget {
           ),
           const HorizontalDivider(),
           ListItemWidget(
-            iconPath: IconPath.iconLogout,
+            iconPath: IconPath.iconFavorite,
             onTap: () {
-              _onLogoutTap(context, notifier, ref);
+              // todo: onRateUsTap
             },
-            title: "Sign out",
-            customColor: QPColors.errorFair,
+            title: 'Rate Us',
           ),
           const HorizontalDivider(),
+          if (state.authenticationStatus == AuthenticationStatus.authenticated)
+            Column(
+              children: [
+                ListItemWidget(
+                  iconPath: IconPath.iconLogout,
+                  onTap: () {
+                    _onLogoutTap(context, notifier, ref);
+                  },
+                  title: "Sign out",
+                  customColor: QPColors.errorFair,
+                ),
+                const HorizontalDivider(),
+              ],
+            ),
           const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
