@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/read_tadabbur/read_tadabbur_page.dart';
+import 'package:qurantafsir_flutter/pages/registration_and_login_page/registration_and_login_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_state.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/pre_tracking_animation.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/submission_dialog.dart';
-import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
+import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
+import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
@@ -108,7 +110,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
       (ref) {
         return SuratPageStateNotifier(
           startPageInIndex: widget.param.startPageInIndex,
-          sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
+          sharedPreferenceService: ref.read(sharedPreferenceServiceProvider),
           bookmarkApi: ref.watch(bookmarkApiProvider),
           bookmarksService: ref.watch(bookmarksService),
           authenticationService: ref.watch(authenticationService),
@@ -338,7 +340,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
   ) async {
     if (connectivityStatus == ConnectivityStatus.isDisconnected &&
         context.mounted) {
-      GeneralBottomSheet().showNoInternetBottomSheet(
+      GeneralBottomSheet.showNoInternetBottomSheet(
         context,
         () {
           Navigator.pop(context);
@@ -474,16 +476,31 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                             ButtonPrimary(
                               label: 'Start Tracking',
                               size: ButtonSize.small,
-                              onTap: () {
+                              onTap: () async {
                                 if (!sn.isLoggedIn) {
-                                  sn.forceLoginToEnableHabit(
+                                  final dynamic res = await Navigator.pushNamed(
                                     context,
-                                    RoutePaths.routeSurahPage,
-                                    <String, dynamic>{
-                                      'startPageInIndex': sn.currentPage.value,
-                                      'isStartTracking': true,
-                                    },
+                                    RoutePaths.routeLogin,
+                                    arguments: RegistrationAndLoginPageParam(
+                                      shouldNavigateTabToHome: false,
+                                    ),
                                   );
+
+                                  if (res is bool && res) {
+                                    // set state to rebuild page since state notifier already disposed
+                                    // due to login changes
+                                    // re-init state to force reload data
+                                    setState(() {});
+                                    ref
+                                        .read(suratPageProvider.notifier)
+                                        .initStateNotifier();
+                                    Future.delayed(Duration.zero, () {
+                                      _startTracking(
+                                        context,
+                                        ref.read(suratPageProvider.notifier),
+                                      );
+                                    });
+                                  }
 
                                   return;
                                 }
@@ -949,9 +966,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                             height: 20,
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                image: AssetImage(
-                                  IconPath.iconFavorite,
-                                ),
+                                image: AssetImage(StoredIcon.iconFavorite.path),
                               ),
                             ),
                           ),
@@ -1112,7 +1127,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
     final connectivityStatus = ref.read(internetConnectionStatusProviders);
     if (connectivityStatus == ConnectivityStatus.isDisconnected &&
         context.mounted) {
-      GeneralBottomSheet().showNoInternetBottomSheet(
+      GeneralBottomSheet.showNoInternetBottomSheet(
         context,
         () {
           Navigator.pop(context);

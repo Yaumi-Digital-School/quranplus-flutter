@@ -4,8 +4,9 @@ import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
-import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
+import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
+import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
@@ -251,7 +252,7 @@ class BookmarkPageV2 extends StatelessWidget {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(
-                    IconPath.iconFavorite,
+                    StoredIcon.iconFavorite.path,
                   ),
                 ),
               ),
@@ -437,8 +438,11 @@ class BookmarkPageV2 extends StatelessWidget {
               width: 24,
               height: 24,
               decoration: BoxDecoration(
-                image:
-                    DecorationImage(image: AssetImage(IconPath.iconBookmark)),
+                image: DecorationImage(
+                  image: AssetImage(
+                    StoredIcon.iconBookmark.path,
+                  ),
+                ),
               ),
             ),
           ],

@@ -114,7 +114,7 @@ class SignInBottomSheet {
             child: ButtonSecondary(
               label: 'Sign In with Google',
               onTap: onTapSignInWithGoogle,
-              leftIcon: IconPath.iconGoogle,
+              leftIcon: StoredIcon.iconGoogle.path,
             ),
           ),
           const SizedBox(height: 16),
@@ -124,7 +124,7 @@ class SignInBottomSheet {
               child: ButtonSecondary(
                 label: 'Sign In with Apple',
                 onTap: onTapSignInWithApple,
-                leftIcon: IconPath.iconApple,
+                leftIcon: StoredIcon.iconGoogle.path,
               ),
             ),
         ],

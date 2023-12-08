@@ -88,10 +88,15 @@ final Provider<AuthenticationService> authenticationService =
   final UserApi userApi = ref.watch(userApiProvider);
   final SharedPreferenceService sharedPreferenceService =
       ref.watch(sharedPreferenceServiceProvider);
+  final StateController<DioService> dioServiceNotifier =
+      ref.read(dioServiceProvider.notifier);
+  final AliceService aliceService = ref.watch(aliceServiceProvider);
 
   return AuthenticationService(
     userApi: userApi,
     sharedPreferenceService: sharedPreferenceService,
+    dioServiceNotifier: dioServiceNotifier,
+    aliceService: aliceService,
   );
 });
 

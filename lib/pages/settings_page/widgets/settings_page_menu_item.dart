@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 
-class ListItemWidget extends StatelessWidget {
-  const ListItemWidget({
-    required this.iconPath,
+class SettingsPageMenuItem extends StatelessWidget {
+  const SettingsPageMenuItem({
+    this.icon,
+    this.iconData,
     required this.onTap,
     required this.title,
     this.subtitle,
@@ -13,7 +15,8 @@ class ListItemWidget extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  final String iconPath;
+  final StoredIcon? icon;
+  final IconData? iconData;
   final String title;
   final String? subtitle;
   final Color? customColor;
@@ -27,15 +30,22 @@ class ListItemWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 24),
         child: Row(
           children: [
-            SvgPicture.asset(
-              iconPath,
-              colorFilter: ColorFilter.mode(
-                customColor ?? Theme.of(context).colorScheme.primary,
-                BlendMode.srcIn,
+            if (icon != null)
+              SvgPicture.asset(
+                icon!.path,
+                colorFilter: ColorFilter.mode(
+                  customColor ?? Theme.of(context).colorScheme.primary,
+                  BlendMode.srcIn,
+                ),
+                width: 24,
+                height: 24,
               ),
-              width: 24,
-              height: 24,
-            ),
+            if (iconData != null)
+              Icon(
+                iconData,
+                color: customColor ?? Theme.of(context).colorScheme.primary,
+                size: 24,
+              ),
             const SizedBox(width: 16),
             Text(
               title,

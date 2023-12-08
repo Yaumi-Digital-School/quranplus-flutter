@@ -47,7 +47,7 @@ class ReadTadabburPage extends StatelessWidget {
 
         if (connectivityStatus == ConnectivityStatus.isDisconnected &&
             context.mounted) {
-          GeneralBottomSheet().showNoInternetBottomSheet(
+          GeneralBottomSheet.showNoInternetBottomSheet(
             context,
             () => notifier.initStateNotifier(),
           );
