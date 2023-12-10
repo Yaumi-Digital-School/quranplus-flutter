@@ -145,7 +145,7 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
                           child: Row(
                             children: [
                               ImageIcon(
-                                AssetImage(IconPath.iconInviteMember),
+                                AssetImage(StoredIcon.iconInviteMember.path),
                                 size: 12,
                                 color: QPColors.blackMassive,
                               ),
@@ -169,7 +169,7 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
                             child: Row(
                               children: [
                                 ImageIcon(
-                                  AssetImage(IconPath.iconEditSquare),
+                                  AssetImage(StoredIcon.iconEditSquare.path),
                                   size: 12,
                                   color: QPColors.blackMassive,
                                 ),
@@ -192,7 +192,7 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
                           child: Row(
                             children: [
                               ImageIcon(
-                                AssetImage(IconPath.iconLeaveGroup),
+                                AssetImage(StoredIcon.iconLeaveGroup.path),
                                 size: 12,
                                 color: QPColors.blackMassive,
                               ),

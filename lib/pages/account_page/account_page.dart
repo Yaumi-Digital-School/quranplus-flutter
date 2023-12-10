@@ -18,7 +18,6 @@ class AccountPage extends StatelessWidget {
   AccountPage({Key? key}) : super(key: key);
 
   final List<String> _genderType = ['Male', 'Female'];
-  final GeneralBottomSheet _generalBottomSheet = GeneralBottomSheet();
 
   @override
   Widget build(BuildContext context) {
@@ -432,7 +431,7 @@ class AccountPage extends StatelessWidget {
             Navigator.of(context).pop();
           });
         } else if (context.mounted) {
-          _generalBottomSheet.showNoInternetBottomSheet(
+          GeneralBottomSheet.showNoInternetBottomSheet(
             // TODO changes to refresh action
             context,
             () => Navigator.pop(context),

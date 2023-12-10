@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
+import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
 class FavoriteAyahCTA extends StatefulWidget {
@@ -52,8 +52,8 @@ class _FavoriteAyahCTAState extends State<FavoriteAyahCTA> {
                 image: DecorationImage(
                   image: AssetImage(
                     isFavorited
-                        ? IconPath.iconFavorite
-                        : IconPath.iconFavoriteInactive,
+                        ? StoredIcon.iconFavorite.path
+                        : StoredIcon.iconFavoriteInactive.path,
                   ),
                 ),
               ),

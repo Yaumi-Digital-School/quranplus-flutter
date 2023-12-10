@@ -34,10 +34,10 @@ class _MainPageState extends State<MainPage> {
 
   final List<Widget> _pages = <Widget>[
     const HomePageV2(),
-    HabitPage(),
+    const HabitPage(),
     const TadabburSurahListView(),
     const BookmarkPageV2(),
-    SettingsPage(),
+    const SettingsPage(),
   ];
 
   @override
@@ -76,7 +76,9 @@ class _MainPageState extends State<MainPage> {
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(
-              AssetImage(IconPath.iconHabitArrow),
+              AssetImage(
+                StoredIcon.iconHabitArrow.path,
+              ),
             ),
             label: 'Habit',
           ),

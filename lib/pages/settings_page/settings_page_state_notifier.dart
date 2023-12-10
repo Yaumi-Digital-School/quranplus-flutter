@@ -1,7 +1,3 @@
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
-import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/user.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
@@ -50,10 +46,9 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
 
   final AuthenticationService _repository;
   final SharedPreferenceService _sharedPreferenceService;
-  final DbLocal _db = DbLocal();
 
   @override
-  Future<void> initStateNotifier() async {
+  void initStateNotifier() {
     _getToken();
   }
 
@@ -72,75 +67,16 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
     }
   }
 
-  Future<void> _removeToken() async {
-    await _sharedPreferenceService.removeApiToken();
-  }
-
-  Future<void> signIn({
-    required Function() onSuccess,
-    required Function() onAccountDeleted,
-    required Function() onGeneralError,
-    required SignInType type,
-    required WidgetRef ref,
-  }) async {
-    state = state.copyWith(resultStatus: ResultStatus.inProgress);
-
-    try {
-      final SignInResult result = await _repository.signIn(
-        type: type,
-        ref: ref,
-      );
-
-      if (result == SignInResult.failedAccountDeleted) {
-        state = state.copyWith(
-          authenticationStatus: AuthenticationStatus.unknown,
-          resultStatus: ResultStatus.canceled,
-        );
-
-        onAccountDeleted.call();
-
-        return;
-      }
-
-      state = state.copyWith(
-        authenticationStatus: AuthenticationStatus.authenticated,
-        resultStatus: ResultStatus.success,
-      );
-      onSuccess.call();
-    } catch (error, stackTrace) {
-      FirebaseCrashlytics.instance.recordError(
-        error,
-        stackTrace,
-        reason: 'error on _getListTadabbur() method',
-      );
-      state = state.copyWith(
-        authenticationStatus: AuthenticationStatus.unauthenticated,
-        resultStatus: ResultStatus.failure,
-      );
-      onGeneralError.call();
-    }
-  }
-
-  Future<void> signOut(Function() onSuccess) async {
+  Future<void> signOut() async {
     state = state.copyWith(resultStatus: ResultStatus.inProgress);
 
     await _repository.signOut();
-    await _removeToken();
-    await _removeUsername();
-    await _db.clearTableHabit();
-    await _sharedPreferenceService.removeLastSync();
 
     state = state.copyWith(
       authenticationStatus: AuthenticationStatus.unauthenticated,
       resultStatus: ResultStatus.pure,
       token: '',
     );
-
-    onSuccess.call();
-  }
-
-  Future<void> _removeUsername() async {
-    await _sharedPreferenceService.removeUsername();
   }
 
   Future<ForceLoginParam?> getForceLoginInformation() async {

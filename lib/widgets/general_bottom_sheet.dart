@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
+import 'package:qurantafsir_flutter/shared/constants/icon.dart';
+import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
@@ -169,7 +170,7 @@ class GeneralBottomSheet {
     );
   }
 
-  Future showNoInternetBottomSheet(
+  static Future showNoInternetBottomSheet(
     BuildContext context,
     Function() onRefreshClicked,
   ) {
@@ -189,7 +190,7 @@ class GeneralBottomSheet {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset(
-                IconPath.iconNoWifi,
+                StoredIcon.iconNoWifi.path,
                 width: 36,
                 color: Theme.of(context).colorScheme.primary,
               ),
@@ -201,7 +202,7 @@ class GeneralBottomSheet {
               const SizedBox(height: 28),
               TextButton.icon(
                 icon: Image.asset(
-                  IconPath.iconRefresh,
+                  StoredIcon.iconRefresh.path,
                   width: 24,
                 ),
                 label: Text(

@@ -1,24 +1,28 @@
-class IconPath {
-  IconPath();
-  static String iconForm = 'images/icon_form.png';
-  static String iconBookmark = 'images/icon_bookmark.png';
-  static String iconFavorite = 'images/icon_favorite.png';
-  static String iconCollaborate = 'images/icon_collaborate.png';
-  static String iconGoogle = 'images/icon_google.png';
-  static String iconApple = 'images/icon_apple.png';
-  static String iconAccount = 'images/svg/icon-account.svg';
-  static String iconLogout = 'images/svg/logout-icon.svg';
-  static String iconSync = 'images/icon_sync.png';
-  static String iconUpdateNow = 'images/icon_update_now.png';
-  static String iconFavoriteInactive = 'images/icon_favorite_inactive.png';
-  static String iconNoWifi = 'images/icon_no_wifi.png';
-  static String iconRefresh = 'images/icon_refresh.png';
-  static String iconChecklistCheck = 'images/icon_checklist_check.png';
-  static String iconHabitArrow = 'images/icon_habit_arrow.png';
-  static String iconGroupMember = 'images/icon_group_member.png';
-  static String iconLeaveGroup = 'images/icon_leave_group.png';
-  static String iconInviteMember = 'images/icon_invite_member.png';
-  static String iconEditSquare = 'images/icon_edit_square.png';
-  static String iconTheme = "images/svg/theme-icon.svg";
-  static String iconQuranPlus = "images/svg/logo-quran-plus.svg";
+enum StoredIcon {
+  iconForm(path: 'images/icon_form.png'),
+  iconBookmark(path: 'images/icon_bookmark.png'),
+  iconFavorite(path: 'images/icon_favorite.png'),
+  iconCollaborate(path: 'images/icon_collaborate.png'),
+  iconGoogle(path: 'images/icon_google.png'),
+  iconApple(path: 'images/icon_apple.png'),
+  iconAccount(path: 'images/svg/icon-account.svg'),
+  iconLogout(path: 'images/svg/logout-icon.svg'),
+  iconSync(path: 'images/icon_sync.png'),
+  iconUpdateNow(path: 'images/icon_update_now.png'),
+  iconFavoriteInactive(path: 'images/icon_favorite_inactive.png'),
+  iconNoWifi(path: 'images/icon_no_wifi.png'),
+  iconRefresh(path: 'images/icon_refresh.png'),
+  iconChecklistCheck(path: 'images/icon_checklist_check.png'),
+  iconHabitArrow(path: 'images/icon_habit_arrow.png'),
+  iconGroupMember(path: 'images/icon_group_member.png'),
+  iconLeaveGroup(path: 'images/icon_leave_group.png'),
+  iconInviteMember(path: 'images/icon_invite_member.png'),
+  iconEditSquare(path: 'images/icon_edit_square.png'),
+  iconTheme(path: 'images/svg/theme-icon.svg'),
+  iconSunClock(path: 'images/svg/sun-clock.svg'),
+  iconQuranPlus(path: 'images/svg/logo-quran-plus.svg');
+
+  const StoredIcon({required this.path});
+
+  final String path;
 }

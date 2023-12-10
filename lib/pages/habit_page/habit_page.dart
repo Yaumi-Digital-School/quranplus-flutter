@@ -14,13 +14,11 @@ import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
-import 'package:qurantafsir_flutter/widgets/registration_view.dart';
+import 'package:qurantafsir_flutter/widgets/registration_view/registration_view.dart';
 import 'package:qurantafsir_flutter/widgets/sign_in_bottom_sheet.dart';
 
 class HabitPage extends StatelessWidget {
-  HabitPage({Key? key}) : super(key: key);
-
-  final GeneralBottomSheet _generalBottomSheet = GeneralBottomSheet();
+  const HabitPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -80,93 +78,12 @@ class HabitPage extends StatelessWidget {
             body:
                 state.authenticationStatus == AuthenticationStatus.authenticated
                     ? const HabitProgressView()
-                    : SingleChildScrollView(
-                        child: RegistrationView(
-                          nextWidget: Padding(
-                            padding: const EdgeInsets.only(
-                              left: 24,
-                              right: 24,
-                              bottom: 41,
-                            ),
-                            child: Column(
-                              children: [
-                                ButtonSecondary(
-                                  label: 'Sign In with Google',
-                                  onTap: _onTapButtonSignIn(
-                                    context,
-                                    notifier,
-                                    ref,
-                                    type: SignInType.google,
-                                  ),
-                                  leftIcon: IconPath.iconGoogle,
-                                ),
-                                if (Platform.isIOS) ...[
-                                  const SizedBox(
-                                    height: 16,
-                                  ),
-                                  ButtonSecondary(
-                                    label: 'Sign In with Apple',
-                                    onTap: _onTapButtonSignIn(
-                                      context,
-                                      notifier,
-                                      ref,
-                                      type: SignInType.apple,
-                                    ),
-                                    leftIcon: IconPath.iconApple,
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ),
-                        ),
+                    : const SingleChildScrollView(
+                        child: RegistrationView(),
                       ),
           );
         },
       ),
     );
-  }
-
-  _onTapButtonSignIn(
-    BuildContext context,
-    HabitPageStateNotifier notifier,
-    WidgetRef ref, {
-    required SignInType type,
-  }) {
-    final connectivityStatus = ref.watch(internetConnectionStatusProviders);
-
-    return () async {
-      if (connectivityStatus == ConnectivityStatus.isConnected) {
-        notifier.signIn(
-          type: type,
-          ref: ref,
-          onAccountDeletedError: () {
-            SignInBottomSheet.showAccountDeletedInfo(context: context);
-          },
-          onSuccess: () async {
-            await ref.read(habitDailySummaryService).syncHabit(
-                  connectivityStatus: connectivityStatus,
-                );
-            ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
-            final BottomNavigationBar navbar =
-                mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
-            navbar.onTap!(0);
-          },
-          onGeneralError: () {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                const SnackBar(
-                  content: Text('Sign in Gagal'),
-                ),
-              );
-          },
-        );
-      } else if (context.mounted) {
-        _generalBottomSheet.showNoInternetBottomSheet(
-          context,
-          () => Navigator.pop(context),
-        );
-      }
-    };
   }
 }

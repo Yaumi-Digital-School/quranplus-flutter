@@ -8,6 +8,7 @@ import 'package:global_configuration/global_configuration.dart';
 import 'package:qurantafsir_flutter/pages/account_deletion/account_deletion_view.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_view.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
+import 'package:qurantafsir_flutter/pages/registration_and_login_page/registration_and_login_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page.dart';
 import 'package:qurantafsir_flutter/pages/splash_page/splash_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
@@ -178,6 +179,12 @@ class _MyAppState extends ConsumerState<MyApp> {
             final args = settings.arguments as TadabburStoryPageParams;
             selectedRouteWidget = TadabburStoryPage(
               params: args,
+            );
+            break;
+          case RoutePaths.routeLogin:
+            final args = settings.arguments as RegistrationAndLoginPageParam;
+            selectedRouteWidget = RegistrationAndLoginPage(
+              param: args,
             );
             break;
           default:
