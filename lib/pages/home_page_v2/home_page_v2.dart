@@ -7,9 +7,10 @@ import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/daily_progress_tr
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/read_tadabbur/read_tadabbur_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
-import 'package:qurantafsir_flutter/shared/constants/Icon.dart';
+import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
+import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
@@ -103,7 +104,7 @@ class _HomePageV2State extends State<HomePageV2> {
                 child: Row(
                   children: <Widget>[
                     SvgPicture.asset(
-                      IconPath.iconQuranPlus,
+                      StoredIcon.iconQuranPlus.path,
                       colorFilter: ColorFilter.mode(
                         Theme.of(context).colorScheme.primary,
                         BlendMode.srcIn,
@@ -127,7 +128,7 @@ class _HomePageV2State extends State<HomePageV2> {
                           connectivityStatus,
                         ),
                         icon: Image.asset(
-                          IconPath.iconForm,
+                          StoredIcon.iconForm.path,
                         ),
                       ),
                     ),
@@ -195,7 +196,6 @@ class _HomePageV2State extends State<HomePageV2> {
     required SignInType type,
   }) async {
     final SignInResult result = await ref.read(authenticationService).signIn(
-          ref: ref,
           type: type,
         );
 
@@ -208,6 +208,7 @@ class _HomePageV2State extends State<HomePageV2> {
       return;
     }
     await ref.read(habitDailySummaryService).syncHabit();
+    ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
 
     ForceLoginParam? param = await notifier.getAndRemoveForceLoginParam();
 
@@ -753,7 +754,7 @@ class ListSuratByJuz extends StatelessWidget {
         isShowBottomSheet: true,
       ),
       onLoadError: () {
-        GeneralBottomSheet().showNoInternetBottomSheet(
+        GeneralBottomSheet.showNoInternetBottomSheet(
           context,
           () {
             Navigator.pop(context);

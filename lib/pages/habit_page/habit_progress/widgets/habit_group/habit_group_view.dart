@@ -32,7 +32,7 @@ class HabitGroupView extends StatelessWidget {
 
         if (connectivityStatus == ConnectivityStatus.isDisconnected &&
             context.mounted) {
-          await GeneralBottomSheet().showNoInternetBottomSheet(
+          await GeneralBottomSheet.showNoInternetBottomSheet(
             context,
             () async {
               Navigator.pop(context);

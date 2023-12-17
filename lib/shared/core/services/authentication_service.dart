@@ -5,11 +5,12 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/user_api.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/user.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/user_response.dart';
-import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/services/alice_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:retrofit/retrofit.dart';
@@ -25,10 +26,15 @@ class AuthenticationService {
   AuthenticationService({
     required this.userApi,
     required SharedPreferenceService sharedPreferenceService,
+    required this.dioServiceNotifier,
+    required this.aliceService,
   }) : _sharedPreferenceService = sharedPreferenceService;
 
   final UserApi userApi;
   final SharedPreferenceService _sharedPreferenceService;
+  final StateController<DioService> dioServiceNotifier;
+  final AliceService aliceService;
+  final DbLocal _db = DbLocal();
   late bool _isLoggedIn;
   late GoogleSignIn _googleSignIn;
 
@@ -49,7 +55,6 @@ class AuthenticationService {
 
   Future<SignInResult> signIn({
     required SignInType type,
-    required WidgetRef ref,
   }) async {
     try {
       late RegisterOrLoginRequest request;
@@ -109,13 +114,11 @@ class AuthenticationService {
       await _setToken(response.data.token!);
       await _setUsername(response.data.data!.name);
 
-      ref.read(dioServiceProvider.notifier).state = DioService(
+      dioServiceNotifier.state = DioService(
         baseUrl: EnvConstants.baseUrl!,
         accessToken: _sharedPreferenceService.getApiToken(),
-        aliceService: ref.read(aliceServiceProvider),
+        aliceService: aliceService,
       );
-
-      ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
 
       return SignInResult.success;
     } catch (error, stackTrace) {
@@ -140,6 +143,14 @@ class AuthenticationService {
     _googleSignIn.signOut();
     setIsLoggedIn(false);
     _sharedPreferenceService.clear();
+    _db.clearTableHabit();
+    _db.clearTableBookmarks();
+    _db.clearTableFavoriteAyahs();
+    dioServiceNotifier.state = DioService(
+      baseUrl: EnvConstants.baseUrl!,
+      aliceService: aliceService,
+      accessToken: '',
+    );
   }
 
   Future<User> getUserProfile(String token) async {

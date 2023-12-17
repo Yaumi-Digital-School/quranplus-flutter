@@ -30,7 +30,7 @@ class TadabburSurahListView extends StatelessWidget {
         final connectivityStatus = ref.read(internetConnectionStatusProviders);
         if (connectivityStatus == ConnectivityStatus.isDisconnected &&
             context.mounted) {
-          GeneralBottomSheet().showNoInternetBottomSheet(
+          GeneralBottomSheet.showNoInternetBottomSheet(
             context,
             () => notifier.initStateNotifier(),
           );

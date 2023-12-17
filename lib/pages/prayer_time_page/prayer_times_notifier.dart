@@ -5,7 +5,7 @@ import 'package:geolocator/geolocator.dart';
 
 class PrayerTimeState {
   PrayerTimeState({
-    required this.locationIsOn,
+    this.locationIsOn = false,
     this.isLoading = true,
   });
   bool isLoading;
@@ -29,7 +29,7 @@ class PrayerTimeStateNotifier extends StateNotifier<PrayerTimeState> {
 
   Future<void> checkGpsServices() async {
     LocationPermission permission = await Geolocator.checkPermission();
-    bool permissionCondition = false;
+    bool isPermissionGiven = false;
     bool locationCondition = false;
 
     if (permission == LocationPermission.denied) {
@@ -37,13 +37,13 @@ class PrayerTimeStateNotifier extends StateNotifier<PrayerTimeState> {
 
       if (permission == LocationPermission.always ||
           permission == LocationPermission.whileInUse) {
-        permissionCondition = true;
+        isPermissionGiven = true;
       }
     }
 
-    permissionCondition = true;
+    isPermissionGiven = true;
 
-    if (permissionCondition) {
+    if (isPermissionGiven) {
       bool servicestatus = await Geolocator.isLocationServiceEnabled();
 
       if (servicestatus) {

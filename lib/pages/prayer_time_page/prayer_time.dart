@@ -73,7 +73,7 @@ class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
           children: [
             Card(
               color: Theme.of(context).colorScheme.primaryContainer,
-              elevation: 1.2,
+              elevation: 0,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(
                   Radius.circular(8.0),
@@ -179,7 +179,7 @@ class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
             ),
             Card(
               color: Theme.of(context).colorScheme.primaryContainer,
-              elevation: 1.2,
+              elevation: 0,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(
                   Radius.circular(8.0),
@@ -273,7 +273,7 @@ class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
   Widget _buildPrayerTimeItem(PrayerTimeState state) {
     List<Widget> widgetPrayerTime = <Widget>[];
 
-    for (int i = 0; i < PrayerTimesList.listPrayerTimes.length; i++) {
+    for (int i = 0; i < PrayerTimes.values.length; i++) {
       widgetPrayerTime.add(
         Center(
           child: Column(
@@ -291,7 +291,7 @@ class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
                   shape: BoxShape.circle,
                 ),
                 child: SvgPicture.asset(
-                  PrayerTimesList.listIconPrayerTimes[i],
+                  PrayerTimes.values[i].icon.path,
                   colorFilter: const ColorFilter.mode(
                     QPColors.brandHeavy,
                     BlendMode.srcIn,
@@ -305,7 +305,7 @@ class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
                 height: 8,
               ),
               Text(
-                PrayerTimesList.listPrayerTimes[i],
+                PrayerTimes.values[i].name,
                 style: QPTextStyle.baseTextStyle.copyWith(
                   color: QPColors.getColorBasedTheme(
                     dark: QPColors.whiteRoot,

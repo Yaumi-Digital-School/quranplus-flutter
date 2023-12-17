@@ -1,18 +1,17 @@
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 
-class PrayerTimesList {
-  static List<String> listPrayerTimes = [
-    "Fajr",
-    "Dzuhur",
-    "Ashr",
-    "Magrib",
-    "Isya",
-  ];
-  static List<String> listIconPrayerTimes = [
-    IconPath.iconFajrTime,
-    IconPath.iconDhuhrTime,
-    IconPath.iconAsrTime,
-    IconPath.iconMagribTime,
-    IconPath.iconIsyaTime,
-  ];
+enum PrayerTimes {
+  fajr(icon: StoredIcon.iconFajrTime, label: 'Fajr'),
+  dhuhr(icon: StoredIcon.iconDhuhrTime, label: 'Dzuhur'),
+  ashr(icon: StoredIcon.iconAsrTime, label: 'Ashr'),
+  magrib(icon: StoredIcon.iconMagribTime, label: 'Magrib'),
+  isya(icon: StoredIcon.iconIsyaTime, label: 'Isya');
+
+  const PrayerTimes({
+    required this.icon,
+    required this.label,
+  });
+
+  final StoredIcon icon;
+  final String label;
 }

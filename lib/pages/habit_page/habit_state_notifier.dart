@@ -71,14 +71,12 @@ class HabitPageStateNotifier extends BaseStateNotifier<HabitPageState> {
     required Function() onAccountDeletedError,
     required Function() onGeneralError,
     required SignInType type,
-    required WidgetRef ref,
   }) async {
     state = state.copyWith(resultStatus: ResultStatus.inProgress);
 
     try {
       final SignInResult result = await _repository.signIn(
         type: type,
-        ref: ref,
       );
 
       if (result == SignInResult.failedAccountDeleted) {
