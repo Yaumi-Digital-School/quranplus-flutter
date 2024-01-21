@@ -134,7 +134,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       navigatorKey: navigatorKey,
       onGenerateRoute: (RouteSettings settings) {
         late Widget selectedRouteWidget;
-        print(settings.name);
+
         switch (settings.name) {
           case RoutePaths.routeSplash:
             selectedRouteWidget = SplashPage(navigatorKey: navigatorKey);
@@ -190,7 +190,7 @@ class _MyAppState extends ConsumerState<MyApp> {
             );
             break;
           case RoutePaths.routePrayerTimePage:
-            print("object");
+
             selectedRouteWidget = PrayerTimePage();
             break;
           default:

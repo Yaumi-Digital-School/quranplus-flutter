@@ -108,7 +108,7 @@ class SettingsPage extends StatelessWidget {
                     SettingsPageMenuItem(
                       icon: StoredIcon.iconSunClock,
                       onTap: () {
-                        print("xxxxxx");
+
 
                         _onPrayerTimesTap(context);
                       },
@@ -212,7 +212,7 @@ class SettingsPage extends StatelessWidget {
   }
 
   void _onPrayerTimesTap(BuildContext context) {
-    print("yyyy");
+
     Navigator.pushNamed(
       context,
       RoutePaths.routePrayerTimePage,

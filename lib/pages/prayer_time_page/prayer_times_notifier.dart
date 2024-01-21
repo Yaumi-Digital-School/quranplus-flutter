@@ -58,16 +58,7 @@ class PrayerTimeStateNotifier extends StateNotifier<PrayerTimeState> {
     state = state.copyWith(locationIsOn: autoDetectCondition);
   }
 
-  Future<void> getPrayerTimes() async {
-    try {
-      state = state.copyWith(
-          //listPrayerTimes: prayerTimeItems,
-          );
-      // if (json.isEmpty) {}
-    } catch (e) {
-      log(e.toString());
-    }
-  }
+
 }
 
 final prayerTimeProvider =

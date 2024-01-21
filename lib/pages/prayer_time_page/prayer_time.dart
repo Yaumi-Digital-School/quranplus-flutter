@@ -23,7 +23,7 @@ class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
 
   @override
   void initState() {
-    prayerTimeNotifier = ref.read(prayerTimeProvider.notifier);
+    //prayerTimeNotifier = ref.read(prayerTimeProvider.notifier);
 
     super.initState();
   }
@@ -273,7 +273,7 @@ class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
   Widget _buildPrayerTimeItem(PrayerTimeState state) {
     List<Widget> widgetPrayerTime = <Widget>[];
 
-    for (int i = 0; i < PrayerTimes.values.length; i++) {
+    for(final prayerTime in  PrayerTimes.values) {
       widgetPrayerTime.add(
         Center(
           child: Column(
@@ -291,7 +291,7 @@ class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
                   shape: BoxShape.circle,
                 ),
                 child: SvgPicture.asset(
-                  PrayerTimes.values[i].icon.path,
+                  prayerTime.icon.path,
                   colorFilter: const ColorFilter.mode(
                     QPColors.brandHeavy,
                     BlendMode.srcIn,
@@ -305,7 +305,7 @@ class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
                 height: 8,
               ),
               Text(
-                PrayerTimes.values[i].name,
+                prayerTime.name,
                 style: QPTextStyle.baseTextStyle.copyWith(
                   color: QPColors.getColorBasedTheme(
                     dark: QPColors.whiteRoot,
