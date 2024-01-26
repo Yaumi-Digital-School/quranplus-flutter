@@ -19,11 +19,10 @@ class PrayerTimePage extends ConsumerStatefulWidget {
 }
 
 class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
-  late PrayerTimeStateNotifier prayerTimeNotifier;
+
 
   @override
   void initState() {
-    //prayerTimeNotifier = ref.read(prayerTimeProvider.notifier);
 
     super.initState();
   }
