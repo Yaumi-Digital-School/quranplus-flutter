@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -57,8 +55,6 @@ class PrayerTimeStateNotifier extends StateNotifier<PrayerTimeState> {
   Future<void> updateAutoDetectCondition(bool autoDetectCondition) async {
     state = state.copyWith(locationIsOn: autoDetectCondition);
   }
-
-
 }
 
 final prayerTimeProvider =

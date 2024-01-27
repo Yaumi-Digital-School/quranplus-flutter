@@ -190,8 +190,7 @@ class _MyAppState extends ConsumerState<MyApp> {
             );
             break;
           case RoutePaths.routePrayerTimePage:
-
-            selectedRouteWidget = PrayerTimePage();
+            selectedRouteWidget = const PrayerTimePage();
             break;
           default:
             selectedRouteWidget = const Scaffold(

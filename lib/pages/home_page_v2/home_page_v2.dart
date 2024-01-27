@@ -29,7 +29,6 @@ import 'package:qurantafsir_flutter/widgets/daily_progress_tracker.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/sign_in_bottom_sheet.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:retrofit/retrofit.dart';
 import 'home_page_state_notifier.dart';
 
@@ -82,10 +81,6 @@ class _HomePageV2State extends State<HomePageV2> {
           _showInvalidLinkBottomSheet();
         }
 
-        if (notifier.getShouldSOpenFeedbackUrl()) {
-          _launchUrl(state.feedbackUrl);
-        }
-
         return Scaffold(
           backgroundColor: QPColors.getColorBasedTheme(
             dark: QPColors.darkModeMassive,
@@ -102,13 +97,6 @@ class _HomePageV2State extends State<HomePageV2> {
         );
       },
     );
-  }
-
-  Future<void> _launchUrl(String? url) async {
-    final Uri url0 = Uri.parse(url ?? '');
-    if (!await launchUrl(url0)) {
-      throw 'Could not launch $url0';
-    }
   }
 
   void _showSignInBottomSheet(
