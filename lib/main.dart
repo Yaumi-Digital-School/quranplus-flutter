@@ -8,6 +8,7 @@ import 'package:global_configuration/global_configuration.dart';
 import 'package:qurantafsir_flutter/pages/account_deletion/account_deletion_view.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_view.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
+import 'package:qurantafsir_flutter/pages/prayer_time_page/prayer_time.dart';
 import 'package:qurantafsir_flutter/pages/registration_and_login_page/registration_and_login_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page.dart';
 import 'package:qurantafsir_flutter/pages/splash_page/splash_page.dart';
@@ -133,6 +134,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       navigatorKey: navigatorKey,
       onGenerateRoute: (RouteSettings settings) {
         late Widget selectedRouteWidget;
+
         switch (settings.name) {
           case RoutePaths.routeSplash:
             selectedRouteWidget = SplashPage(navigatorKey: navigatorKey);
@@ -186,6 +188,10 @@ class _MyAppState extends ConsumerState<MyApp> {
             selectedRouteWidget = RegistrationAndLoginPage(
               param: args,
             );
+            break;
+          case RoutePaths.routePrayerTimePage:
+
+            selectedRouteWidget = PrayerTimePage();
             break;
           default:
             selectedRouteWidget = const Scaffold(

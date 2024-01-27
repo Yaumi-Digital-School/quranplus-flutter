@@ -20,7 +20,12 @@ enum StoredIcon {
   iconEditSquare(path: 'images/icon_edit_square.png'),
   iconTheme(path: 'images/svg/theme-icon.svg'),
   iconSunClock(path: 'images/svg/sun-clock.svg'),
-  iconQuranPlus(path: 'images/svg/logo-quran-plus.svg');
+  iconQuranPlus(path: 'images/svg/logo-quran-plus.svg'),
+  iconFajrTime(path: 'images/svg/icon_fajr_times.svg'),
+  iconDhuhrTime(path: 'images/svg/icon_dhuhr_time.svg'),
+  iconAsrTime(path: 'images/svg/icon_asr_time.svg'),
+  iconMagribTime(path: 'images/svg/Icon_isya&magrib_times.svg'),
+  iconIsyaTime(path: 'images/svg/Icon_isya&magrib_times.svg');
 
   const StoredIcon({required this.path});
 

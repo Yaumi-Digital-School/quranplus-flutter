@@ -79,6 +79,7 @@ dependencies:
   path: ^1.8.3
   stack_trace: ^1.11.0
   firebase_crashlytics: ^3.3.7
+  geolocator: ^10.1.0
 
 dev_dependencies:
   flutter_test:

@@ -18,4 +18,6 @@ class ImagePath {
   static String emptyStateLight = "images/empty-state-light.png";
   static String emptyStateDark = "images/empty-state-dark.png";
   static String emptyStateBrown = "images/empty-state-brown.png";
+  static String prayerTimeIlustration =
+      "images/svg/prayer_time_ilustration.svg";
 }
