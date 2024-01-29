@@ -149,7 +149,7 @@ class _MyAppState extends ConsumerState<MyApp> {
             );
             break;
           case RoutePaths.routeSettings:
-            selectedRouteWidget = SettingsPage();
+            selectedRouteWidget = const SettingsPage();
             break;
           case RoutePaths.routeSurahPage:
             final args = settings.arguments is SuratPageV3Param
@@ -190,8 +190,7 @@ class _MyAppState extends ConsumerState<MyApp> {
             );
             break;
           case RoutePaths.routePrayerTimePage:
-
-            selectedRouteWidget = PrayerTimePage();
+            selectedRouteWidget = const PrayerTimePage();
             break;
           default:
             selectedRouteWidget = const Scaffold(

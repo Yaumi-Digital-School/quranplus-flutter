@@ -9,8 +9,6 @@ import 'package:qurantafsir_flutter/pages/read_tadabbur/read_tadabbur_page.dart'
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
-import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
-import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
@@ -21,7 +19,6 @@ import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
-import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart' as date_util;
@@ -32,7 +29,6 @@ import 'package:qurantafsir_flutter/widgets/daily_progress_tracker.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/sign_in_bottom_sheet.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:retrofit/retrofit.dart';
 import 'home_page_state_notifier.dart';
 
@@ -85,85 +81,22 @@ class _HomePageV2State extends State<HomePageV2> {
           _showInvalidLinkBottomSheet();
         }
 
-        if (notifier.getShouldSOpenFeedbackUrl()) {
-          _launchUrl(state.feedbackUrl);
-        }
-
-        final connectivityStatus = ref.watch(internetConnectionStatusProviders);
-
         return Scaffold(
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(54.0),
-            child: AppBar(
-              automaticallyImplyLeading: false,
-              elevation: 0.5,
-              centerTitle: false,
-              foregroundColor: primary500,
-              title: Transform.translate(
-                offset: const Offset(8, 0),
-                child: Row(
-                  children: <Widget>[
-                    SvgPicture.asset(
-                      StoredIcon.iconQuranPlus.path,
-                      colorFilter: ColorFilter.mode(
-                        Theme.of(context).colorScheme.primary,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    SvgPicture.asset(
-                      ImagePath.quranPlusText,
-                      colorFilter: ColorFilter.mode(
-                        Theme.of(context).colorScheme.primary,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                    const Spacer(),
-                    SizedBox(
-                      width: 100,
-                      child: IconButton(
-                        onPressed: () => _onFeedbackPress(
-                          state,
-                          notifier,
-                          connectivityStatus,
-                        ),
-                        icon: Image.asset(
-                          StoredIcon.iconForm.path,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            ),
+          backgroundColor: QPColors.getColorBasedTheme(
+            dark: QPColors.darkModeMassive,
+            light: QPColors.brandFair,
+            brown: QPColors.brownModeRoot,
+            context: context,
           ),
-          body: ListSuratByJuz(
-            notifier: notifier,
-            parentState: state,
+          body: SafeArea(
+            child: ListSuratByJuz(
+              notifier: notifier,
+              parentState: state,
+            ),
           ),
         );
       },
     );
-  }
-
-  Future<void> _onFeedbackPress(
-    HomePageState state,
-    HomePageStateNotifier notifier,
-    ConnectivityStatus connectivityStatus,
-  ) async {
-    if (state.feedbackUrl?.isEmpty ?? true) {
-      notifier.getFeedbackUrl(connectivityStatus);
-    } else {
-      _launchUrl(state.feedbackUrl);
-    }
-  }
-
-  Future<void> _launchUrl(String? url) async {
-    final Uri url0 = Uri.parse(url ?? '');
-    if (!await launchUrl(url0)) {
-      throw 'Could not launch $url0';
-    }
   }
 
   void _showSignInBottomSheet(
@@ -338,62 +271,108 @@ class ListSuratByJuz extends StatelessWidget {
 
         return Stack(
           children: <Widget>[
-            Column(
+            ListView(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 30,
+                  color: QPColors.getColorBasedTheme(
+                    dark: QPColors.darkModeMassive,
+                    light: QPColors.whiteFair,
+                    brown: QPColors.brownModeRoot,
+                    context: context,
                   ),
-                  alignment: Alignment.centerLeft,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color.fromRGBO(
-                          0,
-                          0,
-                          0,
-                          0.08,
-                        ),
-                        blurRadius: 15,
-                        offset: Offset(4, 4),
-                      ),
-                    ],
-                  ),
-                  child: Text(
-                    parentState.name.isNotEmpty
-                        ? 'Assalamu’alaikum, ${parentState.name}'
-                        : 'Assalamu’alaikum',
-                    textAlign: TextAlign.start,
-                    style: QPTextStyle.getSubHeading4SemiBold(context),
-                  ),
-                ),
-                Expanded(
-                  child: ListView(
+                  child: Stack(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(
-                          24,
-                          16,
-                          24,
-                          24,
-                        ),
-                        child: _buildHabitInformationCard(
-                          context,
-                          isLoggedIn,
-                          parentState,
-                          notifier,
+                      Container(
+                        height: 200,
+                        color: QPColors.getColorBasedTheme(
+                          dark: QPColors.darkModeMassive,
+                          light: QPColors.brandFair,
+                          brown: QPColors.brownModeRoot,
+                          context: context,
                         ),
                       ),
-                      if (parentState.juzElements == null ||
-                          parentState.listTaddaburAvailables == null)
-                        const _ListSurahByJuzSkeleton(),
-                      if (parentState.juzElements != null)
-                        _buildSurahByJuzContainer(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  StoredIcon.iconQuranPlus.path,
+                                  colorFilter: ColorFilter.mode(
+                                    QPColors.getColorBasedTheme(
+                                      dark: QPColors.whiteFair,
+                                      light: QPColors.whiteFair,
+                                      brown: QPColors.brownModeMassive,
+                                      context: context,
+                                    ),
+                                    BlendMode.srcIn,
+                                  ),
+                                  height: 32,
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                SvgPicture.asset(
+                                  ImagePath.quranPlusText,
+                                  colorFilter: ColorFilter.mode(
+                                    QPColors.getColorBasedTheme(
+                                      dark: QPColors.whiteFair,
+                                      light: QPColors.whiteFair,
+                                      brown: QPColors.brownModeMassive,
+                                      context: context,
+                                    ),
+                                    BlendMode.srcIn,
+                                  ),
+                                  height: 16,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            if (parentState.name != '')
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: Text(
+                                  "Assalamu’alaikum, ${parentState.name}",
+                                  style: QPTextStyle.getSubHeading4SemiBold(
+                                    context,
+                                  ).copyWith(
+                                    color: QPColors.getColorBasedTheme(
+                                      dark: QPColors.whiteFair,
+                                      light: QPColors.whiteMassive,
+                                      brown: QPColors.brownModeMassive,
+                                      context: context,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            _buildHabitInformationCard(
+                              context,
+                              isLoggedIn,
+                              parentState,
+                              notifier,
+                            ),
+                            const SizedBox(
+                              height: 24,
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
+                if (parentState.juzElements == null ||
+                    parentState.listTaddaburAvailables == null)
+                  const _ListSurahByJuzSkeleton(),
+                if (parentState.juzElements != null)
+                  _buildSurahByJuzContainer(),
               ],
             ),
             Positioned(
@@ -501,8 +480,14 @@ class ListSuratByJuz extends StatelessWidget {
                 style: QPTextStyle.getBody1Regular(context),
               ),
             ),
-            Padding(
+            Container(
               padding: const EdgeInsets.only(bottom: 20, top: 16),
+              color: QPColors.getColorBasedTheme(
+                dark: QPColors.darkModeMassive,
+                light: QPColors.whiteFair,
+                brown: QPColors.brownModeRoot,
+                context: context,
+              ),
               child: _buildListSuratByJuz(
                 context: context,
                 juz: parentState.juzElements![index],

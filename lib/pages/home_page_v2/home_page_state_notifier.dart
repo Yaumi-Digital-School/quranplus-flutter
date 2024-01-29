@@ -1,15 +1,10 @@
-import 'dart:convert';
-
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
-import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 
-import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
-import 'package:qurantafsir_flutter/shared/core/models/form.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart';
@@ -20,7 +15,6 @@ import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_ser
 import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
-import 'package:http/http.dart' as http;
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 
 class HomePageState {
@@ -99,10 +93,9 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
   late List<JuzElement> _juzElements;
   late Map<String, List<String>>? _ayahPage;
   bool loginBottomSheetAlreadyBuilt = false;
-  String? _token, _name, _feedbackUrl;
+  String? _token, _name;
   HabitDailySummary? _dailySummary;
   late Map<int, int>? _listTaddaburAvailables;
-  bool _shouldOpenFeedbackUrl = false;
   DbLocal db = DbLocal();
 
   final AudioRecitationStateNotifier _audioRecitationNotifier;
@@ -254,38 +247,6 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     );
   }
 
-  Future<void> getFeedbackUrl(ConnectivityStatus connectivityStatus) async {
-    if (connectivityStatus == ConnectivityStatus.isConnected) {
-      try {
-        _feedbackUrl = (await _fetchLink()).url ?? '';
-        if (!(_feedbackUrl?.isEmpty ?? true)) {
-          _shouldOpenFeedbackUrl = true;
-        }
-      } catch (error, stackTrace) {
-        FirebaseCrashlytics.instance.recordError(
-          error,
-          stackTrace,
-          reason: 'error on getFeedbackUrl() method',
-        );
-
-        _shouldOpenFeedbackUrl = false;
-        _feedbackUrl = "";
-      }
-    }
-
-    state = state.copyWith(
-      feedbackUrl: _feedbackUrl,
-    );
-  }
-
-  bool getShouldSOpenFeedbackUrl() {
-    final bool result = _shouldOpenFeedbackUrl;
-
-    _shouldOpenFeedbackUrl = false;
-
-    return result && !(_feedbackUrl?.isEmpty ?? true);
-  }
-
   Future<void> _getJuzElements() async {
     final String jsonJuzInString =
         await rootBundle.loadString(AppConstants.jsonJuz);
@@ -299,28 +260,6 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     state = state.copyWith(
       juzElements: _juzElements,
     );
-  }
-
-  Future<FormLink> _fetchLink() async {
-    try {
-      final response = await http.get(
-        Uri.parse('${EnvConstants.baseUrl!}/api/resource/form-feedback'),
-      );
-
-      if (response.statusCode == 200) {
-        return FormLink.fromJson(jsonDecode(response.body));
-      } else {
-        throw Exception('Failed to load form link');
-      }
-    } catch (error, stackTrace) {
-      FirebaseCrashlytics.instance.recordError(
-        error,
-        stackTrace,
-        reason: 'error on _fetchLink() method',
-      );
-
-      throw Exception('Failed to load form link');
-    }
   }
 
   Future<ForceLoginParam?> getAndRemoveForceLoginParam() async {

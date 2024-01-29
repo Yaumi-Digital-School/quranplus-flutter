@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/account_page/account_page.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
-import 'package:qurantafsir_flutter/pages/prayer_time_page/prayer_times_notifier.dart';
-import 'package:qurantafsir_flutter/pages/prayer_time_page/prayer_time.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
@@ -108,8 +106,6 @@ class SettingsPage extends StatelessWidget {
                     SettingsPageMenuItem(
                       icon: StoredIcon.iconSunClock,
                       onTap: () {
-
-
                         _onPrayerTimesTap(context);
                       },
                       title: 'Prayer Times',
@@ -212,7 +208,6 @@ class SettingsPage extends StatelessWidget {
   }
 
   void _onPrayerTimesTap(BuildContext context) {
-
     Navigator.pushNamed(
       context,
       RoutePaths.routePrayerTimePage,
