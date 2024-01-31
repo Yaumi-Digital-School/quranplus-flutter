@@ -17,6 +17,8 @@ import 'package:qurantafsir_flutter/shared/core/services/shared_preference_servi
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 
+// TODO: add comment
+
 class HomePageState {
   HomePageState({
     this.name = '',
