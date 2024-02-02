@@ -33,6 +33,7 @@ class _SplashPageState extends State<SplashPage> {
             navigatorKey: widget.navigatorKey,
             tadabburService: ref.read(tadabburService),
             remoteConfigService: ref.read(remoteConfigService),
+            prayerTimesService: ref.read(prayerTimesService),
             habitDailySummaryService: ref.read(habitDailySummaryService),
             sharedPreferenceService: ref.read(sharedPreferenceServiceProvider),
           );

@@ -16,6 +16,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/core/services/bookmarks_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/favorite_ayahs_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
+import 'package:qurantafsir_flutter/shared/core/services/prayer_times_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/remote_config_service/remote_config_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/tadabbur_service.dart';
@@ -178,6 +179,11 @@ final Provider<AliceService> aliceServiceProvider =
 final Provider<RemoteConfigService> remoteConfigService =
     Provider<RemoteConfigService>((ref) {
   return RemoteConfigService();
+});
+
+final Provider<PrayerTimesService> prayerTimesService =
+    Provider<PrayerTimesService>((ref) {
+  return PrayerTimesService();
 });
 
 final Provider<TadabburService> tadabburService =

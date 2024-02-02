@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/account_page/account_page.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
+import 'package:qurantafsir_flutter/pages/registration_and_login_page/registration_and_login_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
@@ -182,6 +183,7 @@ class SettingsPage extends StatelessWidget {
       Navigator.pushNamed(
         context,
         RoutePaths.routeLogin,
+        arguments: RegistrationAndLoginPageParam(),
       );
 
       return;

@@ -80,6 +80,7 @@ dependencies:
   stack_trace: ^1.11.0
   firebase_crashlytics: ^3.3.7
   geolocator: ^10.1.0
+  adhan: ^2.0.0+1
 
 dev_dependencies:
   flutter_test:

@@ -8,6 +8,7 @@ import 'package:qurantafsir_flutter/shared/core/models/app_update_info.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/deep_link_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
+import 'package:qurantafsir_flutter/shared/core/services/prayer_times_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/remote_config_service/remote_config_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/tadabbur_service.dart';
@@ -23,6 +24,7 @@ class SplashPageStateNotifier extends BaseStateNotifier<SplashPageState> {
     required RemoteConfigService remoteConfigService,
     required HabitDailySummaryService habitDailySummaryService,
     required SharedPreferenceService sharedPreferenceService,
+    required PrayerTimesService prayerTimesService,
     required DeepLinkService deepLinkService,
     required TadabburService tadabburService,
     required this.navigatorKey,
@@ -32,6 +34,7 @@ class SplashPageStateNotifier extends BaseStateNotifier<SplashPageState> {
         _tadabburService = tadabburService,
         _sharedPreferenceService = sharedPreferenceService,
         _deepLinkService = deepLinkService,
+        _prayerTimesService = prayerTimesService,
         super(
           SplashPageState(),
         );
@@ -39,6 +42,7 @@ class SplashPageStateNotifier extends BaseStateNotifier<SplashPageState> {
   final AuthenticationService _authenticationService;
   final SharedPreferenceService _sharedPreferenceService;
   final RemoteConfigService _remoteConfigService;
+  final PrayerTimesService _prayerTimesService;
   final DeepLinkService _deepLinkService;
   final TadabburService _tadabburService;
   final HabitDailySummaryService _habitDailySummaryService;
@@ -54,6 +58,7 @@ class SplashPageStateNotifier extends BaseStateNotifier<SplashPageState> {
     try {
       await _deepLinkService.init(navigatorKey);
       await _authenticationService.initRepository();
+      _prayerTimesService.init();
 
       if (connectivityStatus != null &&
           connectivityStatus == ConnectivityStatus.isConnected) {
