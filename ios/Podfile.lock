@@ -110,6 +110,8 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - geolocator_apple (1.2.0):
+    - Flutter
   - google_sign_in_ios (0.0.1):
     - Flutter
     - GoogleSignIn (~> 6.2)
@@ -202,6 +204,8 @@ PODS:
     - Flutter
   - wakelock (0.0.1):
     - Flutter
+  - workmanager (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - audio_service (from `.symlinks/plugins/audio_service/ios`)
@@ -214,6 +218,7 @@ DEPENDENCIES:
   - firebase_remote_config (from `.symlinks/plugins/firebase_remote_config/ios`)
   - Flutter (from `Flutter`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
+  - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - open_filex (from `.symlinks/plugins/open_filex/ios`)
@@ -228,6 +233,7 @@ DEPENDENCIES:
   - store_redirect (from `.symlinks/plugins/store_redirect/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - wakelock (from `.symlinks/plugins/wakelock/ios`)
+  - workmanager (from `.symlinks/plugins/workmanager/ios`)
 
 SPEC REPOS:
   trunk:
@@ -276,6 +282,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
+  geolocator_apple:
+    :path: ".symlinks/plugins/geolocator_apple/ios"
   google_sign_in_ios:
     :path: ".symlinks/plugins/google_sign_in_ios/ios"
   just_audio:
@@ -304,6 +312,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
   wakelock:
     :path: ".symlinks/plugins/wakelock/ios"
+  workmanager:
+    :path: ".symlinks/plugins/workmanager/ios"
 
 SPEC CHECKSUMS:
   AppAuth: 3bb1d1cd9340bd09f5ed189fb00b1cc28e1e8570
@@ -329,6 +339,7 @@ SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  geolocator_apple: cc556e6844d508c95df1e87e3ea6fa4e58c50401
   google_sign_in_ios: 1256ff9d941db546373826966720b0c24804bcdd
   GoogleAppMeasurement: 722db6550d1e6d552b08398b69a975ac61039338
   GoogleDataTransport: 57c22343ab29bc686febbf7cbb13bad167c2d8fe
@@ -353,6 +364,7 @@ SPEC CHECKSUMS:
   store_redirect: 2977747cf81689a39bd62c248c2deacb7a0d131e
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
+  workmanager: 0afdcf5628bbde6924c21af7836fed07b42e30e6
 
 PODFILE CHECKSUM: 96a11f4fe1fa0584258281b82adb44525248ba57
 
