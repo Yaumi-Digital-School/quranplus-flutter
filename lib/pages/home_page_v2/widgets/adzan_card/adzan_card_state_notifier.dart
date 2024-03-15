@@ -1,0 +1,57 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qurantafsir_flutter/pages/prayer_time_page/prayer_times_notifier.dart';
+import 'package:qurantafsir_flutter/shared/constants/prayer_times_list.dart';
+
+final adzanCardProvider = StateProvider<AdzanState>((ref) {
+  final prayerTimeState = ref.watch(prayerTimeProvider);
+
+  final now = DateTime.now();
+
+  if (prayerTimeState.prayerTimes == null) {
+    return const AdzanState(null, null);
+  }
+
+  if (prayerTimeState.prayerTimes!.isha.compareTo(now) > 0 ||
+      prayerTimeState.prayerTimes!.sunrise.compareTo(now) < 0) {
+    return AdzanState(
+      PrayerTimesList.fajr,
+      prayerTimeState.prayerTimes!.sunrise,
+    );
+  }
+
+  if (prayerTimeState.prayerTimes!.isha.compareTo(now) < 0 &&
+      prayerTimeState.prayerTimes!.maghrib.compareTo(now) > 0) {
+    return AdzanState(
+      PrayerTimesList.isya,
+      prayerTimeState.prayerTimes!.isha,
+    );
+  }
+
+  if (prayerTimeState.prayerTimes!.maghrib.compareTo(now) < 0 &&
+      prayerTimeState.prayerTimes!.asr.compareTo(now) > 0) {
+    return AdzanState(
+      PrayerTimesList.magrib,
+      prayerTimeState.prayerTimes!.maghrib,
+    );
+  }
+
+  if (prayerTimeState.prayerTimes!.asr.compareTo(now) < 0 &&
+      prayerTimeState.prayerTimes!.dhuhr.compareTo(now) > 0) {
+    return AdzanState(
+      PrayerTimesList.ashr,
+      prayerTimeState.prayerTimes!.asr,
+    );
+  }
+
+  return AdzanState(
+    PrayerTimesList.dhuhr,
+    prayerTimeState.prayerTimes!.dhuhr,
+  );
+});
+
+class AdzanState {
+  final PrayerTimesList? prayerTimesList;
+  final DateTime? date;
+
+  const AdzanState(this.prayerTimesList, this.date);
+}

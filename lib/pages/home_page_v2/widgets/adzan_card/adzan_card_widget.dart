@@ -1,15 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/adzan_card/adzan_card_state_notifier.dart';
+import 'package:qurantafsir_flutter/pages/prayer_time_page/prayer_times_notifier.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
-import 'package:qurantafsir_flutter/shared/constants/prayer_times_list.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 
-class AdzanCardWidget extends StatelessWidget {
+class AdzanCardWidget extends ConsumerStatefulWidget {
   const AdzanCardWidget({super.key});
 
   @override
+  ConsumerState<AdzanCardWidget> createState() => _AdzanCardWidgetState();
+}
+
+class _AdzanCardWidgetState extends ConsumerState<AdzanCardWidget> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final prayerTimesStateNotifier = ref.read(prayerTimeProvider.notifier);
+      prayerTimesStateNotifier.initStateNotifier();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final adzanState = ref.watch(adzanCardProvider);
+
     return Container(
       padding: const EdgeInsets.symmetric(
         vertical: 6,
@@ -27,7 +45,9 @@ class AdzanCardWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SvgPicture.asset(
-                PrayerTimes.ashr.icon.path,
+                adzanState.prayerTimesList == null
+                    ? StoredIcon.iconLocation.path
+                    : adzanState.prayerTimesList!.icon.path,
                 colorFilter: ColorFilter.mode(
                   QPColors.getColorBasedTheme(
                     dark: QPColors.whiteFair,
@@ -40,7 +60,9 @@ class AdzanCardWidget extends StatelessWidget {
               ),
               const SizedBox(width: 4),
               Text(
-                PrayerTimes.ashr.label,
+                adzanState.prayerTimesList == null
+                    ? "no location set"
+                    : adzanState.prayerTimesList!.label,
                 style: QPTextStyle.getDescription1Regular(
                   context,
                 ).copyWith(
@@ -54,7 +76,9 @@ class AdzanCardWidget extends StatelessWidget {
               ),
               const SizedBox(width: 4),
               Text(
-                "15:28",
+                adzanState.prayerTimesList == null || adzanState.date == null
+                    ? ""
+                    : "${adzanState.date!.hour}:${adzanState.date!.minute}",
                 style: QPTextStyle.getDescription1Regular(
                   context,
                 ).copyWith(
@@ -67,43 +91,47 @@ class AdzanCardWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              Container(
-                width: 1,
-                color: QPColors.getColorBasedTheme(
-                  dark: QPColors.blackFair,
-                  light: QPColors.whiteRoot,
-                  brown: QPColors.brownModeHeavy,
-                  context: context,
-                ),
-                height: 16,
-              ),
-              const SizedBox(width: 12),
-              SvgPicture.asset(
-                StoredIcon.iconLocation.path,
-                colorFilter: ColorFilter.mode(
-                  QPColors.getColorBasedTheme(
-                    dark: QPColors.whiteFair,
-                    light: QPColors.brandFair,
-                    brown: QPColors.brownModeMassive,
+              if (adzanState.prayerTimesList != null)
+                Container(
+                  width: 1,
+                  color: QPColors.getColorBasedTheme(
+                    dark: QPColors.blackFair,
+                    light: QPColors.whiteRoot,
+                    brown: QPColors.brownModeHeavy,
                     context: context,
                   ),
-                  BlendMode.srcIn,
+                  height: 16,
                 ),
-              ),
+              const SizedBox(width: 12),
+              if (adzanState.prayerTimesList != null)
+                SvgPicture.asset(
+                  StoredIcon.iconLocation.path,
+                  colorFilter: ColorFilter.mode(
+                    QPColors.getColorBasedTheme(
+                      dark: QPColors.whiteFair,
+                      light: QPColors.brandFair,
+                      brown: QPColors.brownModeMassive,
+                      context: context,
+                    ),
+                    BlendMode.srcIn,
+                  ),
+                ),
               const SizedBox(width: 4),
-              Text(
-                "Depok City, West Java",
-                style: QPTextStyle.getDescription1Regular(
-                  context,
-                ).copyWith(
-                  color: QPColors.getColorBasedTheme(
-                    dark: QPColors.whiteFair,
-                    light: QPColors.brandFair,
-                    brown: QPColors.brownModeMassive,
-                    context: context,
+              if (adzanState.prayerTimesList != null)
+                Text(
+                  // TODO set location
+                  "Depok City, West Java",
+                  style: QPTextStyle.getDescription1Regular(
+                    context,
+                  ).copyWith(
+                    color: QPColors.getColorBasedTheme(
+                      dark: QPColors.whiteFair,
+                      light: QPColors.brandFair,
+                      brown: QPColors.brownModeMassive,
+                      context: context,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
           InkWell(
