@@ -15,3 +15,22 @@ enum PrayerTimesList {
   final StoredIcon icon;
   final String label;
 }
+
+enum PrayerTimesWorker {
+  prayerTimeReminder(
+    name: 'initialize-prayer-times-notifications',
+    tag: 'prayer-times-reminder',
+  ),
+  quranTimeReminder(
+    name: 'initialize-quran-reading-reminder-notifications',
+    tag: 'quran-time-reminder',
+  );
+
+  const PrayerTimesWorker({
+    required this.name,
+    required this.tag,
+  });
+
+  final String name;
+  final String tag;
+}

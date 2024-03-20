@@ -24,10 +24,10 @@ import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
 import 'package:qurantafsir_flutter/shared/core/services/alice_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/notification_service.dart';
-import 'package:qurantafsir_flutter/shared/core/services/prayer_times_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
+import 'package:qurantafsir_flutter/shared/utils/prayer_times.dart';
 import 'package:workmanager/workmanager.dart';
 import 'firebase_options.dart';
 import 'pages/read_tadabbur/read_tadabbur_page.dart';
@@ -94,18 +94,7 @@ Future<void> main() async {
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    if (task == AppConstants.initPrayerTimesNotifKey) {
-      final NotificationService notificationService = NotificationService();
-      final PrayerTimesService prayerTimesService = PrayerTimesService(
-        notificationService: notificationService,
-      );
-      prayerTimesService.init();
-      await notificationService.init();
-
-      await prayerTimesService.setupPrayerTimesReminder();
-    }
-
-    return Future.value(true);
+    return handleWorker(task, inputData);
   });
 }
 
