@@ -7,6 +7,8 @@ class AppConstants {
 
   static const String initPrayerTimesNotifKey =
       'initialize-prayer-times-notifications';
+  static const String initPrayerTimesNotifiOSKey =
+      'initialize-prayer-times-notifications-ios';
 }
 
 enum SignInType {

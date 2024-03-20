@@ -42,7 +42,11 @@ class _SplashPageState extends State<SplashPage> {
       ),
       onStateNotifierReady: (notifier, ref) async {
         // Temporary
-        schedulePrayerTimes();
+        try {
+          schedulePrayerTimes();
+        } catch (_) {
+          print('error');
+        }
 
         final connectivityStatus = ref.read(internetConnectionStatusProviders);
 

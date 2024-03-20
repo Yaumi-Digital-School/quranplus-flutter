@@ -1,5 +1,6 @@
 import UIKit
 import Flutter
+import workmanager
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -8,6 +9,8 @@ import Flutter
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     GeneratedPluginRegistrant.register(with: self)
+    WorkmanagerPlugin.registerTask(withIdentifier: "initialize-prayer-times-notifications-ios")
+    UIApplication.shared.setMinimumBackgroundFetchInterval(TimeInterval(60*1))
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }

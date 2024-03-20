@@ -28,6 +28,7 @@ import 'package:qurantafsir_flutter/shared/core/services/prayer_times_service.da
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
+import 'package:qurantafsir_flutter/shared/utils/prayer_times.dart';
 import 'package:workmanager/workmanager.dart';
 import 'firebase_options.dart';
 import 'pages/read_tadabbur/read_tadabbur_page.dart';
@@ -103,6 +104,24 @@ void callbackDispatcher() {
       await notificationService.init();
 
       await prayerTimesService.setupPrayerTimesReminder();
+    }
+
+    if (task == Workmanager.iOSBackgroundTask) {
+      print("The iOS background fetch was triggered");
+    }
+
+    if (task == AppConstants.initPrayerTimesNotifiOSKey) {
+      // final NotificationService notificationService = NotificationService();
+      // final PrayerTimesService prayerTimesService = PrayerTimesService(
+      //   notificationService: notificationService,
+      // );
+      // prayerTimesService.init();
+      // await notificationService.init();
+
+      // await prayerTimesService.setupPrayerTimesReminder();
+      print('WOI KOCAK');
+
+      scheduleNextPrayerTimes();
     }
 
     return Future.value(true);
