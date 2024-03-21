@@ -4,23 +4,6 @@ import 'package:qurantafsir_flutter/shared/core/services/notification_service.da
 import 'package:qurantafsir_flutter/shared/utils/number_util.dart';
 import 'package:qurantafsir_flutter/shared/utils/prayer_times.dart';
 
-const List<PrayerTimesList> prayerTimeEnums = <PrayerTimesList>[
-  PrayerTimesList.fajr,
-  PrayerTimesList.dhuhr,
-  PrayerTimesList.ashr,
-  PrayerTimesList.magrib,
-  PrayerTimesList.isya,
-];
-
-const Map<PrayerTimesList, String> prayerTimeReminderMessages =
-    <PrayerTimesList, String>{
-  PrayerTimesList.fajr: 'Start your day with a peaceful prayer',
-  PrayerTimesList.dhuhr: 'Take a few moments to pause from your busy day',
-  PrayerTimesList.ashr: "Let's recharge your energy",
-  PrayerTimesList.magrib: 'Take a moment to reflect and pray',
-  PrayerTimesList.isya: 'Wind down your day with a moment of spirituality',
-};
-
 class PrayerTimesService {
   PrayerTimesService({
     required this.notificationService,
@@ -63,7 +46,7 @@ class PrayerTimesService {
       await notificationService.zonedSchedule(
         id: i,
         title: '${prayerTimeEnums[i].label} prayer time is coming - $time',
-        body: prayerTimeReminderMessages[prayerTimeEnums[i]] ?? '',
+        body: prayerTimeEnums[i].notifLabel,
         scheduledDateTime: prayerTimeList[i],
       );
 

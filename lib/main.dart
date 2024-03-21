@@ -95,7 +95,7 @@ Future<void> main() async {
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    return handleWorker(task, inputData);
+    return await handleWorker(task, inputData);
   });
 }
 

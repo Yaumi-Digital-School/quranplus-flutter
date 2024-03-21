@@ -48,6 +48,8 @@ Future<bool> handleWorker(String task, Map<String, dynamic>? inputData) async {
     prayerTimesService.init();
     await notificationService.init();
     await prayerTimesService.setupPrayerTimesReminder();
+
+    return Future.value(true);
   }
 
   if (task == PrayerTimesWorker.quranTimeReminder.name) {
@@ -80,5 +82,5 @@ Future<bool> handleWorker(String task, Map<String, dynamic>? inputData) async {
     }
   }
 
-  return Future.value(false);
+  return Future.value(true);
 }
