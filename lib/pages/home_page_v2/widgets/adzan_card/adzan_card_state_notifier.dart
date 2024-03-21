@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qurantafsir_flutter/pages/prayer_time_page/prayer_times_notifier.dart';
 import 'package:qurantafsir_flutter/shared/constants/prayer_times_list.dart';
+import 'package:qurantafsir_flutter/shared/core/providers/prayer_times_notifier.dart';
 
 final adzanCardProvider = StateProvider<AdzanState>((ref) {
   final prayerTimeState = ref.watch(prayerTimeProvider);

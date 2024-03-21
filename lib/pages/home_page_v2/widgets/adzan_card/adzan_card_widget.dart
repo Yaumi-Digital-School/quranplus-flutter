@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/adzan_card/adzan_card_state_notifier.dart';
-import 'package:qurantafsir_flutter/pages/prayer_time_page/prayer_times_notifier.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/core/providers/prayer_times_notifier.dart';
 
 class AdzanCardWidget extends ConsumerStatefulWidget {
   const AdzanCardWidget({super.key});
