@@ -47,20 +47,31 @@ class _AdzanCardWidgetState extends ConsumerState<AdzanCardWidget> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SvgPicture.asset(
-                adzanState.prayerTimesList == null
-                    ? StoredIcon.iconLocation.path
-                    : adzanState.prayerTimesList!.icon.path,
-                colorFilter: ColorFilter.mode(
-                  QPColors.getColorBasedTheme(
-                    dark: QPColors.whiteFair,
-                    light: QPColors.brandFair,
-                    brown: QPColors.brownModeMassive,
-                    context: context,
-                  ),
-                  BlendMode.srcIn,
-                ),
-              ),
+              adzanState.prayerTimesList == null
+                  ? Icon(
+                      Icons.location_on,
+                      size: 12,
+                      color: QPColors.getColorBasedTheme(
+                        dark: QPColors.whiteFair,
+                        light: QPColors.brandFair,
+                        brown: QPColors.brownModeMassive,
+                        context: context,
+                      ),
+                    )
+                  : SvgPicture.asset(
+                      adzanState.prayerTimesList!.icon.path,
+                      colorFilter: ColorFilter.mode(
+                        QPColors.getColorBasedTheme(
+                          dark: QPColors.whiteFair,
+                          light: QPColors.brandFair,
+                          brown: QPColors.brownModeMassive,
+                          context: context,
+                        ),
+                        BlendMode.srcIn,
+                      ),
+                      height: 12,
+                      width: 12,
+                    ),
               const SizedBox(width: 4),
               Text(
                 adzanState.prayerTimesList == null
@@ -107,16 +118,14 @@ class _AdzanCardWidgetState extends ConsumerState<AdzanCardWidget> {
                 ),
               const SizedBox(width: 12),
               if (adzanState.prayerTimesList != null)
-                SvgPicture.asset(
-                  StoredIcon.iconLocation.path,
-                  colorFilter: ColorFilter.mode(
-                    QPColors.getColorBasedTheme(
-                      dark: QPColors.whiteFair,
-                      light: QPColors.brandFair,
-                      brown: QPColors.brownModeMassive,
-                      context: context,
-                    ),
-                    BlendMode.srcIn,
+                Icon(
+                  Icons.location_on,
+                  size: 12,
+                  color: QPColors.getColorBasedTheme(
+                    dark: QPColors.whiteFair,
+                    light: QPColors.brandFair,
+                    brown: QPColors.brownModeMassive,
+                    context: context,
                   ),
                 ),
               const SizedBox(width: 4),
