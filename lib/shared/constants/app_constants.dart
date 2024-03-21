@@ -4,9 +4,6 @@ class AppConstants {
   static const String jsonJuz = 'data/juz.json';
   static const String ayahPageJson = 'data/verse-to-page.json';
   static const String appName = 'Quran Tafsir';
-
-  static const String initPrayerTimesNotifKey =
-      'initialize-prayer-times-notifications';
 }
 
 enum SignInType {

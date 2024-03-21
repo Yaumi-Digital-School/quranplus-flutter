@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qurantafsir_flutter/shared/constants/prayer_times_list.dart';
+import 'package:qurantafsir_flutter/shared/constants/prayer_times.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/prayer_times_notifier.dart';
 
 final StateProvider<AdzanState> adzanCardProvider =
@@ -13,10 +13,10 @@ final StateProvider<AdzanState> adzanCardProvider =
   }
 
   if (prayerTimeState.prayerTimes!.isha.compareTo(now) > 0 ||
-      prayerTimeState.prayerTimes!.sunrise.compareTo(now) < 0) {
+      prayerTimeState.prayerTimes!.fajr.compareTo(now) < 0) {
     return AdzanState(
       PrayerTimesList.fajr,
-      prayerTimeState.prayerTimes!.sunrise,
+      prayerTimeState.prayerTimes!.fajr,
     );
   }
 
