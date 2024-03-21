@@ -68,6 +68,7 @@ Future<void> main() async {
 
     return true;
   };
+
   runApp(
     ProviderScope(
       overrides: [
@@ -160,7 +161,6 @@ class _MyAppState extends ConsumerState<MyApp> {
       navigatorKey: navigatorKey,
       onGenerateRoute: (RouteSettings settings) {
         late Widget selectedRouteWidget;
-
         switch (settings.name) {
           case RoutePaths.routeSplash:
             selectedRouteWidget = SplashPage(navigatorKey: navigatorKey);

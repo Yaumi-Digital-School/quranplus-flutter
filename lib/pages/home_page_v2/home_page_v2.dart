@@ -31,6 +31,7 @@ import 'package:qurantafsir_flutter/widgets/sign_in_bottom_sheet.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:retrofit/retrofit.dart';
 import 'home_page_state_notifier.dart';
+import 'widgets/adzan_card/adzan_card_widget.dart';
 
 class HomePageV2 extends StatefulWidget {
   const HomePageV2({
@@ -353,6 +354,10 @@ class ListSuratByJuz extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                            const AdzanCardWidget(),
+                            const SizedBox(
+                              height: 12,
+                            ),
                             _buildHabitInformationCard(
                               context,
                               isLoggedIn,

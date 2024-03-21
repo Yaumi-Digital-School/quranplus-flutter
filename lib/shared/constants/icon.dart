@@ -25,7 +25,8 @@ enum StoredIcon {
   iconDhuhrTime(path: 'images/svg/icon_dhuhr_time.svg'),
   iconAsrTime(path: 'images/svg/icon_asr_time.svg'),
   iconMagribTime(path: 'images/svg/Icon_isya&magrib_times.svg'),
-  iconIsyaTime(path: 'images/svg/Icon_isya&magrib_times.svg');
+  iconIsyaTime(path: 'images/svg/Icon_isya&magrib_times.svg'),
+  iconArrowRight(path: 'images/svg/arrow-right.svg');
 
   const StoredIcon({required this.path});
 
