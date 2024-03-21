@@ -19,9 +19,10 @@ class _AdzanCardWidgetState extends ConsumerState<AdzanCardWidget> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final prayerTimes = ref.read(prayerTimeProvider);
+      final PrayerTimeState prayerTimes = ref.read(prayerTimeProvider);
       if (prayerTimes.prayerTimes == null) {
-        final prayerTimesStateNotifier = ref.read(prayerTimeProvider.notifier);
+        final PrayerTimeStateNotifier prayerTimesStateNotifier =
+            ref.read(prayerTimeProvider.notifier);
         prayerTimesStateNotifier.initStateNotifier();
       }
     });
@@ -29,7 +30,7 @@ class _AdzanCardWidgetState extends ConsumerState<AdzanCardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final adzanState = ref.watch(adzanCardProvider);
+    final AdzanState adzanState = ref.watch(adzanCardProvider);
 
     return Container(
       padding: const EdgeInsets.symmetric(
