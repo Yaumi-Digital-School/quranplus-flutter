@@ -1,15 +1,8 @@
 import 'package:adhan/adhan.dart';
-import 'package:qurantafsir_flutter/shared/constants/prayer_times_list.dart';
+import 'package:qurantafsir_flutter/shared/constants/prayer_times.dart';
 import 'package:qurantafsir_flutter/shared/core/services/notification_service.dart';
 import 'package:qurantafsir_flutter/shared/utils/number_util.dart';
-
-const List<PrayerTimesList> prayerTimeEnums = <PrayerTimesList>[
-  PrayerTimesList.fajr,
-  PrayerTimesList.dhuhr,
-  PrayerTimesList.ashr,
-  PrayerTimesList.magrib,
-  PrayerTimesList.isya,
-];
+import 'package:qurantafsir_flutter/shared/utils/prayer_times.dart';
 
 class PrayerTimesService {
   PrayerTimesService({
@@ -48,13 +41,17 @@ class PrayerTimesService {
     ];
 
     for (int i = 0; i < prayerTimeList.length; i++) {
+      scheduleQuranReadingReminder(
+        prayerTime: prayerTimeList[i],
+        id: i,
+      );
+
       final String time =
           '${formatTwoDigits(prayerTimeList[i].hour)}:${formatTwoDigits(prayerTimeList[i].minute)}';
-
       await notificationService.zonedSchedule(
         id: i,
-        title: 'Quran Plus',
-        body: '${prayerTimeEnums[i].label} prayer time is coming - $time',
+        title: '${prayerTimeEnums[i].label} prayer time is coming - $time',
+        body: prayerTimeEnums[i].notifLabel,
         scheduledDateTime: prayerTimeList[i],
       );
     }
