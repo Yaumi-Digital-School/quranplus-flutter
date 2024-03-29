@@ -41,6 +41,11 @@ class PrayerTimesService {
     ];
 
     for (int i = 0; i < prayerTimeList.length; i++) {
+      scheduleQuranReadingReminder(
+        prayerTime: prayerTimeList[i],
+        id: i,
+      );
+
       final String time =
           '${formatTwoDigits(prayerTimeList[i].hour)}:${formatTwoDigits(prayerTimeList[i].minute)}';
       await notificationService.zonedSchedule(
@@ -48,11 +53,6 @@ class PrayerTimesService {
         title: '${prayerTimeEnums[i].label} prayer time is coming - $time',
         body: prayerTimeEnums[i].notifLabel,
         scheduledDateTime: prayerTimeList[i],
-      );
-
-      scheduleQuranReadingReminder(
-        prayerTime: prayerTimeList[i],
-        id: i,
       );
     }
   }

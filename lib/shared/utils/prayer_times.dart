@@ -11,7 +11,7 @@ void schedulePrayerTimes() {
   final String formattedDate = DateFormat('h:mm a').format(dt);
 
   Workmanager().registerPeriodicTask(
-    'prayer-times-$formattedDate',
+    'prayerTimes-$formattedDate',
     PrayerTimesWorker.prayerTimeReminder.name,
     tag: PrayerTimesWorker.prayerTimeReminder.tag,
     frequency: const Duration(days: 1),
@@ -28,13 +28,13 @@ void scheduleQuranReadingReminder({
   final Duration duration = sched.difference(DateTime.now());
 
   Workmanager().registerOneOffTask(
-    'quran-reading-reminder-$formattedDate',
+    'readingReminder-$formattedDate',
     PrayerTimesWorker.quranTimeReminder.name,
     initialDelay: duration,
     tag: PrayerTimesWorker.quranTimeReminder.tag,
     existingWorkPolicy: ExistingWorkPolicy.append,
     inputData: <String, dynamic>{
-      'id': '$id',
+      'id': id,
     },
   );
 }
@@ -70,7 +70,7 @@ Future<bool> handleWorker(String task, Map<String, dynamic>? inputData) async {
       prayerTimesService.init();
       await notificationService.init();
 
-      final int? id = inputData != null ? inputData['id'] as int? : null;
+      final int? id = inputData != null ? inputData['id'] : null;
       if (id == null) return Future.value(false);
 
       notificationService.show(

@@ -48,12 +48,12 @@ const List<PrayerTimesList> prayerTimeEnums = <PrayerTimesList>[
 
 enum PrayerTimesWorker {
   prayerTimeReminder(
-    name: 'initialize-prayer-times-notifications',
-    tag: 'prayer-times-reminder',
+    name: 'initializePrayerTimesNotifications',
+    tag: 'prayerTimesReminder',
   ),
   quranTimeReminder(
-    name: 'initialize-quran-reading-reminder-notifications',
-    tag: 'quran-time-reminder',
+    name: 'readingReminder',
+    tag: 'quranTimeReminder',
   );
 
   const PrayerTimesWorker({
