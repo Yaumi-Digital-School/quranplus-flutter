@@ -23,7 +23,7 @@ void scheduleQuranReadingReminder({
   required DateTime prayerTime,
   required int id,
 }) {
-  final DateTime sched = prayerTime.add(const Duration(seconds: 30));
+  final DateTime sched = prayerTime.add(const Duration(minutes: 30));
   final String formattedDate = DateFormat('h:mm a').format(sched);
   final Duration duration = sched.difference(DateTime.now());
 
