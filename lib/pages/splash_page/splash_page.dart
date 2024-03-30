@@ -47,7 +47,7 @@ class _SplashPageState extends State<SplashPage> {
         // Temporary
         final SharedPreferenceService sharedPref =
             ref.read(sharedPreferenceServiceProvider);
-        final String currentDate = DateFormat('dd-MM-yyyy').format(
+        final String currentDate = DateFormat('yyyy-MM-dd').format(
           DateTime.now(),
         );
         final DateTime currentDateTime = DateTime.parse(currentDate);
