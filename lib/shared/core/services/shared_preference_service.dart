@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart';
@@ -24,6 +25,7 @@ class SharedPreferenceService {
       "shown-optional-update-min-version";
   final String _themeKey = "theme";
   final String _dataReciter = "dataReciter";
+  final String _latestPrayerTimesSynced = 'latestPrayerTimeSynced';
 
   Future<void> init() async {
     _sharedPreferences = await SharedPreferences.getInstance();
@@ -199,5 +201,20 @@ class SharedPreferenceService {
     return ReciterItemResponse.fromJson(
       json.decode(res),
     );
+  }
+
+  Future<void> setLatestPrayerTimeSynced(DateTime time) async {
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String formattedDate = formatter.format(time);
+
+    await _sharedPreferences.setString(_latestPrayerTimesSynced, formattedDate);
+  }
+
+  DateTime? getLatestPrayerTimeSynced() {
+    final String res =
+        _sharedPreferences.getString(_latestPrayerTimesSynced) ?? '';
+    final DateTime? parsedTime = DateTime.tryParse(res);
+
+    return parsedTime;
   }
 }

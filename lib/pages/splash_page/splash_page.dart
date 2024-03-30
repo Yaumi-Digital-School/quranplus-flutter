@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/pages/splash_page/splash_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
@@ -7,7 +8,9 @@ import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/models/app_update_info.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
+import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
+import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 import 'package:qurantafsir_flutter/shared/utils/prayer_times.dart';
 import 'package:qurantafsir_flutter/widgets/app_update/force_update_dialog.dart';
 import 'package:qurantafsir_flutter/widgets/app_update/optional_update_dialog.dart';
@@ -42,7 +45,20 @@ class _SplashPageState extends State<SplashPage> {
       ),
       onStateNotifierReady: (notifier, ref) async {
         // Temporary
-        schedulePrayerTimes();
+        final SharedPreferenceService sharedPref =
+            ref.read(sharedPreferenceServiceProvider);
+        final String currentDate = DateFormat('dd-MM-yyyy').format(
+          DateTime.now(),
+        );
+        final DateTime currentDateTime = DateTime.parse(currentDate);
+        if (sharedPref.getLatestPrayerTimeSynced() == null ||
+            (sharedPref.getLatestPrayerTimeSynced() != null &&
+                sharedPref
+                    .getLatestPrayerTimeSynced()!
+                    .isBefore(currentDateTime))) {
+          schedulePrayerTimes();
+          sharedPref.setLatestPrayerTimeSynced(currentDateTime);
+        }
 
         final connectivityStatus = ref.read(internetConnectionStatusProviders);
 
