@@ -60,34 +60,32 @@ class PrayerTimeStateNotifier extends BaseStateNotifier<PrayerTimeState> {
 
   final PrayerTimesService prayerTimesService;
 
-  Future<void> checkGpsServices() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    bool isPermissionGiven = false;
-    bool locationCondition = false;
 
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-
-      if (permission == LocationPermission.always ||
-          permission == LocationPermission.whileInUse) {
-        isPermissionGiven = true;
-      }
-    }
-
-    isPermissionGiven = true;
-
-    if (isPermissionGiven) {
-      bool servicestatus = await Geolocator.isLocationServiceEnabled();
-
-      if (servicestatus) {
-        locationCondition = true;
-      }
-    }
-
-    state = state.copyWith(locationIsOn: locationCondition);
+  Future<void> getLocation() async {
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
+    print(position.latitude);
+    print(position.longitude);
   }
 
   Future<void> updateAutoDetectCondition(bool autoDetectCondition) async {
+    if(autoDetectCondition){
+      LocationPermission permission = await Geolocator.checkPermission();
+      bool isPermissionGiven ;
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+
+        if (permission == LocationPermission.always ||
+            permission == LocationPermission.whileInUse) {
+          isPermissionGiven = true;
+        }
+
+      }
+      bool servicestatus = await Geolocator.isLocationServiceEnabled();
+      if (servicestatus) {
+        await getLocation();
+      }
+
+    }
     state = state.copyWith(locationIsOn: autoDetectCondition);
   }
 
