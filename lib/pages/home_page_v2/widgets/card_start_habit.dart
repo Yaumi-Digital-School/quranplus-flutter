@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
-import 'package:qurantafsir_flutter/shared/constants/theme.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 
 class StartHabitCard extends StatelessWidget {
   const StartHabitCard({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: primary200,
-      elevation: 1.2,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(15)),
+    return Container(
+      clipBehavior: Clip.hardEdge,
+      decoration: BoxDecoration(
+        color: QPColors.brandSoft,
+        borderRadius: const BorderRadius.all(Radius.circular(15)),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Stack(
         children: [
@@ -40,11 +47,11 @@ class StartHabitCard extends StatelessWidget {
               ),
               child: Column(
                 children: <Widget>[
-                  Row(
+                  const Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(
+                        padding: EdgeInsets.fromLTRB(
                           7.0,
                           0,
                           7.0,
@@ -52,7 +59,10 @@ class StartHabitCard extends StatelessWidget {
                         ),
                         child: Text(
                           'New! Habit Feature',
-                          style: TextStyle(fontSize: 14, fontWeight: semiBold),
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ],
@@ -63,11 +73,11 @@ class StartHabitCard extends StatelessWidget {
                       Container(
                         margin: const EdgeInsets.only(left: 7.0),
                         width: 165,
-                        child: Text(
+                        child: const Text(
                           'Build your reading habit by setting and tracking your daily goals',
                           style: TextStyle(
-                            color: neutral700,
-                            fontWeight: medium,
+                            color: QPColors.neutral700,
+                            fontWeight: FontWeight.w500,
                             fontSize: 11,
                           ),
                         ),
@@ -89,18 +99,18 @@ class StartHabitCard extends StatelessWidget {
                 navigationBar.onTap!(1);
               },
               style: ElevatedButton.styleFrom(
-                foregroundColor: primary500,
+                foregroundColor: QPColors.brandFair,
                 backgroundColor: Colors.white,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
                 elevation: 1,
               ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 9),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 9),
                 child: Text(
                   'Start Now',
-                  style: TextStyle(fontSize: 12, fontWeight: semiBold),
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                 ),
               ),
             ),
