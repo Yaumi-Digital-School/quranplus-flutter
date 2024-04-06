@@ -368,9 +368,8 @@ class DailyProgressTrackerSkeleton extends StatelessWidget {
           218,
           218,
         ),
-        child: const Card(
-          elevation: 1.2,
-          shape: RoundedRectangleBorder(
+        child: Container(
+          decoration: const BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(15)),
           ),
         ),
