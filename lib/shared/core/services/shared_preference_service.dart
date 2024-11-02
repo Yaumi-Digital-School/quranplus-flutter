@@ -26,6 +26,9 @@ class SharedPreferenceService {
   final String _themeKey = "theme";
   final String _dataReciter = "dataReciter";
   final String _latestPrayerTimesSynced = 'latestPrayerTimeSynced';
+  final String _cityNameKey = "cityName";
+  final String _latKey = "latKey";
+  final String _lngKey = "lngKey";
 
   Future<void> init() async {
     _sharedPreferences = await SharedPreferences.getInstance();
@@ -216,5 +219,25 @@ class SharedPreferenceService {
     final DateTime? parsedTime = DateTime.tryParse(res);
 
     return parsedTime;
+  }
+
+  Future<void> setLocation(double lat, double lng) async {
+    await _sharedPreferences.setDouble(_latKey, lat);
+    await _sharedPreferences.setDouble(_lngKey, lng);
+  }
+
+  List<double?> getLocation() {
+    final double? lat = _sharedPreferences.getDouble(_latKey);
+    final double? lng = _sharedPreferences.getDouble(_lngKey);
+
+    return [lat, lng];
+  }
+
+  Future<void> setCityName(String name) async {
+    await _sharedPreferences.setString(_cityNameKey, name);
+  }
+
+  String? getCityName() {
+    return _sharedPreferences.getString(_cityNameKey);
   }
 }

@@ -5,54 +5,68 @@ import 'package:qurantafsir_flutter/shared/core/providers/prayer_times_notifier.
 final StateProvider<AdzanState> adzanCardProvider =
     StateProvider<AdzanState>((ref) {
   final PrayerTimeState prayerTimeState = ref.watch(prayerTimeProvider);
-
+  final String? cityName = prayerTimeState.cityName;
   final DateTime now = DateTime.now();
 
   if (prayerTimeState.prayerTimes == null) {
-    return const AdzanState(null, null);
+    return AdzanState(null, null, cityName);
   }
 
-  if (prayerTimeState.prayerTimes!.isha.compareTo(now) > 0 ||
-      prayerTimeState.prayerTimes!.fajr.compareTo(now) < 0) {
+  if (now.isBefore(prayerTimeState.prayerTimes!.fajr)) {
     return AdzanState(
       PrayerTimesList.fajr,
       prayerTimeState.prayerTimes!.fajr,
+      cityName,
     );
   }
 
-  if (prayerTimeState.prayerTimes!.isha.compareTo(now) < 0 &&
-      prayerTimeState.prayerTimes!.maghrib.compareTo(now) > 0) {
+  if (now.isBefore(prayerTimeState.prayerTimes!.dhuhr)) {
     return AdzanState(
-      PrayerTimesList.isya,
-      prayerTimeState.prayerTimes!.isha,
+      PrayerTimesList.dhuhr,
+      prayerTimeState.prayerTimes!.dhuhr,
+      cityName,
     );
   }
 
-  if (prayerTimeState.prayerTimes!.maghrib.compareTo(now) < 0 &&
-      prayerTimeState.prayerTimes!.asr.compareTo(now) > 0) {
-    return AdzanState(
-      PrayerTimesList.magrib,
-      prayerTimeState.prayerTimes!.maghrib,
-    );
-  }
-
-  if (prayerTimeState.prayerTimes!.asr.compareTo(now) < 0 &&
-      prayerTimeState.prayerTimes!.dhuhr.compareTo(now) > 0) {
+  if (now.isBefore(prayerTimeState.prayerTimes!.asr)) {
     return AdzanState(
       PrayerTimesList.ashr,
       prayerTimeState.prayerTimes!.asr,
+      cityName,
+    );
+  }
+
+  if (now.isBefore(prayerTimeState.prayerTimes!.maghrib)) {
+    return AdzanState(
+      PrayerTimesList.magrib,
+      prayerTimeState.prayerTimes!.maghrib,
+      cityName,
+    );
+  }
+
+  if (now.isBefore(prayerTimeState.prayerTimes!.isha)) {
+    return AdzanState(
+      PrayerTimesList.isya,
+      prayerTimeState.prayerTimes!.isha,
+      cityName,
     );
   }
 
   return AdzanState(
-    PrayerTimesList.dhuhr,
-    prayerTimeState.prayerTimes!.dhuhr,
+    PrayerTimesList.fajr,
+    prayerTimeState.prayerTimes!.fajr,
+    cityName,
   );
 });
 
 class AdzanState {
   final PrayerTimesList? prayerTimesList;
   final DateTime? date;
+  final String? cityName;
 
-  const AdzanState(this.prayerTimesList, this.date);
+  const AdzanState(
+    this.prayerTimesList,
+    this.date,
+    this.cityName,
+  );
 }

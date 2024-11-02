@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:qurantafsir_flutter/pages/account_deletion/account_deletion_view.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_view.dart';
+import 'package:qurantafsir_flutter/pages/location_manual/location_manual_view.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/prayer_time_page/prayer_time.dart';
 import 'package:qurantafsir_flutter/pages/registration_and_login_page/registration_and_login_page.dart';
@@ -206,6 +207,9 @@ class _MyAppState extends ConsumerState<MyApp> {
             break;
           case RoutePaths.routePrayerTimePage:
             selectedRouteWidget = const PrayerTimePage();
+            break;
+          case RoutePaths.routeLocationManualPage:
+            selectedRouteWidget = const LocationManualPage();
             break;
           default:
             selectedRouteWidget = const Scaffold(

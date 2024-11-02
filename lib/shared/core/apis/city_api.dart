@@ -9,8 +9,13 @@ part 'city_api.g.dart';
 abstract class CityApi {
   factory CityApi(Dio dio, {String baseUrl}) = _CityApi;
 
-  @GET('/api/prayer_times/city')
-  Future<HttpResponse<List<CityResponse>>> getUserSummary({
+  @GET('/api/location/search_city')
+  Future<HttpResponse<List<CityResponse>>> getCities({
     @Query('q') required String keyword,
+  });
+
+  @GET('/api/location/lookup_city')
+  Future<HttpResponse<CityResponse>> getCityDetail({
+    @Query('id') required String id,
   });
 }

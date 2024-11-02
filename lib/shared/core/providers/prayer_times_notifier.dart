@@ -12,21 +12,25 @@ class PrayerTimeState {
     this.locationIsOn = false,
     this.isLoading = true,
     this.prayerTimes,
+    this.cityName,
   });
 
   bool isLoading;
   bool locationIsOn;
   PrayerTimes? prayerTimes;
+  String? cityName;
 
   PrayerTimeState copyWith({
     bool? isLoading,
     bool? locationIsOn,
     PrayerTimes? prayerTimes,
+    String? cityName,
   }) {
     return PrayerTimeState(
       locationIsOn: locationIsOn ?? this.locationIsOn,
       isLoading: isLoading ?? this.isLoading,
       prayerTimes: prayerTimes ?? this.prayerTimes,
+      cityName: cityName ?? this.cityName,
     );
   }
 
@@ -91,18 +95,26 @@ class PrayerTimeStateNotifier extends BaseStateNotifier<PrayerTimeState> {
     state = state.copyWith(locationIsOn: autoDetectCondition);
   }
 
+  Future<void> changeLocation(
+    double latitude,
+    double longitude,
+    String cityName,
+  ) async {
+    await prayerTimesService.setCoordinates(latitude, longitude, cityName);
+  }
+
   @override
-  void initStateNotifier() {
+  Future<void> initStateNotifier() async {
+    final updatedCityName = prayerTimesService.getCityName();
     state = state.copyWith(
       isLoading: false,
       prayerTimes: prayerTimesService.getTodayPrayerTimes(),
+      cityName: updatedCityName,
     );
   }
 }
 
 final prayerTimeProvider =
     StateNotifierProvider<PrayerTimeStateNotifier, PrayerTimeState>((ref) {
-  return PrayerTimeStateNotifier(
-    ref.read(prayerTimesService),
-  );
+  return PrayerTimeStateNotifier(ref.watch(prayerTimesService));
 });
