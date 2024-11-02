@@ -193,48 +193,46 @@ class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
                     ),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      16.0,
-                      8.0,
-                      16.0,
+                    padding: const EdgeInsets.all(
                       16.0,
                     ),
                     child: Column(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Auto-detect location",
-                              style: QPTextStyle.getBody2SemiBold(context)
-                                  .copyWith(
-                                color: QPColors.getColorBasedTheme(
-                                  dark: QPColors.whiteRoot,
-                                  light: QPColors.blackMassive,
-                                  brown: QPColors.brownModeMassive,
-                                  context: context,
-                                ),
-                              ),
-                            ),
-                            Transform.scale(
-                              scale: 0.7,
-                              child: CupertinoSwitch(
-                                activeColor: QPColors.brandHeavy,
-                                value: state.locationIsOn,
-                                onChanged: (value) {
-                                  if (value != state.locationIsOn) {
-                                    ref
-                                        .read(prayerTimeProvider.notifier)
-                                        .updateAutoDetectCondition(value);
-                                  }
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 24,
-                        ),
+                        // TODO: uncoment this if auto detect is ready
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //   children: [
+                        //     Text(
+                        //       "Auto-detect location",
+                        //       style: QPTextStyle.getBody2SemiBold(context)
+                        //           .copyWith(
+                        //         color: QPColors.getColorBasedTheme(
+                        //           dark: QPColors.whiteRoot,
+                        //           light: QPColors.blackMassive,
+                        //           brown: QPColors.brownModeMassive,
+                        //           context: context,
+                        //         ),
+                        //       ),
+                        //     ),
+                        //     Transform.scale(
+                        //       scale: 0.7,
+                        //       child: CupertinoSwitch(
+                        //         activeColor: QPColors.brandHeavy,
+                        //         value: state.locationIsOn,
+                        //         onChanged: (value) {
+                        //           if (value != state.locationIsOn) {
+                        //             ref
+                        //                 .read(prayerTimeProvider.notifier)
+                        //                 .updateAutoDetectCondition(value);
+                        //           }
+                        //         },
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+                        // const SizedBox(
+                        //   height: 24,
+                        // ),
                         InkWell(
                           onTap: () async {
                             await Navigator.pushNamed(
