@@ -1,5 +1,5 @@
+import 'package:app_links/app_links.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_view.dart';
 import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
@@ -26,16 +26,17 @@ class DeepLinkService {
   final MainPageProvider mainPageProvider;
 
   GlobalKey<NavigatorState>? _navigatorKey;
+  final AppLinks _appLinks = AppLinks();
 
   Future<void> init(GlobalKey<NavigatorState> navigatorKey) async {
     _navigatorKey = navigatorKey;
-    final initLink = await FirebaseDynamicLinks.instance.getInitialLink();
+    final Uri? initLink = await _appLinks.getInitialLink();
     if (initLink != null) {
-      await _handleDeepLink(initLink.link);
+      await _handleDeepLink(initLink);
     }
-    FirebaseDynamicLinks.instance.onLink.listen(
-      (event) async {
-        await _handleDeepLink(event.link);
+    _appLinks.uriLinkStream.listen(
+      (Uri uri) async {
+        await _handleDeepLink(uri);
       },
     );
   }

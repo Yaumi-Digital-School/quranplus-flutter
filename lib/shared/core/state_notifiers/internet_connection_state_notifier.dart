@@ -8,17 +8,16 @@ class InternetConnectionStatus extends StateNotifier<ConnectivityStatus> {
 
   InternetConnectionStatus() : super(ConnectivityStatus.isConnected) {
     lastResult = state;
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      switch (result) {
-        case ConnectivityResult.ethernet:
-        case ConnectivityResult.mobile:
-        case ConnectivityResult.wifi:
-          newState = ConnectivityStatus.isConnected;
-          break;
-        default:
-          newState = ConnectivityStatus.isDisconnected;
-          break;
-      }
+    Connectivity()
+        .onConnectivityChanged
+        .listen((List<ConnectivityResult> results) {
+      final bool hasConnection = results.any((r) =>
+          r == ConnectivityResult.ethernet ||
+          r == ConnectivityResult.mobile ||
+          r == ConnectivityResult.wifi);
+      newState = hasConnection
+          ? ConnectivityStatus.isConnected
+          : ConnectivityStatus.isDisconnected;
       if (newState != lastResult) {
         state = newState;
         lastResult = newState;

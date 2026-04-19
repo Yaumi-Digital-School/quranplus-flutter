@@ -31,7 +31,7 @@ import 'package:qurantafsir_flutter/widgets/horizontal_divider.dart';
 import 'package:qurantafsir_flutter/widgets/utils/general_dialog.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-import 'package:wakelock/wakelock.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'widgets/widgets.dart';
 
@@ -100,7 +100,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
   @override
   void initState() {
     super.initState();
-    Wakelock.enable();
+    WakelockPlus.enable();
     scrollController = AutoScrollController();
     VisibilityDetectorController.instance.updateInterval =
         const Duration(milliseconds: 300);
@@ -125,7 +125,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
 
   @override
   void dispose() {
-    Wakelock.disable();
+    WakelockPlus.disable();
     super.dispose();
   }
 
