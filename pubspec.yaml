@@ -19,7 +19,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.8.0+103
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=2.17.0 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -59,6 +59,7 @@ dependencies:
   analyzer: ^5.13.0
   wakelock: ^0.6.2
   package_info_plus: ^3.1.2
+  alice: ^0.3.2
   sign_in_with_apple: ^5.0.0
   firebase_dynamic_links: ^5.3.5
   cached_network_image: ^3.2.0
@@ -75,7 +76,6 @@ dependencies:
   http: ^0.13.6
   dio: ^4.0.6
   pretty_dio_logger: ^1.2.0-beta-1
-  alice: ^0.3.2
   path: ^1.8.3
   stack_trace: ^1.11.0
   firebase_crashlytics: ^3.3.7
