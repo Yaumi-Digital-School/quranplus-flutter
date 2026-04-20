@@ -32,6 +32,7 @@ class DioService {
           responseHeader: true,
           responseBody: true,
         ),
+        _aliceService.dioAdapter,
       ]);
   }
 
