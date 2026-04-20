@@ -11,7 +11,7 @@ import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/widgets/utils/general_dialog.dart';
 
 class ChangeThemeBottomSheet extends ConsumerStatefulWidget {
-  const ChangeThemeBottomSheet({Key? key}) : super(key: key);
+  const ChangeThemeBottomSheet({super.key});
 
   @override
   ConsumerState<ChangeThemeBottomSheet> createState() =>
@@ -132,7 +132,9 @@ class _ChangeThemeBottomSheetState
     });
 
     await Future.delayed(const Duration(seconds: 2), () {
-      Navigator.pop(context);
+      if (mounted) {
+        Navigator.pop(context);
+      }
     });
   }
 }

@@ -10,8 +10,8 @@ class OnBoardingWidget extends StatefulWidget {
     required this.onBoardingKey,
     required this.child,
     required this.listWidget,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<OnBoardingWidget> createState() => _OnBoardingWidgetState();
@@ -51,7 +51,7 @@ class _OnBoardingWidgetState extends State<OnBoardingWidget> {
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
-                color: Colors.black.withOpacity(0.8),
+                color: Colors.black.withValues(alpha: 0.8),
               ),
             ),
           if (isVisible && step < widget.listWidget.length)

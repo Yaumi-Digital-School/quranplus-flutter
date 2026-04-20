@@ -9,23 +9,22 @@ import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
 import 'package:qurantafsir_flutter/widgets/registration_view/registration_view.dart';
 
 class HabitPage extends StatelessWidget {
-  const HabitPage({Key? key}) : super(key: key);
+  const HabitPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
         final navigationBar =
             mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
         navigationBar.onTap!(0);
-
-        return false;
       },
       child: StateNotifierConnector<HabitPageStateNotifier, HabitPageState>(
         stateNotifierProvider:
             StateNotifierProvider<HabitPageStateNotifier, HabitPageState>(
-          (StateNotifierProviderRef<HabitPageStateNotifier, HabitPageState>
-              ref) {
+          (Ref ref) {
             return HabitPageStateNotifier(
               repository: ref.watch(authenticationService),
               sharedPreferenceService:

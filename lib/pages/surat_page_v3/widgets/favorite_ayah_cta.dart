@@ -4,10 +4,10 @@ import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
 class FavoriteAyahCTA extends StatefulWidget {
   const FavoriteAyahCTA({
-    Key? key,
+    super.key,
     required this.onTap,
     this.isFavorited = false,
-  }) : super(key: key);
+  });
 
   final VoidCallback onTap;
   final bool isFavorited;

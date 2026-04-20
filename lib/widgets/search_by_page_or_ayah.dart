@@ -8,9 +8,9 @@ import 'package:qurantafsir_flutter/widgets/button.dart';
 
 class SearchByPageOrAyah extends StatefulWidget {
   const SearchByPageOrAyah({
-    Key? key,
+    super.key,
     required this.verseMapper,
-  }) : super(key: key);
+  });
 
   final Map<String, List<String>> verseMapper;
 

@@ -1,4 +1,5 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/habit_api.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
@@ -78,7 +79,7 @@ class HabitDailySummaryService {
         stackTrace,
         reason: 'error on syncHabit() method',
       );
-      print(error);
+      debugPrint(error.toString());
     }
   }
 

@@ -4,7 +4,7 @@ import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 
 class StartHabitCard extends StatelessWidget {
-  const StartHabitCard({Key? key}) : super(key: key);
+  const StartHabitCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class StartHabitCard extends StatelessWidget {
         borderRadius: const BorderRadius.all(Radius.circular(15)),
         boxShadow: <BoxShadow>[
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),

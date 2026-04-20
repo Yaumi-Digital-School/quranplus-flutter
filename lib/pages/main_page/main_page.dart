@@ -19,9 +19,9 @@ GlobalKey mainNavbarGlobalKey = GlobalKey<State<BottomNavigationBar>>();
 
 class MainPage extends StatefulWidget {
   const MainPage({
-    Key? key,
+    super.key,
     this.param,
-  }) : super(key: key);
+  });
 
   final MainPageParam? param;
 

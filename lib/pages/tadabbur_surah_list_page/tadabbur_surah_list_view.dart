@@ -11,7 +11,7 @@ import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 
 class TadabburSurahListView extends StatelessWidget {
-  const TadabburSurahListView({Key? key}) : super(key: key);
+  const TadabburSurahListView({super.key});
 
   @override
   Widget build(BuildContext context) {

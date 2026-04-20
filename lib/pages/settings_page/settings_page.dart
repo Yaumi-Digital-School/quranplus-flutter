@@ -22,25 +22,23 @@ import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/horizontal_divider.dart';
 
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
         final navigationBar =
             mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
         navigationBar.onTap!(0);
-
-        return false;
       },
       child:
           StateNotifierConnector<SettingsPageStateNotifier, SettingsPageState>(
         stateNotifierProvider:
             StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>(
-          (StateNotifierProviderRef<SettingsPageStateNotifier,
-                  SettingsPageState>
-              ref) {
+          (Ref ref) {
             return SettingsPageStateNotifier(
               repository: ref.watch(authenticationService),
               sharedPreferenceService:

@@ -3,7 +3,7 @@ import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 
 class NewFlagBadge extends StatelessWidget {
-  const NewFlagBadge({Key? key}) : super(key: key);
+  const NewFlagBadge({super.key});
 
   @override
   Widget build(BuildContext context) {

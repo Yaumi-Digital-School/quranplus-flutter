@@ -77,7 +77,7 @@ final Provider<TadabburApi> tadabburApiProvider = Provider<TadabburApi>((ref) {
 });
 
 final Provider<UserApi> userApiProvider =
-    Provider<UserApi>((ProviderRef<UserApi> ref) {
+    Provider<UserApi>((Ref ref) {
   final DioService dioService = ref.read(dioServiceProvider);
 
   return UserApi(
@@ -155,7 +155,7 @@ final Provider<DeepLinkService> deepLinkService =
 final StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>
     settingsPageProvider =
     StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>(
-  (StateNotifierProviderRef<SettingsPageStateNotifier, SettingsPageState> ref) {
+  (Ref ref) {
     return SettingsPageStateNotifier(
       repository: ref.watch(authenticationService),
       sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),

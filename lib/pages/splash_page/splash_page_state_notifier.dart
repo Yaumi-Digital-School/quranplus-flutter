@@ -75,7 +75,7 @@ class SplashPageStateNotifier extends BaseStateNotifier<SplashPageState> {
         stackTrace,
         reason: 'error on initstate() method in splash screen',
       );
-      print(error);
+      debugPrint(error.toString());
     }
   }
 

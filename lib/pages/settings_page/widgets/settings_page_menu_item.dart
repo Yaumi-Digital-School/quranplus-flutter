@@ -12,8 +12,8 @@ class SettingsPageMenuItem extends StatelessWidget {
     required this.title,
     this.subtitle,
     this.customColor,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final StoredIcon? icon;
   final IconData? iconData;

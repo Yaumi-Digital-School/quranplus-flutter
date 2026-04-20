@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
@@ -162,7 +163,7 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
         stackTrace,
         reason: 'error on init() method audio recitation',
       );
-      print(error);
+      debugPrint(error.toString());
       state = state.copyWith(isLoading: false);
       if (onLoadError != null) onLoadError();
     }

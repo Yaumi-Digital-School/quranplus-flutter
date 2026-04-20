@@ -12,9 +12,9 @@ import 'package:version/version.dart';
 
 class OptionalUpdateDialog extends ConsumerWidget {
   const OptionalUpdateDialog({
-    Key? key,
+    super.key,
     required this.optionalMinVersion,
-  }) : super(key: key);
+  });
 
   final Version optionalMinVersion;
 

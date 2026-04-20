@@ -44,7 +44,6 @@ Future<void> main() async {
   await NotificationService().init();
   await Workmanager().initialize(
     callbackDispatcher,
-    isInDebugMode: true,
   );
 
   final AudioRecitationHandler currentAudioHandler =
@@ -100,7 +99,7 @@ void callbackDispatcher() {
 }
 
 class MyApp extends ConsumerStatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   static FirebaseAnalyticsObserver observer =

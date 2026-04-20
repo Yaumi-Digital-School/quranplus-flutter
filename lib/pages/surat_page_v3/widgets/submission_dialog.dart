@@ -8,10 +8,10 @@ import 'package:qurantafsir_flutter/widgets/button.dart';
 
 class TrackingSubmissionDialog extends StatefulWidget {
   const TrackingSubmissionDialog({
-    Key? key,
+    super.key,
     this.isFromTapBack = false,
     required this.notifier,
-  }) : super(key: key);
+  });
 
   final bool isFromTapBack;
   final SuratPageStateNotifier notifier;

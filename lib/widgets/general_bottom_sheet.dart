@@ -11,8 +11,8 @@ class BaseWidgetBottomSheet extends ConsumerStatefulWidget {
   const BaseWidgetBottomSheet({
     required this.mainAxisSize,
     required this.widgetChild,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final MainAxisSize mainAxisSize;
   final Widget widgetChild;
@@ -174,6 +174,7 @@ class GeneralBottomSheet {
     Function() onRefreshClicked,
   ) {
     return Future.delayed(Duration.zero, () {
+      if (!context.mounted) return;
       showBaseBottomSheet(
         context: context,
         widgetChild: Container(

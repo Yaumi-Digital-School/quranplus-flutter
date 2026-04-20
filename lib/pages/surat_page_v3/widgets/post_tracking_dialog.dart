@@ -102,11 +102,10 @@ class HabitProgressPostTrackingDialog {
 
 class _PostSubmissionRemarks extends StatelessWidget {
   const _PostSubmissionRemarks({
-    Key? key,
     required this.sharedPreferenceService,
     required this.cta,
     this.isComplete = false,
-  }) : super(key: key);
+  });
 
   final SharedPreferenceService sharedPreferenceService;
   final bool isComplete;

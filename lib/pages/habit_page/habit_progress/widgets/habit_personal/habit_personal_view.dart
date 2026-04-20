@@ -18,7 +18,7 @@ import 'package:qurantafsir_flutter/widgets/utils/general_dialog.dart';
 import 'habit_personal_state_notifier.dart';
 
 class HabitPersonalView extends StatefulWidget {
-  const HabitPersonalView({Key? key}) : super(key: key);
+  const HabitPersonalView({super.key});
 
   @override
   State<HabitPersonalView> createState() => _HabitPersonalState();
@@ -31,9 +31,7 @@ class _HabitPersonalState extends State<HabitPersonalView> {
         HabitPersonalState>(
       stateNotifierProvider:
           StateNotifierProvider<HabitPersonalStateNotifier, HabitPersonalState>(
-        (StateNotifierProviderRef<HabitPersonalStateNotifier,
-                HabitPersonalState>
-            ref) {
+        (Ref ref) {
           return HabitPersonalStateNotifier(
             habitDailySummaryService: ref.watch(habitDailySummaryService),
           );

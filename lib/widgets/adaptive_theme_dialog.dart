@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class AdaptiveThemeDialog extends StatelessWidget {
   const AdaptiveThemeDialog({
-    Key? key,
+    super.key,
     required this.child,
     this.borderRadiusValue = 8,
     this.contentPadding = const EdgeInsets.all(0),
-  }) : super(key: key);
+  });
 
   final Widget child;
   final double borderRadiusValue;
@@ -15,7 +15,7 @@ class AdaptiveThemeDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Theme.of(context).dialogBackgroundColor,
+      backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(borderRadiusValue),
