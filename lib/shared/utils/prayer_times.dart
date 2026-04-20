@@ -15,7 +15,7 @@ void schedulePrayerTimes() {
     PrayerTimesWorker.prayerTimeReminder.name,
     tag: PrayerTimesWorker.prayerTimeReminder.tag,
     frequency: const Duration(days: 1),
-    existingWorkPolicy: ExistingWorkPolicy.append,
+    existingWorkPolicy: ExistingPeriodicWorkPolicy.update,
   );
 }
 

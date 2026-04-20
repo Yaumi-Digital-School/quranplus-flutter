@@ -1,15 +1,22 @@
 import 'package:alice/alice.dart';
+import 'package:alice/model/alice_configuration.dart';
+import 'package:alice_dio/alice_dio_adapter.dart';
 import 'package:flutter/widgets.dart';
 
 class AliceService {
   AliceService(GlobalKey<NavigatorState> navigatorKey)
-      : _navigatorKey = navigatorKey;
+      : alice = Alice(
+          configuration: AliceConfiguration(
+            navigatorKey: navigatorKey,
+            showNotification: false,
+            showInspectorOnShake: true,
+          ),
+        ) {
+    alice.addAdapter(dioAdapter);
+  }
 
-  final GlobalKey<NavigatorState> _navigatorKey;
+  final Alice alice;
+  final AliceDioAdapter dioAdapter = AliceDioAdapter();
 
-  Alice get alice => Alice(
-        navigatorKey: _navigatorKey,
-        showNotification: false,
-        showInspectorOnShake: true,
-      );
+  void showInspector() => alice.showInspector();
 }

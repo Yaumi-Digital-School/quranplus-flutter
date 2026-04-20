@@ -22,7 +22,7 @@ class DioService {
   Dio _makeBaseDio() {
     return Dio()
       ..options.baseUrl = baseUrl
-      ..options.connectTimeout = _timeOut
+      ..options.connectTimeout = Duration(milliseconds: _timeOut)
       ..interceptors.addAll([
         PrettyDioLogger(
           request: true,
@@ -32,11 +32,11 @@ class DioService {
           responseHeader: true,
           responseBody: true,
         ),
-        _aliceService.alice.getDioInterceptor(),
+        _aliceService.dioAdapter,
       ]);
   }
 
-  dynamic _onDioError(DioError e, ErrorInterceptorHandler h) {
+  dynamic _onDioError(DioException e, ErrorInterceptorHandler h) {
     if (e.error != null && e.error is Error) {
       // send error to somewhere
     }
