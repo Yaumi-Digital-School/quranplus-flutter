@@ -13,8 +13,7 @@ import 'package:qurantafsir_flutter/widgets/text_field.dart';
 
 class AddDailyProgressManualView extends StatefulWidget {
   final HabitDailySummary habitDailySummary;
-  const AddDailyProgressManualView({Key? key, required this.habitDailySummary})
-      : super(key: key);
+  const AddDailyProgressManualView({super.key, required this.habitDailySummary});
 
   @override
   State<AddDailyProgressManualView> createState() =>
@@ -35,9 +34,7 @@ class _AddDailyProgressManualViewState
         AddDailyProgressManualState>(
       stateNotifierProvider: StateNotifierProvider<
           AddDailyProgressManualStateNotifier, AddDailyProgressManualState>(
-        (StateNotifierProviderRef<AddDailyProgressManualStateNotifier,
-                AddDailyProgressManualState>
-            ref) {
+        (Ref ref) {
           return AddDailyProgressManualStateNotifier(
             habitDailySummary: widget.habitDailySummary,
           );

@@ -7,12 +7,12 @@ import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 
 class TadabburSurahCard extends StatelessWidget {
   const TadabburSurahCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.availableTadabbur,
     required this.lastUpdatedAt,
     required this.surahID,
-  }) : super(key: key);
+  });
 
   final String title;
   final int availableTadabbur;

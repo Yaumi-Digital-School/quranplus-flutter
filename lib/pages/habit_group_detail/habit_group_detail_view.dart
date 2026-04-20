@@ -31,9 +31,9 @@ class HabitGroupDetailViewParam {
 
 class HabitGroupDetailView extends StatefulWidget {
   const HabitGroupDetailView({
-    Key? key,
+    super.key,
     required this.param,
-  }) : super(key: key);
+  });
 
   final HabitGroupDetailViewParam param;
 
@@ -66,6 +66,7 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
 
         if (widget.param.isSuccessJoinGroup) {
           Future.delayed(const Duration(seconds: 1), () {
+            if (!context.mounted) return;
             HabitGroupBottomSheet.showModalSuccessJoinGroup(context: context);
           });
         }
@@ -86,6 +87,7 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
 
         if (state.userSummaryResponse != null) {
           Future.delayed(const Duration(milliseconds: 0), () {
+            if (!context.mounted) return;
             UserSummaryBottomSheet.showBottomSheet(
               context: context,
               data: state.userSummaryResponse!,
@@ -94,9 +96,11 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
           });
         }
 
-        return WillPopScope(
-          onWillPop: () async {
-            return _onTapBack(context, ref, notifier.groupNameIsEdited);
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) return;
+            _onTapBack(context, ref, notifier.groupNameIsEdited);
           },
           child: Scaffold(
             appBar: PreferredSize(
@@ -285,7 +289,7 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
                 ),
                 if (state.isFetchUserSummary)
                   Container(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withValues(alpha: 0.3),
                     height: double.infinity,
                     width: double.infinity,
                     child: const Center(
@@ -398,12 +402,11 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
     final uri =
         await DynamicLinkHelper().createDynamicLinkInvite(id: widget.param.id);
 
-    if (mounted) {
-      HabitGroupBottomSheet.showModalInviteMemberGroup(
-        context: context,
-        url: uri.toString(),
-        currentGroupName: state.groupName,
-      );
-    }
+    if (!context.mounted) return;
+    HabitGroupBottomSheet.showModalInviteMemberGroup(
+      context: context,
+      url: uri.toString(),
+      currentGroupName: state.groupName,
+    );
   }
 }

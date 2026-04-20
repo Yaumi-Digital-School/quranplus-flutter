@@ -8,8 +8,8 @@ import 'package:store_redirect/store_redirect.dart';
 
 class ForceUpdateDialog extends StatelessWidget {
   const ForceUpdateDialog({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

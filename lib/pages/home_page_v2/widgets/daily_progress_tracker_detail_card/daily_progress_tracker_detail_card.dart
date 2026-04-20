@@ -15,13 +15,13 @@ import 'package:shimmer/shimmer.dart';
 
 class DailyProgressTrackerDetailCard extends StatelessWidget {
   const DailyProgressTrackerDetailCard({
-    Key? key,
+    super.key,
     required this.dailySummary,
     this.isNeedSync = false,
     this.lastTrackedData,
     this.lastBookmark,
     this.onRefreshParentWidget,
-  }) : super(key: key);
+  });
 
   final HabitDailySummary dailySummary;
   final LastRecordingData? lastTrackedData;
@@ -47,7 +47,7 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
         borderRadius: const BorderRadius.all(Radius.circular(15)),
         boxShadow: <BoxShadow>[
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -101,7 +101,7 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
         borderRadius: const BorderRadius.all(Radius.circular(15)),
         boxShadow: <BoxShadow>[
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -362,7 +362,7 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
 }
 
 class DailyProgressTrackerSkeleton extends StatelessWidget {
-  const DailyProgressTrackerSkeleton({Key? key}) : super(key: key);
+  const DailyProgressTrackerSkeleton({super.key});
 
   @override
   Widget build(BuildContext context) {

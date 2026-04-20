@@ -13,8 +13,8 @@ import 'package:qurantafsir_flutter/widgets/snackbar.dart';
 
 class AccountDeletionInformationView extends StatelessWidget {
   const AccountDeletionInformationView({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

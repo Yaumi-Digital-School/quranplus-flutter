@@ -5,13 +5,13 @@ import 'package:qurantafsir_flutter/widgets/registration_view/widgets/new_flag_b
 
 class RegistrationViewFeatureInformation extends StatelessWidget {
   const RegistrationViewFeatureInformation({
-    Key? key,
+    super.key,
     this.icon,
     this.iconData,
     required this.title,
     required this.description,
     this.isNew = false,
-  }) : super(key: key);
+  });
 
   final StoredIcon? icon;
   final IconData? iconData;

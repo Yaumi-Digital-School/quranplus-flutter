@@ -12,7 +12,7 @@ import 'package:qurantafsir_flutter/shared/core/providers/prayer_times_notifier.
 import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 
 class PrayerTimePage extends ConsumerStatefulWidget {
-  const PrayerTimePage({Key? key}) : super(key: key);
+  const PrayerTimePage({super.key});
 
   @override
   ConsumerState<PrayerTimePage> createState() => _PrayerTimePageState();
@@ -218,7 +218,7 @@ class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
                             Transform.scale(
                               scale: 0.7,
                               child: CupertinoSwitch(
-                                activeColor: QPColors.brandHeavy,
+                                activeTrackColor: QPColors.brandHeavy,
                                 value: state.locationIsOn,
                                 onChanged: (value) {
                                   if (value != state.locationIsOn) {

@@ -4,7 +4,7 @@ import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 
 class VersionAppWidget extends StatefulWidget {
-  const VersionAppWidget({Key? key, this.title}) : super(key: key);
+  const VersionAppWidget({super.key, this.title});
 
   final String? title;
 

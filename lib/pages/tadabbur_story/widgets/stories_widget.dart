@@ -12,8 +12,8 @@ class StoriesWidget extends StatefulWidget {
     required this.updateLatestReadStoryIndex,
     this.lastReadStoryIndex,
     this.onClose,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final VoidCallback onOpenPrevTadabbur;
   final VoidCallback onOpenNextTadabbur;

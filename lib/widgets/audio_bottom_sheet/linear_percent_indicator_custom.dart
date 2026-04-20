@@ -7,7 +7,7 @@ import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
 
 class LinearPercentIndicatorCustom extends ConsumerWidget {
-  const LinearPercentIndicatorCustom({Key? key}) : super(key: key);
+  const LinearPercentIndicatorCustom({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

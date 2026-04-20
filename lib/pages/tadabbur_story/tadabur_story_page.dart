@@ -23,8 +23,8 @@ class TadabburStoryPageParams {
 class TadabburStoryPage extends StatefulWidget {
   const TadabburStoryPage({
     required this.params,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final TadabburStoryPageParams params;
 

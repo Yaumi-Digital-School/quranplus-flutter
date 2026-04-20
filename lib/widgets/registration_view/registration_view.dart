@@ -17,10 +17,10 @@ import 'package:qurantafsir_flutter/widgets/sign_in_bottom_sheet.dart';
 
 class RegistrationView extends ConsumerWidget {
   const RegistrationView({
-    Key? key,
+    super.key,
     this.onSuccessLogin,
     this.shouldNavigateTabToHome = true,
-  }) : super(key: key);
+  });
 
   final VoidCallback? onSuccessLogin;
   final bool shouldNavigateTabToHome;
@@ -157,7 +157,6 @@ class RegistrationView extends ConsumerWidget {
               );
             break;
           case SignInResult.success:
-          default:
             await ref.read(habitDailySummaryService).syncHabit(
                   connectivityStatus: connectivityStatus,
                 );

@@ -79,9 +79,9 @@ class SuratPageV3Param {
 
 class SuratPageV3 extends ConsumerStatefulWidget {
   const SuratPageV3({
-    Key? key,
+    super.key,
     required this.param,
-  }) : super(key: key);
+  });
 
   final SuratPageV3Param param;
 
@@ -136,6 +136,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
       onStateNotifierReady: (notifier, ref) async {
         if (widget.param.isStartTracking) {
           Future.delayed(Duration.zero, () {
+            if (!context.mounted) return;
             _startTracking(context, notifier);
           });
         }
@@ -173,11 +174,15 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
 
         final connectivityStatus = ref.watch(internetConnectionStatusProviders);
 
-        return WillPopScope(
-          onWillPop: () async => _onTapBack(
-            notifier: notifier,
-            state: state,
-          ),
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) return;
+            _onTapBack(
+              notifier: notifier,
+              state: state,
+            );
+          },
           child: Scaffold(
             key: _scaffoldKey,
             appBar: PreferredSize(
@@ -204,7 +209,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                       valueListenable: notifier.visibleSuratName,
                       builder: (context, value, __) {
                         return Text(
-                          '$value',
+                          value,
                           style: QPTextStyle.getSubHeading2SemiBold(context),
                         );
                       },
@@ -494,6 +499,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                                         .read(suratPageProvider.notifier)
                                         .initStateNotifier();
                                     Future.delayed(Duration.zero, () {
+                                      if (!context.mounted) return;
                                       _startTracking(
                                         context,
                                         ref.read(suratPageProvider.notifier),
@@ -1089,7 +1095,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                               .copyWith(
                             color: QPColors.getColorBasedTheme(
                               dark: QPColors.blackSoft,
-                              light: Colors.black.withOpacity(0.5),
+                              light: Colors.black.withValues(alpha: 0.5),
                               brown: QPColors.brownModeMassive,
                               context: context,
                             ),

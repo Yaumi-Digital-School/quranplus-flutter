@@ -7,10 +7,10 @@ import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_
 
 class AudioMinimizedInfo extends ConsumerStatefulWidget {
   const AudioMinimizedInfo({
-    Key? key,
+    super.key,
     required this.onClose,
     this.onTapContainer,
-  }) : super(key: key);
+  });
 
   final VoidCallback onClose;
   final VoidCallback? onTapContainer;
@@ -48,7 +48,7 @@ class _AudioMinimizedInfoState extends ConsumerState<AudioMinimizedInfo> {
           ),
           boxShadow: <BoxShadow>[
             BoxShadow(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),

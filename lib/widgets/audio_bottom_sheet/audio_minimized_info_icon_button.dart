@@ -6,7 +6,7 @@ import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 
 class AudioMinimizedInfoIconButton extends ConsumerWidget {
-  const AudioMinimizedInfoIconButton({Key? key}) : super(key: key);
+  const AudioMinimizedInfoIconButton({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -47,9 +47,8 @@ class AudioMinimizedInfoIconButton extends ConsumerWidget {
 
 class _IconButton extends StatelessWidget {
   const _IconButton({
-    Key? key,
     required this.icon,
-  }) : super(key: key);
+  });
 
   final IconData icon;
 

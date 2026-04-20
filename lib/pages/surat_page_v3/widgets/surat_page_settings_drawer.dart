@@ -20,7 +20,7 @@ enum ContentType {
 
 class SuratPageSettingsDrawer extends ConsumerStatefulWidget {
   const SuratPageSettingsDrawer({
-    Key? key,
+    super.key,
     required this.onTapTranslation,
     required this.onTapTafsir,
     required this.onTapLatins,
@@ -30,7 +30,7 @@ class SuratPageSettingsDrawer extends ConsumerStatefulWidget {
     this.isWithTranslation,
     this.isWithTafsir,
     this.isWithLatins,
-  }) : super(key: key);
+  });
 
   final bool? isWithTranslation;
   final bool? isWithTafsir;
@@ -66,7 +66,7 @@ class _SuratPageSettingsDrawerState
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Theme.of(context).dialogBackgroundColor,
+      backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
       child: Padding(
         padding: const EdgeInsets.only(top: 60),
         child: ListView(
@@ -185,8 +185,8 @@ class _SuratPageSettingsDrawerState
               });
             },
             checkColor: checkboxDecorationColor,
-            activeColor: Theme.of(context).dialogBackgroundColor,
-            side: MaterialStateBorderSide.resolveWith(
+            activeColor: Theme.of(context).dialogTheme.backgroundColor,
+            side: WidgetStateBorderSide.resolveWith(
               (states) => BorderSide(
                 width: 1.0,
                 color: checkboxDecorationColor,
@@ -265,7 +265,7 @@ class _SuratPageSettingsDrawerState
         color: colorButton,
         boxShadow: [
           BoxShadow(
-            color: const Color(0xff000000).withOpacity(0.1),
+            color: const Color(0xff000000).withValues(alpha: 0.1),
             blurRadius: 6,
             spreadRadius: 0,
             offset: const Offset(0, 0.9),

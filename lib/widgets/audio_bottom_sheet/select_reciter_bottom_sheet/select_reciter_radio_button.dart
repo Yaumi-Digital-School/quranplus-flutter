@@ -10,7 +10,7 @@ import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/select_reciter_bo
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/select_reciter_bottom_sheet/select_reciter_state_notifier.dart';
 
 class SelectReciterRadioButton extends ConsumerStatefulWidget {
-  const SelectReciterRadioButton({Key? key}) : super(key: key);
+  const SelectReciterRadioButton({super.key});
 
   @override
   ConsumerState<SelectReciterRadioButton> createState() =>
@@ -33,54 +33,57 @@ class _RadioButtonSelectReciterWidgetState
     SelectReciterBottomSheetState selectReciter =
         ref.watch(selectReciterBottomSheetProvider);
 
-    return ListView.builder(
-      itemCount: selectReciter.listReciter.length,
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        final ReciterItemResponse item = selectReciter.listReciter[index];
+    return RadioGroup<int>(
+      groupValue: selectReciter.reciterId,
+      onChanged: (value) {
+        if (value != null) {
+          ref
+              .read(selectReciterBottomSheetProvider.notifier)
+              .updateRadioButton(
+                value,
+                selectReciter.listReciter
+                    .firstWhere((r) => r.id == value)
+                    .name,
+              );
+        }
+      },
+      child: ListView.builder(
+        itemCount: selectReciter.listReciter.length,
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          final ReciterItemResponse item = selectReciter.listReciter[index];
 
-        return SizedBox(
-          height: 50,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                flex: 7,
-                child: Theme(
-                  data: Theme.of(context).copyWith(
-                    unselectedWidgetColor: QPColors.getColorBasedTheme(
-                      dark: QPColors.brandFair,
-                      light: QPColors.brandFair,
-                      brown: QPColors.brownModeMassive,
-                      context: context,
+          return SizedBox(
+            height: 50,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  flex: 7,
+                  child: Theme(
+                    data: Theme.of(context).copyWith(
+                      unselectedWidgetColor: QPColors.getColorBasedTheme(
+                        dark: QPColors.brandFair,
+                        light: QPColors.brandFair,
+                        brown: QPColors.brownModeMassive,
+                        context: context,
+                      ),
                     ),
-                  ),
-                  child: RadioListTile<int>(
-                    value: item.id,
-                    groupValue: selectReciter.reciterId,
-                    activeColor: QPColors.getColorBasedTheme(
-                      dark: QPColors.brandFair,
-                      light: QPColors.brandFair,
-                      brown: QPColors.brownModeMassive,
-                      context: context,
-                    ),
-                    onChanged: (value) {
-                      if (value != null) {
-                        ref
-                            .read(selectReciterBottomSheetProvider.notifier)
-                            .updateRadioButton(
-                              value,
-                              item.name,
-                            );
-                      }
-                    },
-                    title: Text(
-                      item.name,
-                      style: QPTextStyle.getSubHeading3Medium(context),
+                    child: RadioListTile<int>(
+                      value: item.id,
+                      activeColor: QPColors.getColorBasedTheme(
+                        dark: QPColors.brandFair,
+                        light: QPColors.brandFair,
+                        brown: QPColors.brownModeMassive,
+                        context: context,
+                      ),
+                      title: Text(
+                        item.name,
+                        style: QPTextStyle.getSubHeading3Medium(context),
+                      ),
                     ),
                   ),
                 ),
-              ),
               Expanded(
                 flex: 1,
                 child: buttonState.when(
@@ -118,6 +121,7 @@ class _RadioButtonSelectReciterWidgetState
           ),
         );
       },
+      ),
     );
   }
 

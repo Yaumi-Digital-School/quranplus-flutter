@@ -3,9 +3,9 @@ import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 
 class SelectReciterAudioPreviewButton extends StatelessWidget {
   const SelectReciterAudioPreviewButton({
-    Key? key,
+    super.key,
     required this.icon,
-  }) : super(key: key);
+  });
 
   final IconData icon;
 

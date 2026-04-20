@@ -39,8 +39,8 @@ class StepWidget extends StatelessWidget {
   const StepWidget({
     required this.onTapNextButton,
     required this.stepParams,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

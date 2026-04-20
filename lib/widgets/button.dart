@@ -11,13 +11,13 @@ enum ButtonSize {
 
 class ButtonSecondary extends StatelessWidget {
   const ButtonSecondary({
-    Key? key,
+    super.key,
     required this.label,
     required this.onTap,
     this.leftIcon,
     this.textStyle,
     this.size = ButtonSize.extendable,
-  }) : super(key: key);
+  });
 
   final String? leftIcon;
   final String label;
@@ -126,12 +126,12 @@ class ButtonSecondary extends StatelessWidget {
 
 class ButtonNeutral extends StatelessWidget {
   const ButtonNeutral({
-    Key? key,
+    super.key,
     required this.label,
     required this.onTap,
     this.textStyle,
     this.size = ButtonSize.extendable,
-  }) : super(key: key);
+  });
 
   final String label;
   final Function()? onTap;
@@ -186,12 +186,12 @@ class ButtonNeutral extends StatelessWidget {
 
 class ButtonPrimary extends StatelessWidget {
   const ButtonPrimary({
-    Key? key,
+    super.key,
     required this.label,
     required this.onTap,
     this.size = ButtonSize.extendable,
     this.textStyle,
-  }) : super(key: key);
+  });
 
   final String label;
   final VoidCallback? onTap;
@@ -239,8 +239,8 @@ class ButtonBrandSoft extends StatelessWidget {
     required this.title,
     this.leftWidget,
     this.onTap,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -253,7 +253,7 @@ class ButtonBrandSoft extends StatelessWidget {
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               offset: const Offset(0, 0.9),
               blurRadius: 6,
               spreadRadius: 1,
@@ -283,12 +283,12 @@ class ButtonPill extends StatelessWidget {
   final Color? colorText;
 
   const ButtonPill({
-    Key? key,
+    super.key,
     required this.onTap,
     required this.label,
     this.icon,
     this.colorText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

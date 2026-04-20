@@ -17,7 +17,6 @@ extension HabitProgressTabIndex on HabitProgressTab {
       case HabitProgressTab.group:
         return 1;
       case HabitProgressTab.personal:
-      default:
         return 0;
     }
   }
@@ -25,8 +24,8 @@ extension HabitProgressTabIndex on HabitProgressTab {
 
 class HabitProgressView extends ConsumerStatefulWidget {
   const HabitProgressView({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   ConsumerState<HabitProgressView> createState() => _HabitProgressViewState();
@@ -62,7 +61,7 @@ class _HabitProgressViewState extends ConsumerState<HabitProgressView> {
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha: 0.1),
                 offset: const Offset(0, 4),
                 blurRadius: 10,
                 spreadRadius: 1,
