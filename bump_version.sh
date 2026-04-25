@@ -53,81 +53,93 @@ if ! command -v standard-version &> /dev/null && ! npx standard-version --versio
     exit 1
 fi
 
-# ─── Run standard-version ─────────────────────────────────────────────────────
+# ─── Read Current Version from pubspec.yaml ───────────────────────────────────
 
-# standard-version will:
-# 1. Determine next version from conventional commits
-# 2. Update CHANGELOG.md
-# 3. Bump version in pubspec.yaml (if configured) and package.json
-# 4. Create a version bump commit
-
-echo -e "${YELLOW}Running standard-version...${NC}"
-
-# Check if .versionrc or package.json has bumpFiles configured for pubspec.yaml
-# If not, we'll handle pubspec.yaml manually after standard-version runs
-
-if command -v standard-version &> /dev/null; then
-    standard-version --skip.tag "$@" || true
-else
-    npx standard-version --skip.tag "$@" || true
-fi
-
-# ─── Verify & Fix pubspec.yaml Version ────────────────────────────────────────
-
-# standard-version might not update pubspec.yaml if not configured.
-# Let's ensure pubspec.yaml reflects the new version.
-
-# Read the version from package.json (created/updated by standard-version)
-if [ -f "package.json" ]; then
-    NEW_VERSION=$(node -p "require('./package.json').version" 2>/dev/null || echo "")
-fi
-
-# If package.json doesn't exist or has no version, read from the latest git tag
-if [ -z "$NEW_VERSION" ]; then
-    NEW_VERSION=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//' || echo "")
-fi
-
-# If still no version, read from pubspec.yaml directly
-if [ -z "$NEW_VERSION" ]; then
-    NEW_VERSION=$(grep "^version:" "$PUBSPEC" | sed -E 's/^version:[[:space:]]*([^+]+).*/\1/')
-fi
-
-if [ -z "$NEW_VERSION" ]; then
-    echo -e "${RED}Error: Could not determine the new version.${NC}"
+CURRENT_VERSION_LINE=$(grep "^version:" "$PUBSPEC" | head -n 1)
+if [ -z "$CURRENT_VERSION_LINE" ]; then
+    echo -e "${RED}Error: Could not find 'version:' line in $PUBSPEC.${NC}"
     exit 1
 fi
 
-# Update pubspec.yaml version (preserve build number)
-CURRENT_BUILD=$(grep "^version:" "$PUBSPEC" | sed -E 's/^version:[[:space:]]*([^+]+)\+([0-9]+).*/\2/')
-if [ -n "$CURRENT_BUILD" ]; then
-    NEW_VERSION_LINE="version: ${NEW_VERSION}+${CURRENT_BUILD}"
-else
-    NEW_VERSION_LINE="version: ${NEW_VERSION}+1"
+# Parse version and build number: version: X.Y.Z+BUILD
+CURRENT_VERSION=$(echo "$CURRENT_VERSION_LINE" | sed -E 's/^version:[[:space:]]*([^+]+)\+([0-9]+).*/\1/')
+CURRENT_BUILD=$(echo "$CURRENT_VERSION_LINE" | sed -E 's/^version:[[:space:]]*([^+]+)\+([0-9]+).*/\2/')
+
+if [ -z "$CURRENT_VERSION" ] || [ -z "$CURRENT_BUILD" ]; then
+    echo -e "${RED}Error: Could not parse version from $PUBSPEC.${NC}"
+    echo "Expected format: version: X.Y.Z+BUILD_NUMBER"
+    exit 1
 fi
+
+echo -e "${YELLOW}Current pubspec version: ${CURRENT_VERSION}+${CURRENT_BUILD}${NC}"
+
+# ─── Determine Next Version with standard-version ─────────────────────────────
+
+# Use standard-version in dry-run mode to get the next version without making changes.
+# We create a temporary package.json so standard-version can compute the bump.
+TEMP_DIR=$(mktemp -d)
+trap "rm -rf $TEMP_DIR" EXIT
+
+cat > "$TEMP_DIR/package.json" <<EOF
+{
+  "name": "temp-version-bump",
+  "version": "$CURRENT_VERSION"
+}
+EOF
+
+# Run standard-version dry-run to get the next version
+if command -v standard-version &> /dev/null; then
+    DRY_RUN_OUTPUT=$(cd "$TEMP_DIR" && standard-version --dry-run 2>&1) || true
+else
+    DRY_RUN_OUTPUT=$(cd "$TEMP_DIR" && npx standard-version --dry-run 2>&1) || true
+fi
+
+# Extract the next version from dry-run output
+# Example output line: "✔ bumping version in package.json from 1.8.0 to 1.9.0"
+NEW_VERSION=$(echo "$DRY_RUN_OUTPUT" | grep -oE 'bumping version in package\.json from [^ ]+ to ([0-9]+\.[0-9]+\.[0-9]+)' | sed -E 's/.* to ([0-9]+\.[0-9]+\.[0-9]+)$/\1/')
+
+if [ -z "$NEW_VERSION" ]; then
+    echo -e "${RED}Error: Could not determine the next version from standard-version.${NC}"
+    echo "Dry-run output:"
+    echo "$DRY_RUN_OUTPUT"
+    exit 1
+fi
+
+if [ "$NEW_VERSION" = "$CURRENT_VERSION" ]; then
+    echo -e "${YELLOW}No version bump needed (no conventional commits trigger a version change).${NC}"
+    exit 0
+fi
+
+echo -e "${YELLOW}Next version (from standard-version): ${NEW_VERSION}${NC}"
+
+# ─── Update pubspec.yaml ──────────────────────────────────────────────────────
+
+NEW_VERSION_LINE="version: ${NEW_VERSION}+${CURRENT_BUILD}"
 
 sed -i.bak "s/^version:.*/${NEW_VERSION_LINE}/" "$PUBSPEC"
 rm -f "${PUBSPEC}.bak"
 
-# Amend the standard-version commit to include pubspec.yaml change
-git add "$PUBSPEC"
-if git diff-index --quiet --cached HEAD --; then
-    echo -e "${GREEN}✔ pubspec.yaml already up to date.${NC}"
-else
-    git commit --amend --no-edit
-    echo -e "${GREEN}✔ Updated pubspec.yaml version to ${NEW_VERSION_LINE}${NC}"
-fi
+echo -e "${GREEN}✔ Updated pubspec.yaml: ${NEW_VERSION_LINE}${NC}"
 
-# ─── Create Tag ───────────────────────────────────────────────────────────────
+# ─── Commit, Tag, and Generate Changelog with standard-version ────────────────
+
+# Stage the pubspec.yaml change so standard-version includes it in the release commit
+git add "$PUBSPEC"
+
+# Run standard-version for real. It will:
+#   1. Generate / update CHANGELOG.md
+#   2. Create a version bump commit (including the staged pubspec.yaml)
+#   3. Create the git tag
+# We skip its own package.json bump since we don't have one in this project.
+echo -e "${YELLOW}Running standard-version...${NC}"
+
+if command -v standard-version &> /dev/null; then
+    standard-version --skip.bump "$@"
+else
+    npx standard-version --skip.bump "$@"
+fi
 
 TAG_NAME="v${NEW_VERSION}"
-
-# Check if tag already exists
-if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
-    echo -e "${YELLOW}Warning: Tag ${TAG_NAME} already exists. Skipping tag creation.${NC}"
-else
-    git tag "$TAG_NAME"
-    echo -e "${GREEN}✔ Created tag: ${TAG_NAME}${NC}"
-fi
 
 # ─── Push to Remote ───────────────────────────────────────────────────────────
 
@@ -138,5 +150,5 @@ git push origin "$TAG_NAME"
 
 echo ""
 echo -e "${GREEN}✅ Version bump complete!${NC}"
-echo -e "${GREEN}   New version: ${NEW_VERSION}${NC}"
+echo -e "${GREEN}   New version: ${NEW_VERSION}+${CURRENT_BUILD}${NC}"
 echo -e "${GREEN}   Tag: ${TAG_NAME}${NC}"
