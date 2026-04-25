@@ -19,7 +19,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.8.0+103
 
 environment:
-  sdk: ">=3.5.0 <4.0.0"
+  sdk: ">=3.8.0 <4.0.0"
   flutter: ">=3.24.0"
 
 # Dependencies specify other packages that your package needs in order to work.
@@ -92,9 +92,13 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
-  build_runner: ^2.4.13
-  retrofit_generator: ^9.1.2
+  build_runner: ^2.4.15
+  retrofit_generator: ^10.2.5
   json_serializable: ^6.8.0
+
+dependency_overrides:
+  frontend_server_client: ^4.0.0
+  args: ^2.5.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
