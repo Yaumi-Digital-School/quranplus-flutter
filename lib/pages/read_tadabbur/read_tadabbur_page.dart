@@ -25,7 +25,7 @@ class ReadTadabburParam {
 
 class ReadTadabburPage extends StatelessWidget {
   final ReadTadabburParam param;
-  const ReadTadabburPage({required this.param, Key? key}) : super(key: key);
+  const ReadTadabburPage({required this.param, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +140,7 @@ class ReadTadabburPage extends StatelessWidget {
                 ),
               if (state.isLoading)
                 Container(
-                  color: Colors.black.withOpacity(0.3),
+                  color: Colors.black.withValues(alpha: 0.3),
                   height: double.infinity,
                   width: double.infinity,
                   child: const Center(

@@ -10,8 +10,7 @@ import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 
 class PreHabitTrackingAnimation extends StatefulWidget {
-  const PreHabitTrackingAnimation({Key? key, required this.notifier})
-      : super(key: key);
+  const PreHabitTrackingAnimation({super.key, required this.notifier});
   final SuratPageStateNotifier notifier;
 
   @override

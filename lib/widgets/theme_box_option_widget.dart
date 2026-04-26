@@ -9,8 +9,8 @@ class ThemeBoxOptionWidget extends StatelessWidget {
     required this.colorParam,
     this.onTap,
     this.isSelected = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
   final String theme;
   final ThemeOptionColorParam colorParam;
   final bool isSelected;

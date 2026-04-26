@@ -35,8 +35,8 @@ import 'widgets/adzan_card/adzan_card_widget.dart';
 
 class HomePageV2 extends StatefulWidget {
   const HomePageV2({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<HomePageV2> createState() => _HomePageV2State();
@@ -105,6 +105,7 @@ class _HomePageV2State extends State<HomePageV2> {
     WidgetRef ref,
   ) {
     Future.delayed(Duration.zero, () {
+      if (!mounted) return;
       SignInBottomSheet.show(
         context: context,
         onClose: () {
@@ -133,9 +134,11 @@ class _HomePageV2State extends State<HomePageV2> {
           type: type,
         );
 
-    if (result == SignInResult.failedAccountDeleted && context.mounted) {
+    if (result == SignInResult.failedAccountDeleted) {
+      if (!mounted) return;
       Navigator.pop(context);
       await Future.delayed(const Duration(seconds: 1), () {
+        if (!mounted) return;
         SignInBottomSheet.showAccountDeletedInfo(context: context);
       });
 
@@ -158,9 +161,8 @@ class _HomePageV2State extends State<HomePageV2> {
         req.response.statusCode == 200 &&
         param != null;
 
-    if (context.mounted) {
-      Navigator.pop(context);
-    }
+    if (!mounted) return;
+    Navigator.pop(context);
 
     if (shouldRedirect) {
       Object? args;
@@ -172,13 +174,12 @@ class _HomePageV2State extends State<HomePageV2> {
           );
       }
 
-      if (context.mounted) {
-        Navigator.pushNamed(
-          context,
-          param.nextPath ?? '',
-          arguments: args,
-        );
-      }
+      if (!mounted) return;
+      Navigator.pushNamed(
+        context,
+        param.nextPath ?? '',
+        arguments: args,
+      );
     }
 
     if (req.response.statusCode == 400) {
@@ -190,6 +191,7 @@ class _HomePageV2State extends State<HomePageV2> {
 
   void _showInvalidLinkBottomSheet() {
     Future.delayed(Duration.zero, () {
+      if (!mounted) return;
       GeneralBottomSheet.showBaseBottomSheet(
         context: context,
         widgetChild: _getErrorWidget(
@@ -202,6 +204,7 @@ class _HomePageV2State extends State<HomePageV2> {
 
   void _showInvalidGroupBottomSheet() {
     Future.delayed(Duration.zero, () {
+      if (!mounted) return;
       GeneralBottomSheet.showBaseBottomSheet(
         context: context,
         widgetChild: _getErrorWidget(
@@ -256,10 +259,10 @@ const double diameterButtonSearch = 65;
 
 class ListSuratByJuz extends StatelessWidget {
   const ListSuratByJuz({
-    Key? key,
+    super.key,
     required this.notifier,
     required this.parentState,
-  }) : super(key: key);
+  });
 
   final HomePageStateNotifier notifier;
   final HomePageState parentState;
@@ -440,7 +443,7 @@ class ListSuratByJuz extends StatelessWidget {
         borderRadius: const BorderRadius.all(Radius.circular(15)),
         boxShadow: <BoxShadow>[
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -838,10 +841,9 @@ class ListSuratByJuz extends StatelessWidget {
 
 class _ButtonSearch extends StatelessWidget {
   const _ButtonSearch({
-    Key? key,
     required this.versePagetoAyah,
     required this.state,
-  }) : super(key: key);
+  });
 
   final Map<String, List<String>>? versePagetoAyah;
   final HomePageState state;
@@ -871,7 +873,7 @@ class _ButtonSearch extends StatelessWidget {
 }
 
 class _ListSurahByJuzSkeleton extends StatelessWidget {
-  const _ListSurahByJuzSkeleton({Key? key}) : super(key: key);
+  const _ListSurahByJuzSkeleton();
 
   @override
   Widget build(BuildContext context) {

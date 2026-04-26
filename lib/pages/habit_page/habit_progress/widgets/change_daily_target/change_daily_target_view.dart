@@ -14,9 +14,9 @@ const list = ['Pages', 'Juz'];
 class ChangeDailyTargetView extends StatefulWidget {
   final HabitDailySummary habitDailySummary;
   const ChangeDailyTargetView({
-    Key? key,
+    super.key,
     required this.habitDailySummary,
-  }) : super(key: key);
+  });
 
   @override
   State<ChangeDailyTargetView> createState() => _ChangeDailyTargetViewState();
@@ -32,9 +32,7 @@ class _ChangeDailyTargetViewState extends State<ChangeDailyTargetView> {
         ChangeDailyTargetState>(
       stateNotifierProvider: StateNotifierProvider<
           ChangeDailyTargetStateNotifier, ChangeDailyTargetState>(
-        (StateNotifierProviderRef<ChangeDailyTargetStateNotifier,
-                ChangeDailyTargetState>
-            ref) {
+        (Ref ref) {
           return ChangeDailyTargetStateNotifier(
             habitDailySummary: widget.habitDailySummary,
           );
@@ -140,9 +138,9 @@ class DropDownListChangeTarget extends StatefulWidget {
   final void Function(String) onChanged;
 
   const DropDownListChangeTarget({
-    Key? key,
+    super.key,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<DropDownListChangeTarget> createState() =>

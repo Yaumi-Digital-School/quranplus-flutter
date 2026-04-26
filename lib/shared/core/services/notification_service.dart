@@ -67,7 +67,7 @@ class NotificationService {
       const NotificationDetails(
         android: androidPlatformChannelSpecifics,
       ),
-      androidAllowWhileIdle: true,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
     );

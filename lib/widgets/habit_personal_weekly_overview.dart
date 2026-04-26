@@ -12,7 +12,7 @@ enum HabitPersonalWeeklyOverviewType {
 
 class HabitPersonalWeeklyOverviewWidget extends StatefulWidget {
   const HabitPersonalWeeklyOverviewWidget({
-    Key? key,
+    super.key,
     required this.sevenDaysPersonalInfo,
     required this.type,
     this.onTapDailySummary,
@@ -20,7 +20,7 @@ class HabitPersonalWeeklyOverviewWidget extends StatefulWidget {
     this.name,
     this.startEnabledProgressDate,
     this.isAdmin = false,
-  }) : super(key: key);
+  });
 
   final List<HabitDailySummary> sevenDaysPersonalInfo;
   final HabitPersonalWeeklyOverviewType type;

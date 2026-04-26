@@ -8,10 +8,10 @@ class InputTotalPagesTextField extends StatelessWidget {
   final int? defaultValue;
 
   const InputTotalPagesTextField({
-    Key? key,
+    super.key,
     required this.onChanged,
     this.defaultValue,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -59,13 +59,13 @@ class InputTotalPagesTextField extends StatelessWidget {
 
 class TextFieldWithDropdown extends StatelessWidget {
   TextFieldWithDropdown({
-    Key? key,
+    super.key,
     required this.options,
     required this.onSelect,
     this.label,
     this.maxOptionsInContainer = 3,
     this.additionalInformation,
-  }) : super(key: key);
+  });
 
   final List<String> options;
   final Function(String) onSelect;
@@ -192,9 +192,8 @@ class TextFieldWithDropdown extends StatelessWidget {
 
 class _FieldLabel extends StatelessWidget {
   const _FieldLabel({
-    Key? key,
     required this.label,
-  }) : super(key: key);
+  });
 
   final String label;
 
@@ -212,7 +211,7 @@ class _FieldLabel extends StatelessWidget {
 
 class FormFieldWidget extends StatelessWidget {
   const FormFieldWidget({
-    Key? key,
+    super.key,
     this.label,
     this.additionalInformation,
     required this.onChange,
@@ -220,7 +219,7 @@ class FormFieldWidget extends StatelessWidget {
     this.iconForm,
     this.validator,
     this.initialValue,
-  }) : super(key: key);
+  });
 
   final String? label;
   final RichText? additionalInformation;

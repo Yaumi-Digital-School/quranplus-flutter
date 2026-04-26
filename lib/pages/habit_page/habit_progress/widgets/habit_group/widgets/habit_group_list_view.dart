@@ -10,8 +10,8 @@ class HabitGroupListView extends StatelessWidget {
   const HabitGroupListView({
     required this.listGroup,
     this.onEditedGroupName,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final List<GetHabitGroupsItem> listGroup;
   final Future<void> Function()? onEditedGroupName;

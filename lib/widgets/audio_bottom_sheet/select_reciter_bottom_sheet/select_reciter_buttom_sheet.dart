@@ -9,7 +9,7 @@ import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 
 class SelectRecitatorWidget extends ConsumerStatefulWidget {
-  const SelectRecitatorWidget({Key? key}) : super(key: key);
+  const SelectRecitatorWidget({super.key});
 
   @override
   ConsumerState<SelectRecitatorWidget> createState() =>
@@ -69,13 +69,12 @@ class _SelectRecitatorWidgetState extends ConsumerState<SelectRecitatorWidget> {
             ref.watch(audioRecitationProvider.notifier),
           );
 
-      if (context.mounted) {
-        Navigator.pop(context);
-        GeneralBottomSheet.showBaseBottomSheet(
-          context: context,
-          widgetChild: const AudioBottomSheetWidget(),
-        );
-      }
+      if (!mounted) return;
+      Navigator.pop(context);
+      GeneralBottomSheet.showBaseBottomSheet(
+        context: context,
+        widgetChild: const AudioBottomSheetWidget(),
+      );
     };
   }
 }

@@ -49,7 +49,6 @@ class PrayerTimeState {
       case PrayerTimesList.magrib:
         return '${formatTwoDigits(prayerTimes!.maghrib.hour)}:${formatTwoDigits(prayerTimes!.maghrib.minute)}';
       case PrayerTimesList.isya:
-      default:
         return '${formatTwoDigits(prayerTimes!.isha.hour)}:${formatTwoDigits(prayerTimes!.isha.minute)}';
     }
   }

@@ -5,9 +5,9 @@ import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 
 class HabitGroupEmptyGroupView extends StatelessWidget {
   const HabitGroupEmptyGroupView({
-    Key? key,
+    super.key,
     required this.onSubmitCreateGroup,
-  }) : super(key: key);
+  });
 
   final Future<void> Function(String) onSubmitCreateGroup;
 
@@ -62,7 +62,7 @@ class HabitGroupEmptyGroupView extends StatelessWidget {
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               offset: const Offset(0, 4),
               blurRadius: 10,
               spreadRadius: 1,

@@ -38,7 +38,6 @@ class ThemeStateNotifier extends BaseStateNotifier<QPThemeMode> {
           thirdColor: QPColors.brownModeFair,
         );
       case QPThemeMode.light:
-      default:
         return ThemeOptionColorParam(
           firstColor: QPColors.whiteSoft,
           secondColor: QPColors.whiteMassive,

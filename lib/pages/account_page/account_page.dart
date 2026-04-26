@@ -15,7 +15,7 @@ import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 
 class AccountPage extends StatelessWidget {
-  AccountPage({Key? key}) : super(key: key);
+  AccountPage({super.key});
 
   final List<String> _genderType = ['Male', 'Female'];
 
@@ -333,46 +333,49 @@ class AccountPage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      for (var item in _genderType) ...[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 24,
-                              height: 24,
-                              margin: const EdgeInsets.only(right: 8),
-                              child: Radio(
-                                value: item[0],
-                                groupValue: state.gender,
-                                fillColor:
-                                    MaterialStateProperty.resolveWith<Color>(
-                                  (Set<MaterialState> states) {
-                                    return Theme.of(context)
-                                        .colorScheme
-                                        .primary;
-                                  },
+                  RadioGroup<String>(
+                    groupValue: state.gender,
+                    onChanged: (value) {
+                      notifier.genderChanged(value);
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        for (var item in _genderType) ...[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 24,
+                                height: 24,
+                                margin: const EdgeInsets.only(right: 8),
+                                child: Radio(
+                                  value: item[0],
+                                  fillColor:
+                                      WidgetStateProperty.resolveWith<Color>(
+                                    (Set<WidgetState> states) {
+                                      return Theme.of(context)
+                                          .colorScheme
+                                          .primary;
+                                    },
+                                  ),
+                                  activeColor:
+                                      Theme.of(context).colorScheme.primary,
                                 ),
-                                activeColor:
-                                    Theme.of(context).colorScheme.primary,
-                                onChanged: (value) {
-                                  notifier.genderChanged(value);
-                                },
                               ),
-                            ),
-                            Text(
-                              item,
-                              style: QPTextStyle.getSubHeading3Regular(context),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(width: 24),
+                              Text(
+                                item,
+                                style:
+                                    QPTextStyle.getSubHeading3Regular(context),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(width: 24),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
                   if (state.formStatus == FormStatus.invalid &&
                       state.gender.isEmpty) ...[

@@ -13,15 +13,14 @@ import 'widgets/habit_group_create_group_bottom_sheet.dart';
 import 'habit_group_state_notifier.dart';
 
 class HabitGroupView extends StatelessWidget {
-  const HabitGroupView({Key? key}) : super(key: key);
+  const HabitGroupView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return StateNotifierConnector<HabitGroupStateNotifier, HabitGroupState>(
       stateNotifierProvider:
           StateNotifierProvider<HabitGroupStateNotifier, HabitGroupState>(
-        (StateNotifierProviderRef<HabitGroupStateNotifier, HabitGroupState>
-            ref) {
+        (Ref ref) {
           return HabitGroupStateNotifier(
             habitGroupApi: ref.watch(habitGroupApiProvider),
           );

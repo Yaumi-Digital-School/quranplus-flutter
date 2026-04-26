@@ -12,7 +12,7 @@ enum HabitGroupOverviewType {
 
 class HabitGroupOverviewWidget extends StatelessWidget {
   HabitGroupOverviewWidget({
-    Key? key,
+    super.key,
     this.groupName,
     required this.sevenDaysInformation,
     this.type = HabitGroupOverviewType.withGroupDetailInfo,
@@ -21,7 +21,7 @@ class HabitGroupOverviewWidget extends StatelessWidget {
     this.selectedIdx,
     this.totalMembers = 1,
     this.startOfEnabledDate,
-  }) : super(key: key);
+  });
 
   final String? groupName;
   final int totalMembers;

@@ -18,17 +18,17 @@ import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 
 // TODO: we need to refactor this file into separate file
 class BookmarkPageV2 extends StatelessWidget {
-  const BookmarkPageV2({Key? key}) : super(key: key);
+  const BookmarkPageV2({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
         final navigationBar =
             mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
         navigationBar.onTap!(0);
-
-        return false;
       },
       child:
           StateNotifierConnector<BookmarkPageStateNotifier, BookmarkPageState>(
@@ -97,7 +97,7 @@ class BookmarkPageV2 extends StatelessWidget {
                             const BorderRadius.all(Radius.circular(20)),
                         boxShadow: <BoxShadow>[
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: Colors.black.withValues(alpha: 0.1),
                             blurRadius: 12,
                             offset: const Offset(0, 4),
                           ),
@@ -395,7 +395,7 @@ class BookmarkPageV2 extends StatelessWidget {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 6,
                   offset: const Offset(0, 0.9),
                 ),

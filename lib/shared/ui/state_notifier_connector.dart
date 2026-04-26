@@ -6,10 +6,10 @@ class StateNotifierConnector<T extends StateNotifier<P>, P>
   const StateNotifierConnector({
     required this.builder,
     required this.stateNotifierProvider,
-    Key? key,
+    super.key,
     this.child,
     this.onStateNotifierReady,
-  }) : super(key: key);
+  });
 
   final Widget Function(
     BuildContext context,

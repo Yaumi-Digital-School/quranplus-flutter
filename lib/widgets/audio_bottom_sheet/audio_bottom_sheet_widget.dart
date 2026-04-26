@@ -13,8 +13,8 @@ import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 
 class AudioBottomSheetWidget extends ConsumerStatefulWidget {
   const AudioBottomSheetWidget({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   ConsumerState<AudioBottomSheetWidget> createState() =>
@@ -225,7 +225,7 @@ class _AudioBottomSheetWidgetState
           borderRadius: const BorderRadius.all(Radius.circular(100)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 6,
               offset: const Offset(0, 4),
             ),
@@ -275,7 +275,7 @@ class _AudioBottomSheetWidgetState
           borderRadius: const BorderRadius.all(Radius.circular(100)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 6,
               offset: const Offset(0, 4),
             ),

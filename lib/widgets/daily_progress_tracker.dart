@@ -6,11 +6,11 @@ import 'package:intl/intl.dart';
 
 class DailyProgressTracker extends StatelessWidget {
   const DailyProgressTracker({
-    Key? key,
+    super.key,
     required this.target,
     required this.dailyProgress,
     required this.isNeedSync,
-  }) : super(key: key);
+  });
 
   final int target;
   final int dailyProgress;

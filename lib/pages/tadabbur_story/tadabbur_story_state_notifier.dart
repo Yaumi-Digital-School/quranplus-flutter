@@ -272,7 +272,7 @@ class TadabburStoryPageStateNotifier
         stackTrace,
         reason: 'error on _getListTadabburContent() method',
       );
-      print(error);
+      debugPrint(error.toString());
     }
 
     return null;

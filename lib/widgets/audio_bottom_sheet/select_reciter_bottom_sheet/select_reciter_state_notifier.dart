@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
@@ -50,11 +51,10 @@ class SelectReciterStateNotifier
     extends StateNotifier<SelectReciterBottomSheetState> {
   SelectReciterStateNotifier(
     AudioRecitationHandler audioHandler,
-    SelectReciterBottomSheetState state,
+    super.state,
     SharedPreferenceService sharedPreferenceService,
   )   : _sharedPreferenceService = sharedPreferenceService,
-        _audioHandler = audioHandler,
-        super(state);
+        _audioHandler = audioHandler;
   late AudioApi _audioApi;
   final AudioRecitationHandler _audioHandler;
   final SharedPreferenceService _sharedPreferenceService;
@@ -89,7 +89,7 @@ class SelectReciterStateNotifier
         stackTrace,
         reason: 'error on _getListTadabbur() method',
       );
-      print(error);
+      debugPrint(error.toString());
     }
   }
 

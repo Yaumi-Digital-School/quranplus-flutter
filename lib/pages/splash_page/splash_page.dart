@@ -17,7 +17,7 @@ import 'package:qurantafsir_flutter/widgets/utils/general_dialog.dart';
 
 class SplashPage extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
-  const SplashPage({required this.navigatorKey, Key? key}) : super(key: key);
+  const SplashPage({required this.navigatorKey, super.key});
 
   @override
   State<SplashPage> createState() => _SplashPageState();
@@ -110,7 +110,6 @@ class _SplashPageState extends State<SplashPage> {
         dialog = const ForceUpdateDialog();
         break;
       case AppUpdateType.optionalUpdate:
-      default:
         if (!info.shouldShowUpdateMinVersion) {
           return;
         }

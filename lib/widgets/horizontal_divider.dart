@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class HorizontalDivider extends StatelessWidget {
-  const HorizontalDivider({Key? key}) : super(key: key);
+  const HorizontalDivider({super.key});
 
   @override
   Widget build(BuildContext context) {
