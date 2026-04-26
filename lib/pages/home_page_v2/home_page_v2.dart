@@ -287,7 +287,7 @@ class ListSuratByJuz extends StatelessWidget {
                   child: Stack(
                     children: [
                       Container(
-                        height: 200,
+                        height: parentState.name.isEmpty ? 150 : 200,
                         color: QPColors.getColorBasedTheme(
                           dark: QPColors.darkModeMassive,
                           light: QPColors.brandFair,
@@ -340,7 +340,7 @@ class ListSuratByJuz extends StatelessWidget {
                             const SizedBox(
                               height: 8,
                             ),
-                            if (parentState.name != '')
+                            if (parentState.name.isNotEmpty)
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 12),
                                 child: Text(
