@@ -100,6 +100,7 @@ class PrayerTimeStateNotifier extends BaseStateNotifier<PrayerTimeState> {
     String cityName,
   ) async {
     await prayerTimesService.setCoordinates(latitude, longitude, cityName);
+    await prayerTimesService.setupPrayerTimesReminder();
   }
 
   @override

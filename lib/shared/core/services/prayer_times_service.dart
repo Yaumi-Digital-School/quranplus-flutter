@@ -14,7 +14,7 @@ class PrayerTimesService {
   final NotificationService notificationService;
   final SharedPreferenceService sharedPreferenceService;
 
-  late Coordinates? _coordinates;
+  Coordinates? _coordinates;
 
   void init() {
     final location = sharedPreferenceService.getLocation();
@@ -43,8 +43,8 @@ class PrayerTimesService {
     if (_coordinates == null) {
       return null;
     }
-    final CalculationParameters params =
-        CalculationMethod.singapore.getParameters();
+    final CalculationParameters params = CalculationMethod.singapore
+        .getParameters();
     params.madhab = Madhab.shafi;
 
     return PrayerTimes.today(_coordinates!, params);
@@ -65,10 +65,7 @@ class PrayerTimesService {
     ];
 
     for (int i = 0; i < prayerTimeList.length; i++) {
-      scheduleQuranReadingReminder(
-        prayerTime: prayerTimeList[i],
-        id: i,
-      );
+      scheduleQuranReadingReminder(prayerTime: prayerTimeList[i], id: i);
 
       final String time =
           '${formatTwoDigits(prayerTimeList[i].hour)}:${formatTwoDigits(prayerTimeList[i].minute)}';
