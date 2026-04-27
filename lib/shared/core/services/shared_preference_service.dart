@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
@@ -7,6 +9,7 @@ import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart'
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class SharedPreferenceService {
   late SharedPreferences _sharedPreferences;
@@ -29,6 +32,7 @@ class SharedPreferenceService {
   final String _cityNameKey = "cityName";
   final String _latKey = "latKey";
   final String _lngKey = "lngKey";
+  final String _deviceIdKey = 'device-id';
 
   Future<void> init() async {
     _sharedPreferences = await SharedPreferences.getInstance();
@@ -154,9 +158,7 @@ class SharedPreferenceService {
       return null;
     }
 
-    return ForceLoginParam.fromJson(
-      json.decode(res),
-    );
+    return ForceLoginParam.fromJson(json.decode(res));
   }
 
   Future<void> setLastRecordingData(LastRecordingData data) async {
@@ -170,9 +172,7 @@ class SharedPreferenceService {
       return null;
     }
 
-    return LastRecordingData.fromJson(
-      json.decode(res),
-    );
+    return LastRecordingData.fromJson(json.decode(res));
   }
 
   Future<void> setShownOptionalUpdateMinVersion(String version) async {
@@ -184,6 +184,19 @@ class SharedPreferenceService {
         _sharedPreferences.getString(_shownOptionalUpdateMinVersion) ?? '';
 
     return res;
+  }
+
+  Future<String> getOrCreateDeviceId() async {
+    if (Platform.isAndroid) {
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      return androidInfo.id;
+    }
+    String? deviceId = _sharedPreferences.getString(_deviceIdKey);
+    if (deviceId == null || deviceId.isEmpty) {
+      deviceId = const Uuid().v4();
+      await _sharedPreferences.setString(_deviceIdKey, deviceId);
+    }
+    return deviceId;
   }
 
   Future<void> clear() async {
@@ -201,9 +214,7 @@ class SharedPreferenceService {
       return ReciterItemResponse(id: 1, name: "Mishari Rashid Al-Afasy");
     }
 
-    return ReciterItemResponse.fromJson(
-      json.decode(res),
-    );
+    return ReciterItemResponse.fromJson(json.decode(res));
   }
 
   Future<void> setLatestPrayerTimeSynced(DateTime time) async {

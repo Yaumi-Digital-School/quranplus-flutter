@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -64,6 +66,8 @@ class SplashPageStateNotifier extends BaseStateNotifier<SplashPageState> {
           connectivityStatus == ConnectivityStatus.isConnected) {
         await _remoteConfigService.init();
         await _tadabburService.syncTadabburPerAyahInformations();
+
+        unawaited(_authenticationService.ping());
 
         if (_authenticationService.isLoggedIn) {
           await _habitDailySummaryService.syncHabit();

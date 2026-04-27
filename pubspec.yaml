@@ -53,6 +53,7 @@ dependencies:
   connectivity_plus: ^6.0.5
   percent_indicator: ^4.2.3
   uuid: ^4.5.1
+  device_info_plus: ^10.1.0
   lottie: ^3.1.2
   wakelock_plus: ^1.2.8
   package_info_plus: ^8.0.2
