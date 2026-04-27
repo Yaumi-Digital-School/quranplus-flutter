@@ -150,6 +150,10 @@ class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
                             const SizedBox(height: 16),
                             _buildPrayerTimeItem(state),
                             const SizedBox(height: 16),
+                            Text(
+                              "Metode: Singapore region (Indonesia, Malaysia, Singapore) · Mazhab Syafi'i",
+                              style: QPTextStyle.getDescription2Medium(context),
+                            ),
                           ],
                         ),
                       ),
