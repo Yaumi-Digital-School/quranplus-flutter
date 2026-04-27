@@ -189,6 +189,12 @@ final Provider<RemoteConfigService> remoteConfigService =
   return RemoteConfigService();
 });
 
+final StateProvider<String> calculationMethodProvider =
+    StateProvider<String>((ref) => 'singapore');
+
+final StateProvider<String> madhubProvider =
+    StateProvider<String>((ref) => 'shafi');
+
 final Provider<PrayerTimesService> prayerTimesService =
     Provider<PrayerTimesService>((ref) {
   final NotificationService notificationService = NotificationService();

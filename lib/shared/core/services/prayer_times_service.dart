@@ -39,12 +39,18 @@ class PrayerTimesService {
     _coordinates = Coordinates(latitude, longitude);
   }
 
-  PrayerTimes? getTodayPrayerTimes() {
+  PrayerTimes? getTodayPrayerTimes({
+    String calculationMethod = 'singapore',
+    String madhab = 'shafi',
+  }) {
     if (_coordinates == null) {
       return null;
     }
-    final CalculationParameters params = CalculationMethodParameters.singapore()
-      ..madhab = Madhab.shafi;
+
+    final CalculationParameters params = _getCalculationParameters(
+      calculationMethod,
+      madhab,
+    );
 
     return PrayerTimes(
       coordinates: _coordinates!,
@@ -53,8 +59,44 @@ class PrayerTimesService {
     );
   }
 
-  Future<void> setupPrayerTimesReminder() async {
-    final PrayerTimes? prayerTimes = getTodayPrayerTimes();
+  CalculationParameters _getCalculationParameters(
+    String method,
+    String madhab,
+  ) {
+    late CalculationParameters params;
+
+    switch (method.toLowerCase()) {
+      case 'singapore':
+        params = CalculationMethodParameters.singapore();
+        break;
+      case 'muslimworldleague':
+        params = CalculationMethodParameters.muslimWorldLeague();
+        break;
+      case 'egyptian':
+        params = CalculationMethodParameters.egyptian();
+        break;
+      case 'ummAlqura':
+        params = CalculationMethodParameters.ummAlQura();
+        break;
+      default:
+        params = CalculationMethodParameters.singapore();
+    }
+
+    params.madhab = madhab.toLowerCase() == 'hanafi'
+        ? Madhab.hanafi
+        : Madhab.shafi;
+
+    return params;
+  }
+
+  Future<void> setupPrayerTimesReminder({
+    String calculationMethod = 'singapore',
+    String madhab = 'shafi',
+  }) async {
+    final PrayerTimes? prayerTimes = getTodayPrayerTimes(
+      calculationMethod: calculationMethod,
+      madhab: madhab,
+    );
     if (prayerTimes == null) {
       return;
     }

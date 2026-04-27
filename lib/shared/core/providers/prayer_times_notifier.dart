@@ -108,6 +108,17 @@ class PrayerTimeStateNotifier extends BaseStateNotifier<PrayerTimeState> {
     await prayerTimesService.setupPrayerTimesReminder();
   }
 
+  Future<void> updatePrayerTimes(
+    String calculationMethod,
+    String madhab,
+  ) async {
+    final updatedPrayerTimes = prayerTimesService.getTodayPrayerTimes(
+      calculationMethod: calculationMethod,
+      madhab: madhab,
+    );
+    state = state.copyWith(prayerTimes: updatedPrayerTimes);
+  }
+
   @override
   Future<void> initStateNotifier() async {
     final updatedCityName = prayerTimesService.getCityName();
