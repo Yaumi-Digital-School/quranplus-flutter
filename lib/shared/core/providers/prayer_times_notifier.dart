@@ -41,15 +41,20 @@ class PrayerTimeState {
 
     switch (prayerTime) {
       case PrayerTimesList.fajr:
-        return '${formatTwoDigits(prayerTimes!.fajr.hour)}:${formatTwoDigits(prayerTimes!.fajr.minute)}';
+        final fajrLocal = prayerTimes!.fajr.toLocal();
+        return '${formatTwoDigits(fajrLocal.hour)}:${formatTwoDigits(fajrLocal.minute)}';
       case PrayerTimesList.dhuhr:
-        return '${formatTwoDigits(prayerTimes!.dhuhr.hour)}:${formatTwoDigits(prayerTimes!.dhuhr.minute)}';
+        final dhuhrLocal = prayerTimes!.dhuhr.toLocal();
+        return '${formatTwoDigits(dhuhrLocal.hour)}:${formatTwoDigits(dhuhrLocal.minute)}';
       case PrayerTimesList.ashr:
-        return '${formatTwoDigits(prayerTimes!.asr.hour)}:${formatTwoDigits(prayerTimes!.asr.minute)}';
+        final asrLocal = prayerTimes!.asr.toLocal();
+        return '${formatTwoDigits(asrLocal.hour)}:${formatTwoDigits(asrLocal.minute)}';
       case PrayerTimesList.magrib:
-        return '${formatTwoDigits(prayerTimes!.maghrib.hour)}:${formatTwoDigits(prayerTimes!.maghrib.minute)}';
+        final maghribLocal = prayerTimes!.maghrib.toLocal();
+        return '${formatTwoDigits(maghribLocal.hour)}:${formatTwoDigits(maghribLocal.minute)}';
       case PrayerTimesList.isya:
-        return '${formatTwoDigits(prayerTimes!.isha.hour)}:${formatTwoDigits(prayerTimes!.isha.minute)}';
+        final ishaLocal = prayerTimes!.isha.toLocal();
+        return '${formatTwoDigits(ishaLocal.hour)}:${formatTwoDigits(ishaLocal.minute)}';
     }
   }
 }

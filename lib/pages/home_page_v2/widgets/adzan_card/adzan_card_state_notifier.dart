@@ -12,49 +12,49 @@ final StateProvider<AdzanState> adzanCardProvider =
     return AdzanState(null, null, cityName);
   }
 
-  if (now.isBefore(prayerTimeState.prayerTimes!.fajr)) {
+  if (now.isBefore(prayerTimeState.prayerTimes!.fajr.toLocal())) {
     return AdzanState(
       PrayerTimesList.fajr,
-      prayerTimeState.prayerTimes!.fajr,
+      prayerTimeState.prayerTimes!.fajr.toLocal(),
       cityName,
     );
   }
 
-  if (now.isBefore(prayerTimeState.prayerTimes!.dhuhr)) {
+  if (now.isBefore(prayerTimeState.prayerTimes!.dhuhr.toLocal())) {
     return AdzanState(
       PrayerTimesList.dhuhr,
-      prayerTimeState.prayerTimes!.dhuhr,
+      prayerTimeState.prayerTimes!.dhuhr.toLocal(),
       cityName,
     );
   }
 
-  if (now.isBefore(prayerTimeState.prayerTimes!.asr)) {
+  if (now.isBefore(prayerTimeState.prayerTimes!.asr.toLocal())) {
     return AdzanState(
       PrayerTimesList.ashr,
-      prayerTimeState.prayerTimes!.asr,
+      prayerTimeState.prayerTimes!.asr.toLocal(),
       cityName,
     );
   }
 
-  if (now.isBefore(prayerTimeState.prayerTimes!.maghrib)) {
+  if (now.isBefore(prayerTimeState.prayerTimes!.maghrib.toLocal())) {
     return AdzanState(
       PrayerTimesList.magrib,
-      prayerTimeState.prayerTimes!.maghrib,
+      prayerTimeState.prayerTimes!.maghrib.toLocal(),
       cityName,
     );
   }
 
-  if (now.isBefore(prayerTimeState.prayerTimes!.isha)) {
+  if (now.isBefore(prayerTimeState.prayerTimes!.isha.toLocal())) {
     return AdzanState(
       PrayerTimesList.isya,
-      prayerTimeState.prayerTimes!.isha,
+      prayerTimeState.prayerTimes!.isha.toLocal(),
       cityName,
     );
   }
 
   return AdzanState(
     PrayerTimesList.fajr,
-    prayerTimeState.prayerTimes!.fajr,
+    prayerTimeState.prayerTimes!.fajr.toLocal(),
     cityName,
   );
 });

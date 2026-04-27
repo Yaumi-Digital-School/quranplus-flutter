@@ -48,7 +48,7 @@ class PrayerTimesService {
 
     return PrayerTimes(
       coordinates: _coordinates!,
-      date: DateTime.now(),
+      date: DateTime.now().toUtc(),
       calculationParameters: params,
     );
   }
