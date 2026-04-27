@@ -1,4 +1,4 @@
-import 'package:adhan/adhan.dart';
+import 'package:adhan_dart/adhan_dart.dart';
 import 'package:qurantafsir_flutter/shared/constants/prayer_times.dart';
 import 'package:qurantafsir_flutter/shared/core/services/notification_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
@@ -43,11 +43,14 @@ class PrayerTimesService {
     if (_coordinates == null) {
       return null;
     }
-    final CalculationParameters params = CalculationMethod.singapore
-        .getParameters();
-    params.madhab = Madhab.shafi;
+    final CalculationParameters params = CalculationMethodParameters.singapore()
+      ..madhab = Madhab.shafi;
 
-    return PrayerTimes.today(_coordinates!, params);
+    return PrayerTimes(
+      coordinates: _coordinates!,
+      date: DateTime.now(),
+      calculationParameters: params,
+    );
   }
 
   Future<void> setupPrayerTimesReminder() async {
@@ -64,17 +67,27 @@ class PrayerTimesService {
       prayerTimes.isha,
     ];
 
-    for (int i = 0; i < prayerTimeList.length; i++) {
-      scheduleQuranReadingReminder(prayerTime: prayerTimeList[i], id: i);
+    final DateTime now = DateTime.now();
 
-      final String time =
-          '${formatTwoDigits(prayerTimeList[i].hour)}:${formatTwoDigits(prayerTimeList[i].minute)}';
-      await notificationService.zonedSchedule(
-        id: i,
-        title: '${prayerTimeEnums[i].label} prayer time is coming - $time',
-        body: prayerTimeEnums[i].notifLabel,
-        scheduledDateTime: prayerTimeList[i],
-      );
+    for (int i = 0; i < prayerTimeList.length; i++) {
+      final DateTime localTime = prayerTimeList[i].toLocal();
+
+      if (localTime.isAfter(now)) {
+        try {
+          scheduleQuranReadingReminder(prayerTime: localTime, id: i);
+
+          final String time =
+              '${formatTwoDigits(localTime.hour)}:${formatTwoDigits(localTime.minute)}';
+          await notificationService.zonedSchedule(
+            id: i,
+            title: '${prayerTimeEnums[i].label} prayer time is coming - $time',
+            body: prayerTimeEnums[i].notifLabel,
+            scheduledDateTime: localTime,
+          );
+        } catch (e) {
+          // Log error but don't crash
+        }
+      }
     }
   }
 }

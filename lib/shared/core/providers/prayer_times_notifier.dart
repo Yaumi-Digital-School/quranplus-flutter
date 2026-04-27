@@ -1,4 +1,4 @@
-import 'package:adhan/adhan.dart';
+import 'package:adhan_dart/adhan_dart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:qurantafsir_flutter/shared/constants/prayer_times.dart';
