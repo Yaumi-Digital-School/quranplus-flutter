@@ -204,6 +204,15 @@ class AuthenticationService {
     }
   }
 
+  Future<void> ping() async {
+    try {
+      final deviceId = await _sharedPreferenceService.getOrCreateDeviceId();
+      await dioServiceNotifier.state
+          .getDioWithAccessToken()
+          .post('/api/user/ping', data: {'device_id': deviceId});
+    } catch (_) {}
+  }
+
   void forceLoginAndSaveRedirectTo({
     required BuildContext context,
     required String redirectTo,

@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart';
@@ -26,6 +29,7 @@ class SharedPreferenceService {
   final String _themeKey = "theme";
   final String _dataReciter = "dataReciter";
   final String _latestPrayerTimesSynced = 'latestPrayerTimeSynced';
+  final String _deviceIdKey = 'device-id';
 
   Future<void> init() async {
     _sharedPreferences = await SharedPreferences.getInstance();
@@ -181,6 +185,19 @@ class SharedPreferenceService {
         _sharedPreferences.getString(_shownOptionalUpdateMinVersion) ?? '';
 
     return res;
+  }
+
+  Future<String> getOrCreateDeviceId() async {
+    if (Platform.isAndroid) {
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      return androidInfo.id;
+    }
+    String? deviceId = _sharedPreferences.getString(_deviceIdKey);
+    if (deviceId == null || deviceId.isEmpty) {
+      deviceId = const Uuid().v4();
+      await _sharedPreferences.setString(_deviceIdKey, deviceId);
+    }
+    return deviceId;
   }
 
   Future<void> clear() async {
