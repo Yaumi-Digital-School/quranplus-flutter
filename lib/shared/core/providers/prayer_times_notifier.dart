@@ -1,4 +1,4 @@
-import 'package:adhan/adhan.dart';
+import 'package:adhan_dart/adhan_dart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:qurantafsir_flutter/shared/constants/prayer_times.dart';
@@ -12,21 +12,25 @@ class PrayerTimeState {
     this.locationIsOn = false,
     this.isLoading = true,
     this.prayerTimes,
+    this.cityName,
   });
 
   bool isLoading;
   bool locationIsOn;
   PrayerTimes? prayerTimes;
+  String? cityName;
 
   PrayerTimeState copyWith({
     bool? isLoading,
     bool? locationIsOn,
     PrayerTimes? prayerTimes,
+    String? cityName,
   }) {
     return PrayerTimeState(
       locationIsOn: locationIsOn ?? this.locationIsOn,
       isLoading: isLoading ?? this.isLoading,
       prayerTimes: prayerTimes ?? this.prayerTimes,
+      cityName: cityName ?? this.cityName,
     );
   }
 
@@ -37,15 +41,20 @@ class PrayerTimeState {
 
     switch (prayerTime) {
       case PrayerTimesList.fajr:
-        return '${formatTwoDigits(prayerTimes!.fajr.hour)}:${formatTwoDigits(prayerTimes!.fajr.minute)}';
+        final fajrLocal = prayerTimes!.fajr.toLocal();
+        return '${formatTwoDigits(fajrLocal.hour)}:${formatTwoDigits(fajrLocal.minute)}';
       case PrayerTimesList.dhuhr:
-        return '${formatTwoDigits(prayerTimes!.dhuhr.hour)}:${formatTwoDigits(prayerTimes!.dhuhr.minute)}';
+        final dhuhrLocal = prayerTimes!.dhuhr.toLocal();
+        return '${formatTwoDigits(dhuhrLocal.hour)}:${formatTwoDigits(dhuhrLocal.minute)}';
       case PrayerTimesList.ashr:
-        return '${formatTwoDigits(prayerTimes!.asr.hour)}:${formatTwoDigits(prayerTimes!.asr.minute)}';
+        final asrLocal = prayerTimes!.asr.toLocal();
+        return '${formatTwoDigits(asrLocal.hour)}:${formatTwoDigits(asrLocal.minute)}';
       case PrayerTimesList.magrib:
-        return '${formatTwoDigits(prayerTimes!.maghrib.hour)}:${formatTwoDigits(prayerTimes!.maghrib.minute)}';
+        final maghribLocal = prayerTimes!.maghrib.toLocal();
+        return '${formatTwoDigits(maghribLocal.hour)}:${formatTwoDigits(maghribLocal.minute)}';
       case PrayerTimesList.isya:
-        return '${formatTwoDigits(prayerTimes!.isha.hour)}:${formatTwoDigits(prayerTimes!.isha.minute)}';
+        final ishaLocal = prayerTimes!.isha.toLocal();
+        return '${formatTwoDigits(ishaLocal.hour)}:${formatTwoDigits(ishaLocal.minute)}';
     }
   }
 }
@@ -90,18 +99,38 @@ class PrayerTimeStateNotifier extends BaseStateNotifier<PrayerTimeState> {
     state = state.copyWith(locationIsOn: autoDetectCondition);
   }
 
+  Future<void> changeLocation(
+    double latitude,
+    double longitude,
+    String cityName,
+  ) async {
+    await prayerTimesService.setCoordinates(latitude, longitude, cityName);
+    await prayerTimesService.setupPrayerTimesReminder();
+  }
+
+  Future<void> updatePrayerTimes(
+    String calculationMethod,
+    String madhab,
+  ) async {
+    final updatedPrayerTimes = prayerTimesService.getTodayPrayerTimes(
+      calculationMethod: calculationMethod,
+      madhab: madhab,
+    );
+    state = state.copyWith(prayerTimes: updatedPrayerTimes);
+  }
+
   @override
-  void initStateNotifier() {
+  Future<void> initStateNotifier() async {
+    final updatedCityName = prayerTimesService.getCityName();
     state = state.copyWith(
       isLoading: false,
       prayerTimes: prayerTimesService.getTodayPrayerTimes(),
+      cityName: updatedCityName,
     );
   }
 }
 
 final prayerTimeProvider =
     StateNotifierProvider<PrayerTimeStateNotifier, PrayerTimeState>((ref) {
-  return PrayerTimeStateNotifier(
-    ref.read(prayerTimesService),
-  );
+  return PrayerTimeStateNotifier(ref.watch(prayerTimesService));
 });

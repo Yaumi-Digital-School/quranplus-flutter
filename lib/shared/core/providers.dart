@@ -1,5 +1,6 @@
 import 'package:qurantafsir_flutter/main.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/city_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/tadabbur_api.dart';
 import 'package:qurantafsir_flutter/shared/core/services/alice_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
@@ -49,6 +50,12 @@ final Provider<BookmarkApi> bookmarkApiProvider = Provider<BookmarkApi>((ref) {
   return BookmarkApi(
     dioService.getDioWithAccessToken(),
   );
+});
+
+final Provider<CityApi> cityApiProvider = Provider<CityApi>((ref) {
+  final DioService dioService = ref.watch(dioServiceProvider);
+
+  return CityApi(dioService.getDioWithAccessToken());
 });
 
 final Provider<HabitApi> habitApiProvider = Provider<HabitApi>((ref) {
@@ -182,12 +189,20 @@ final Provider<RemoteConfigService> remoteConfigService =
   return RemoteConfigService();
 });
 
+final StateProvider<String> calculationMethodProvider =
+    StateProvider<String>((ref) => 'singapore');
+
+final StateProvider<String> madhubProvider =
+    StateProvider<String>((ref) => 'shafi');
+
 final Provider<PrayerTimesService> prayerTimesService =
     Provider<PrayerTimesService>((ref) {
   final NotificationService notificationService = NotificationService();
+  final SharedPreferenceService sp = ref.watch(sharedPreferenceServiceProvider);
 
   return PrayerTimesService(
     notificationService: notificationService,
+    sharedPreferenceService: sp,
   );
 });
 

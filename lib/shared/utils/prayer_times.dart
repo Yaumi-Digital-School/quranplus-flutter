@@ -4,6 +4,7 @@ import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/services/notification_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/prayer_times_service.dart';
+import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:workmanager/workmanager.dart';
 
 void schedulePrayerTimes() {
@@ -42,8 +43,11 @@ void scheduleQuranReadingReminder({
 Future<bool> handleWorker(String task, Map<String, dynamic>? inputData) async {
   if (task == PrayerTimesWorker.prayerTimeReminder.name) {
     final NotificationService notificationService = NotificationService();
+    final SharedPreferenceService sharedPreferenceService =
+        SharedPreferenceService();
     final PrayerTimesService prayerTimesService = PrayerTimesService(
       notificationService: notificationService,
+      sharedPreferenceService: sharedPreferenceService,
     );
     prayerTimesService.init();
     await notificationService.init();
@@ -64,8 +68,11 @@ Future<bool> handleWorker(String task, Map<String, dynamic>? inputData) async {
 
     if (dailySummary.totalPages < dailySummary.target) {
       final NotificationService notificationService = NotificationService();
+      final SharedPreferenceService sharedPreferenceService =
+          SharedPreferenceService();
       final PrayerTimesService prayerTimesService = PrayerTimesService(
         notificationService: notificationService,
+        sharedPreferenceService: sharedPreferenceService,
       );
       prayerTimesService.init();
       await notificationService.init();

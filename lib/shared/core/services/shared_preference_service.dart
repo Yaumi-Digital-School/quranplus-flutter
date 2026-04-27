@@ -3,13 +3,13 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:intl/intl.dart';
-import 'package:uuid/uuid.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart';
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class SharedPreferenceService {
   late SharedPreferences _sharedPreferences;
@@ -29,6 +29,9 @@ class SharedPreferenceService {
   final String _themeKey = "theme";
   final String _dataReciter = "dataReciter";
   final String _latestPrayerTimesSynced = 'latestPrayerTimeSynced';
+  final String _cityNameKey = "cityName";
+  final String _latKey = "latKey";
+  final String _lngKey = "lngKey";
   final String _deviceIdKey = 'device-id';
 
   Future<void> init() async {
@@ -155,9 +158,7 @@ class SharedPreferenceService {
       return null;
     }
 
-    return ForceLoginParam.fromJson(
-      json.decode(res),
-    );
+    return ForceLoginParam.fromJson(json.decode(res));
   }
 
   Future<void> setLastRecordingData(LastRecordingData data) async {
@@ -171,9 +172,7 @@ class SharedPreferenceService {
       return null;
     }
 
-    return LastRecordingData.fromJson(
-      json.decode(res),
-    );
+    return LastRecordingData.fromJson(json.decode(res));
   }
 
   Future<void> setShownOptionalUpdateMinVersion(String version) async {
@@ -215,9 +214,7 @@ class SharedPreferenceService {
       return ReciterItemResponse(id: 1, name: "Mishari Rashid Al-Afasy");
     }
 
-    return ReciterItemResponse.fromJson(
-      json.decode(res),
-    );
+    return ReciterItemResponse.fromJson(json.decode(res));
   }
 
   Future<void> setLatestPrayerTimeSynced(DateTime time) async {
@@ -233,5 +230,25 @@ class SharedPreferenceService {
     final DateTime? parsedTime = DateTime.tryParse(res);
 
     return parsedTime;
+  }
+
+  Future<void> setLocation(double lat, double lng) async {
+    await _sharedPreferences.setDouble(_latKey, lat);
+    await _sharedPreferences.setDouble(_lngKey, lng);
+  }
+
+  List<double?> getLocation() {
+    final double? lat = _sharedPreferences.getDouble(_latKey);
+    final double? lng = _sharedPreferences.getDouble(_lngKey);
+
+    return [lat, lng];
+  }
+
+  Future<void> setCityName(String name) async {
+    await _sharedPreferences.setString(_cityNameKey, name);
+  }
+
+  String? getCityName() {
+    return _sharedPreferences.getString(_cityNameKey);
   }
 }

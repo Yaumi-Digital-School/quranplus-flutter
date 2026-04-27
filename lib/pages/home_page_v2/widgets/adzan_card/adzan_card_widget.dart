@@ -140,8 +140,7 @@ class _AdzanCardWidgetState extends ConsumerState<AdzanCardWidget> {
                 const SizedBox(width: 4),
                 if (adzanState.prayerTimesList != null)
                   Text(
-                    // TODO set location
-                    "Depok City, West Java",
+                    adzanState.cityName ?? "",
                     style: QPTextStyle.getDescription1Regular(
                       context,
                     ).copyWith(
