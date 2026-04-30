@@ -8,11 +8,15 @@ import 'package:qurantafsir_flutter/shared/core/services/shared_preference_servi
 import 'package:workmanager/workmanager.dart';
 
 void schedulePrayerTimes() {
-  final DateTime dt = DateTime.now();
-  final String formattedDate = DateFormat('h:mm a').format(dt);
+  Workmanager().registerOneOffTask(
+    'prayerTimes-immediate',
+    PrayerTimesWorker.prayerTimeReminder.name,
+    tag: PrayerTimesWorker.prayerTimeReminder.tag,
+    existingWorkPolicy: ExistingWorkPolicy.replace,
+  );
 
   Workmanager().registerPeriodicTask(
-    'prayerTimes-$formattedDate',
+    'prayerTimes',
     PrayerTimesWorker.prayerTimeReminder.name,
     tag: PrayerTimesWorker.prayerTimeReminder.tag,
     frequency: const Duration(days: 1),
@@ -34,32 +38,34 @@ void scheduleQuranReadingReminder({
     initialDelay: duration,
     tag: PrayerTimesWorker.quranTimeReminder.tag,
     existingWorkPolicy: ExistingWorkPolicy.append,
-    inputData: <String, dynamic>{
-      'id': id,
-    },
+    inputData: <String, dynamic>{'id': id},
   );
 }
 
 Future<bool> handleWorker(String task, Map<String, dynamic>? inputData) async {
   if (task == PrayerTimesWorker.prayerTimeReminder.name) {
-    final NotificationService notificationService = NotificationService();
-    final SharedPreferenceService sharedPreferenceService =
-        SharedPreferenceService();
-    final PrayerTimesService prayerTimesService = PrayerTimesService(
-      notificationService: notificationService,
-      sharedPreferenceService: sharedPreferenceService,
-    );
-    prayerTimesService.init();
-    await notificationService.init();
-    await prayerTimesService.setupPrayerTimesReminder();
-
-    return Future.value(true);
+    try {
+      final NotificationService notificationService = NotificationService();
+      final SharedPreferenceService sharedPreferenceService =
+          SharedPreferenceService();
+      await sharedPreferenceService.init();
+      await notificationService.init();
+      final PrayerTimesService prayerTimesService = PrayerTimesService(
+        notificationService: notificationService,
+        sharedPreferenceService: sharedPreferenceService,
+      );
+      prayerTimesService.init();
+      await prayerTimesService.setupPrayerTimesReminder();
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   if (task == PrayerTimesWorker.quranTimeReminder.name) {
     final DbLocal db = DbLocal();
-    final HabitDailySummary dailySummary =
-        await db.getCurrentDayHabitDailySummary();
+    final HabitDailySummary dailySummary = await db
+        .getCurrentDayHabitDailySummary();
     if (dailySummary.totalPages >= dailySummary.target) {
       Workmanager().cancelByTag(PrayerTimesWorker.quranTimeReminder.tag);
 

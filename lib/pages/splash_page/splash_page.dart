@@ -28,33 +28,38 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     return StateNotifierConnector<SplashPageStateNotifier, SplashPageState>(
       stateNotifierProvider:
-          StateNotifierProvider<SplashPageStateNotifier, SplashPageState>(
-        (ref) {
-          return SplashPageStateNotifier(
-            deepLinkService: ref.watch(deepLinkService),
-            authenticationService: ref.watch(authenticationService),
-            navigatorKey: widget.navigatorKey,
-            tadabburService: ref.read(tadabburService),
-            remoteConfigService: ref.read(remoteConfigService),
-            prayerTimesService: ref.read(prayerTimesService),
-            habitDailySummaryService: ref.read(habitDailySummaryService),
-            sharedPreferenceService: ref.read(sharedPreferenceServiceProvider),
-          );
-        },
-      ),
+          StateNotifierProvider<SplashPageStateNotifier, SplashPageState>((
+            ref,
+          ) {
+            return SplashPageStateNotifier(
+              deepLinkService: ref.watch(deepLinkService),
+              authenticationService: ref.watch(authenticationService),
+              navigatorKey: widget.navigatorKey,
+              tadabburService: ref.read(tadabburService),
+              remoteConfigService: ref.read(remoteConfigService),
+              prayerTimesService: ref.read(prayerTimesService),
+              habitDailySummaryService: ref.read(habitDailySummaryService),
+              sharedPreferenceService: ref.read(
+                sharedPreferenceServiceProvider,
+              ),
+            );
+          }),
       onStateNotifierReady: (notifier, ref) async {
         // Temporary
-        final SharedPreferenceService sharedPref =
-            ref.read(sharedPreferenceServiceProvider);
-        final String currentDate = DateFormat('yyyy-MM-dd').format(
-          DateTime.now(),
+        final SharedPreferenceService sharedPref = ref.read(
+          sharedPreferenceServiceProvider,
         );
+        final String currentDate = DateFormat(
+          'yyyy-MM-dd',
+        ).format(DateTime.now());
         final DateTime currentDateTime = DateTime.parse(currentDate);
-        if (sharedPref.getLatestPrayerTimeSynced() == null ||
+        final bool shouldSchedulePrayer =
+            sharedPref.getLatestPrayerTimeSynced() == null ||
             (sharedPref.getLatestPrayerTimeSynced() != null &&
-                sharedPref
-                    .getLatestPrayerTimeSynced()!
-                    .isBefore(currentDateTime))) {
+                sharedPref.getLatestPrayerTimeSynced()!.isBefore(
+                  currentDateTime,
+                ));
+        if (shouldSchedulePrayer) {
           schedulePrayerTimes();
           sharedPref.setLatestPrayerTimeSynced(currentDateTime);
         }
@@ -80,30 +85,24 @@ class _SplashPageState extends State<SplashPage> {
           }
         }
       },
-      builder: (
-        _,
-        SplashPageState state,
-        SplashPageStateNotifier notifier,
-        __,
-      ) {
-        return Scaffold(
-          body: Center(
-            child: Image.asset(
-              ImagePath.logoQuranPlusPotrait,
-              color: Theme.of(context).colorScheme.primary,
-              width: 92,
-              height: 110,
-              fit: BoxFit.contain,
-            ),
-          ),
-        );
-      },
+      builder:
+          (_, SplashPageState state, SplashPageStateNotifier notifier, __) {
+            return Scaffold(
+              body: Center(
+                child: Image.asset(
+                  ImagePath.logoQuranPlusPotrait,
+                  color: Theme.of(context).colorScheme.primary,
+                  width: 92,
+                  height: 110,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            );
+          },
     );
   }
 
-  Future<void> buildAppUpdateDialog(
-    AppUpdateInfo info,
-  ) async {
+  Future<void> buildAppUpdateDialog(AppUpdateInfo info) async {
     late Widget dialog;
     switch (info.type) {
       case AppUpdateType.forceUpdate:

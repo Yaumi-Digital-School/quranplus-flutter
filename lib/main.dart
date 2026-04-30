@@ -43,19 +43,17 @@ Future<void> main() async {
       SharedPreferenceService();
   await sharedPreferenceService.init();
   await NotificationService().init();
-  await Workmanager().initialize(
-    callbackDispatcher,
-  );
+  Workmanager().initialize(callbackDispatcher);
 
   final AudioRecitationHandler currentAudioHandler =
       await AudioService.init<AudioRecitationHandler>(
-    builder: () => AudioRecitationHandler(),
-    config: const AudioServiceConfig(
-      androidNotificationChannelId: 'com.yaumi.qurantafsir.id',
-      androidNotificationChannelName: 'Quran Plus',
-      androidStopForegroundOnPause: true,
-    ),
-  );
+        builder: () => AudioRecitationHandler(),
+        config: const AudioServiceConfig(
+          androidNotificationChannelId: 'com.yaumi.qurantafsir.id',
+          androidNotificationChannelName: 'Quran Plus',
+          androidStopForegroundOnPause: true,
+        ),
+      );
 
   await GlobalConfiguration().loadFromAsset('env');
 
@@ -72,9 +70,7 @@ Future<void> main() async {
   runApp(
     ProviderScope(
       overrides: [
-        audioHandler.overrideWithValue(
-          currentAudioHandler,
-        ),
+        audioHandler.overrideWithValue(currentAudioHandler),
         sharedPreferenceServiceProvider.overrideWithValue(
           sharedPreferenceService,
         ),
@@ -94,6 +90,7 @@ Future<void> main() async {
 
 @pragma('vm:entry-point')
 void callbackDispatcher() {
+  WidgetsFlutterBinding.ensureInitialized();
   Workmanager().executeTask((task, inputData) async {
     return await handleWorker(task, inputData);
   });
@@ -103,8 +100,9 @@ class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
   static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-  static FirebaseAnalyticsObserver observer =
-      FirebaseAnalyticsObserver(analytics: analytics);
+  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(
+    analytics: analytics,
+  );
 
   @override
   ConsumerState<MyApp> createState() => _MyAppState();
@@ -133,8 +131,9 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final SharedPreferenceService sp =
-        ref.watch(sharedPreferenceServiceProvider);
+    final SharedPreferenceService sp = ref.watch(
+      sharedPreferenceServiceProvider,
+    );
     final AuthenticationService ur = ref.watch(authenticationService);
 
     final mode = ref.watch(themeProvider);
@@ -155,13 +154,12 @@ class _MyAppState extends ConsumerState<MyApp> {
             selectedRouteWidget = SplashPage(navigatorKey: navigatorKey);
             break;
           case RoutePaths.routeMain:
-            final args = settings.arguments != null &&
+            final args =
+                settings.arguments != null &&
                     settings.arguments is MainPageParam
                 ? settings.arguments as MainPageParam
                 : null;
-            selectedRouteWidget = MainPage(
-              param: args,
-            );
+            selectedRouteWidget = MainPage(param: args);
             break;
           case RoutePaths.routeSettings:
             selectedRouteWidget = const SettingsPage();
@@ -188,21 +186,15 @@ class _MyAppState extends ConsumerState<MyApp> {
             final args = settings.arguments is ReadTadabburParam
                 ? settings.arguments as ReadTadabburParam
                 : ReadTadabburParam(surahName: "", surahId: 0);
-            selectedRouteWidget = ReadTadabburPage(
-              param: args,
-            );
+            selectedRouteWidget = ReadTadabburPage(param: args);
             break;
           case RoutePaths.routeTadabburContent:
             final args = settings.arguments as TadabburStoryPageParams;
-            selectedRouteWidget = TadabburStoryPage(
-              params: args,
-            );
+            selectedRouteWidget = TadabburStoryPage(params: args);
             break;
           case RoutePaths.routeLogin:
             final args = settings.arguments as RegistrationAndLoginPageParam;
-            selectedRouteWidget = RegistrationAndLoginPage(
-              param: args,
-            );
+            selectedRouteWidget = RegistrationAndLoginPage(param: args);
             break;
           case RoutePaths.routePrayerTimePage:
             selectedRouteWidget = const PrayerTimePage();
@@ -212,9 +204,7 @@ class _MyAppState extends ConsumerState<MyApp> {
             break;
           default:
             selectedRouteWidget = const Scaffold(
-              body: Center(
-                child: Text('No route defined'),
-              ),
+              body: Center(child: Text('No route defined')),
             );
         }
 
