@@ -64,55 +64,70 @@ class AccountPageNotifier extends _$AccountPageNotifier {
   }
 
   void nameChanged(name) {
-    final status = _checkValidation(
-              name, state.email,
-              _isDate(state.dateOfMonth, state.month, state.year),
-              state.gender)
-          ? FormStatus.valid
-          : FormStatus.dirty;
+    final status =
+        _checkValidation(
+          name,
+          state.email,
+          _isDate(state.dateOfMonth, state.month, state.year),
+          state.gender,
+        )
+        ? FormStatus.valid
+        : FormStatus.dirty;
     state = state.copyWith(formStatus: status, name: name);
   }
 
   void genderChanged(gender) {
-    final status = _checkValidation(
-              state.name, state.email,
-              _isDate(state.dateOfMonth, state.month, state.year),
-              gender)
-          ? FormStatus.valid
-          : FormStatus.dirty;
+    final status =
+        _checkValidation(
+          state.name,
+          state.email,
+          _isDate(state.dateOfMonth, state.month, state.year),
+          gender,
+        )
+        ? FormStatus.valid
+        : FormStatus.dirty;
     state = state.copyWith(formStatus: status, gender: gender);
   }
 
   void dateOfMonthChanged(String dateOfMonth) {
-    final status = _checkValidation(
-              state.name, state.email,
-              _isDate(dateOfMonth, state.month, state.year),
-              state.gender)
-          ? FormStatus.valid
-          : FormStatus.dirty;
+    final status =
+        _checkValidation(
+          state.name,
+          state.email,
+          _isDate(dateOfMonth, state.month, state.year),
+          state.gender,
+        )
+        ? FormStatus.valid
+        : FormStatus.dirty;
     state = state.copyWith(formStatus: status, dateOfMonth: dateOfMonth);
   }
 
   void monthChanged(String month) {
     final newMonth = month.length == 1 ? '0$month' : month;
-    final status = _checkValidation(
-              state.name, state.email,
-              _isDate(state.dateOfMonth, newMonth, state.year),
-              state.gender)
-          ? FormStatus.valid
-          : FormStatus.dirty;
+    final status =
+        _checkValidation(
+          state.name,
+          state.email,
+          _isDate(state.dateOfMonth, newMonth, state.year),
+          state.gender,
+        )
+        ? FormStatus.valid
+        : FormStatus.dirty;
     state = state.copyWith(formStatus: status, month: month);
   }
 
   void yearChanged(String year) {
     if (year.length == 4) {
       if (int.parse(year) < 1900) year = '1900';
-      final status = _checkValidation(
-                state.name, state.email,
-                _isDate(state.dateOfMonth, state.month, year),
-                state.gender)
-            ? FormStatus.valid
-            : FormStatus.dirty;
+      final status =
+          _checkValidation(
+            state.name,
+            state.email,
+            _isDate(state.dateOfMonth, state.month, year),
+            state.gender,
+          )
+          ? FormStatus.valid
+          : FormStatus.dirty;
       state = state.copyWith(formStatus: status, year: year);
     } else if (year.isEmpty) {
       state = state.copyWith(year: '');
@@ -120,7 +135,8 @@ class AccountPageNotifier extends _$AccountPageNotifier {
   }
 
   void saveButtonChecked(Function() callback) async {
-    final valid = state.name.isNotEmpty &&
+    final valid =
+        state.name.isNotEmpty &&
         state.email.isNotEmpty &&
         _isDate(state.dateOfMonth, state.month, state.year).isNotEmpty &&
         state.gender.isNotEmpty;
@@ -134,8 +150,9 @@ class AccountPageNotifier extends _$AccountPageNotifier {
 
   String _isDate(String dateOfMonth, String month, String year) {
     try {
-      final formattedDate =
-          DateFormat('d-M-yyyy').parseStrict('$dateOfMonth-$month-$year');
+      final formattedDate = DateFormat(
+        'd-M-yyyy',
+      ).parseStrict('$dateOfMonth-$month-$year');
       return formattedDate.toString();
     } catch (error, stackTrace) {
       FirebaseCrashlytics.instance.recordError(
@@ -156,8 +173,7 @@ class AccountPageNotifier extends _$AccountPageNotifier {
   Future<void> _getUserProfile() async {
     state = state.copyWith(resultStatus: ResultStatus.inProgress);
     try {
-      final user =
-          await ref.read(authenticationService).getUserProfile(_token);
+      final user = await ref.read(authenticationService).getUserProfile(_token);
       state = state.copyWith(
         resultStatus: ResultStatus.success,
         formStatus: FormStatus.pure,
@@ -193,13 +209,12 @@ class AccountPageNotifier extends _$AccountPageNotifier {
       gender: state.gender,
     );
     try {
-      final isSuccess =
-          await ref.read(authenticationService).updateUserProfile(_token, user);
+      final isSuccess = await ref
+          .read(authenticationService)
+          .updateUserProfile(_token, user);
       if (isSuccess) {
         state = state.copyWith(resultStatus: ResultStatus.success);
-        await ref
-            .read(sharedPreferenceServiceProvider)
-            .setUsername(state.name);
+        await ref.read(sharedPreferenceServiceProvider).setUsername(state.name);
       } else {
         state = state.copyWith(resultStatus: ResultStatus.failure);
       }

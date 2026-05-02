@@ -10,11 +10,11 @@ part 'bookmarks.g.dart';
 class GetBookmarkListResponse {
   GetBookmarkListResponse({
     this.data,
-    required this.message,
+    this.message,
   });
 
   final List<Bookmarks>? data;
-  final String message;
+  final String? message;
 
   factory GetBookmarkListResponse.fromJson(Map<String, dynamic> json) =>
       _$GetBookmarkListResponseFromJson(json);

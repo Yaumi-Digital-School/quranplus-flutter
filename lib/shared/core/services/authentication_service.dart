@@ -145,7 +145,25 @@ class AuthenticationService {
   Future<void> signOut() async {
     _googleSignIn.signOut();
     setIsLoggedIn(false);
-    _sharedPreferenceService.clear();
+
+    final List<double?> location = _sharedPreferenceService.getLocation();
+    final String? cityName = _sharedPreferenceService.getCityName();
+    final DateTime? latestPrayerTimeSynced =
+        _sharedPreferenceService.getLatestPrayerTimeSynced();
+
+    await _sharedPreferenceService.clear();
+
+    if (location[0] != null && location[1] != null) {
+      await _sharedPreferenceService.setLocation(location[0]!, location[1]!);
+    }
+    if (cityName != null) {
+      await _sharedPreferenceService.setCityName(cityName);
+    }
+    if (latestPrayerTimeSynced != null) {
+      await _sharedPreferenceService
+          .setLatestPrayerTimeSynced(latestPrayerTimeSynced);
+    }
+
     _db.clearTableHabit();
     _db.clearTableBookmarks();
     _db.clearTableFavoriteAyahs();
