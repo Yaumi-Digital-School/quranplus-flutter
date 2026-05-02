@@ -3,7 +3,6 @@ import 'package:qurantafsir_flutter/shared/constants/prayer_times.dart';
 import 'package:qurantafsir_flutter/shared/core/services/notification_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/utils/number_util.dart';
-import 'package:qurantafsir_flutter/shared/utils/prayer_times.dart';
 
 class PrayerTimesService {
   PrayerTimesService({
@@ -116,7 +115,7 @@ class PrayerTimesService {
 
       if (localTime.isAfter(now)) {
         try {
-          scheduleQuranReadingReminder(prayerTime: localTime, id: i);
+          // scheduleQuranReadingReminder(prayerTime: localTime, id: i);
 
           final String time =
               '${formatTwoDigits(localTime.hour)}:${formatTwoDigits(localTime.minute)}';
@@ -126,8 +125,8 @@ class PrayerTimesService {
             body: prayerTimeEnums[i].notifLabel,
             scheduledDateTime: localTime,
           );
-        } catch (e) {
-          // Log error but don't crash
+        } catch (_) {
+          // TODO: Add error handling
         }
       }
     }
