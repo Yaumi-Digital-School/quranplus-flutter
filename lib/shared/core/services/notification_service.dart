@@ -1,4 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -17,35 +18,34 @@ class NotificationService {
 
   static const AndroidNotificationDetails androidPlatformChannelSpecifics =
       AndroidNotificationDetails(
-    'channel_id', //String, //Required for Android 8.0 or after
-    'channel_name', //Required for Android 8.0 or after
-    channelDescription: 'description', //Required for Android 8.0 or after
-    importance: Importance.high,
-    priority: Priority.high,
-  );
+        'channel_id', //String, //Required for Android 8.0 or after
+        'channel_name', //Required for Android 8.0 or after
+        channelDescription: 'description', //Required for Android 8.0 or after
+        importance: Importance.high,
+        priority: Priority.high,
+      );
 
   Future<void> init() async {
     tz.initializeTimeZones();
-    tz.setLocalLocation(tz.getLocation('Asia/Jakarta'));
+    final String timeZoneName = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(timeZoneName));
 
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('ic_launcher');
     const DarwinInitializationSettings initializationSettingsDarwin =
         DarwinInitializationSettings(
-            // onDidReceiveLocalNotification: onDidReceiveLocalNotification,
-            );
+          // onDidReceiveLocalNotification: onDidReceiveLocalNotification,
+        );
     const LinuxInitializationSettings initializationSettingsLinux =
-        LinuxInitializationSettings(
-      defaultActionName: 'Open notification',
-    );
+        LinuxInitializationSettings(defaultActionName: 'Open notification');
 
     const InitializationSettings initializationSettings =
         InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsDarwin,
-      macOS: initializationSettingsDarwin,
-      linux: initializationSettingsLinux,
-    );
+          android: initializationSettingsAndroid,
+          iOS: initializationSettingsDarwin,
+          macOS: initializationSettingsDarwin,
+          linux: initializationSettingsLinux,
+        );
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
@@ -64,10 +64,8 @@ class NotificationService {
       title,
       body,
       tz.TZDateTime.from(scheduledDateTime, tz.local),
-      const NotificationDetails(
-        android: androidPlatformChannelSpecifics,
-      ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      const NotificationDetails(android: androidPlatformChannelSpecifics),
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
     );
@@ -82,9 +80,7 @@ class NotificationService {
       id,
       title,
       body,
-      const NotificationDetails(
-        android: androidPlatformChannelSpecifics,
-      ),
+      const NotificationDetails(android: androidPlatformChannelSpecifics),
     );
   }
 }

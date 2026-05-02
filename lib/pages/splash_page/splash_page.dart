@@ -67,8 +67,6 @@ class _SplashPageState extends ConsumerState<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Keep splashPageProvider alive while the widget is mounted so that the
-    // async initStateNotifier / getAppUpdateStatus calls can use ref safely.
     ref.watch(splashPageProvider);
     return Scaffold(
       body: Center(
