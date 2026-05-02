@@ -61,7 +61,6 @@ class _HomePageV2State extends State<HomePageV2> {
             );
           }),
       onStateNotifierReady: (notifier, ref) async {
-        schedulePrayerTimes();
         await notifier.initStateNotifier();
       },
       builder:

@@ -43,7 +43,8 @@ Future<void> main() async {
       SharedPreferenceService();
   await sharedPreferenceService.init();
   await NotificationService().init();
-  Workmanager().initialize(callbackDispatcher);
+
+  await Workmanager().initialize(callbackDispatcher);
 
   final AudioRecitationHandler currentAudioHandler =
       await AudioService.init<AudioRecitationHandler>(

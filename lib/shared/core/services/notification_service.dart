@@ -53,14 +53,6 @@ class NotificationService {
     );
   }
 
-  Future<void> requestPermissions() async {
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.requestNotificationsPermission();
-  }
-
   Future<void> zonedSchedule({
     required int id,
     required String title,
