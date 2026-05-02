@@ -3,14 +3,16 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
 import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'select_reciter_bottom_sheet/select_reciter_state_notifier.dart';
+
+part 'audio_recitation_state_notifier.g.dart';
 
 class AudioRecitationState {
   AudioRecitationState({
@@ -50,22 +52,20 @@ class AudioRecitationState {
   bool get isStopped => surahName.isEmpty;
 }
 
-class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
-  AudioRecitationStateNotifier({
-    required AudioApi audioApi,
-    required AudioRecitationHandler audioHandler,
-  })  : _audioApi = audioApi,
-        _audioHandler = audioHandler,
-        super(
-          AudioRecitationState(),
-        );
-
-  final AudioApi _audioApi;
-  final AudioRecitationHandler _audioHandler;
+@Riverpod(keepAlive: true)
+class AudioRecitationNotifier extends _$AudioRecitationNotifier {
+  late AudioApi _audioApi;
+  late AudioRecitationHandler _audioHandler;
 
   final List<MediaItem> localPlaylist = [];
-
   StreamSubscription<PlayerState>? playerStateSubscription;
+
+  @override
+  AudioRecitationState build() {
+    _audioApi = ref.read(audioApiProvider);
+    _audioHandler = ref.read(audioHandler);
+    return AudioRecitationState();
+  }
 
   Future<void> getNextAyahMedia() async {
     final bool shouldGoToNextSurah =
@@ -223,7 +223,6 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
       MediaItem item = MediaItem(
         id: '$surahId-1-${state.reciterId}',
         title: '$surahName - Ayat: 1',
-        // replace with dynamic reciter name
         artist: state.reciterName,
         extras: <String, dynamic>{
           'url': response.data.audioFileUrl,
@@ -264,7 +263,7 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
   }
 
   Future<void> changeReciter(
-    SelectReciterStateNotifier selectReciterNotifier,
+    SelectReciterNotifier selectReciterNotifier,
   ) async {
     await selectReciterNotifier.fetchData(
       state.surahName,
@@ -276,17 +275,3 @@ class AudioRecitationStateNotifier extends StateNotifier<AudioRecitationState> {
     );
   }
 }
-
-final audioRecitationProvider =
-    StateNotifierProvider<AudioRecitationStateNotifier, AudioRecitationState>(
-  (ref) {
-    final AudioApi audioApi = ref.read(audioApiProvider);
-    final AudioRecitationHandler audioRecitationHandler =
-        ref.read(audioHandler);
-
-    return AudioRecitationStateNotifier(
-      audioApi: audioApi,
-      audioHandler: audioRecitationHandler,
-    );
-  },
-);

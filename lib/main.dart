@@ -27,6 +27,7 @@ import 'package:qurantafsir_flutter/shared/core/services/authentication_service.
 import 'package:qurantafsir_flutter/shared/core/services/notification_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/state_notifiers/theme_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
 import 'package:qurantafsir_flutter/shared/utils/prayer_times.dart';
 import 'package:workmanager/workmanager.dart';
@@ -113,10 +114,6 @@ class MyApp extends ConsumerStatefulWidget {
 class _MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(themeProvider.notifier).initStateNotifier();
-    });
-
     super.initState();
   }
 

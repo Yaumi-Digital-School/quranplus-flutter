@@ -20,7 +20,7 @@ class AudioMinimizedInfo extends ConsumerStatefulWidget {
 }
 
 class _AudioMinimizedInfoState extends ConsumerState<AudioMinimizedInfo> {
-  late AudioRecitationStateNotifier audioPlayerNotifier;
+  late AudioRecitationNotifier audioPlayerNotifier;
 
   @override
   void initState() {

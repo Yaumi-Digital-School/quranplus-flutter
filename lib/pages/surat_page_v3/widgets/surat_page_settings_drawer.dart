@@ -4,7 +4,6 @@ import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
-import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/theme_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/change_theme_bottom_sheet.dart';
@@ -282,7 +281,7 @@ class _SuratPageSettingsDrawerState
   }
 
   Widget _buildSelectTheme() {
-    final ThemeStateNotifier themeMode = ref.read(themeProvider.notifier);
+    final ThemeNotifier themeMode = ref.read(themeProvider.notifier);
     final QPThemeMode theme = ref.read(themeProvider);
 
     return Padding(

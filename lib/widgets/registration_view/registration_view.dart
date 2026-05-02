@@ -138,8 +138,11 @@ class RegistrationView extends ConsumerWidget {
     required WidgetRef ref,
   }) async {
     final ConnectivityStatus connectivityStatus =
-        ref.watch(internetConnectionStatusProviders);
+        ref.read(internetConnectionStatusProvider);
     final AuthenticationService authService = ref.read(authenticationService);
+    final habitService = ref.read(habitDailySummaryService);
+    final bookmarkService = ref.read(bookmarksService);
+
     if (connectivityStatus == ConnectivityStatus.isConnected) {
       final SignInResult res = await authService.signIn(type: type);
       if (context.mounted) {
@@ -157,10 +160,10 @@ class RegistrationView extends ConsumerWidget {
               );
             break;
           case SignInResult.success:
-            await ref.read(habitDailySummaryService).syncHabit(
-                  connectivityStatus: connectivityStatus,
-                );
-            await ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
+            await habitService.syncHabit(
+              connectivityStatus: connectivityStatus,
+            );
+            await bookmarkService.clearBookmarkAndMergeFromServer();
 
             if (shouldNavigateTabToHome) {
               final BottomNavigationBar navbar =

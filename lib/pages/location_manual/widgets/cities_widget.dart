@@ -19,7 +19,6 @@ class CitiesWidget extends ConsumerWidget {
         itemBuilder: (context, index) => InkWell(
           onTap: () {
             ref.read(locationManualProvider.notifier).onSelectCity(
-              ref,
               locationManualState.cities[index].id,
               locationManualState.cities[index].label,
               () {

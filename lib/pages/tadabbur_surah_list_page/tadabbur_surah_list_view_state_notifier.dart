@@ -1,8 +1,10 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/tadabbur_api.dart';
-import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'tadabbur_surah_list_view_state_notifier.g.dart';
 
 class TadabburSurahListViewState {
   TadabburSurahListViewState({
@@ -24,50 +26,36 @@ class TadabburSurahListViewState {
   }
 }
 
-class TadabburSurahListViewStateNotifier
-    extends BaseStateNotifier<TadabburSurahListViewState> {
-  TadabburSurahListViewStateNotifier({
-    required TadabburApi tadabburApi,
-  })  : _tadabburApi = tadabburApi,
-        super(
-          TadabburSurahListViewState(),
-        );
-
-  final TadabburApi _tadabburApi;
-
+@riverpod
+class TadabburSurahListViewNotifier extends _$TadabburSurahListViewNotifier {
   @override
-  Future<void> initStateNotifier() async {
-    await _getAvailableTadabburSurahList();
+  TadabburSurahListViewState build() {
+    Future.microtask(_getAvailableTadabburSurahList);
+    return TadabburSurahListViewState();
   }
 
   Future<void> _getAvailableTadabburSurahList() async {
+    final api = ref.read(tadabburApiProvider);
     try {
       HttpResponse<List<GetTadabburSurahListItemResponse>> request =
-          await _tadabburApi.getAvailableTadabburSurahList();
+          await api.getAvailableTadabburSurahList();
 
       if ((request.response.statusCode ?? 400) == 200) {
         state = state.copyWith(
           tadabburSurahList: request.data,
           isLoading: false,
         );
-
         return;
       }
 
-      state = state.copyWith(
-        tadabburSurahList: [],
-        isLoading: false,
-      );
+      state = state.copyWith(tadabburSurahList: [], isLoading: false);
     } catch (error, stackTrace) {
       FirebaseCrashlytics.instance.recordError(
         error,
         stackTrace,
         reason: 'error on _getAvailableTadabburSurahList() method',
       );
-      state = state.copyWith(
-        tadabburSurahList: [],
-        isLoading: false,
-      );
+      state = state.copyWith(tadabburSurahList: [], isLoading: false);
     }
   }
 }

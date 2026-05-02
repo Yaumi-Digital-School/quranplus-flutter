@@ -12,7 +12,6 @@ import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_group_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
-import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/dynamic_link_helper.dart';
 import 'package:qurantafsir_flutter/widgets/habit_group_overview.dart';
 import 'package:qurantafsir_flutter/widgets/habit_personal_weekly_overview.dart';
@@ -29,7 +28,7 @@ class HabitGroupDetailViewParam {
   final bool isSuccessJoinGroup;
 }
 
-class HabitGroupDetailView extends StatefulWidget {
+class HabitGroupDetailView extends ConsumerStatefulWidget {
   const HabitGroupDetailView({
     super.key,
     required this.param,
@@ -38,281 +37,262 @@ class HabitGroupDetailView extends StatefulWidget {
   final HabitGroupDetailViewParam param;
 
   @override
-  State<HabitGroupDetailView> createState() => _HabitGroupDetailViewState();
+  ConsumerState<HabitGroupDetailView> createState() =>
+      _HabitGroupDetailViewState();
 }
 
-class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
-  @override
-  void initState() {
-    super.initState();
-  }
+class _HabitGroupDetailViewState extends ConsumerState<HabitGroupDetailView> {
+  bool _successSheetShown = false;
 
   @override
   Widget build(BuildContext context) {
-    return StateNotifierConnector<HabitGroupDetailStateNotifier,
-        HabitGroupDetailState>(
-      stateNotifierProvider: StateNotifierProvider<
-          HabitGroupDetailStateNotifier, HabitGroupDetailState>(
-        (ref) {
-          return HabitGroupDetailStateNotifier(
-            habitGroupApi: ref.watch(habitGroupApiProvider),
-            habitApi: ref.watch(habitApiProvider),
-            groupId: widget.param.id,
-          );
-        },
-      ),
-      onStateNotifierReady: (notifier, ref) async {
-        await notifier.initStateNotifier();
+    final state =
+        ref.watch(habitGroupDetailProvider(widget.param.id));
+    final notifier =
+        ref.read(habitGroupDetailProvider(widget.param.id).notifier);
 
-        if (widget.param.isSuccessJoinGroup) {
-          Future.delayed(const Duration(seconds: 1), () {
-            if (!context.mounted) return;
-            HabitGroupBottomSheet.showModalSuccessJoinGroup(context: context);
-          });
-        }
+    ref.listen(habitGroupDetailProvider(widget.param.id), (prev, next) {
+      if (prev?.isLoading == true &&
+          next.isLoading == false &&
+          widget.param.isSuccessJoinGroup &&
+          !_successSheetShown) {
+        _successSheetShown = true;
+        Future.delayed(const Duration(seconds: 1), () {
+          if (!mounted) return;
+          HabitGroupBottomSheet.showModalSuccessJoinGroup(context: context);
+        });
+      }
+
+      if (next.userSummaryResponse != null &&
+          prev?.userSummaryResponse != next.userSummaryResponse) {
+        Future.delayed(const Duration(milliseconds: 0), () {
+          if (!mounted) return;
+          UserSummaryBottomSheet.showBottomSheet(
+            context: context,
+            data: next.userSummaryResponse!,
+            isCurrentUser: next.isCurrentUser,
+          );
+        });
+      }
+    });
+
+    if (state.isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        _onTapBack(context, notifier.groupNameIsEdited);
       },
-      builder: (
-        _,
-        state,
-        notifier,
-        ref,
-      ) {
-        if (state.isLoading) {
-          return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(54.0),
+          child: AppBar(
+            leading: IconButton(
+              icon: Icon(
+                Icons.chevron_left,
+                color: QPColors.getColorBasedTheme(
+                  dark: QPColors.whiteFair,
+                  light: QPColors.blackSoft,
+                  brown: QPColors.brownModeMassive,
+                  context: context,
+                ),
+                size: 30,
+              ),
+              onPressed: () {
+                _onTapBack(context, notifier.groupNameIsEdited);
+              },
             ),
-          );
-        }
-
-        if (state.userSummaryResponse != null) {
-          Future.delayed(const Duration(milliseconds: 0), () {
-            if (!context.mounted) return;
-            UserSummaryBottomSheet.showBottomSheet(
-              context: context,
-              data: state.userSummaryResponse!,
-              isCurrentUser: state.isCurrentUser,
-            );
-          });
-        }
-
-        return PopScope(
-          canPop: false,
-          onPopInvokedWithResult: (didPop, result) {
-            if (didPop) return;
-            _onTapBack(context, ref, notifier.groupNameIsEdited);
-          },
-          child: Scaffold(
-            appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(54.0),
-              child: AppBar(
-                leading: IconButton(
-                  icon: Icon(
-                    Icons.chevron_left,
+            automaticallyImplyLeading: false,
+            elevation: 0.7,
+            centerTitle: true,
+            title: Text(
+              state.groupName,
+              style: QPTextStyle.getSubHeading2SemiBold(context),
+            ),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            actions: [
+              Theme(
+                data: Theme.of(context).copyWith(
+                  iconTheme: IconThemeData(
                     color: QPColors.getColorBasedTheme(
-                      dark: QPColors.whiteFair,
-                      light: QPColors.blackSoft,
+                      dark: QPColors.whiteMassive,
+                      light: QPColors.blackMassive,
                       brown: QPColors.brownModeMassive,
                       context: context,
                     ),
-                    size: 30,
                   ),
-                  onPressed: () {
-                    _onTapBack(context, ref, notifier.groupNameIsEdited);
-                  },
                 ),
-                automaticallyImplyLeading: false,
-                elevation: 0.7,
-                centerTitle: true,
-                title: Text(
-                  state.groupName,
-                  style: QPTextStyle.getSubHeading2SemiBold(context),
-                ),
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                actions: [
-                  Theme(
-                    data: Theme.of(context).copyWith(
-                      iconTheme: IconThemeData(
-                        color: QPColors.getColorBasedTheme(
-                          dark: QPColors.whiteMassive,
-                          light: QPColors.blackMassive,
-                          brown: QPColors.brownModeMassive,
-                          context: context,
-                        ),
-                      ),
-                    ),
-                    child: PopupMenuButton(
-                      color: Colors.white,
-                      itemBuilder: (context) => [
-                        PopupMenuItem<int>(
-                          value: 0,
-                          child: Row(
-                            children: [
-                              ImageIcon(
-                                AssetImage(StoredIcon.iconInviteMember.path),
-                                size: 12,
-                                color: QPColors.blackMassive,
-                              ),
-                              const SizedBox(
-                                width: 14,
-                              ),
-                              Text(
-                                "Invite Member",
-                                style:
-                                    QPTextStyle.getSubHeading4SemiBold(context)
-                                        .copyWith(
-                                  color: QPColors.blackMassive,
-                                ),
-                              ),
-                            ],
+                child: PopupMenuButton(
+                  color: Colors.white,
+                  itemBuilder: (context) => [
+                    PopupMenuItem<int>(
+                      value: 0,
+                      child: Row(
+                        children: [
+                          ImageIcon(
+                            AssetImage(StoredIcon.iconInviteMember.path),
+                            size: 12,
+                            color: QPColors.blackMassive,
                           ),
-                        ),
-                        if (notifier.userIsAdmin)
-                          PopupMenuItem<int>(
-                            value: 1,
-                            child: Row(
-                              children: [
-                                ImageIcon(
-                                  AssetImage(StoredIcon.iconEditSquare.path),
-                                  size: 12,
-                                  color: QPColors.blackMassive,
-                                ),
-                                const SizedBox(
-                                  width: 14,
-                                ),
-                                Text(
-                                  "Edit Group Name",
-                                  style: QPTextStyle.getSubHeading4SemiBold(
-                                    context,
-                                  ).copyWith(
-                                    color: QPColors.blackMassive,
-                                  ),
-                                ),
-                              ],
+                          const SizedBox(
+                            width: 14,
+                          ),
+                          Text(
+                            "Invite Member",
+                            style:
+                                QPTextStyle.getSubHeading4SemiBold(context)
+                                    .copyWith(
+                              color: QPColors.blackMassive,
                             ),
                           ),
-                        PopupMenuItem<int>(
-                          value: 2,
-                          child: Row(
-                            children: [
-                              ImageIcon(
-                                AssetImage(StoredIcon.iconLeaveGroup.path),
-                                size: 12,
+                        ],
+                      ),
+                    ),
+                    if (notifier.userIsAdmin)
+                      PopupMenuItem<int>(
+                        value: 1,
+                        child: Row(
+                          children: [
+                            ImageIcon(
+                              AssetImage(StoredIcon.iconEditSquare.path),
+                              size: 12,
+                              color: QPColors.blackMassive,
+                            ),
+                            const SizedBox(
+                              width: 14,
+                            ),
+                            Text(
+                              "Edit Group Name",
+                              style: QPTextStyle.getSubHeading4SemiBold(
+                                context,
+                              ).copyWith(
                                 color: QPColors.blackMassive,
                               ),
-                              const SizedBox(
-                                width: 14,
-                              ),
-                              Text(
-                                "Leave Group",
-                                style:
-                                    QPTextStyle.getSubHeading4SemiBold(context)
-                                        .copyWith(
-                                  color: QPColors.blackMassive,
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                      onSelected: (int item) {
-                        _selectedItem(
-                          context: context,
-                          item: item,
-                          notifier: notifier,
-                          state: state,
-                          ref: ref,
+                      ),
+                    PopupMenuItem<int>(
+                      value: 2,
+                      child: Row(
+                        children: [
+                          ImageIcon(
+                            AssetImage(StoredIcon.iconLeaveGroup.path),
+                            size: 12,
+                            color: QPColors.blackMassive,
+                          ),
+                          const SizedBox(
+                            width: 14,
+                          ),
+                          Text(
+                            "Leave Group",
+                            style:
+                                QPTextStyle.getSubHeading4SemiBold(context)
+                                    .copyWith(
+                              color: QPColors.blackMassive,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  onSelected: (int item) {
+                    _selectedItem(
+                      context: context,
+                      item: item,
+                      notifier: notifier,
+                      state: state,
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        body: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                right: 24,
+                left: 24,
+                top: 24,
+              ),
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: state.memberSummaries!.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return _buildGroupSummary(state, notifier);
+                  }
+
+                  final GetHabitGroupMemberPersonalItemResponse userData =
+                      state.memberSummaries![0];
+
+                  final GetHabitGroupMemberPersonalItemResponse item =
+                      state.memberSummaries![index - 1];
+
+                  final List<HabitDailySummary> dailySummaries = item
+                      .summaries
+                      .map((e) => HabitDailySummary
+                          .fromGetHabitGroupMemberPersonalSummaryItem(e))
+                      .toList();
+
+                  final String name =
+                      index - 1 == 0 ? 'Your Progress' : item.name;
+
+                  final DateTime startEnabledProgressDate =
+                      item.joinDate.difference(userData.joinDate).inDays > 0
+                          ? item.joinDate
+                          : userData.joinDate;
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: HabitPersonalWeeklyOverviewWidget(
+                      startEnabledProgressDate: startEnabledProgressDate,
+                      selectedIdx: state.selectedSummaryIdx,
+                      sevenDaysPersonalInfo: dailySummaries,
+                      type: HabitPersonalWeeklyOverviewType
+                          .withPersonalInformation,
+                      name: name,
+                      isAdmin: item.isAdmin,
+                      onTapDailySummary: (date) {
+                        notifier.onSelectUserSummary(
+                          item.userId,
+                          date,
+                          index == 1,
                         );
                       },
                     ),
-                  ),
-                ],
+                  );
+                },
               ),
             ),
-            body: Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    right: 24,
-                    left: 24,
-                    top: 24,
-                  ),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: state.memberSummaries!.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == 0) {
-                        return _buildGroupSummary(state, notifier);
-                      }
-
-                      final GetHabitGroupMemberPersonalItemResponse userData =
-                          state.memberSummaries![0];
-
-                      final GetHabitGroupMemberPersonalItemResponse item =
-                          state.memberSummaries![index - 1];
-
-                      final List<HabitDailySummary> dailySummaries = item
-                          .summaries
-                          .map((e) => HabitDailySummary
-                              .fromGetHabitGroupMemberPersonalSummaryItem(e))
-                          .toList();
-
-                      final String name =
-                          index - 1 == 0 ? 'Your Progress' : item.name;
-
-                      final DateTime startEnabledProgressDate =
-                          item.joinDate.difference(userData.joinDate).inDays > 0
-                              ? item.joinDate
-                              : userData.joinDate;
-
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
-                        child: HabitPersonalWeeklyOverviewWidget(
-                          startEnabledProgressDate: startEnabledProgressDate,
-                          selectedIdx: state.selectedSummaryIdx,
-                          sevenDaysPersonalInfo: dailySummaries,
-                          type: HabitPersonalWeeklyOverviewType
-                              .withPersonalInformation,
-                          name: name,
-                          isAdmin: item.isAdmin,
-                          onTapDailySummary: (date) {
-                            notifier.onSelectUserSummary(
-                              item.userId,
-                              date,
-                              index == 1,
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
+            if (state.isFetchUserSummary)
+              Container(
+                color: Colors.black.withValues(alpha: 0.3),
+                height: double.infinity,
+                width: double.infinity,
+                child: const Center(
+                  child: CircularProgressIndicator(),
                 ),
-                if (state.isFetchUserSummary)
-                  Container(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    height: double.infinity,
-                    width: double.infinity,
-                    child: const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        );
-      },
+              ),
+          ],
+        ),
+      ),
     );
   }
 
-  bool _onTapBack(
-    BuildContext context,
-    WidgetRef ref,
-    bool isGroupNameEdited,
-  ) {
+  bool _onTapBack(BuildContext context, bool isGroupNameEdited) {
     final bool canPop = Navigator.canPop(context);
     if (canPop) {
       Navigator.pop(context, isGroupNameEdited);
-
       return true;
     }
 
@@ -335,7 +315,7 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
 
   Widget _buildGroupSummary(
     HabitGroupDetailState state,
-    HabitGroupDetailStateNotifier notifier,
+    HabitGroupDetailNotifier notifier,
   ) {
     final GetHabitGroupMemberPersonalItemResponse userData =
         state.memberSummaries![0];
@@ -364,16 +344,12 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
   void _selectedItem({
     required BuildContext context,
     required int item,
-    required HabitGroupDetailStateNotifier notifier,
+    required HabitGroupDetailNotifier notifier,
     required HabitGroupDetailState state,
-    required WidgetRef ref,
   }) {
     switch (item) {
       case 0:
-        _showModalInviteGroup(
-          context,
-          state,
-        );
+        _showModalInviteGroup(context, state);
         break;
       case 1:
         HabitGroupBottomSheet.showModalEditGroupName(
@@ -387,7 +363,7 @@ class _HabitGroupDetailViewState extends State<HabitGroupDetailView> {
       case 2:
         HabitGroupBottomSheet.showModalLeaveGroup(
           context: context,
-          onTap: notifier.leaveGroup,
+          onTap: () => notifier.leaveGroup(widget.param.id),
           ref: ref,
           notifier: notifier,
         );

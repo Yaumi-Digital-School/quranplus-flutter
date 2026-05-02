@@ -12,16 +12,34 @@ import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/favorite_ayahs.dart';
-import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
-import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 
 // TODO: we need to refactor this file into separate file
-class BookmarkPageV2 extends StatelessWidget {
+class BookmarkPageV2 extends ConsumerStatefulWidget {
   const BookmarkPageV2({super.key});
 
   @override
+  ConsumerState<BookmarkPageV2> createState() => _BookmarkPageV2State();
+}
+
+class _BookmarkPageV2State extends ConsumerState<BookmarkPageV2> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final connectivityStatus = ref.read(internetConnectionStatusProvider);
+      await ref
+          .read(bookmarkPageProvider.notifier)
+          .initStateNotifier(connectivityStatus: connectivityStatus);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final state = ref.watch(bookmarkPageProvider);
+    final notifier = ref.read(bookmarkPageProvider.notifier);
+    final connectivityStatus = ref.watch(internetConnectionStatusProvider);
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -30,154 +48,113 @@ class BookmarkPageV2 extends StatelessWidget {
             mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
         navigationBar.onTap!(0);
       },
-      child:
-          StateNotifierConnector<BookmarkPageStateNotifier, BookmarkPageState>(
-        stateNotifierProvider:
-            StateNotifierProvider<BookmarkPageStateNotifier, BookmarkPageState>(
-          (ref) {
-            return BookmarkPageStateNotifier(
-              isLoggedIn: ref.watch(authenticationService).isLoggedIn,
-              bookmarksService: ref.watch(bookmarksService),
-              favoriteAyahsService: ref.watch(favoriteAyahsService),
-            );
-          },
-        ),
-        onStateNotifierReady: (notifier, ref) async {
-          final connectivityStatus =
-              ref.watch(internetConnectionStatusProviders);
-
-          await notifier.initStateNotifier(
-            connectivityStatus: connectivityStatus,
-          );
-        },
-        builder: (
-          BuildContext context,
-          BookmarkPageState state,
-          BookmarkPageStateNotifier notifier,
-          WidgetRef ref,
-        ) {
-          final connectivityStatus =
-              ref.watch(internetConnectionStatusProviders);
-
-          return DefaultTabController(
-            length: 2,
-            child: Scaffold(
-              appBar: PreferredSize(
-                preferredSize: const Size.fromHeight(54.0),
-                child: AppBar(
-                  elevation: 0.7,
-                  foregroundColor: Theme.of(context).colorScheme.primary,
-                  centerTitle: true,
-                  title: const Text(
-                    "Bookmark",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  automaticallyImplyLeading: false,
-                ),
+      child: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          appBar: PreferredSize(
+            preferredSize: const Size.fromHeight(54.0),
+            child: AppBar(
+              elevation: 0.7,
+              foregroundColor: Theme.of(context).colorScheme.primary,
+              centerTitle: true,
+              title: const Text(
+                "Bookmark",
+                style: TextStyle(fontSize: 16),
               ),
-              body: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 7,
-                    ),
-                    Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: QPColors.getColorBasedTheme(
-                          dark: QPColors.darkModeHeavy,
-                          light: QPColors.whiteMassive,
-                          brown: QPColors.brownModeSoft,
-                          context: context,
-                        ),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(20)),
-                        boxShadow: <BoxShadow>[
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: TabBar(
-                        padding: const EdgeInsets.all(4.0),
-                        unselectedLabelColor: QPColors.getColorBasedTheme(
-                          dark: QPColors.whiteFair,
-                          light: QPColors.brandFair,
-                          brown: QPColors.brownModeMassive,
-                          context: context,
-                        ),
-                        labelColor: QPColors.getColorBasedTheme(
-                          dark: QPColors.whiteMassive,
-                          light: QPColors.whiteMassive,
-                          brown: QPColors.brownModeMassive,
-                          context: context,
-                        ),
-                        indicator: BoxDecoration(
-                          color: QPColors.getColorBasedTheme(
-                            dark: QPColors.blackFair,
-                            light: QPColors.brandFair,
-                            brown: QPColors.brownModeHeavy,
-                            context: context,
-                          ),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(20)),
-                        ),
-                        tabs: const <Widget>[
-                          Tab(
-                            text: 'Bookmark',
-                          ),
-                          Tab(
-                            text: 'Favorite',
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 7,
-                    ),
-                    Expanded(
-                      child: TabBarView(
-                        children: <Widget>[
-                          _buildBookmarkSection(
-                            notifier: notifier,
-                            state: state,
-                            context: context,
-                            connectivityStatus: connectivityStatus,
-                          ),
-                          _buildFavoriteSection(
-                            notifier: notifier,
-                            state: state,
-                            context: context,
-                            connectivityStatus: connectivityStatus,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              automaticallyImplyLeading: false,
             ),
-          );
-        },
+          ),
+          body: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            child: Column(
+              children: [
+                const SizedBox(height: 7),
+                Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: QPColors.getColorBasedTheme(
+                      dark: QPColors.darkModeHeavy,
+                      light: QPColors.whiteMassive,
+                      brown: QPColors.brownModeSoft,
+                      context: context,
+                    ),
+                    borderRadius:
+                        const BorderRadius.all(Radius.circular(20)),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: TabBar(
+                    padding: const EdgeInsets.all(4.0),
+                    unselectedLabelColor: QPColors.getColorBasedTheme(
+                      dark: QPColors.whiteFair,
+                      light: QPColors.brandFair,
+                      brown: QPColors.brownModeMassive,
+                      context: context,
+                    ),
+                    labelColor: QPColors.getColorBasedTheme(
+                      dark: QPColors.whiteMassive,
+                      light: QPColors.whiteMassive,
+                      brown: QPColors.brownModeMassive,
+                      context: context,
+                    ),
+                    indicator: BoxDecoration(
+                      color: QPColors.getColorBasedTheme(
+                        dark: QPColors.blackFair,
+                        light: QPColors.brandFair,
+                        brown: QPColors.brownModeHeavy,
+                        context: context,
+                      ),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(20)),
+                    ),
+                    tabs: const <Widget>[
+                      Tab(text: 'Bookmark'),
+                      Tab(text: 'Favorite'),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 7),
+                Expanded(
+                  child: TabBarView(
+                    children: <Widget>[
+                      _buildBookmarkSection(
+                        notifier: notifier,
+                        state: state,
+                        context: context,
+                        connectivityStatus: connectivityStatus,
+                      ),
+                      _buildFavoriteSection(
+                        notifier: notifier,
+                        state: state,
+                        context: context,
+                        connectivityStatus: connectivityStatus,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildFavoriteSection({
     required BookmarkPageState state,
-    required BookmarkPageStateNotifier notifier,
+    required BookmarkPageNotifier notifier,
     required BuildContext context,
     required ConnectivityStatus connectivityStatus,
   }) {
     if (state.listFavoriteAyah == null) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (state.listFavoriteAyah!.isNotEmpty) {
@@ -202,14 +179,12 @@ class BookmarkPageV2 extends StatelessWidget {
 
   Widget _buildBookmarkSection({
     required BookmarkPageState state,
-    required BookmarkPageStateNotifier notifier,
+    required BookmarkPageNotifier notifier,
     required BuildContext context,
     required ConnectivityStatus connectivityStatus,
   }) {
     if (state.listBookmarks == null) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (state.listBookmarks!.isNotEmpty) {
@@ -235,7 +210,7 @@ class BookmarkPageV2 extends StatelessWidget {
   Widget _buildFavoritedAyah({
     required BuildContext context,
     required FavoriteAyahs favoriteAyah,
-    required BookmarkPageStateNotifier notifier,
+    required BookmarkPageNotifier notifier,
     required ConnectivityStatus connectivityStatus,
   }) {
     return Padding(
@@ -250,9 +225,7 @@ class BookmarkPageV2 extends StatelessWidget {
               height: 24,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(
-                    StoredIcon.iconFavorite.path,
-                  ),
+                  image: AssetImage(StoredIcon.iconFavorite.path),
                 ),
               ),
             ),
@@ -294,11 +267,7 @@ class BookmarkPageV2 extends StatelessWidget {
           );
 
           if (onPopParam is SuratPageV3OnPopParam) {
-            _onPopFromSurahPage(
-              onPopParam,
-              notifier,
-              connectivityStatus,
-            );
+            _onPopFromSurahPage(onPopParam, notifier, connectivityStatus);
           }
         },
       ),
@@ -338,22 +307,16 @@ class BookmarkPageV2 extends StatelessWidget {
                 context: context,
               ),
             ),
-            child: Image.asset(
-              _getEmptyStateImageUrl(context),
-            ),
+            child: Image.asset(_getEmptyStateImageUrl(context)),
           ),
         ),
-        const SizedBox(
-          height: 50,
-        ),
+        const SizedBox(height: 50),
         Text(
           'Ayah not found',
           style: QPTextStyle.getSubHeading2SemiBold(context),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(
-          height: 10,
-        ),
+        const SizedBox(height: 10),
         Text(
           message,
           style: QPTextStyle.getSubHeading4Regular(context).copyWith(
@@ -366,9 +329,7 @@ class BookmarkPageV2 extends StatelessWidget {
           ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(
-          height: 20,
-        ),
+        const SizedBox(height: 20),
         InkWell(
           onTap: () =>
               Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -423,7 +384,7 @@ class BookmarkPageV2 extends StatelessWidget {
   Widget _buildListBookmark({
     required BuildContext context,
     required Bookmarks bookmark,
-    required BookmarkPageStateNotifier notifier,
+    required BookmarkPageNotifier notifier,
     required ConnectivityStatus connectivityStatus,
   }) {
     return Padding(
@@ -438,9 +399,7 @@ class BookmarkPageV2 extends StatelessWidget {
               height: 24,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(
-                    StoredIcon.iconBookmark.path,
-                  ),
+                  image: AssetImage(StoredIcon.iconBookmark.path),
                 ),
               ),
             ),
@@ -491,11 +450,7 @@ class BookmarkPageV2 extends StatelessWidget {
           );
 
           if (onPopParam is SuratPageV3OnPopParam) {
-            _onPopFromSurahPage(
-              onPopParam,
-              notifier,
-              connectivityStatus,
-            );
+            _onPopFromSurahPage(onPopParam, notifier, connectivityStatus);
           }
         },
       ),
@@ -504,7 +459,7 @@ class BookmarkPageV2 extends StatelessWidget {
 
   Future<void> _onPopFromSurahPage(
     SuratPageV3OnPopParam onPopParam,
-    BookmarkPageStateNotifier notifier,
+    BookmarkPageNotifier notifier,
     ConnectivityStatus connectivityStatus,
   ) async {
     final bool bookmarkChanged = onPopParam.isBookmarkChanged;

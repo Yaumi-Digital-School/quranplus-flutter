@@ -7,123 +7,115 @@ import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_progress.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_progress.dart';
-import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/text_field.dart';
 
-class AddDailyProgressManualView extends StatefulWidget {
+class AddDailyProgressManualView extends ConsumerStatefulWidget {
   final HabitDailySummary habitDailySummary;
   const AddDailyProgressManualView({super.key, required this.habitDailySummary});
 
   @override
-  State<AddDailyProgressManualView> createState() =>
+  ConsumerState<AddDailyProgressManualView> createState() =>
       _AddDailyProgressManualViewState();
 }
 
 class _AddDailyProgressManualViewState
-    extends State<AddDailyProgressManualView> {
+    extends ConsumerState<AddDailyProgressManualView> {
   String inputPages = "0";
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(addDailyProgressManualProvider.notifier)
+          .init(widget.habitDailySummary);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(addDailyProgressManualProvider);
     final target = widget.habitDailySummary.target;
     final totalPages = widget.habitDailySummary.totalPages;
     final formattedDate =
         DateFormat("EEEE, dd MMMM yyyy").format(widget.habitDailySummary.date);
 
-    return StateNotifierConnector<AddDailyProgressManualStateNotifier,
-        AddDailyProgressManualState>(
-      stateNotifierProvider: StateNotifierProvider<
-          AddDailyProgressManualStateNotifier, AddDailyProgressManualState>(
-        (Ref ref) {
-          return AddDailyProgressManualStateNotifier(
-            habitDailySummary: widget.habitDailySummary,
-          );
-        },
-      ),
-      onStateNotifierReady: (notifier, ref) async =>
-          await notifier.initStateNotifier(),
-      builder: (
-        BuildContext context,
-        AddDailyProgressManualState state,
-        AddDailyProgressManualStateNotifier notifier,
-        WidgetRef ref,
-      ) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-          child: state.isLoading
-              ? const SizedBox(
-                  height: 32,
-                  width: 32,
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                )
-              : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+      child: state.isLoading
+          ? const SizedBox(
+              height: 32,
+              width: 32,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          : Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "You have read $totalPages of $target Pages today",
+                  style: QPTextStyle.getSubHeading3SemiBold(context),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  formattedDate,
+                  style: QPTextStyle.getDescription2Regular(context),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  "Progress History",
+                  style: QPTextStyle.getSubHeading4Medium(context),
+                ),
+                const SizedBox(height: 8),
+                state.progressHistory.isEmpty
+                    ? Text(
+                        "No progress yet",
+                        style: QPTextStyle.getDescription2Regular(context),
+                      )
+                    : Column(
+                        children:
+                            _buildProgressHistory(state.progressHistory),
+                      ),
+                const SizedBox(height: 24),
+                Text(
+                  "Add Manual Progress",
+                  style: QPTextStyle.getSubHeading4Medium(context),
+                ),
+                const SizedBox(height: 8),
+                Row(
                   children: [
-                    Text(
-                      "You have read $totalPages of $target Pages today",
-                      style: QPTextStyle.getSubHeading3SemiBold(context),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      formattedDate,
-                      style: QPTextStyle.getDescription2Regular(context),
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      "Progress History",
-                      style: QPTextStyle.getSubHeading4Medium(context),
-                    ),
-                    const SizedBox(height: 8),
-                    state.progressHistory.isEmpty
-                        ? Text(
-                            "No progress yet",
-                            style: QPTextStyle.getDescription2Regular(context),
-                          )
-                        : Column(
-                            children:
-                                _buildProgressHistory(state.progressHistory),
-                          ),
-                    const SizedBox(height: 24),
-                    Text(
-                      "Add Manual Progress",
-                      style: QPTextStyle.getSubHeading4Medium(context),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        InputTotalPagesTextField(
-                          onChanged: (value) {
-                            inputPages = value;
-                          },
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          "Pages",
-                          style: QPTextStyle.getDescription2Regular(context),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 32),
-                    ButtonSecondary(
-                      label: "Save",
-                      onTap: () async {
-                        if (inputPages != "" && int.parse(inputPages) > 0) {
-                          await notifier
-                              .addDailyProgressManual(int.parse(inputPages));
-                        }
-
-                        if (context.mounted) {
-                          Navigator.pop(context, true);
-                        }
+                    InputTotalPagesTextField(
+                      onChanged: (value) {
+                        inputPages = value;
                       },
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      "Pages",
+                      style: QPTextStyle.getDescription2Regular(context),
                     ),
                   ],
                 ),
-        );
-      },
+                const SizedBox(height: 32),
+                ButtonSecondary(
+                  label: "Save",
+                  onTap: () async {
+                    if (inputPages != "" && int.parse(inputPages) > 0) {
+                      await ref
+                          .read(addDailyProgressManualProvider.notifier)
+                          .addDailyProgressManual(int.parse(inputPages));
+                    }
+
+                    if (context.mounted) {
+                      Navigator.pop(context, true);
+                    }
+                  },
+                ),
+              ],
+            ),
     );
   }
 

@@ -1,27 +1,32 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 
-class InternetConnectionStatus extends StateNotifier<ConnectivityStatus> {
-  late ConnectivityStatus lastResult;
-  late ConnectivityStatus newState;
+part 'internet_connection_state_notifier.g.dart';
 
-  InternetConnectionStatus() : super(ConnectivityStatus.isConnected) {
-    lastResult = state;
-    Connectivity()
-        .onConnectivityChanged
-        .listen((List<ConnectivityResult> results) {
+@Riverpod(keepAlive: true)
+class InternetConnectionStatus extends _$InternetConnectionStatus {
+  late ConnectivityStatus _lastResult;
+
+  @override
+  ConnectivityStatus build() {
+    _lastResult = ConnectivityStatus.isConnected;
+
+    final subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> results) {
       final bool hasConnection = results.any((r) =>
           r == ConnectivityResult.ethernet ||
           r == ConnectivityResult.mobile ||
           r == ConnectivityResult.wifi);
-      newState = hasConnection
+      final newState = hasConnection
           ? ConnectivityStatus.isConnected
           : ConnectivityStatus.isDisconnected;
-      if (newState != lastResult) {
+      if (newState != _lastResult) {
         state = newState;
-        lastResult = newState;
+        _lastResult = newState;
       }
     });
+    ref.onDispose(subscription.cancel);
+
+    return ConnectivityStatus.isConnected;
   }
 }

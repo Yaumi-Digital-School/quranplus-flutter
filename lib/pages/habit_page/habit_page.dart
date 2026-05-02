@@ -3,16 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/habit_progress_view.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
-import 'package:qurantafsir_flutter/shared/core/providers.dart';
-import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
 import 'package:qurantafsir_flutter/widgets/registration_view/registration_view.dart';
 
-class HabitPage extends StatelessWidget {
+class HabitPage extends ConsumerWidget {
   const HabitPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(habitPageProvider);
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -21,59 +21,34 @@ class HabitPage extends StatelessWidget {
             mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
         navigationBar.onTap!(0);
       },
-      child: StateNotifierConnector<HabitPageStateNotifier, HabitPageState>(
-        stateNotifierProvider:
-            StateNotifierProvider<HabitPageStateNotifier, HabitPageState>(
-          (Ref ref) {
-            return HabitPageStateNotifier(
-              repository: ref.watch(authenticationService),
-              sharedPreferenceService:
-                  ref.watch(sharedPreferenceServiceProvider),
-            );
-
-            // ignore: dead_code
-          },
-        ),
-        onStateNotifierReady: (notifier, ref) async =>
-            await notifier.initStateNotifier(),
-        builder: (
-          BuildContext context,
-          HabitPageState state,
-          HabitPageStateNotifier notifier,
-          WidgetRef ref,
-        ) {
-          if (state.isLoading) {
-            return const Scaffold(
+      child: state.isLoading
+          ? const Scaffold(
               body: Center(
                 child: CircularProgressIndicator(),
               ),
-            );
-          }
-
-          return Scaffold(
-            appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(54.0),
-              child: AppBar(
-                elevation: 0.7,
-                automaticallyImplyLeading: false,
-                foregroundColor: Theme.of(context).colorScheme.primary,
-                centerTitle: true,
-                title: const Text(
-                  'Reading Habit Tracker',
-                  style: TextStyle(fontSize: 16),
+            )
+          : Scaffold(
+              appBar: PreferredSize(
+                preferredSize: const Size.fromHeight(54.0),
+                child: AppBar(
+                  elevation: 0.7,
+                  automaticallyImplyLeading: false,
+                  foregroundColor: Theme.of(context).colorScheme.primary,
+                  centerTitle: true,
+                  title: const Text(
+                    'Reading Habit Tracker',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 ),
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               ),
+              body: state.authenticationStatus ==
+                      AuthenticationStatus.authenticated
+                  ? const HabitProgressView()
+                  : const SingleChildScrollView(
+                      child: RegistrationView(),
+                    ),
             ),
-            body:
-                state.authenticationStatus == AuthenticationStatus.authenticated
-                    ? const HabitProgressView()
-                    : const SingleChildScrollView(
-                        child: RegistrationView(),
-                      ),
-          );
-        },
-      ),
     );
   }
 }

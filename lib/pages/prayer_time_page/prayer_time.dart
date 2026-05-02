@@ -8,270 +8,209 @@ import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/prayer_times_notifier.dart';
-import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 
-class PrayerTimePage extends ConsumerStatefulWidget {
+class PrayerTimePage extends ConsumerWidget {
   const PrayerTimePage({super.key});
 
   @override
-  ConsumerState<PrayerTimePage> createState() => _PrayerTimePageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(prayerTimeProvider);
+    final notifier = ref.read(prayerTimeProvider.notifier);
 
-class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return StateNotifierConnector<PrayerTimeStateNotifier, PrayerTimeState>(
-      stateNotifierProvider: prayerTimeProvider,
-      onStateNotifierReady: (notifier, _) {
-        notifier.initStateNotifier();
-      },
-      builder:
-          (
-            BuildContext context,
-            PrayerTimeState state,
-            PrayerTimeStateNotifier notifier,
-            WidgetRef ref,
-          ) {
-            return Scaffold(
-              appBar: PreferredSize(
-                preferredSize: const Size.fromHeight(54.0),
-                child: AppBar(
-                  leading: IconButton(
-                    icon: Icon(
-                      Icons.chevron_left,
-                      color: QPColors.getColorBasedTheme(
-                        dark: QPColors.whiteFair,
-                        light: QPColors.blackMassive,
-                        brown: QPColors.brownModeMassive,
-                        context: context,
-                      ),
-                      size: 24,
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  title: Text(
-                    "Prayer Times",
-                    style: QPTextStyle.getSubHeading2SemiBold(context),
-                  ),
-                  automaticallyImplyLeading: false,
-                  elevation: 0.7,
-                  centerTitle: true,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                ),
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(54.0),
+        child: AppBar(
+          leading: IconButton(
+            icon: Icon(
+              Icons.chevron_left,
+              color: QPColors.getColorBasedTheme(
+                dark: QPColors.whiteFair,
+                light: QPColors.blackMassive,
+                brown: QPColors.brownModeMassive,
+                context: context,
               ),
-              body: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+              size: 24,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          title: Text(
+            "Prayer Times",
+            style: QPTextStyle.getSubHeading2SemiBold(context),
+          ),
+          automaticallyImplyLeading: false,
+          elevation: 0.7,
+          centerTitle: true,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Card(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              elevation: 0,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Card(
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                      elevation: 0,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Prayer Times",
-                                      style: QPTextStyle.getSubHeading2SemiBold(
-                                        context,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(16),
-                                        ),
-                                        color: QPColors.getColorBasedTheme(
-                                          dark: QPColors.darkModeFair,
-                                          light: QPColors.brandRoot,
-                                          brown: QPColors.brownModeHeavy,
-                                          context: context,
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 4.0,
-                                          horizontal: 6,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.location_on,
-                                              size: 12,
-                                              color:
-                                                  QPColors.getColorBasedTheme(
-                                                    dark: QPColors.whiteFair,
-                                                    light: QPColors.brandFair,
-                                                    brown: QPColors
-                                                        .brownModeMassive,
-                                                    context: context,
-                                                  ),
-                                            ),
-                                            Text(
-                                              state.cityName ?? "",
-                                              style:
-                                                  QPTextStyle.getBaseTextStyle(
-                                                    context,
-                                                  ).copyWith(fontSize: 10),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 90,
-                                  width: 91,
-                                  child: SvgPicture.asset(
-                                    ImagePath.prayerTimeIlustration,
-                                  ),
-                                ),
-                              ],
+                            Text(
+                              "Prayer Times",
+                              style: QPTextStyle.getSubHeading2SemiBold(
+                                context,
+                              ),
                             ),
                             const SizedBox(height: 16),
-                            _buildPrayerTimeItem(state),
-                            const SizedBox(height: 16),
-                            _buildCalculationDropdowns(context, ref),
-                            const SizedBox(height: 12),
-                            _buildMethodDescription(context, ref),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Set Location",
-                            style: QPTextStyle.getSubHeading4SemiBold(context),
-                          ),
-                          Text(
-                            "We need your location to show prayer times in your region.",
-                            style: QPTextStyle.getDescription2Medium(context),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Card(
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                      elevation: 0,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            // TODO: uncoment this if auto detect is ready
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            //   children: [
-                            //     Text(
-                            //       "Auto-detect location",
-                            //       style: QPTextStyle.getBody2SemiBold(context)
-                            //           .copyWith(
-                            //         color: QPColors.getColorBasedTheme(
-                            //           dark: QPColors.whiteRoot,
-                            //           light: QPColors.blackMassive,
-                            //           brown: QPColors.brownModeMassive,
-                            //           context: context,
-                            //         ),
-                            //       ),
-                            //     ),
-                            //     Transform.scale(
-                            //       scale: 0.7,
-                            //       child: CupertinoSwitch(
-                            //         activeColor: QPColors.brandHeavy,
-                            //         value: state.locationIsOn,
-                            //         onChanged: (value) {
-                            //           if (value != state.locationIsOn) {
-                            //             ref
-                            //                 .read(prayerTimeProvider.notifier)
-                            //                 .updateAutoDetectCondition(value);
-                            //           }
-                            //         },
-                            //       ),
-                            //     ),
-                            //   ],
-                            // ),
-                            // const SizedBox(
-                            //   height: 24,
-                            // ),
-                            InkWell(
-                              onTap: () async {
-                                await Navigator.pushNamed(
-                                  context,
-                                  RoutePaths.routeLocationManualPage,
-                                );
-                                notifier.initStateNotifier();
-                              },
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Set location Manually",
-                                    style: QPTextStyle.getBody2SemiBold(context)
-                                        .copyWith(
-                                          color: QPColors.getColorBasedTheme(
-                                            dark: QPColors.whiteRoot,
-                                            light: QPColors.blackMassive,
-                                            brown: QPColors.brownModeMassive,
-                                            context: context,
-                                          ),
-                                        ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 10.0),
-                                    child: Icon(
-                                      Icons.arrow_forward_ios_rounded,
-                                      size: 14,
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(16),
+                                ),
+                                color: QPColors.getColorBasedTheme(
+                                  dark: QPColors.darkModeFair,
+                                  light: QPColors.brandRoot,
+                                  brown: QPColors.brownModeHeavy,
+                                  context: context,
+                                ),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 4.0,
+                                  horizontal: 6,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.location_on,
+                                      size: 12,
                                       color: QPColors.getColorBasedTheme(
-                                        dark: QPColors.whiteRoot,
-                                        light: QPColors.blackMassive,
+                                        dark: QPColors.whiteFair,
+                                        light: QPColors.brandFair,
                                         brown: QPColors.brownModeMassive,
                                         context: context,
                                       ),
                                     ),
-                                  ),
-                                ],
+                                    Text(
+                                      state.cityName ?? "",
+                                      style: QPTextStyle.getBaseTextStyle(
+                                        context,
+                                      ).copyWith(fontSize: 10),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
                         ),
+                        SizedBox(
+                          height: 90,
+                          width: 91,
+                          child: SvgPicture.asset(
+                            ImagePath.prayerTimeIlustration,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    _buildPrayerTimeItem(context, state),
+                    const SizedBox(height: 16),
+                    _buildCalculationDropdowns(context, ref, notifier),
+                    const SizedBox(height: 12),
+                    _buildMethodDescription(context, ref),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Set Location",
+                    style: QPTextStyle.getSubHeading4SemiBold(context),
+                  ),
+                  Text(
+                    "We need your location to show prayer times in your region.",
+                    style: QPTextStyle.getDescription2Medium(context),
+                  ),
+                ],
+              ),
+            ),
+            Card(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              elevation: 0,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    InkWell(
+                      onTap: () async {
+                        await Navigator.pushNamed(
+                          context,
+                          RoutePaths.routeLocationManualPage,
+                        );
+                        notifier.refresh();
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Set location Manually",
+                            style: QPTextStyle.getBody2SemiBold(context)
+                                .copyWith(
+                                  color: QPColors.getColorBasedTheme(
+                                    dark: QPColors.whiteRoot,
+                                    light: QPColors.blackMassive,
+                                    brown: QPColors.brownModeMassive,
+                                    context: context,
+                                  ),
+                                ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10.0),
+                            child: Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 14,
+                              color: QPColors.getColorBasedTheme(
+                                dark: QPColors.whiteRoot,
+                                light: QPColors.blackMassive,
+                                brown: QPColors.brownModeMassive,
+                                context: context,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-            );
-          },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildPrayerTimeItem(PrayerTimeState state) {
+  Widget _buildPrayerTimeItem(BuildContext context, PrayerTimeState state) {
     List<Widget> widgetPrayerTime = <Widget>[];
 
     for (final PrayerTimesList prayerTime in PrayerTimesList.values) {
@@ -338,7 +277,11 @@ class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
     );
   }
 
-  Widget _buildCalculationDropdowns(BuildContext context, WidgetRef ref) {
+  Widget _buildCalculationDropdowns(
+    BuildContext context,
+    WidgetRef ref,
+    PrayerTimeNotifier notifier,
+  ) {
     final calculationMethod = ref.watch(calculationMethodProvider);
     final madhab = ref.watch(madhubProvider);
 
@@ -366,11 +309,8 @@ class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
                         .toList(),
                 onChanged: (newMethod) {
                   if (newMethod != null) {
-                    ref.read(calculationMethodProvider.notifier).state =
-                        newMethod;
-                    ref
-                        .read(prayerTimeProvider.notifier)
-                        .updatePrayerTimes(newMethod, madhab);
+                    ref.read(calculationMethodProvider.notifier).set(newMethod);
+                    notifier.updatePrayerTimes(newMethod, madhab);
                   }
                 },
               ),
@@ -393,10 +333,8 @@ class _PrayerTimePageState extends ConsumerState<PrayerTimePage> {
                     .toList(),
                 onChanged: (newSchool) {
                   if (newSchool != null) {
-                    ref.read(madhubProvider.notifier).state = newSchool;
-                    ref
-                        .read(prayerTimeProvider.notifier)
-                        .updatePrayerTimes(calculationMethod, newSchool);
+                    ref.read(madhubProvider.notifier).set(newSchool);
+                    notifier.updatePrayerTimes(calculationMethod, newSchool);
                   }
                 },
               ),

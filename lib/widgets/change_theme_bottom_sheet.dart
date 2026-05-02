@@ -7,7 +7,6 @@ import 'package:qurantafsir_flutter/widgets/theme_box_option_widget.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
-import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/widgets/utils/general_dialog.dart';
 
 class ChangeThemeBottomSheet extends ConsumerStatefulWidget {
@@ -22,7 +21,7 @@ class _ChangeThemeBottomSheetState
     extends ConsumerState<ChangeThemeBottomSheet> {
   @override
   Widget build(BuildContext context) {
-    final ThemeStateNotifier themeStateNotifier =
+    final ThemeNotifier themeStateNotifier =
         ref.read(themeProvider.notifier);
 
     final QPThemeMode stateTheme = ref.read(themeProvider);
@@ -97,7 +96,7 @@ class _ChangeThemeBottomSheetState
 
   Future<void> _setTheme(
     QPThemeMode mode,
-    ThemeStateNotifier themeNotifier,
+    ThemeNotifier themeNotifier,
   ) async {
     showQPGeneralDialog(
       context: context,

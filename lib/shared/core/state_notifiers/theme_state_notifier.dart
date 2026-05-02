@@ -1,25 +1,27 @@
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
 import 'package:qurantafsir_flutter/shared/core/models/theme_option_color_param.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
-import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-class ThemeStateNotifier extends BaseStateNotifier<QPThemeMode> {
-  ThemeStateNotifier({required this.sharedPreferenceService})
-      : super(QPThemeMode.light);
+part 'theme_state_notifier.g.dart';
 
-  final SharedPreferenceService sharedPreferenceService;
+@Riverpod(keepAlive: true)
+class ThemeNotifier extends _$ThemeNotifier {
+  late SharedPreferenceService _sharedPreferenceService;
 
   @override
-  initStateNotifier() {
-    final currentMode = sharedPreferenceService.getTheme();
-    state = currentMode != ""
+  QPThemeMode build() {
+    _sharedPreferenceService = ref.read(sharedPreferenceServiceProvider);
+    final currentMode = _sharedPreferenceService.getTheme();
+    return currentMode.isNotEmpty
         ? QPThemeMode.values.byName(currentMode)
         : QPThemeMode.light;
   }
 
   void setMode(QPThemeMode newMode) async {
-    await sharedPreferenceService.setTheme(newMode.name);
+    await _sharedPreferenceService.setTheme(newMode.name);
     state = newMode;
   }
 

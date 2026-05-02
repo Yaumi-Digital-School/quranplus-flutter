@@ -1,11 +1,13 @@
 import 'dart:io';
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/habit_group_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
-import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'habit_group_state_notifier.g.dart';
 
 class HabitGroupState {
   List<GetHabitGroupsItem> listGroup;
@@ -35,24 +37,19 @@ class HabitGroupState {
   }
 }
 
-class HabitGroupStateNotifier extends BaseStateNotifier<HabitGroupState> {
-  HabitGroupStateNotifier({
-    required HabitGroupApi habitGroupApi,
-  })  : _habitGroupApi = habitGroupApi,
-        super(HabitGroupState());
-
-  final HabitGroupApi _habitGroupApi;
-
+@riverpod
+class HabitGroupNotifier extends _$HabitGroupNotifier {
   @override
-  Future<void> initStateNotifier() async {
-    state = state.copyWith(isLoading: true);
-    await _getAllGroups();
+  HabitGroupState build() {
+    Future.microtask(_getAllGroups);
+    return HabitGroupState();
   }
 
   Future<void> createGroup(String groupName) async {
     state = state.copyWith(isLoading: true);
+    final api = ref.read(habitGroupApiProvider);
     final HttpResponse<CreateHabitGroupResponse> request =
-        await _habitGroupApi.createGroup(
+        await api.createGroup(
       request: CreateHabitGroupRequest(
         name: groupName,
         date: DateCustomUtils.getCurrentDateInString(),
@@ -61,7 +58,6 @@ class HabitGroupStateNotifier extends BaseStateNotifier<HabitGroupState> {
 
     if (request.response.statusCode != 200) {
       state = state.copyWith(isSuccessLoad: false);
-
       return;
     }
 
@@ -69,26 +65,21 @@ class HabitGroupStateNotifier extends BaseStateNotifier<HabitGroupState> {
   }
 
   Future<void> _getAllGroups() async {
-    final String firstDayOfTheWeek =
-        DateCustomUtils.getFirstDayOfTheWeekFromToday();
-    final String lastDayOfTheWeek =
-        DateCustomUtils.getLastDayOfTheWeekFromToday();
+    final firstDay = DateCustomUtils.getFirstDayOfTheWeekFromToday();
+    final lastDay = DateCustomUtils.getLastDayOfTheWeekFromToday();
+    final api = ref.read(habitGroupApiProvider);
 
     try {
       final HttpResponse<List<GetHabitGroupsItem>> request =
-          await _habitGroupApi.getAllGroups(
+          await api.getAllGroups(
         param: GetHabitGroupsParam(
-          startDate: firstDayOfTheWeek,
-          endDate: lastDayOfTheWeek,
+          startDate: firstDay,
+          endDate: lastDay,
         ),
       );
 
       if (request.response.statusCode == 200) {
-        state = state.copyWith(
-          isLoading: false,
-          listGroup: request.data,
-        );
-
+        state = state.copyWith(isLoading: false, listGroup: request.data);
         return;
       }
 
@@ -101,8 +92,9 @@ class HabitGroupStateNotifier extends BaseStateNotifier<HabitGroupState> {
         stackTrace,
         reason: 'error on _getAllGroups() method',
       );
-
       state = state.copyWith(isSuccessLoad: false);
     }
   }
+
+  Future<void> refresh() => _getAllGroups();
 }

@@ -6,31 +6,12 @@ import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
-import 'package:qurantafsir_flutter/shared/core/providers/prayer_times_notifier.dart';
 
-class AdzanCardWidget extends ConsumerStatefulWidget {
+class AdzanCardWidget extends ConsumerWidget {
   const AdzanCardWidget({super.key});
 
   @override
-  ConsumerState<AdzanCardWidget> createState() => _AdzanCardWidgetState();
-}
-
-class _AdzanCardWidgetState extends ConsumerState<AdzanCardWidget> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final PrayerTimeState prayerTimes = ref.read(prayerTimeProvider);
-      if (prayerTimes.prayerTimes == null) {
-        final PrayerTimeStateNotifier prayerTimesStateNotifier =
-            ref.read(prayerTimeProvider.notifier);
-        prayerTimesStateNotifier.initStateNotifier();
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AdzanState adzanState = ref.watch(adzanCardProvider);
 
     return InkWell(

@@ -5,8 +5,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/read_tadabbur/read_tadabbur_page.dart';
 import 'package:qurantafsir_flutter/pages/registration_and_login_page/registration_and_login_page.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_state.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_bookmark_notifier.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_content_notifier.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_habit_notifier.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_navigation_notifier.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_bookmark_state.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_content_state.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_habit_state.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_navigation_state.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/pre_tracking_animation.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/submission_dialog.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
@@ -15,9 +21,7 @@ import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
-import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
-import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_widget.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_minimized_info.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
@@ -26,7 +30,6 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_icons.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
-import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/widgets/horizontal_divider.dart';
 import 'package:qurantafsir_flutter/widgets/utils/general_dialog.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -38,17 +41,6 @@ import 'widgets/widgets.dart';
 enum AyahFontSize {
   big,
   regular,
-}
-
-extension AyahFontSizeExt on AyahFontSize {
-  SuratPageState get value {
-    switch (this) {
-      case AyahFontSize.big:
-        return value.readingSettings!.valueFontSizeArabic + 9 as SuratPageState;
-      case AyahFontSize.regular:
-        return value.readingSettings!.valueFontSizeArabic as SuratPageState;
-    }
-  }
 }
 
 class SuratPageV3OnPopParam {
@@ -86,16 +78,12 @@ class SuratPageV3 extends ConsumerStatefulWidget {
   final SuratPageV3Param param;
 
   @override
-  ConsumerState<SuratPageV3> createState() {
-    return _SuratPageV3State();
-  }
+  ConsumerState<SuratPageV3> createState() => _SuratPageV3State();
 }
 
 class _SuratPageV3State extends ConsumerState<SuratPageV3> {
   late AutoScrollController scrollController;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  late StateNotifierProvider<SuratPageStateNotifier, SuratPageState>
-      suratPageProvider;
 
   @override
   void initState() {
@@ -104,23 +92,51 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
     scrollController = AutoScrollController();
     VisibilityDetectorController.instance.updateInterval =
         const Duration(milliseconds: 300);
-    suratPageProvider =
-        StateNotifierProvider<SuratPageStateNotifier, SuratPageState>(
-      (ref) {
-        return SuratPageStateNotifier(
-          startPageInIndex: widget.param.startPageInIndex,
-          sharedPreferenceService: ref.read(sharedPreferenceServiceProvider),
-          bookmarkApi: ref.watch(bookmarkApiProvider),
-          bookmarksService: ref.watch(bookmarksService),
-          authenticationService: ref.watch(authenticationService),
-          scrollController: scrollController,
-          isLoggedIn: ref.watch(authenticationService).isLoggedIn,
-          habitDailySummaryService: ref.watch(habitDailySummaryService),
-          audioPlayerState: ref.read(audioRecitationProvider),
-          audioPlayerNotifier: ref.read(audioRecitationProvider.notifier),
-        );
-      },
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _initAllNotifiers();
+    });
+  }
+
+  Future<void> _initAllNotifiers() async {
+    final navNotifier = ref.read(suratPageNavigationProvider.notifier);
+    final contentNotifier = ref.read(suratPageContentProvider.notifier);
+    final bookmarkNotifier = ref.read(suratPageBookmarkProvider.notifier);
+    final habitNotifier = ref.read(suratPageHabitProvider.notifier);
+
+    navNotifier.init(widget.param.startPageInIndex);
+    habitNotifier.init(scrollController);
+
+    await Future.wait([
+      contentNotifier.load(widget.param.startPageInIndex),
+      bookmarkNotifier.load(),
+    ]);
+
+    if (!mounted) return;
+
+    navNotifier.initNavigation();
+
+    if (widget.param.firstPagePointerIndex != 0) {
+      scrollController.scrollToIndex(
+        widget.param.firstPagePointerIndex,
+        preferPosition: AutoScrollPosition.begin,
+        duration: const Duration(milliseconds: 200),
+      );
+    }
+
+    if (widget.param.isShowBottomSheet && mounted) {
+      habitNotifier.playAyahAudio();
+      GeneralBottomSheet.showBaseBottomSheet(
+        context: context,
+        widgetChild: const AudioBottomSheetWidget(),
+      );
+    }
+
+    if (widget.param.isStartTracking) {
+      Future.delayed(Duration.zero, () {
+        if (!mounted) return;
+        _startTracking(context, ref.read(suratPageHabitProvider.notifier));
+      });
+    }
   }
 
   @override
@@ -131,215 +147,168 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
 
   @override
   Widget build(BuildContext context) {
-    return StateNotifierConnector<SuratPageStateNotifier, SuratPageState>(
-      stateNotifierProvider: suratPageProvider,
-      onStateNotifierReady: (notifier, ref) async {
-        if (widget.param.isStartTracking) {
-          Future.delayed(Duration.zero, () {
-            if (!context.mounted) return;
-            _startTracking(context, notifier);
-          });
-        }
+    final navState = ref.watch(suratPageNavigationProvider);
+    final contentState = ref.watch(suratPageContentProvider);
+    final bookmarkState = ref.watch(suratPageBookmarkProvider);
+    final habitState = ref.watch(suratPageHabitProvider);
+    final connectivityStatus = ref.watch(internetConnectionStatusProvider);
 
-        await notifier.initStateNotifier();
-        if (widget.param.firstPagePointerIndex != 0) {
-          scrollController.scrollToIndex(
-            widget.param.firstPagePointerIndex,
-            preferPosition: AutoScrollPosition.begin,
-            duration: const Duration(milliseconds: 200),
-          );
-        }
+    if (navState.isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
 
-        if (widget.param.isShowBottomSheet && context.mounted) {
-          notifier.playAyahAudio();
-          GeneralBottomSheet.showBaseBottomSheet(
-            context: context,
-            widgetChild: const AudioBottomSheetWidget(),
-          );
-        }
+    final navNotifier = ref.read(suratPageNavigationProvider.notifier);
+    final contentNotifier = ref.read(suratPageContentProvider.notifier);
+    final bookmarkNotifier = ref.read(suratPageBookmarkProvider.notifier);
+    final habitNotifier = ref.read(suratPageHabitProvider.notifier);
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        _onTapBack(
+          navState: navState,
+          bookmarkState: bookmarkState,
+          habitState: habitState,
+          habitNotifier: habitNotifier,
+          navNotifier: navNotifier,
+        );
       },
-      builder: (
-        BuildContext context,
-        SuratPageState state,
-        SuratPageStateNotifier notifier,
-        WidgetRef ref,
-      ) {
-        if (state.isLoading) {
-          return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(54.0),
+          child: AppBar(
+            leading: IconButton(
+              icon: Icon(
+                Icons.chevron_left,
+                color: Theme.of(context).colorScheme.primary,
+                size: 30,
+              ),
+              onPressed: () => _onTapBack(
+                navState: navState,
+                bookmarkState: bookmarkState,
+                habitState: habitState,
+                habitNotifier: habitNotifier,
+                navNotifier: navNotifier,
+              ),
             ),
-          );
-        }
-
-        final connectivityStatus = ref.watch(internetConnectionStatusProviders);
-
-        return PopScope(
-          canPop: false,
-          onPopInvokedWithResult: (didPop, result) {
-            if (didPop) return;
-            _onTapBack(
-              notifier: notifier,
-              state: state,
-            );
-          },
-          child: Scaffold(
-            key: _scaffoldKey,
-            appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(54.0),
-              child: AppBar(
-                leading: IconButton(
-                  icon: Icon(
-                    Icons.chevron_left,
-                    color: Theme.of(context).colorScheme.primary,
-                    size: 30,
-                  ),
-                  onPressed: () async => _onTapBack(
-                    notifier: notifier,
-                    state: state,
-                  ),
+            automaticallyImplyLeading: false,
+            elevation: 2.5,
+            foregroundColor: Theme.of(context).colorScheme.primary,
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  navState.visibleSuratName,
+                  style: QPTextStyle.getSubHeading2SemiBold(context),
                 ),
-                automaticallyImplyLeading: false,
-                elevation: 2.5,
-                foregroundColor: Theme.of(context).colorScheme.primary,
-                title: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
                   children: <Widget>[
-                    ValueListenableBuilder(
-                      valueListenable: notifier.visibleSuratName,
-                      builder: (context, value, __) {
-                        return Text(
-                          value,
-                          style: QPTextStyle.getSubHeading2SemiBold(context),
-                        );
-                      },
+                    Text(
+                      'Page ${navState.currentPage}',
+                      style: QPTextStyle.getDescription2Regular(context),
                     ),
-                    Row(
-                      children: <Widget>[
-                        ValueListenableBuilder(
-                          valueListenable: notifier.currentPage,
-                          builder: (context, value, __) {
-                            return Text(
-                              'Page $value',
-                              style:
-                                  QPTextStyle.getDescription2Regular(context),
-                            );
-                          },
-                        ),
-                        ValueListenableBuilder(
-                          valueListenable: notifier.visibleJuzNumber,
-                          builder: (context, value, __) {
-                            return Text(
-                              ', Juz $value',
-                              style:
-                                  QPTextStyle.getDescription2Regular(context),
-                            );
-                          },
-                        ),
-                      ],
+                    Text(
+                      ', Juz ${navState.visibleJuzNumber}',
+                      style: QPTextStyle.getDescription2Regular(context),
                     ),
                   ],
                 ),
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                actions: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(right: 12),
-                    child: InkWell(
-                      onTap: () async {
-                        _onPlayRecitationAppBar(
-                          state,
-                          notifier,
-                          connectivityStatus,
-                        );
-                      },
-                      child: Container(
-                        height: 24,
-                        width: 24,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.play_arrow,
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            size: 16,
-                          ),
-                        ),
+              ],
+            ),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            actions: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(right: 12),
+                child: InkWell(
+                  onTap: () => _onPlayRecitationAppBar(
+                    navState,
+                    contentState,
+                    habitNotifier,
+                    connectivityStatus,
+                  ),
+                  child: Container(
+                    height: 24,
+                    width: 24,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.play_arrow,
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        size: 16,
                       ),
                     ),
                   ),
-                  ValueListenableBuilder(
-                    valueListenable: notifier.visibleIconBookmark,
-                    builder: (context, value, __) {
-                      if (notifier.visibleIconBookmark.value) {
-                        return IconButton(
-                          icon: const Icon(Icons.bookmark_outlined),
-                          onPressed: () async {
-                            notifier.deleteBookmark(
-                              notifier.currentPage.value,
-                              connectivityStatus,
-                            );
-                          },
-                        );
-                      } else {
-                        return IconButton(
-                          icon: const Icon(Icons.bookmark_outline),
-                          onPressed: () async {
-                            notifier.insertBookmark(
-                              notifier.visibleSuratName.value,
-                              notifier.currentPage.value,
-                              connectivityStatus,
-                            );
-                          },
-                        );
-                      }
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(CustomIcons.book),
-                    onPressed: () => notifier.setIsInFullPage(
-                      !state.readingSettings!.isInFullPage,
+                ),
+              ),
+              bookmarkState.visibleIconBookmark
+                  ? IconButton(
+                      icon: const Icon(Icons.bookmark_outlined),
+                      onPressed: () => bookmarkNotifier.deleteBookmark(
+                        navState.currentPage,
+                        connectivityStatus,
+                      ),
+                    )
+                  : IconButton(
+                      icon: const Icon(Icons.bookmark_outline),
+                      onPressed: () => bookmarkNotifier.insertBookmark(
+                        navState.visibleSuratName,
+                        navState.currentPage,
+                        connectivityStatus,
+                      ),
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(CustomIcons.sliders),
-                    onPressed: () {
-                      _scaffoldKey.currentState?.openEndDrawer();
-                    },
-                  ),
-                ],
+              IconButton(
+                icon: const Icon(CustomIcons.book),
+                onPressed: () => contentNotifier.setIsInFullPage(
+                  !contentState.readingSettings!.isInFullPage,
+                ),
               ),
-            ),
-            body: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: _buildPageOnReadCTA(
-                context: context,
-                sn: notifier,
-                state: state,
+              IconButton(
+                icon: const Icon(CustomIcons.sliders),
+                onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
               ),
-            ),
-            endDrawer: SuratPageSettingsDrawer(
-              isWithLatins: state.readingSettings!.isWithLatins,
-              isWithTranslation: state.readingSettings!.isWithTranslations,
-              isWithTafsir: state.readingSettings!.isWithTafsirs,
-              fontSize: state.readingSettings!.fontSize,
-              onTapLatins: (value) => notifier.setisWithLatins(value),
-              onTapTranslation: (value) =>
-                  notifier.setIsWithTranslations(value),
-              onTapTafsir: (value) => notifier.setIsWithTafsirs(value),
-              onTapAdd: () => notifier.addFontSize(),
-              onTapMinus: () => notifier.minusFontSize(),
-            ),
+            ],
           ),
-        );
-      },
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: _buildPageOnReadCTA(
+            context: context,
+            navState: navState,
+            contentState: contentState,
+            habitState: habitState,
+            habitNotifier: habitNotifier,
+            bookmarkNotifier: bookmarkNotifier,
+            contentNotifier: contentNotifier,
+            connectivityStatus: connectivityStatus,
+          ),
+        ),
+        endDrawer: SuratPageSettingsDrawer(
+          isWithLatins: contentState.readingSettings!.isWithLatins,
+          isWithTranslation: contentState.readingSettings!.isWithTranslations,
+          isWithTafsir: contentState.readingSettings!.isWithTafsirs,
+          fontSize: contentState.readingSettings!.fontSize,
+          onTapLatins: (value) => contentNotifier.setIsWithLatins(value),
+          onTapTranslation: (value) =>
+              contentNotifier.setIsWithTranslations(value),
+          onTapTafsir: (value) => contentNotifier.setIsWithTafsirs(value),
+          onTapAdd: () => contentNotifier.addFontSize(),
+          onTapMinus: () => contentNotifier.minusFontSize(),
+        ),
+      ),
     );
   }
 
   Future<void> _onPlayRecitationAppBar(
-    SuratPageState state,
-    SuratPageStateNotifier notifier,
+    SuratPageNavigationState navState,
+    SuratPageContentState contentState,
+    SuratPageHabitNotifier habitNotifier,
     ConnectivityStatus connectivityStatus,
   ) async {
     if (connectivityStatus == ConnectivityStatus.isDisconnected &&
@@ -348,20 +317,21 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
         context,
         () {
           Navigator.pop(context);
-          _onPlayRecitationAppBar(state, notifier, connectivityStatus);
+          _onPlayRecitationAppBar(
+              navState, contentState, habitNotifier, connectivityStatus);
         },
       );
-
       return;
     }
 
-    final List<Verse> verses = state.pages![state.currentPage.toInt()].verses;
+    final int pageIndex = navState.currentPage - 1;
+    final List<Verse> verses = contentState.pages![pageIndex].verses;
     final Verse verse = verses.firstWhere(
       (element) => element.id == widget.param.firstPagePointerIndex,
       orElse: () => verses[0],
     );
 
-    notifier.playOnAyah(verse);
+    habitNotifier.playOnAyah(verse);
     if (mounted) {
       GeneralBottomSheet.showBaseBottomSheet(
         context: context,
@@ -371,44 +341,57 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
   }
 
   bool _onTapBack({
-    required SuratPageStateNotifier notifier,
-    required SuratPageState state,
+    required SuratPageNavigationState navState,
+    required SuratPageBookmarkState bookmarkState,
+    required SuratPageHabitState habitState,
+    required SuratPageHabitNotifier habitNotifier,
+    required SuratPageNavigationNotifier navNotifier,
   }) {
-    if (!state.isRecording) {
-      final SuratPageV3OnPopParam param = SuratPageV3OnPopParam(
-        isBookmarkChanged: notifier.isBookmarkChanged,
-        isFavoriteAyahChanged: notifier.isFavoriteAyahChanged,
-        isHabitDailySummaryChanged: notifier.isHabitDailySummaryChanged,
+    if (!habitState.isRecording) {
+      final param = SuratPageV3OnPopParam(
+        isBookmarkChanged: bookmarkState.isBookmarkChanged,
+        isFavoriteAyahChanged: bookmarkState.isFavoriteAyahChanged,
+        isHabitDailySummaryChanged: habitState.isHabitDailySummaryChanged,
       );
       Navigator.pop(context, param);
-
       return true;
     }
 
-    _buildTrackerSubmissionDialog(
-      notifier,
-      isFromTapBack: true,
-    );
-
+    _buildTrackerSubmissionDialog(habitNotifier, isFromTapBack: true);
     return true;
   }
 
   Widget _buildPageOnReadCTA({
-    required SuratPageState state,
-    required SuratPageStateNotifier sn,
     required BuildContext context,
+    required SuratPageNavigationState navState,
+    required SuratPageContentState contentState,
+    required SuratPageHabitState habitState,
+    required SuratPageHabitNotifier habitNotifier,
+    required SuratPageBookmarkNotifier bookmarkNotifier,
+    required SuratPageContentNotifier contentNotifier,
+    required ConnectivityStatus connectivityStatus,
   }) {
-    Orientation orientation = MediaQuery.of(context).orientation;
-    final Widget pages = state.readingSettings!.isInFullPage
+    final Orientation orientation = MediaQuery.of(context).orientation;
+    final navNotifier = ref.read(suratPageNavigationProvider.notifier);
+
+    final Widget pages = contentState.readingSettings!.isInFullPage
         ? _buildPagesInFullPage(
-            state: state,
-            notifier: sn,
+            navState: navState,
+            contentState: contentState,
+            habitState: habitState,
+            navNotifier: navNotifier,
+            habitNotifier: habitNotifier,
+            bookmarkNotifier: bookmarkNotifier,
             context: context,
             orientation: orientation,
           )
         : _buildPages(
-            state: state,
-            notifier: sn,
+            navState: navState,
+            contentState: contentState,
+            habitState: habitState,
+            navNotifier: navNotifier,
+            habitNotifier: habitNotifier,
+            bookmarkNotifier: bookmarkNotifier,
             orientation: orientation,
           );
 
@@ -417,175 +400,145 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
     return Stack(
       children: [
         pages,
-        if (state.isRecording)
-          ValueListenableBuilder(
-            valueListenable: sn.isOnReadCTAVisible,
-            builder: (_, bool value, __) {
-              if (value) {
-                return Positioned(
-                  child: _buildPageTracker(sn),
-                );
-              }
-
-              return const SizedBox.shrink();
-            },
+        if (habitState.isRecording)
+          Positioned(
+            child: _buildPageTracker(habitNotifier, habitState),
           ),
-        ValueListenableBuilder(
-          valueListenable: sn.isOnReadCTAVisible,
-          builder: (_, bool value, __) {
-            if (value) {
-              return Positioned(
-                bottom: bottomPadding,
-                width: MediaQuery.of(context).size.width - 16,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
+        if (habitState.isOnReadCTAVisible)
+          Positioned(
+            bottom: bottomPadding,
+            width: MediaQuery.of(context).size.width - 16,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          ValueListenableBuilder(
-                            valueListenable: sn.visibleSuratName,
-                            builder: (context, String value, __) {
-                              final int surahNumber =
-                                  surahNameToSurahNumberMap[value] ?? 0;
-
-                              if (sn.availableAyahTadabburs[surahNumber] !=
-                                  null) {
-                                return ButtonBrandSoft(
-                                  leftWidget: const Icon(
-                                    Icons.menu_book,
-                                    size: 12,
-                                    color: QPColors.brandFair,
-                                  ),
-                                  title: 'Tadabbur $value',
-                                  onTap: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      RoutePaths.routeReadTadabbur,
-                                      arguments: ReadTadabburParam(
-                                        surahName: value,
-                                        surahId: surahNumber,
-                                        isFromSurahPage: true,
-                                      ),
-                                    );
-                                  },
-                                );
-                              }
-
-                              return const SizedBox.shrink();
-                            },
-                          ),
-                          if (!state.isRecording)
-                            ButtonPrimary(
-                              label: 'Start Tracking',
-                              size: ButtonSize.small,
-                              onTap: () async {
-                                if (!sn.isLoggedIn) {
-                                  final dynamic res = await Navigator.pushNamed(
-                                    context,
-                                    RoutePaths.routeLogin,
-                                    arguments: RegistrationAndLoginPageParam(
-                                      shouldNavigateTabToHome: false,
-                                    ),
-                                  );
-
-                                  if (res is bool && res) {
-                                    // set state to rebuild page since state notifier already disposed
-                                    // due to login changes
-                                    // re-init state to force reload data
-                                    setState(() {});
-                                    ref
-                                        .read(suratPageProvider.notifier)
-                                        .initStateNotifier();
-                                    Future.delayed(Duration.zero, () {
-                                      if (!context.mounted) return;
-                                      _startTracking(
-                                        context,
-                                        ref.read(suratPageProvider.notifier),
-                                      );
-                                    });
-                                  }
-
-                                  return;
-                                }
-
-                                _startTracking(context, sn);
-                              },
+                      Builder(builder: (context) {
+                        final surahNumber =
+                            surahNameToSurahNumberMap[navState.visibleSuratName]
+                                ?? 0;
+                        if (contentState
+                                .availableAyahTadabburs[surahNumber] !=
+                            null) {
+                          return ButtonBrandSoft(
+                            leftWidget: const Icon(
+                              Icons.menu_book,
+                              size: 12,
+                              color: QPColors.brandFair,
                             ),
-                        ],
-                      ),
-                      if (state.showMinimizedAudioPlayer) ...<Widget>[
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        AudioMinimizedInfo(
-                          onTapContainer: () {
-                            GeneralBottomSheet.showBaseBottomSheet(
-                              context: context,
-                              widgetChild: const AudioBottomSheetWidget(),
-                            );
+                            title: 'Tadabbur ${navState.visibleSuratName}',
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                RoutePaths.routeReadTadabbur,
+                                arguments: ReadTadabburParam(
+                                  surahName: navState.visibleSuratName,
+                                  surahId: surahNumber,
+                                  isFromSurahPage: true,
+                                ),
+                              );
+                            },
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      }),
+                      if (!habitState.isRecording)
+                        ButtonPrimary(
+                          label: 'Start Tracking',
+                          size: ButtonSize.small,
+                          onTap: () async {
+                            if (!habitNotifier.isLoggedIn) {
+                              final dynamic res = await Navigator.pushNamed(
+                                context,
+                                RoutePaths.routeLogin,
+                                arguments: RegistrationAndLoginPageParam(
+                                  shouldNavigateTabToHome: false,
+                                ),
+                              );
+
+                              if (res is bool && res) {
+                                setState(() {});
+                                await _initAllNotifiers();
+                                Future.delayed(Duration.zero, () {
+                                  if (!context.mounted) return;
+                                  _startTracking(
+                                    context,
+                                    ref.read(
+                                        suratPageHabitProvider.notifier),
+                                  );
+                                });
+                              }
+                              return;
+                            }
+
+                            _startTracking(context, habitNotifier);
                           },
-                          onClose: () {
-                            sn.stopRecitation();
-                          },
                         ),
-                      ],
                     ],
                   ),
-                ),
-              );
-            }
-
-            return const SizedBox.shrink();
-          },
-        ),
+                  if (habitState.showMinimizedAudioPlayer) ...<Widget>[
+                    const SizedBox(height: 20),
+                    AudioMinimizedInfo(
+                      onTapContainer: () {
+                        GeneralBottomSheet.showBaseBottomSheet(
+                          context: context,
+                          widgetChild: const AudioBottomSheetWidget(),
+                        );
+                      },
+                      onClose: () => habitNotifier.stopRecitation(),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
       ],
     );
   }
 
   Future<void> _startTracking(
     BuildContext context,
-    SuratPageStateNotifier notifier,
+    SuratPageHabitNotifier notifier,
   ) async {
     Navigator.push(
       context,
       PageTransition(
         type: PageTransitionType.fade,
-        child: PreHabitTrackingAnimation(
-          notifier: notifier,
-        ),
+        child: PreHabitTrackingAnimation(notifier: notifier),
       ),
     );
   }
 
   Widget _buildPageInFullPage({
-    required SuratPageState state,
+    required SuratPageNavigationState navState,
+    required SuratPageContentState contentState,
     required int pageIndex,
     required BuildContext context,
-    required SuratPageStateNotifier notifier,
+    required SuratPageNavigationNotifier navNotifier,
     required Orientation orientation,
   }) {
     final List<String> texts = List<String>.filled(15, '');
     final int page = pageIndex + 1;
 
-    for (final Verse verse in state.pages![pageIndex].verses) {
+    for (final Verse verse in contentState.pages![pageIndex].verses) {
       for (final Word word in verse.words) {
         texts[word.lineNumber - 1] += word.code;
       }
     }
 
-    while (notifier.separatorBuilderIndex < state.fullPageSeparators!.length &&
-        state.fullPageSeparators![notifier.separatorBuilderIndex].page ==
+    while (navNotifier.separatorBuilderIndex <
+            contentState.fullPageSeparators!.length &&
+        contentState.fullPageSeparators![navNotifier.separatorBuilderIndex]
+                .page ==
             page) {
       final FullPageSeparator separator =
-          state.fullPageSeparators![notifier.separatorBuilderIndex];
-
+          contentState.fullPageSeparators![navNotifier.separatorBuilderIndex];
       if (!separator.bismillah) {
         texts[separator.line - 1] = separator.unicode!;
       }
-
-      notifier.separatorBuilderIndex++;
+      navNotifier.separatorBuilderIndex++;
     }
 
     List<Widget> textInWidgets = texts
@@ -593,7 +546,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
           (String words) => _buildFullPagePerLine(
             page: page,
             text: words,
-            state: state,
+            contentState: contentState,
             orientation: orientation,
           ),
         )
@@ -615,12 +568,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
     }
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(
-        11,
-        topPadding,
-        11,
-        bottomPadding,
-      ),
+      padding: EdgeInsets.fromLTRB(11, topPadding, 11, bottomPadding),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -630,22 +578,18 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
   }
 
   Widget _buildPageTracker(
-    SuratPageStateNotifier sn,
+    SuratPageHabitNotifier habitNotifier,
+    SuratPageHabitState habitState,
   ) {
     return GestureDetector(
-      onTap: () => _buildTrackerSubmissionDialog(sn),
+      onTap: () => _buildTrackerSubmissionDialog(habitNotifier),
       child: Container(
         height: 24,
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(8)),
           boxShadow: [
             BoxShadow(
-              color: Color.fromRGBO(
-                0,
-                0,
-                0,
-                0.1,
-              ),
+              color: Color.fromRGBO(0, 0, 0, 0.1),
               offset: Offset(1.0, 2.0),
               blurRadius: 5.0,
               spreadRadius: 1.0,
@@ -656,22 +600,11 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.stop_circle_outlined,
-              size: 14.0,
-              color: red300,
-            ),
-            const SizedBox(
-              width: 9,
-            ),
-            ValueListenableBuilder(
-              valueListenable: sn.recordedPagesAsRead,
-              builder: (context, value, __) {
-                return Text(
-                  'Stop Tracking ($value/${sn.habitDailyTarget} Page)',
-                  textAlign: TextAlign.center,
-                );
-              },
+            const Icon(Icons.stop_circle_outlined, size: 14.0, color: red300),
+            const SizedBox(width: 9),
+            Text(
+              'Stop Tracking (${habitState.recordedPagesAsRead}/${habitNotifier.habitDailyTarget} Page)',
+              textAlign: TextAlign.center,
             ),
           ],
         ),
@@ -682,7 +615,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
   Widget _buildFullPagePerLine({
     required String text,
     required int page,
-    required SuratPageState state,
+    required SuratPageContentState contentState,
     required Orientation orientation,
   }) {
     String fontFamily = 'Page$page';
@@ -694,11 +627,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
       if (page == 1 || page == 2) {
         return const SizedBox.shrink();
       }
-
-      return _buildBasmalah(
-        orientation: orientation,
-        isInFullPage: true,
-      );
+      return _buildBasmalah(orientation: orientation, isInFullPage: true);
     }
 
     if (page == 1 || page == 2) {
@@ -715,7 +644,6 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
           minFontSize: 56,
         );
       }
-
       return AutoSizeText(
         text,
         style: TextStyle(
@@ -726,6 +654,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
         ),
       );
     }
+
     if (orientation == Orientation.landscape) {
       return SingleChildScrollView(
         child: Center(
@@ -758,45 +687,49 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
   }
 
   Widget _buildPagesInFullPage({
-    required SuratPageState state,
-    required SuratPageStateNotifier notifier,
+    required SuratPageNavigationState navState,
+    required SuratPageContentState contentState,
+    required SuratPageHabitState habitState,
+    required SuratPageNavigationNotifier navNotifier,
+    required SuratPageHabitNotifier habitNotifier,
+    required SuratPageBookmarkNotifier bookmarkNotifier,
     required BuildContext context,
     required Orientation orientation,
   }) {
     List<Widget> allPages = <Widget>[];
 
-    for (int idx = 0; idx < state.pages!.length; idx++) {
-      Widget page = _buildPageInFullPage(
-        state: state,
+    for (int idx = 0; idx < contentState.pages!.length; idx++) {
+      allPages.add(_buildPageInFullPage(
+        navState: navState,
+        contentState: contentState,
         pageIndex: idx,
         context: context,
-        notifier: notifier,
+        navNotifier: navNotifier,
         orientation: orientation,
-      );
-
-      allPages.add(page);
+      ));
     }
 
-    notifier.resetSeparatorBuilderIndex();
+    navNotifier.resetSeparatorBuilderIndex();
 
     return GestureDetector(
       onTap: () {
-        notifier.isOnReadCTAVisible.value = !notifier.isOnReadCTAVisible.value;
+        final habitN = ref.read(suratPageHabitProvider.notifier);
+        habitN.setShowMinimizedAudioPlayer(
+          !ref.read(suratPageHabitProvider).isOnReadCTAVisible,
+        );
       },
       child: PageView(
         reverse: true,
-        controller: state.pageController,
+        controller: navState.pageController,
         onPageChanged: (pageIndex) {
-          int pageValue = pageIndex + 1;
-          int surahNumber = state.pages![pageIndex].verses[0].surahNumber;
-          String surahName = surahNumberToSurahNameMap[surahNumber] ?? '';
-          notifier.visibleSuratName.value = surahName;
-          notifier.currentPage.value = pageValue;
-          notifier.visibleJuzNumber.value =
-              state.pages![pageIndex].verses[0].juzNumber;
-          notifier.checkIsBookmarkExists(pageValue);
-          notifier.changePageOnRecording(pageValue);
-          notifier.isOnReadCTAVisible.value = true;
+          navNotifier.updateOnPageChanged(pageIndex, contentState.pages!);
+          bookmarkNotifier
+              .checkIsBookmarkExists(navState.currentPage);
+          habitNotifier.changePageOnRecording(navState.currentPage);
+          final habitN = ref.read(suratPageHabitProvider.notifier);
+          habitN.setShowMinimizedAudioPlayer(
+            ref.read(suratPageHabitProvider).isOnReadCTAVisible,
+          );
         },
         children: allPages,
       ),
@@ -804,37 +737,40 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
   }
 
   Widget _buildPages({
-    required SuratPageState state,
-    required SuratPageStateNotifier notifier,
+    required SuratPageNavigationState navState,
+    required SuratPageContentState contentState,
+    required SuratPageHabitState habitState,
+    required SuratPageNavigationNotifier navNotifier,
+    required SuratPageHabitNotifier habitNotifier,
+    required SuratPageBookmarkNotifier bookmarkNotifier,
     required Orientation orientation,
   }) {
     List<Widget> allPages = <Widget>[];
 
-    for (int idx = 0; idx < state.pages!.length; idx++) {
-      int pageNumberInQuran = idx + 1;
-
-      Widget page = _buildPage(
-        quranPageObject: state.pages![idx],
-        pageNumberInQuran: pageNumberInQuran,
-        state: state,
-        notifier: notifier,
+    for (int idx = 0; idx < contentState.pages!.length; idx++) {
+      allPages.add(_buildPage(
+        quranPageObject: contentState.pages![idx],
+        pageNumberInQuran: idx + 1,
+        navState: navState,
+        contentState: contentState,
+        habitState: habitState,
+        navNotifier: navNotifier,
+        habitNotifier: habitNotifier,
+        bookmarkNotifier: bookmarkNotifier,
         orientation: orientation,
-      );
-
-      allPages.add(page);
+      ));
     }
 
     return PageView(
       reverse: true,
-      controller: state.pageController,
+      controller: navState.pageController,
       onPageChanged: (pageIndex) {
-        int pageValue = pageIndex + 1;
-        notifier.changePageOnRecording(pageValue);
-        notifier.checkIsBookmarkExists(pageValue);
-        notifier.currentPage.value = pageValue;
-        notifier.visibleJuzNumber.value =
-            state.pages![pageIndex].verses[0].juzNumber;
-        notifier.isOnReadCTAVisible.value = true;
+        final int pageValue = pageIndex + 1;
+        habitNotifier.changePageOnRecording(pageValue);
+        bookmarkNotifier.checkIsBookmarkExists(pageValue);
+        navNotifier.updateCurrentPage(pageValue);
+        navNotifier.updateVisibleJuz(
+            contentState.pages![pageIndex].verses[0].juzNumber);
       },
       children: allPages,
     );
@@ -843,8 +779,12 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
   Widget _buildPage({
     required QuranPage quranPageObject,
     required int pageNumberInQuran,
-    required SuratPageState state,
-    required SuratPageStateNotifier notifier,
+    required SuratPageNavigationState navState,
+    required SuratPageContentState contentState,
+    required SuratPageHabitState habitState,
+    required SuratPageNavigationNotifier navNotifier,
+    required SuratPageHabitNotifier habitNotifier,
+    required SuratPageBookmarkNotifier bookmarkNotifier,
     required Orientation orientation,
   }) {
     List<Widget> ayahs = <Widget>[];
@@ -852,28 +792,31 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
       bool useDivider = i != quranPageObject.verses.length - 1;
       Verse verse = quranPageObject.verses[i];
 
-      Widget w = _buildAyah(
+      ayahs.add(_buildAyah(
         verse: verse,
         useDivider: useDivider,
         fontSize: pageNumberInQuran == 1 || pageNumberInQuran == 2
             ? orientation == Orientation.landscape
-                ? state.readingSettings!.valueFontSizeArabicFirstSheetLandscape
-                : state.readingSettings!.valueFontSizeArabicFirstSheet
+                ? contentState
+                    .readingSettings!.valueFontSizeArabicFirstSheetLandscape
+                : contentState.readingSettings!.valueFontSizeArabicFirstSheet
             : orientation == Orientation.landscape
-                ? state.readingSettings!.valueFontSizeArabicLandscape
-                : state.readingSettings!.valueFontSizeArabic,
+                ? contentState.readingSettings!.valueFontSizeArabicLandscape
+                : contentState.readingSettings!.valueFontSizeArabic,
         pageNumberInQuran: pageNumberInQuran,
-        state: state,
-        notifier: notifier,
+        navState: navState,
+        contentState: contentState,
+        habitState: habitState,
+        navNotifier: navNotifier,
+        habitNotifier: habitNotifier,
+        bookmarkNotifier: bookmarkNotifier,
         orientation: orientation,
-      );
-
-      ayahs.add(w);
+      ));
     }
 
     return ListView(
       padding:
-          state.isRecording ? const EdgeInsets.only(top: 20) : EdgeInsets.zero,
+          habitState.isRecording ? const EdgeInsets.only(top: 20) : EdgeInsets.zero,
       controller: scrollController,
       key: PageStorageKey('page$pageNumberInQuran'),
       children: ayahs,
@@ -885,27 +828,30 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
     required bool useDivider,
     required double fontSize,
     required int pageNumberInQuran,
-    required SuratPageState state,
-    required SuratPageStateNotifier notifier,
+    required SuratPageNavigationState navState,
+    required SuratPageContentState contentState,
+    required SuratPageHabitState habitState,
+    required SuratPageNavigationNotifier navNotifier,
+    required SuratPageHabitNotifier habitNotifier,
+    required SuratPageBookmarkNotifier bookmarkNotifier,
     required Orientation orientation,
   }) {
     String allVerses = '';
     String fontFamilyPage = 'Page$pageNumberInQuran';
 
     bool useBasmalahBeforeAyah =
-        notifier.visibleSuratName.value != "At-Taubah" &&
-            verse.verseNumber == 1;
+        navState.visibleSuratName != "At-Taubah" && verse.verseNumber == 1;
 
     String? translation =
-        state.translations?[verse.surahNumberInIndex][verse.verseNumberInIndex];
+        contentState.translations?[verse.surahNumberInIndex][verse.verseNumberInIndex];
     String? latin =
-        state.latins?[verse.surahNumberInIndex][verse.verseNumberInIndex];
+        contentState.latins?[verse.surahNumberInIndex][verse.verseNumberInIndex];
     String? tafsir =
-        state.tafsirs?[verse.surahNumberInIndex][verse.verseNumberInIndex];
-    bool isWithTranslations = state.readingSettings!.isWithTranslations;
-    bool isWithTafsirs = state.readingSettings!.isWithTafsirs;
-    bool isWithLatins = state.readingSettings!.isWithLatins;
-    bool isFavorited = notifier.isAyahFavorited(verse.id);
+        contentState.tafsirs?[verse.surahNumberInIndex][verse.verseNumberInIndex];
+    bool isWithTranslations = contentState.readingSettings!.isWithTranslations;
+    bool isWithTafsirs = contentState.readingSettings!.isWithTafsirs;
+    bool isWithLatins = contentState.readingSettings!.isWithLatins;
+    bool isFavorited = bookmarkNotifier.isAyahFavorited(verse.id);
     ValueKey key = ValueKey(verse.surahNameAndAyatKey);
 
     for (Word word in verse.words) {
@@ -921,16 +867,8 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
       child: VisibilityDetector(
         onVisibilityChanged: (info) {
           if (info.visibleFraction == 1) {
-            if (notifier.visibleSuratName.value !=
-                surahNumberToSurahNameMap[verse.surahNumber]!) {
-              notifier.visibleSuratName.value =
-                  surahNumberToSurahNameMap[verse.surahNumber]!;
-              notifier.temp = verse.surahNumber;
-            }
-
-            if (notifier.visibleJuzNumber.value != verse.juzNumber) {
-              notifier.visibleJuzNumber.value = verse.juzNumber;
-            }
+            navNotifier.updateVisibleSurah(verse.surahNumber);
+            navNotifier.updateVisibleJuz(verse.juzNumber);
           }
         },
         key: key,
@@ -944,16 +882,14 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                   verse.surahNameAndAyatKey,
                   FavoriteAyahCTA(
                     onTap: () async {
-                      await notifier.toggleFavoriteAyah(
+                      await bookmarkNotifier.toggleFavoriteAyah(
                         surahNumber: verse.surahNumber,
                         ayahNumber: verse.verseNumber,
                         ayahID: verse.id,
                         page: pageNumberInQuran,
                       );
                     },
-                    isFavorited: notifier.isAyahFavorited(
-                      verse.id,
-                    ),
+                    isFavorited: bookmarkNotifier.isAyahFavorited(verse.id),
                   ),
                 );
               },
@@ -971,7 +907,8 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                             height: 20,
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                image: AssetImage(StoredIcon.iconFavorite.path),
+                                image:
+                                    AssetImage(StoredIcon.iconFavorite.path),
                               ),
                             ),
                           ),
@@ -993,7 +930,8 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                             alignment: Alignment.centerLeft,
                             icon: const Icon(Icons.play_circle_outline),
                             iconSize: 20,
-                            onPressed: () => _playOnAyah(notifier, verse),
+                            onPressed: () =>
+                                _playOnAyah(habitNotifier, verse, connectivityStatus: ref.read(internetConnectionStatusProvider)),
                           ),
                           Expanded(
                             child: Text(
@@ -1017,15 +955,17 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
             ),
             if (isWithLatins)
               Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                padding:
+                    const EdgeInsets.only(left: 16, right: 16, bottom: 16),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     latin!,
-                    style: QPTextStyle.getDescription1Regular(context).copyWith(
+                    style:
+                        QPTextStyle.getDescription1Regular(context).copyWith(
                       fontSize: orientation == Orientation.landscape
-                          ? state.readingSettings!.valueFontSizeLandscape
-                          : state.readingSettings?.valueFontSize,
+                          ? contentState.readingSettings!.valueFontSizeLandscape
+                          : contentState.readingSettings?.valueFontSize,
                       color: QPColors.getColorBasedTheme(
                         dark: QPColors.blackSoft,
                         light: QPColors.neutral600,
@@ -1038,14 +978,16 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
               ),
             if (isWithTranslations)
               Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                padding:
+                    const EdgeInsets.only(left: 16, right: 16, bottom: 16),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     translation!,
-                    style: QPTextStyle.getDescription1Regular(context).copyWith(
+                    style:
+                        QPTextStyle.getDescription1Regular(context).copyWith(
                       height: 1.5,
-                      fontSize: state.readingSettings?.valueFontSize,
+                      fontSize: contentState.readingSettings?.valueFontSize,
                     ),
                   ),
                 ),
@@ -1060,7 +1002,8 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                     brown: QPColors.brownModeHeavy,
                     context: context,
                   ),
-                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  borderRadius:
+                      const BorderRadius.all(Radius.circular(8)),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -1076,7 +1019,8 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                           style: QPTextStyle.getDescription1Regular(context)
                               .copyWith(
                             height: 1.5,
-                            fontSize: state.readingSettings?.valueFontSize,
+                            fontSize:
+                                contentState.readingSettings?.valueFontSize,
                             color: QPColors.getColorBasedTheme(
                               dark: QPColors.whiteFair,
                               light: QPColors.blackFair,
@@ -1106,8 +1050,8 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                   ),
                 ),
               ),
-            if (notifier.availableAyahTadabburs[verse.surahNumber] != null &&
-                notifier.availableAyahTadabburs[verse.surahNumber]!
+            if (contentState.availableAyahTadabburs[verse.surahNumber] != null &&
+                contentState.availableAyahTadabburs[verse.surahNumber]!
                     .contains(verse.verseNumber))
               Align(
                 alignment: Alignment.centerRight,
@@ -1115,11 +1059,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
               ),
             if (useDivider)
               const Padding(
-                padding: EdgeInsets.only(
-                  left: 16.0,
-                  right: 16.0,
-                  top: 16.0,
-                ),
+                padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
                 child: HorizontalDivider(),
               ),
           ],
@@ -1128,22 +1068,25 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
     );
   }
 
-  Future<void> _playOnAyah(SuratPageStateNotifier notifier, Verse verse) async {
-    final connectivityStatus = ref.read(internetConnectionStatusProviders);
+  Future<void> _playOnAyah(
+    SuratPageHabitNotifier habitNotifier,
+    Verse verse, {
+    required ConnectivityStatus connectivityStatus,
+  }) async {
     if (connectivityStatus == ConnectivityStatus.isDisconnected &&
         context.mounted) {
       GeneralBottomSheet.showNoInternetBottomSheet(
         context,
         () {
           Navigator.pop(context);
-          _playOnAyah(notifier, verse);
+          _playOnAyah(habitNotifier, verse,
+              connectivityStatus: connectivityStatus);
         },
       );
-
       return;
     }
 
-    notifier.playOnAyah(verse);
+    habitNotifier.playOnAyah(verse);
     if (mounted) {
       GeneralBottomSheet.showBaseBottomSheet(
         context: context,
@@ -1163,13 +1106,8 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(
-            Icons.menu_book,
-            size: 14,
-          ),
-          const SizedBox(
-            width: 4,
-          ),
+          const Icon(Icons.menu_book, size: 14),
+          const SizedBox(width: 4),
           Text(
             'Tadabbur Available',
             style: QPTextStyle.getButton3Medium(context).copyWith(
@@ -1208,14 +1146,14 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
   }
 
   Future<void> _buildTrackerSubmissionDialog(
-    SuratPageStateNotifier notifier, {
+    SuratPageHabitNotifier habitNotifier, {
     bool isFromTapBack = false,
   }) async {
     showQPGeneralDialog<bool>(
       context: context,
       builder: (context) {
         return TrackingSubmissionDialog(
-          notifier: notifier,
+          habitNotifier: habitNotifier,
           isFromTapBack: isFromTapBack,
         );
       },

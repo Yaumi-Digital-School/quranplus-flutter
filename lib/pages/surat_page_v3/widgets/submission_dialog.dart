@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_state_notifier.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_habit_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/post_tracking_dialog.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
@@ -10,11 +10,11 @@ class TrackingSubmissionDialog extends StatefulWidget {
   const TrackingSubmissionDialog({
     super.key,
     this.isFromTapBack = false,
-    required this.notifier,
+    required this.habitNotifier,
   });
 
   final bool isFromTapBack;
-  final SuratPageStateNotifier notifier;
+  final SuratPageHabitNotifier habitNotifier;
 
   @override
   State<TrackingSubmissionDialog> createState() =>
@@ -23,25 +23,33 @@ class TrackingSubmissionDialog extends StatefulWidget {
 
 class _TrackingSubmissionDialogState extends State<TrackingSubmissionDialog> {
   bool isLoading = false;
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(
+      text: widget.habitNotifier.recordedPagesList.length.toString(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return AdaptiveThemeDialog(
-      contentPadding: const EdgeInsets.fromLTRB(
-        24.0,
-        20.0,
-        24.0,
-        24.0,
-      ),
+      contentPadding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 24.0),
       borderRadiusValue: 19,
       child: isLoading
           ? Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 const CircularProgressIndicator(),
-                const SizedBox(
-                  height: 24,
-                ),
+                const SizedBox(height: 24),
                 Text(
                   'Submitting...',
                   style: QPTextStyle.getSubHeading2Regular(context),
@@ -58,15 +66,11 @@ class _TrackingSubmissionDialogState extends State<TrackingSubmissionDialog> {
                       : "You've finished reading....",
                   style: QPTextStyle.getSubHeading3Medium(context),
                 ),
-                const SizedBox(
-                  height: 16,
-                ),
+                const SizedBox(height: 16),
                 Row(
                   children: [
-                    _buildTrackerSubmissionDialogInput(widget.notifier),
-                    const SizedBox(
-                      width: 8,
-                    ),
+                    _buildInput(),
+                    const SizedBox(width: 8),
                     const Text(
                       'Pages',
                       style: TextStyle(
@@ -77,18 +81,16 @@ class _TrackingSubmissionDialogState extends State<TrackingSubmissionDialog> {
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 24,
-                ),
+                const SizedBox(height: 24),
                 ButtonSecondary(
                   label: 'Submit',
                   onTap: () async {
-                    setState(() {
-                      isLoading = true;
-                    });
+                    setState(() => isLoading = true);
 
+                    final int pages =
+                        int.tryParse(_controller.text) ?? 0;
                     final bool isComplete =
-                        await widget.notifier.stopRecording();
+                        await widget.habitNotifier.stopRecording(pages);
 
                     if (context.mounted) {
                       Navigator.pop(context);
@@ -97,10 +99,9 @@ class _TrackingSubmissionDialogState extends State<TrackingSubmissionDialog> {
                         HabitProgressPostTrackingDialog.onTapBackTrackingDialog(
                           context: context,
                           sharedPreferenceService:
-                              widget.notifier.sharedPreferenceService,
+                              widget.habitNotifier.sharedPreferenceService,
                           isComplete: isComplete,
                         );
-
                         return;
                       }
 
@@ -108,7 +109,7 @@ class _TrackingSubmissionDialogState extends State<TrackingSubmissionDialog> {
                           .onSubmitPostTrackingDialog(
                         context: context,
                         sharedPreferenceService:
-                            widget.notifier.sharedPreferenceService,
+                            widget.habitNotifier.sharedPreferenceService,
                         isComplete: isComplete,
                       );
                     }
@@ -119,15 +120,11 @@ class _TrackingSubmissionDialogState extends State<TrackingSubmissionDialog> {
     );
   }
 
-  Widget _buildTrackerSubmissionDialogInput(SuratPageStateNotifier notifier) {
-    notifier.habitTrackerSubmissionController.value = TextEditingValue(
-      text: notifier.recordedPagesList.length.toString(),
-    );
-
+  Widget _buildInput() {
     return SizedBox(
       width: 60,
       child: TextField(
-        controller: notifier.habitTrackerSubmissionController,
+        controller: _controller,
         textAlign: TextAlign.center,
         keyboardType: TextInputType.number,
         style: const TextStyle(

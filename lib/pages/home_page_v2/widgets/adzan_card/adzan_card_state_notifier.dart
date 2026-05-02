@@ -1,10 +1,25 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/constants/prayer_times.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/prayer_times_notifier.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final StateProvider<AdzanState> adzanCardProvider =
-    StateProvider<AdzanState>((ref) {
-  final PrayerTimeState prayerTimeState = ref.watch(prayerTimeProvider);
+part 'adzan_card_state_notifier.g.dart';
+
+class AdzanState {
+  final PrayerTimesList? prayerTimesList;
+  final DateTime? date;
+  final String? cityName;
+
+  const AdzanState(
+    this.prayerTimesList,
+    this.date,
+    this.cityName,
+  );
+}
+
+@riverpod
+AdzanState adzanCard(Ref ref) {
+  final PrayerTimeState prayerTimeState =
+      ref.watch(prayerTimeProvider);
   final String? cityName = prayerTimeState.cityName;
   final DateTime now = DateTime.now();
 
@@ -56,17 +71,5 @@ final StateProvider<AdzanState> adzanCardProvider =
     PrayerTimesList.fajr,
     prayerTimeState.prayerTimes!.fajr.toLocal(),
     cityName,
-  );
-});
-
-class AdzanState {
-  final PrayerTimesList? prayerTimesList;
-  final DateTime? date;
-  final String? cityName;
-
-  const AdzanState(
-    this.prayerTimesList,
-    this.date,
-    this.cityName,
   );
 }

@@ -2,10 +2,12 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:qurantafsir_flutter/pages/tadabbur_story/tadabur_story_page.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/tadabbur_api.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
-import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'tadabbur_story_state_notifier.g.dart';
 
 class TadabburStoryPageState {
   TadabburStoryPageState({
@@ -31,43 +33,27 @@ class TadabburStoryPageState {
   }
 }
 
-class TadabburStoryPageStateNotifier
-    extends BaseStateNotifier<TadabburStoryPageState> {
-  TadabburStoryPageStateNotifier({
-    required TadabburApi tadabburApi,
-    required TadabburStoryPageParams params,
-  })  : _tadabburApi = tadabburApi,
-        _params = params,
-        super(
-          TadabburStoryPageState(
-            contentInfos: [],
-          ),
-        );
-
-  final TadabburApi _tadabburApi;
-  final TadabburStoryPageParams _params;
-
+@riverpod
+class TadabburStoryPageNotifier extends _$TadabburStoryPageNotifier {
   late int _currentIndex;
   late PageController _controller;
-
   final DbLocal _db = DbLocal();
 
   @override
-  Future<void> initStateNotifier() async {
+  TadabburStoryPageState build() => TadabburStoryPageState(contentInfos: []);
+
+  Future<void> init(TadabburStoryPageParams params) async {
     state = state.copyWith(isLoading: true);
 
-    List<TadabburContentReadingInfo> res = await _initContent();
+    final res = await _initContent(params);
 
     _controller = PageController(initialPage: _currentIndex);
-
     _controller.addListener(() {
       final int index = _controller.page! > _currentIndex
           ? _controller.page!.floor()
           : _controller.page!.ceil();
 
-      if (index == _currentIndex) {
-        return;
-      }
+      if (index == _currentIndex) return;
 
       if (index == _currentIndex - 1) {
         _currentIndex = index;
@@ -87,70 +73,60 @@ class TadabburStoryPageStateNotifier
 
   Future<void> updateLatestReadStoryIndexInAyah(int value) async {
     state.contentInfos[_currentIndex].latestReadIndex = value;
-    await updateLatestReadStoryIndexToDB();
+    await _updateLatestReadStoryIndexToDB();
   }
 
   Future<void> updateLatestReadStoryIndexToDB() async {
-    final TadabburContentReadingInfo item = state.contentInfos[_currentIndex];
+    await _updateLatestReadStoryIndexToDB();
+  }
 
+  Future<void> _updateLatestReadStoryIndexToDB() async {
+    final item = state.contentInfos[_currentIndex];
     await _db.insertOrupdateTadabburReadingContentInfoLastReadingIndex(
       tadabburID: item.tadabburID,
       lastReadingIndex: item.latestReadIndex,
     );
   }
 
-  Future<List<TadabburContentReadingInfo>> _initContent() async {
-    final TadabburContentResponse? content =
-        await _getTadabburContent(_params.tadabburId);
-
+  Future<List<TadabburContentReadingInfo>> _initContent(
+      TadabburStoryPageParams params) async {
+    final content = await _getTadabburContent(params.tadabburId);
     List<TadabburContentReadingInfo> res = [];
     _currentIndex = 0;
 
     if (content != null) {
-      final int lastReadingIndex = await _db
-          .getTadabburReadingContentInfoByTadabburID(_params.tadabburId);
-
+      final lastReadingIndex =
+          await _db.getTadabburReadingContentInfoByTadabburID(params.tadabburId);
       res.add(TadabburContentReadingInfo(
         content: content,
         latestReadIndex: lastReadingIndex,
-        tadabburID: _params.tadabburId,
+        tadabburID: params.tadabburId,
       ));
 
       if (content.previousTadabburId != null) {
         _currentIndex = 1;
-
-        final TadabburContentResponse? prevContent =
+        final prevContent =
             await _getTadabburContent(content.previousTadabburId!);
-
         if (prevContent != null) {
-          final int lastReadingIndex =
-              await _db.getTadabburReadingContentInfoByTadabburID(
-            content.previousTadabburId!,
-          );
-
-          res.insert(
-            0,
-            TadabburContentReadingInfo(
-              content: prevContent,
-              latestReadIndex: lastReadingIndex,
-              tadabburID: content.previousTadabburId!,
-            ),
-          );
+          final lastIdx = await _db
+              .getTadabburReadingContentInfoByTadabburID(content.previousTadabburId!);
+          res.insert(0, TadabburContentReadingInfo(
+            content: prevContent,
+            latestReadIndex: lastIdx,
+            tadabburID: content.previousTadabburId!,
+          ));
         }
       }
 
       if (content.nextTadabburId != null) {
-        final TadabburContentResponse? nextContent =
+        final nextContent =
             await _getTadabburContent(content.nextTadabburId!);
-
         if (nextContent != null) {
-          final int lastReadingIndex =
-              await _db.getTadabburReadingContentInfoByTadabburID(
-            content.nextTadabburId!,
-          );
+          final lastIdx = await _db
+              .getTadabburReadingContentInfoByTadabburID(content.nextTadabburId!);
           res.add(TadabburContentReadingInfo(
             content: nextContent,
-            latestReadIndex: lastReadingIndex,
+            latestReadIndex: lastIdx,
             tadabburID: content.nextTadabburId!,
           ));
         }
@@ -161,120 +137,74 @@ class TadabburStoryPageStateNotifier
   }
 
   Future<void> _next() async {
-    if (_currentIndex != state.contentInfos.length - 1) {
-      return;
-    }
-
-    if (state.contentInfos[_currentIndex].content.nextTadabburId == null) {
-      return;
-    }
+    if (_currentIndex != state.contentInfos.length - 1) return;
+    if (state.contentInfos[_currentIndex].content.nextTadabburId == null) return;
 
     List<TadabburContentReadingInfo> res = [
       ...state.contentInfos,
-      TadabburContentReadingInfo(
-        content: TadabburContentResponse(),
-        tadabburID: 0,
-      ),
+      TadabburContentReadingInfo(content: TadabburContentResponse(), tadabburID: 0),
     ];
 
-    state = state.copyWith(
-      contentInfos: res,
-      isLoading: false,
-    );
-
+    state = state.copyWith(contentInfos: res, isLoading: false);
     _controller.jumpToPage(_currentIndex);
 
-    final TadabburContentResponse? content = await _getTadabburContent(
-      state.contentInfos[_currentIndex].content.nextTadabburId!,
-    );
+    final nextId = state.contentInfos[_currentIndex].content.nextTadabburId!;
+    final content = await _getTadabburContent(nextId);
 
     if (content != null) {
-      final int lastReadingIndex =
-          await _db.getTadabburReadingContentInfoByTadabburID(
-        state.contentInfos[_currentIndex].content.nextTadabburId!,
-      );
-      List<TadabburContentReadingInfo> res = state.contentInfos;
-      res[state.contentInfos.length - 1] = TadabburContentReadingInfo(
+      final lastIdx = await _db.getTadabburReadingContentInfoByTadabburID(nextId);
+      List<TadabburContentReadingInfo> updated = state.contentInfos;
+      updated[state.contentInfos.length - 1] = TadabburContentReadingInfo(
         content: content,
-        latestReadIndex: lastReadingIndex,
-        tadabburID: state.contentInfos[_currentIndex].content.nextTadabburId!,
+        latestReadIndex: lastIdx,
+        tadabburID: nextId,
       );
-
-      state = state.copyWith(
-        contentInfos: res,
-        isLoading: false,
-      );
+      state = state.copyWith(contentInfos: updated, isLoading: false);
     }
   }
 
   Future<void> _prev() async {
-    if (_currentIndex != 0) {
-      return;
-    }
-
-    if (state.contentInfos[_currentIndex].content.previousTadabburId == null) {
-      return;
-    }
+    if (_currentIndex != 0) return;
+    if (state.contentInfos[_currentIndex].content.previousTadabburId == null) return;
 
     _currentIndex += 1;
 
     List<TadabburContentReadingInfo> res = [
-      TadabburContentReadingInfo(
-        content: TadabburContentResponse(),
-        tadabburID: 0,
-      ),
+      TadabburContentReadingInfo(content: TadabburContentResponse(), tadabburID: 0),
       ...state.contentInfos,
     ];
 
-    state = state.copyWith(
-      contentInfos: res,
-      isLoading: false,
-    );
-
+    state = state.copyWith(contentInfos: res, isLoading: false);
     _controller.jumpToPage(_currentIndex);
 
-    final TadabburContentResponse? content = await _getTadabburContent(
-      state.contentInfos[_currentIndex].content.previousTadabburId!,
-    );
+    final prevId = res[_currentIndex].content.previousTadabburId!;
+    final content = await _getTadabburContent(prevId);
 
     if (content != null) {
-      final int lastReadingIndex =
-          await _db.getTadabburReadingContentInfoByTadabburID(
-        res[_currentIndex].content.previousTadabburId!,
-      );
-
+      final lastIdx = await _db.getTadabburReadingContentInfoByTadabburID(prevId);
       res[0] = TadabburContentReadingInfo(
         content: content,
-        latestReadIndex: lastReadingIndex,
-        tadabburID: res[_currentIndex].content.previousTadabburId!,
+        latestReadIndex: lastIdx,
+        tadabburID: prevId,
       );
-
-      state = state.copyWith(
-        contentInfos: res,
-        isLoading: false,
-      );
+      state = state.copyWith(contentInfos: res, isLoading: false);
     }
   }
 
   Future<TadabburContentResponse?> _getTadabburContent(int tadabburId) async {
+    final api = ref.read(tadabburApiProvider);
     try {
       HttpResponse<TadabburContentResponse> response =
-          await _tadabburApi.getTadabburContent(
-        tadabburId: tadabburId,
-      );
-
-      if (response.response.statusCode == 200) {
-        return response.data;
-      }
+          await api.getTadabburContent(tadabburId: tadabburId);
+      if (response.response.statusCode == 200) return response.data;
     } catch (error, stackTrace) {
       FirebaseCrashlytics.instance.recordError(
         error,
         stackTrace,
-        reason: 'error on _getListTadabburContent() method',
+        reason: 'error on _getTadabburContent() method',
       );
       debugPrint(error.toString());
     }
-
     return null;
   }
 }

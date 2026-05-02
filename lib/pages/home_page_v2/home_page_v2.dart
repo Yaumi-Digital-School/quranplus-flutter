@@ -7,132 +7,85 @@ import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/daily_progress_tr
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/read_tadabbur/read_tadabbur_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
-import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
+import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
-
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
-import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart' as date_util;
-import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
-import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/alert_dialog.dart';
+import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/daily_progress_tracker.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/sign_in_bottom_sheet.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:shimmer/shimmer.dart';
+
 import 'home_page_state_notifier.dart';
 import 'widgets/adzan_card/adzan_card_widget.dart';
 
-class HomePageV2 extends StatefulWidget {
-  const HomePageV2({
-    super.key,
-  });
+class HomePageV2 extends ConsumerStatefulWidget {
+  const HomePageV2({super.key});
 
   @override
-  State<HomePageV2> createState() => _HomePageV2State();
+  ConsumerState<HomePageV2> createState() => _HomePageV2State();
 }
 
-class _HomePageV2State extends State<HomePageV2> {
+class _HomePageV2State extends ConsumerState<HomePageV2> {
   @override
   Widget build(BuildContext context) {
-    return StateNotifierConnector<HomePageStateNotifier, HomePageState>(
-      key: GlobalKey(),
-      stateNotifierProvider:
-          StateNotifierProvider<HomePageStateNotifier, HomePageState>(
-        (ref) {
-          return HomePageStateNotifier(
-            sharedPreferenceService: ref.read(sharedPreferenceServiceProvider),
-            habitDailySummaryService: ref.read(habitDailySummaryService),
-            authenticationService: ref.read(authenticationService),
-            mainPageProvider: ref.read(mainPageProvider),
-            audioRecitationStateNotifier:
-                ref.read(audioRecitationProvider.notifier),
-          );
-        },
+    final state = ref.watch(homePageProvider);
+    final notifier = ref.read(homePageProvider.notifier);
+    final mainPage = ref.read(mainPageProvider);
+
+    if (mainPage.getShouldShowSignInBottomSheetAndReset()) {
+      _showSignInBottomSheet();
+    }
+    if (mainPage.getShouldSShowInvalidGroup()) {
+      _showInvalidGroupBottomSheet();
+    }
+    if (mainPage.getShouldSShowInvalidLink()) {
+      _showInvalidLinkBottomSheet();
+    }
+
+    return Scaffold(
+      backgroundColor: QPColors.getColorBasedTheme(
+        dark: QPColors.darkModeMassive,
+        light: QPColors.brandFair,
+        brown: QPColors.brownModeRoot,
+        context: context,
       ),
-      onStateNotifierReady: (notifier, ref) async {
-        await notifier.initStateNotifier();
-      },
-      builder: (
-        BuildContext context,
-        HomePageState state,
-        HomePageStateNotifier notifier,
-        WidgetRef ref,
-      ) {
-        if (notifier.mainPageProvider
-            .getShouldShowSignInBottomSheetAndReset()) {
-          _showSignInBottomSheet(notifier, ref);
-        }
-
-        if (notifier.mainPageProvider.getShouldSShowInvalidGroup()) {
-          _showInvalidGroupBottomSheet();
-        }
-
-        if (notifier.mainPageProvider.getShouldSShowInvalidLink()) {
-          _showInvalidLinkBottomSheet();
-        }
-
-        return Scaffold(
-          backgroundColor: QPColors.getColorBasedTheme(
-            dark: QPColors.darkModeMassive,
-            light: QPColors.brandFair,
-            brown: QPColors.brownModeRoot,
-            context: context,
-          ),
-          body: SafeArea(
-            child: ListSuratByJuz(
-              notifier: notifier,
-              parentState: state,
-            ),
-          ),
-        );
-      },
+      body: SafeArea(
+        child: ListSuratByJuz(notifier: notifier, parentState: state),
+      ),
     );
   }
 
-  void _showSignInBottomSheet(
-    HomePageStateNotifier notifier,
-    WidgetRef ref,
-  ) {
+  void _showSignInBottomSheet() {
     Future.delayed(Duration.zero, () {
       if (!mounted) return;
       SignInBottomSheet.show(
         context: context,
         onClose: () {
-          notifier.getAndRemoveForceLoginParam();
+          ref.read(homePageProvider.notifier).getAndRemoveForceLoginParam();
         },
-        onTapSignInWithGoogle: () async => _signIn(
-          notifier: notifier,
-          ref: ref,
-          type: SignInType.google,
-        ),
-        onTapSignInWithApple: () async => _signIn(
-          notifier: notifier,
-          ref: ref,
-          type: SignInType.apple,
-        ),
+        onTapSignInWithGoogle: () async => _signIn(type: SignInType.google),
+        onTapSignInWithApple: () async => _signIn(type: SignInType.apple),
       );
     });
   }
 
-  Future<void> _signIn({
-    required WidgetRef ref,
-    required HomePageStateNotifier notifier,
-    required SignInType type,
-  }) async {
-    final SignInResult result = await ref.read(authenticationService).signIn(
-          type: type,
-        );
+  Future<void> _signIn({required SignInType type}) async {
+    final SignInResult result = await ref
+        .read(authenticationService)
+        .signIn(type: type);
 
     if (result == SignInResult.failedAccountDeleted) {
       if (!mounted) return;
@@ -147,17 +100,21 @@ class _HomePageV2State extends State<HomePageV2> {
     await ref.read(habitDailySummaryService).syncHabit();
     ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
 
-    ForceLoginParam? param = await notifier.getAndRemoveForceLoginParam();
+    ForceLoginParam? param = await ref
+        .read(homePageProvider.notifier)
+        .getAndRemoveForceLoginParam();
 
-    final HttpResponse<dynamic> req =
-        await ref.read(habitGroupApiProvider).joinGroup(
-              groupId: param?.arguments?['id'] ?? 0,
-              request: JoinHabitGroupRequest(
-                date: date_util.DateCustomUtils.getCurrentDateInString(),
-              ),
-            );
+    final HttpResponse<dynamic> req = await ref
+        .read(habitGroupApiProvider)
+        .joinGroup(
+          groupId: param?.arguments?['id'] ?? 0,
+          request: JoinHabitGroupRequest(
+            date: date_util.DateCustomUtils.getCurrentDateInString(),
+          ),
+        );
 
-    final bool shouldRedirect = result == SignInResult.success &&
+    final bool shouldRedirect =
+        result == SignInResult.success &&
         req.response.statusCode == 200 &&
         param != null;
 
@@ -175,15 +132,11 @@ class _HomePageV2State extends State<HomePageV2> {
       }
 
       if (!mounted) return;
-      Navigator.pushNamed(
-        context,
-        param.nextPath ?? '',
-        arguments: args,
-      );
+      Navigator.pushNamed(context, param.nextPath ?? '', arguments: args);
     }
 
     if (req.response.statusCode == 400) {
-      notifier.mainPageProvider.setShouldInvalidGroupBottomSheet(true);
+      ref.read(mainPageProvider).setShouldInvalidGroupBottomSheet(true);
     }
 
     setState(() {});
@@ -218,26 +171,20 @@ class _HomePageV2State extends State<HomePageV2> {
   Widget _getErrorWidget(String title, String description) {
     return Column(
       children: [
-        const Icon(
-          Icons.error,
-          color: QPColors.errorFair,
-          size: 32,
-        ),
+        const Icon(Icons.error, color: QPColors.errorFair, size: 32),
         const SizedBox(height: 28),
         Text(
           title,
-          style: QPTextStyle.getHeading1SemiBold(context).copyWith(
-            // Todo: check color based on theme
-            color: QPColors.blackMassive,
-          ),
+          style: QPTextStyle.getHeading1SemiBold(
+            context,
+          ).copyWith(color: QPColors.blackMassive),
         ),
         const SizedBox(height: 24),
         Text(
           description,
-          style: QPTextStyle.getBody2Regular(context).copyWith(
-            // Todo: check color based on theme
-            color: QPColors.neutral700,
-          ),
+          style: QPTextStyle.getBody2Regular(
+            context,
+          ).copyWith(color: QPColors.neutral700),
         ),
         const SizedBox(height: 24),
         ButtonSecondary(
@@ -245,10 +192,9 @@ class _HomePageV2State extends State<HomePageV2> {
           onTap: () {
             Navigator.pop(context);
           },
-          textStyle: QPTextStyle.getButton2SemiBold(context).copyWith(
-            // Todo: check color based on theme
-            color: QPColors.brandFair,
-          ),
+          textStyle: QPTextStyle.getButton2SemiBold(
+            context,
+          ).copyWith(color: QPColors.brandFair),
         ),
       ],
     );
@@ -264,7 +210,7 @@ class ListSuratByJuz extends StatelessWidget {
     required this.parentState,
   });
 
-  final HomePageStateNotifier notifier;
+  final HomePageNotifier notifier;
   final HomePageState parentState;
 
   @override
@@ -300,9 +246,7 @@ class ListSuratByJuz extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SizedBox(
-                              height: 16,
-                            ),
+                            const SizedBox(height: 16),
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
@@ -319,9 +263,7 @@ class ListSuratByJuz extends StatelessWidget {
                                   ),
                                   height: 32,
                                 ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
+                                const SizedBox(width: 8),
                                 SvgPicture.asset(
                                   ImagePath.quranPlusText,
                                   colorFilter: ColorFilter.mode(
@@ -337,39 +279,34 @@ class ListSuratByJuz extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            const SizedBox(
-                              height: 8,
-                            ),
+                            const SizedBox(height: 8),
                             if (parentState.name.isNotEmpty)
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 12),
                                 child: Text(
-                                  "Assalamu’alaikum, ${parentState.name}",
-                                  style: QPTextStyle.getSubHeading4SemiBold(
-                                    context,
-                                  ).copyWith(
-                                    color: QPColors.getColorBasedTheme(
-                                      dark: QPColors.whiteFair,
-                                      light: QPColors.whiteMassive,
-                                      brown: QPColors.brownModeMassive,
-                                      context: context,
-                                    ),
-                                  ),
+                                  "Assalamu'alaikum, ${parentState.name}",
+                                  style:
+                                      QPTextStyle.getSubHeading4SemiBold(
+                                        context,
+                                      ).copyWith(
+                                        color: QPColors.getColorBasedTheme(
+                                          dark: QPColors.whiteFair,
+                                          light: QPColors.whiteMassive,
+                                          brown: QPColors.brownModeMassive,
+                                          context: context,
+                                        ),
+                                      ),
                                 ),
                               ),
                             const AdzanCardWidget(),
-                            const SizedBox(
-                              height: 12,
-                            ),
+                            const SizedBox(height: 12),
                             _buildHabitInformationCard(
                               context,
                               isLoggedIn,
                               parentState,
                               notifier,
                             ),
-                            const SizedBox(
-                              height: 24,
-                            ),
+                            const SizedBox(height: 24),
                           ],
                         ),
                       ),
@@ -409,7 +346,7 @@ class ListSuratByJuz extends StatelessWidget {
     BuildContext context,
     bool isLoggedIn,
     HomePageState state,
-    HomePageStateNotifier notifier,
+    HomePageNotifier notifier,
   ) {
     if (state.dailySummary == null) {
       return const DailyProgressTrackerSkeleton();
@@ -464,7 +401,6 @@ class ListSuratByJuz extends StatelessWidget {
               onTap: () {
                 final navigationBar =
                     mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
-
                 navigationBar.onTap!(1);
               },
             ),
@@ -485,11 +421,10 @@ class ListSuratByJuz extends StatelessWidget {
             Container(
               height: 42,
               alignment: Alignment.centerLeft,
-              decoration:
-                  BoxDecoration(color: Theme.of(context).colorScheme.surface),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
               ),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Text(
                 parentState.juzElements![index].name,
                 textAlign: TextAlign.start,
@@ -520,7 +455,7 @@ class ListSuratByJuz extends StatelessWidget {
   Widget _buildListSuratByJuz({
     required BuildContext context,
     required JuzElement juz,
-    required HomePageStateNotifier notifier,
+    required HomePageNotifier notifier,
     required HomePageState state,
   }) {
     final List<SuratByJuz> surats = juz.surat;
@@ -531,14 +466,11 @@ class ListSuratByJuz extends StatelessWidget {
       itemCount: surats.length,
       itemBuilder: (context, index) {
         String surahNumberString = surats[index].number;
-
         int suratNumber = int.parse(surahNumberString);
         int? totalTadabburInSurah = state.listTaddaburAvailables == null
             ? null
             : state.listTaddaburAvailables![suratNumber];
-
         String surahNameLatin = surats[index].nameLatin;
-
         final bool hasTadabbur = state.listTaddaburAvailables == null
             ? false
             : state.listTaddaburAvailables!.containsKey(suratNumber);
@@ -563,7 +495,7 @@ class ListSuratByJuz extends StatelessWidget {
     List<SuratByJuz> surats,
     int index,
     BuildContext context,
-    HomePageStateNotifier notifier,
+    HomePageNotifier notifier,
     HomePageState state,
     bool hasTadabbur,
     String surahNumberString,
@@ -573,12 +505,7 @@ class ListSuratByJuz extends StatelessWidget {
   ) {
     return GestureDetector(
       onTap: () async {
-        navigateToSurahPage(
-          surats,
-          index,
-          context,
-          notifier,
-        );
+        navigateToSurahPage(surats, index, context, notifier);
       },
       child: Container(
         decoration: const BoxDecoration(),
@@ -603,20 +530,13 @@ class ListSuratByJuz extends StatelessWidget {
                       color: Theme.of(context).colorScheme.secondaryContainer,
                       boxShadow: const [
                         BoxShadow(
-                          color: Color.fromRGBO(
-                            0,
-                            0,
-                            0,
-                            0.1,
-                          ),
+                          color: Color.fromRGBO(0, 0, 0, 0.1),
                           offset: Offset(1.0, 2.0),
                           blurRadius: 5.0,
                           spreadRadius: 1.0,
                         ),
                       ],
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(20),
-                      ),
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
                     ),
                     child: Text(
                       surahNumberString,
@@ -624,9 +544,7 @@ class ListSuratByJuz extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const SizedBox(
-                    width: 12,
-                  ),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -640,8 +558,9 @@ class ListSuratByJuz extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 6),
                           child: Text(
                             "Page ${surats[index].startPage}, Ayat ${surats[index].startAyat}",
-                            style: QPTextStyle.getDescription2Regular(context)
-                                .copyWith(color: Theme.of(context).hintColor),
+                            style: QPTextStyle.getDescription2Regular(
+                              context,
+                            ).copyWith(color: Theme.of(context).hintColor),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -649,9 +568,7 @@ class ListSuratByJuz extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    width: 8,
-                  ),
+                  const SizedBox(width: 8),
                   Padding(
                     padding: const EdgeInsets.only(
                       left: 10,
@@ -669,40 +586,36 @@ class ListSuratByJuz extends StatelessWidget {
                           ),
                           textAlign: TextAlign.right,
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Container(
-                          child: state.audioSuratLoaded == surats[index]
-                              ? const Padding(
-                                  padding: EdgeInsets.all(16),
-                                  child: SizedBox(
-                                    height: 16,
-                                    width: 16,
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                )
-                              : IconButton(
-                                  color: QPColors.getColorBasedTheme(
-                                    dark: QPColors.brandFair,
-                                    light: QPColors.brandFair,
-                                    brown: QPColors.brandFair,
-                                    context: context,
-                                  ),
-                                  padding: const EdgeInsets.all(6),
-                                  alignment: Alignment.center,
-                                  icon: const Icon(Icons.play_circle),
-                                  iconSize: 20,
-                                  onPressed: () async {
-                                    onPlayAudioPressed(
-                                      notifier,
-                                      surats,
-                                      index,
-                                      context,
-                                    );
-                                  },
+                        const SizedBox(width: 10),
+                        state.audioSuratLoaded == surats[index]
+                            ? const Padding(
+                                padding: EdgeInsets.all(16),
+                                child: SizedBox(
+                                  height: 16,
+                                  width: 16,
+                                  child: CircularProgressIndicator(),
                                 ),
-                        ),
+                              )
+                            : IconButton(
+                                color: QPColors.getColorBasedTheme(
+                                  dark: QPColors.brandFair,
+                                  light: QPColors.brandFair,
+                                  brown: QPColors.brandFair,
+                                  context: context,
+                                ),
+                                padding: const EdgeInsets.all(6),
+                                alignment: Alignment.center,
+                                icon: const Icon(Icons.play_circle),
+                                iconSize: 20,
+                                onPressed: () async {
+                                  onPlayAudioPressed(
+                                    notifier,
+                                    surats,
+                                    index,
+                                    context,
+                                  );
+                                },
+                              ),
                       ],
                     ),
                   ),
@@ -740,7 +653,7 @@ class ListSuratByJuz extends StatelessWidget {
   }
 
   Future<void> onPlayAudioPressed(
-    HomePageStateNotifier notifier,
+    HomePageNotifier notifier,
     List<SuratByJuz> surats,
     int index,
     BuildContext context,
@@ -755,22 +668,12 @@ class ListSuratByJuz extends StatelessWidget {
         isShowBottomSheet: true,
       ),
       onLoadError: () {
-        GeneralBottomSheet.showNoInternetBottomSheet(
-          context,
-          () {
-            Navigator.pop(context);
-            onPlayAudioPressed(
-              notifier,
-              surats,
-              index,
-              context,
-            );
-          },
-        );
+        GeneralBottomSheet.showNoInternetBottomSheet(context, () {
+          Navigator.pop(context);
+          onPlayAudioPressed(notifier, surats, index, context);
+        });
       },
-      onPlayBackError: () => showInitSurahAudioErrorSnackbar(
-        context,
-      ),
+      onPlayBackError: () => showInitSurahAudioErrorSnackbar(context),
     );
   }
 
@@ -783,15 +686,12 @@ class ListSuratByJuz extends StatelessWidget {
           Expanded(
             child: Text(
               'An error has occured. Please try again.',
-              style: QPTextStyle.getBody3Medium(context).copyWith(
-                // Todo: check color based on theme
-                color: QPColors.whiteMassive,
-              ),
+              style: QPTextStyle.getBody3Medium(
+                context,
+              ).copyWith(color: QPColors.whiteMassive),
             ),
           ),
-          const SizedBox(
-            width: 10,
-          ),
+          const SizedBox(width: 10),
           IconButton(
             padding: const EdgeInsets.all(3.33),
             onPressed: () {
@@ -807,8 +707,6 @@ class ListSuratByJuz extends StatelessWidget {
       ),
     );
 
-    // Find the ScaffoldMessenger in the widget tree
-    // and use it to show a SnackBar.
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
@@ -817,7 +715,7 @@ class ListSuratByJuz extends StatelessWidget {
     List<SuratByJuz> surats,
     int index,
     BuildContext context,
-    HomePageStateNotifier notifier, {
+    HomePageNotifier notifier, {
     bool isShowBottomSheet = false,
   }) async {
     int page = surats[index].startPageToInt;
@@ -840,18 +738,13 @@ class ListSuratByJuz extends StatelessWidget {
 }
 
 class _ButtonSearch extends StatelessWidget {
-  const _ButtonSearch({
-    required this.versePagetoAyah,
-    required this.state,
-  });
+  const _ButtonSearch({required this.versePagetoAyah, required this.state});
 
   final Map<String, List<String>>? versePagetoAyah;
   final HomePageState state;
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     return Consumer(
       builder: (BuildContext context, WidgetRef ref, Widget? child) {
         return IconButton(
@@ -881,65 +774,21 @@ class _ListSurahByJuzSkeleton extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Shimmer.fromColors(
-        baseColor: const Color.fromARGB(
-          255,
-          236,
-          233,
-          233,
-        ),
-        highlightColor: const Color.fromARGB(
-          255,
-          224,
-          218,
-          218,
-        ),
+        baseColor: const Color.fromARGB(255, 236, 233, 233),
+        highlightColor: const Color.fromARGB(255, 224, 218, 218),
         child: Column(
           children: [
-            Container(
-              width: double.infinity,
-              height: 100,
-              color: Colors.white,
-            ),
-            const SizedBox(
-              height: 24,
-            ),
-            Container(
-              width: double.infinity,
-              height: 100,
-              color: Colors.white,
-            ),
-            const SizedBox(
-              height: 24,
-            ),
-            Container(
-              width: double.infinity,
-              height: 100,
-              color: Colors.white,
-            ),
-            const SizedBox(
-              height: 24,
-            ),
-            Container(
-              width: double.infinity,
-              height: 100,
-              color: Colors.white,
-            ),
-            const SizedBox(
-              height: 24,
-            ),
-            Container(
-              width: double.infinity,
-              height: 100,
-              color: Colors.white,
-            ),
-            const SizedBox(
-              height: 24,
-            ),
-            Container(
-              width: double.infinity,
-              height: 100,
-              color: Colors.white,
-            ),
+            Container(width: double.infinity, height: 100, color: Colors.white),
+            const SizedBox(height: 24),
+            Container(width: double.infinity, height: 100, color: Colors.white),
+            const SizedBox(height: 24),
+            Container(width: double.infinity, height: 100, color: Colors.white),
+            const SizedBox(height: 24),
+            Container(width: double.infinity, height: 100, color: Colors.white),
+            const SizedBox(height: 24),
+            Container(width: double.infinity, height: 100, color: Colors.white),
+            const SizedBox(height: 24),
+            Container(width: double.infinity, height: 100, color: Colors.white),
           ],
         ),
       ),

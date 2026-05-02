@@ -1,10 +1,11 @@
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/user.dart';
-import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
-import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
-import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
 import 'package:qurantafsir_flutter/shared/utils/result_status.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'settings_page_state_notifier.g.dart';
 
 class SettingsPageState {
   SettingsPageState({
@@ -36,42 +37,26 @@ class SettingsPageState {
   bool get isLoading => authenticationStatus == null;
 }
 
-class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
-  SettingsPageStateNotifier({
-    required AuthenticationService repository,
-    required SharedPreferenceService sharedPreferenceService,
-  })  : _repository = repository,
-        _sharedPreferenceService = sharedPreferenceService,
-        super(SettingsPageState());
-
-  final AuthenticationService _repository;
-  final SharedPreferenceService _sharedPreferenceService;
-
+@riverpod
+class SettingsPageNotifier extends _$SettingsPageNotifier {
   @override
-  void initStateNotifier() {
-    _getToken();
-  }
-
-  void _getToken() {
-    var token = _sharedPreferenceService.getApiToken();
-
+  SettingsPageState build() {
+    final sp = ref.read(sharedPreferenceServiceProvider);
+    final token = sp.getApiToken();
     if (token.isEmpty) {
-      state = state.copyWith(
+      return SettingsPageState(
         authenticationStatus: AuthenticationStatus.unauthenticated,
       );
-    } else {
-      state = state.copyWith(
-        authenticationStatus: AuthenticationStatus.authenticated,
-        token: token,
-      );
     }
+    return SettingsPageState(
+      authenticationStatus: AuthenticationStatus.authenticated,
+      token: token,
+    );
   }
 
   Future<void> signOut() async {
     state = state.copyWith(resultStatus: ResultStatus.inProgress);
-
-    await _repository.signOut();
-
+    await ref.read(authenticationService).signOut();
     state = state.copyWith(
       authenticationStatus: AuthenticationStatus.unauthenticated,
       resultStatus: ResultStatus.pure,
@@ -80,10 +65,9 @@ class SettingsPageStateNotifier extends BaseStateNotifier<SettingsPageState> {
   }
 
   Future<ForceLoginParam?> getForceLoginInformation() async {
-    final ForceLoginParam? forceLoginInfo =
-        await _sharedPreferenceService.getForceLoginParam();
-    await _sharedPreferenceService.removeForceLoginParam();
-
+    final sp = ref.read(sharedPreferenceServiceProvider);
+    final ForceLoginParam? forceLoginInfo = await sp.getForceLoginParam();
+    await sp.removeForceLoginParam();
     return forceLoginInfo;
   }
 }
