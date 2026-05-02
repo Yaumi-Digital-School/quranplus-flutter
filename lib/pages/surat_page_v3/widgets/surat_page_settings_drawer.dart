@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_content_notifier.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_content_state.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
@@ -18,29 +20,7 @@ enum ContentType {
 }
 
 class SuratPageSettingsDrawer extends ConsumerStatefulWidget {
-  const SuratPageSettingsDrawer({
-    super.key,
-    required this.onTapTranslation,
-    required this.onTapTafsir,
-    required this.onTapLatins,
-    required this.onTapAdd,
-    required this.onTapMinus,
-    required this.fontSize,
-    this.isWithTranslation,
-    this.isWithTafsir,
-    this.isWithLatins,
-  });
-
-  final bool? isWithTranslation;
-  final bool? isWithTafsir;
-  final bool? isWithLatins;
-  final int fontSize;
-
-  final ValueSetter<bool> onTapTranslation;
-  final ValueSetter<bool> onTapTafsir;
-  final ValueSetter<bool> onTapLatins;
-  final Function() onTapAdd;
-  final Function() onTapMinus;
+  const SuratPageSettingsDrawer({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -55,15 +35,18 @@ class _SuratPageSettingsDrawerState
 
   @override
   void initState() {
-    isWithTranslation = widget.isWithTranslation ?? false;
-    isWithTafsir = widget.isWithTafsir ?? false;
-    isWithLatins = widget.isWithLatins ?? false;
-
     super.initState();
+    final contentState = ref.read(suratPageContentProvider);
+    isWithTranslation = contentState.readingSettings?.isWithTranslations ?? false;
+    isWithTafsir = contentState.readingSettings?.isWithTafsirs ?? false;
+    isWithLatins = contentState.readingSettings?.isWithLatins ?? false;
   }
 
   @override
   Widget build(BuildContext context) {
+    final contentState = ref.watch(suratPageContentProvider);
+    final contentNotifier = ref.read(suratPageContentProvider.notifier);
+
     return Drawer(
       backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
       child: Padding(
@@ -71,9 +54,9 @@ class _SuratPageSettingsDrawerState
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            _buildContentSection(),
+            _buildContentSection(contentNotifier),
             _buildDivider(),
-            _buildChangeFontSize(),
+            _buildChangeFontSize(contentState, contentNotifier),
             _buildDivider(),
             _buildSelectTheme(),
           ],
@@ -92,7 +75,7 @@ class _SuratPageSettingsDrawerState
     );
   }
 
-  Widget _buildContentSection() {
+  Widget _buildContentSection(SuratPageContentNotifier contentNotifier) {
     return Column(
       children: <Widget>[
         ListTile(
@@ -116,11 +99,13 @@ class _SuratPageSettingsDrawerState
                   text: 'Tafsir',
                   contentType: ContentType.tafsir,
                   context: context,
+                  contentNotifier: contentNotifier,
                 ),
                 _buildCheckbox(
                   text: 'Terjemahan',
                   contentType: ContentType.translation,
                   context: context,
+                  contentNotifier: contentNotifier,
                 ),
               ],
             ),
@@ -130,6 +115,7 @@ class _SuratPageSettingsDrawerState
                   text: 'Latin',
                   contentType: ContentType.latins,
                   context: context,
+                  contentNotifier: contentNotifier,
                 ),
               ],
             ),
@@ -143,6 +129,7 @@ class _SuratPageSettingsDrawerState
     required String text,
     required ContentType contentType,
     required BuildContext context,
+    required SuratPageContentNotifier contentNotifier,
   }) {
     final Color checkboxDecorationColor = QPColors.getColorBasedTheme(
       dark: QPColors.whiteFair,
@@ -168,15 +155,15 @@ class _SuratPageSettingsDrawerState
                 switch (contentType) {
                   case ContentType.latins:
                     isWithLatins = res;
-                    widget.onTapLatins(res);
+                    contentNotifier.setIsWithLatins(res);
                     break;
                   case ContentType.translation:
                     isWithTranslation = res;
-                    widget.onTapTranslation(res);
+                    contentNotifier.setIsWithTranslations(res);
                     break;
                   case ContentType.tafsir:
                     isWithTafsir = res;
-                    widget.onTapTafsir(res);
+                    contentNotifier.setIsWithTafsirs(res);
                     break;
                   default:
                     break;
@@ -203,7 +190,10 @@ class _SuratPageSettingsDrawerState
     );
   }
 
-  Widget _buildChangeFontSize() {
+  Widget _buildChangeFontSize(
+    SuratPageContentState contentState,
+    SuratPageContentNotifier contentNotifier,
+  ) {
     return Column(
       children: <Widget>[
         ListTile(
@@ -223,7 +213,7 @@ class _SuratPageSettingsDrawerState
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             GestureDetector(
-              onTap: () => widget.onTapMinus(),
+              onTap: () => contentNotifier.minusFontSize(),
               child: _buildButtonFontSize(
                 neutral200,
                 Icons.remove,
@@ -231,7 +221,7 @@ class _SuratPageSettingsDrawerState
               ),
             ),
             Text(
-              '${widget.fontSize}x',
+              '${contentState.readingSettings!.fontSize}x',
               style: const TextStyle(
                 color: neutral700,
                 fontSize: 14,
@@ -239,7 +229,7 @@ class _SuratPageSettingsDrawerState
               ),
             ),
             GestureDetector(
-              onTap: () => widget.onTapAdd(),
+              onTap: () => contentNotifier.addFontSize(),
               child: _buildButtonFontSize(brokenWhite, Icons.add, darkGreen),
             ),
           ],
