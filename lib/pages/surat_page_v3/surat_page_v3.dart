@@ -138,6 +138,13 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
   Widget build(BuildContext context) {
     final navState = ref.watch(suratPageNavigationProvider);
 
+    // Watch all providers to keep them alive during async initialization.
+    // Without these, auto-dispose providers get disposed before child
+    // ConsumerWidgets are built (since we return early during loading).
+    ref.watch(suratPageContentProvider);
+    ref.watch(suratPageBookmarkProvider);
+    ref.watch(suratPageHabitProvider);
+
     if (navState.isLoading) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
