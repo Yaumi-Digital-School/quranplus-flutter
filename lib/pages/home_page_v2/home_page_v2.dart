@@ -96,6 +96,7 @@ class _HomePageV2State extends ConsumerState<HomePageV2> {
 
       return;
     }
+    ref.invalidate(dioServiceProvider);
     await ref.read(habitDailySummaryService).syncHabit();
     ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
 
