@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:qurantafsir_flutter/pages/prayer_time_page/widgets/prayer_calculation_selector.dart';
+import 'package:qurantafsir_flutter/pages/prayer_time_page/widgets/prayer_method_info_card.dart';
+import 'package:qurantafsir_flutter/pages/prayer_time_page/widgets/prayer_time_row.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
-import 'package:qurantafsir_flutter/pages/prayer_time_page/widgets/prayer_calculation_selector.dart';
-import 'package:qurantafsir_flutter/pages/prayer_time_page/widgets/prayer_method_info_card.dart';
-import 'package:qurantafsir_flutter/pages/prayer_time_page/widgets/prayer_time_row.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/prayer_times_notifier.dart';
 
 class PrayerTimePage extends ConsumerWidget {
@@ -15,8 +15,7 @@ class PrayerTimePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cityName =
-        ref.watch(prayerTimeProvider.select((s) => s.cityName));
+    final cityName = ref.watch(prayerTimeProvider.select((s) => s.cityName));
     final notifier = ref.read(prayerTimeProvider.notifier);
 
     return Scaffold(
@@ -67,56 +66,64 @@ class PrayerTimePage extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Prayer Times",
-                              style: QPTextStyle.getSubHeading2SemiBold(
-                                context,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(16),
-                                ),
-                                color: QPColors.getColorBasedTheme(
-                                  dark: QPColors.darkModeFair,
-                                  light: QPColors.brandRoot,
-                                  brown: QPColors.brownModeHeavy,
-                                  context: context,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Prayer Times",
+                                style: QPTextStyle.getSubHeading2SemiBold(
+                                  context,
                                 ),
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 4.0,
-                                  horizontal: 6,
+                              const SizedBox(height: 16),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(16),
+                                  ),
+                                  color: QPColors.getColorBasedTheme(
+                                    dark: QPColors.darkModeFair,
+                                    light: QPColors.brandRoot,
+                                    brown: QPColors.brownModeHeavy,
+                                    context: context,
+                                  ),
                                 ),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.location_on,
-                                      size: 12,
-                                      color: QPColors.getColorBasedTheme(
-                                        dark: QPColors.whiteFair,
-                                        light: QPColors.brandFair,
-                                        brown: QPColors.brownModeMassive,
-                                        context: context,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 4.0,
+                                    horizontal: 6,
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.location_on,
+                                        size: 12,
+                                        color: QPColors.getColorBasedTheme(
+                                          dark: QPColors.whiteFair,
+                                          light: QPColors.brandFair,
+                                          brown: QPColors.brownModeMassive,
+                                          context: context,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      cityName ?? "",
-                                      style: QPTextStyle.getBaseTextStyle(
-                                        context,
-                                      ).copyWith(fontSize: 10),
-                                    ),
-                                  ],
+                                      const SizedBox(width: 4),
+                                      Flexible(
+                                        child: Text(
+                                          cityName ?? "",
+                                          style: QPTextStyle.getBaseTextStyle(
+                                            context,
+                                          ).copyWith(fontSize: 10),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         SizedBox(
                           height: 90,
@@ -211,5 +218,4 @@ class PrayerTimePage extends ConsumerWidget {
       ),
     );
   }
-
 }
