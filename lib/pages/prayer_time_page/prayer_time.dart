@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
-import 'package:qurantafsir_flutter/shared/constants/prayer_times.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/pages/prayer_time_page/widgets/prayer_calculation_selector.dart';
 import 'package:qurantafsir_flutter/pages/prayer_time_page/widgets/prayer_method_info_card.dart';
+import 'package:qurantafsir_flutter/pages/prayer_time_page/widgets/prayer_time_row.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/prayer_times_notifier.dart';
 
 class PrayerTimePage extends ConsumerWidget {
@@ -15,7 +15,8 @@ class PrayerTimePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(prayerTimeProvider);
+    final cityName =
+        ref.watch(prayerTimeProvider.select((s) => s.cityName));
     final notifier = ref.read(prayerTimeProvider.notifier);
 
     return Scaffold(
@@ -106,7 +107,7 @@ class PrayerTimePage extends ConsumerWidget {
                                       ),
                                     ),
                                     Text(
-                                      state.cityName ?? "",
+                                      cityName ?? "",
                                       style: QPTextStyle.getBaseTextStyle(
                                         context,
                                       ).copyWith(fontSize: 10),
@@ -127,7 +128,7 @@ class PrayerTimePage extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    _buildPrayerTimeItem(context, state),
+                    const PrayerTimeRow(),
                     const SizedBox(height: 16),
                     const PrayerCalculationSelector(),
                     const SizedBox(height: 12),
@@ -208,73 +209,6 @@ class PrayerTimePage extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildPrayerTimeItem(BuildContext context, PrayerTimeState state) {
-    List<Widget> widgetPrayerTime = <Widget>[];
-
-    for (final PrayerTimesList prayerTime in PrayerTimesList.values) {
-      widgetPrayerTime.add(
-        Center(
-          child: Column(
-            children: [
-              Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  color: QPColors.getColorBasedTheme(
-                    dark: QPColors.darkModeFair,
-                    light: QPColors.brandRoot,
-                    brown: QPColors.brownModeHeavy,
-                    context: context,
-                  ),
-                  shape: BoxShape.circle,
-                ),
-                child: SvgPicture.asset(
-                  prayerTime.icon.path,
-                  colorFilter: const ColorFilter.mode(
-                    QPColors.brandHeavy,
-                    BlendMode.srcIn,
-                  ),
-                  width: 20,
-                  height: 20,
-                  fit: BoxFit.scaleDown,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                prayerTime.name,
-                style: QPTextStyle.baseTextStyle.copyWith(
-                  color: QPColors.getColorBasedTheme(
-                    dark: QPColors.whiteRoot,
-                    light: QPColors.blackMassive,
-                    brown: QPColors.brownModeMassive,
-                    context: context,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                state.getPrayerTimesFormatted(prayerTime),
-                style: QPTextStyle.baseTextStyle.copyWith(
-                  color: QPColors.getColorBasedTheme(
-                    dark: QPColors.whiteRoot,
-                    light: QPColors.blackMassive,
-                    brown: QPColors.brownModeMassive,
-                    context: context,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: widgetPrayerTime,
     );
   }
 

@@ -4,20 +4,20 @@ import 'package:qurantafsir_flutter/pages/account_page/account_page.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/registration_and_login_page/registration_and_login_page.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
-import 'package:qurantafsir_flutter/shared/core/state_notifiers/theme_state_notifier.dart';
-import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
-import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
-import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
-import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
-import 'package:qurantafsir_flutter/widgets/change_theme_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/widgets/settings_page_menu_item.dart';
 import 'package:qurantafsir_flutter/pages/settings_page/widgets/version_app_widget.dart';
+import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
+import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
+import 'package:qurantafsir_flutter/shared/core/state_notifiers/theme_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
+import 'package:qurantafsir_flutter/widgets/change_theme_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/horizontal_divider.dart';
 
@@ -37,11 +37,7 @@ class SettingsPage extends ConsumerWidget {
         navigationBar.onTap!(0);
       },
       child: state.isLoading
-          ? const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            )
+          ? const Scaffold(body: Center(child: CircularProgressIndicator()))
           : Scaffold(
               appBar: PreferredSize(
                 preferredSize: const Size.fromHeight(54.0),
@@ -50,17 +46,17 @@ class SettingsPage extends ConsumerWidget {
                   elevation: 0.7,
                   foregroundColor: Theme.of(context).colorScheme.primary,
                   centerTitle: true,
-                  title: const Text(
-                    'Settings',
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  title: const Text('Settings', style: TextStyle(fontSize: 16)),
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 ),
               ),
               body: SingleChildScrollView(
                 child: Padding(
-                  padding:
-                      const EdgeInsets.only(right: 24, left: 24, bottom: 24),
+                  padding: const EdgeInsets.only(
+                    right: 24,
+                    left: 24,
+                    bottom: 24,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -133,13 +129,13 @@ class SettingsPage extends ConsumerWidget {
                             "Quran Plus Version",
                             style: QPTextStyle.getSubHeading3Regular(context)
                                 .copyWith(
-                              color: QPColors.getColorBasedTheme(
-                                dark: QPColors.blackFair,
-                                light: QPColors.blackFair,
-                                brown: QPColors.brownModeMassive,
-                                context: context,
-                              ),
-                            ),
+                                  color: QPColors.getColorBasedTheme(
+                                    dark: QPColors.blackFair,
+                                    light: QPColors.blackFair,
+                                    brown: QPColors.brownModeMassive,
+                                    context: context,
+                                  ),
+                                ),
                           ),
                           const VersionAppWidget(),
                         ],
@@ -169,9 +165,14 @@ class SettingsPage extends ConsumerWidget {
 
     if (connectivityStatus == ConnectivityStatus.isConnected &&
         context.mounted) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return AccountPage();
-      }));
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return const AccountPage();
+          },
+        ),
+      );
     } else if (context.mounted) {
       GeneralBottomSheet.showNoInternetBottomSheet(
         context,
@@ -188,10 +189,7 @@ class SettingsPage extends ConsumerWidget {
   }
 
   void _onPrayerTimesTap(BuildContext context) {
-    Navigator.pushNamed(
-      context,
-      RoutePaths.routePrayerTimePage,
-    );
+    Navigator.pushNamed(context, RoutePaths.routePrayerTimePage);
   }
 
   Future<void> _onLogoutTap(
@@ -204,11 +202,7 @@ class SettingsPage extends ConsumerWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
-          ..showSnackBar(
-            const SnackBar(
-              content: Text('Sign out Berhasil'),
-            ),
-          );
+          ..showSnackBar(const SnackBar(content: Text('Sign out Berhasil')));
       }
 
       return;

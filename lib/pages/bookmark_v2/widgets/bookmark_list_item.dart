@@ -20,6 +20,7 @@ class BookmarkListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(subtitleText);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: ListTile(
@@ -31,9 +32,7 @@ class BookmarkListItem extends StatelessWidget {
               width: 24,
               height: 24,
               decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(iconAssetPath),
-                ),
+                image: DecorationImage(image: AssetImage(iconAssetPath)),
               ),
             ),
           ],
@@ -50,7 +49,7 @@ class BookmarkListItem extends StatelessWidget {
               style: QPTextStyle.getSubHeading4Regular(context).copyWith(
                 color: QPColors.getColorBasedTheme(
                   dark: QPColors.whiteRoot,
-                  light: QPColors.whiteFair,
+                  light: QPColors.blackFair,
                   brown: QPColors.brownModeMassive,
                   context: context,
                 ),
