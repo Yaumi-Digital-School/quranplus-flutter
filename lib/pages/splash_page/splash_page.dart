@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -38,7 +40,13 @@ class _SplashPageState extends ConsumerState<SplashPage> {
               sharedPref
                   .getLatestPrayerTimeSynced()!
                   .isBefore(currentDateTime))) {
-        schedulePrayerTimes();
+        if (Platform.isIOS) {
+          await scheduleIOSPrayerNotifications(
+            sharedPreferenceService: sharedPref,
+          );
+        } else {
+          schedulePrayerTimes();
+        }
         sharedPref.setLatestPrayerTimeSynced(currentDateTime);
       }
 

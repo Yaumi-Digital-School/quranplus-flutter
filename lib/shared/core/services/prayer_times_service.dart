@@ -39,6 +39,7 @@ class PrayerTimesService {
   }
 
   PrayerTimes? getTodayPrayerTimes({
+    DateTime? date,
     String calculationMethod = 'singapore',
     String madhab = 'shafi',
   }) {
@@ -53,7 +54,7 @@ class PrayerTimesService {
 
     return PrayerTimes(
       coordinates: _coordinates!,
-      date: DateTime.now().toUtc(),
+      date: (date ?? DateTime.now()).toUtc(),
       calculationParameters: params,
     );
   }
@@ -127,6 +128,60 @@ class PrayerTimesService {
           );
         } catch (_) {
           // TODO: Add error handling
+        }
+      }
+    }
+  }
+
+  /// Schedules prayer time notifications for multiple days ahead.
+  /// Used on iOS where background tasks are unreliable.
+  /// Schedules up to [days] * 5 notifications (must stay under iOS's 64 limit).
+  Future<void> setupMultiDayPrayerTimesReminder({
+    int days = 7,
+    String calculationMethod = 'singapore',
+    String madhab = 'shafi',
+  }) async {
+    await notificationService.cancelAllNotifications();
+
+    final DateTime now = DateTime.now();
+
+    for (int dayOffset = 0; dayOffset < days; dayOffset++) {
+      final DateTime targetDate = now.add(Duration(days: dayOffset));
+      final PrayerTimes? prayerTimes = getTodayPrayerTimes(
+        date: targetDate,
+        calculationMethod: calculationMethod,
+        madhab: madhab,
+      );
+
+      if (prayerTimes == null) return;
+
+      final List<DateTime> prayerTimeList = <DateTime>[
+        prayerTimes.fajr,
+        prayerTimes.dhuhr,
+        prayerTimes.asr,
+        prayerTimes.maghrib,
+        prayerTimes.isha,
+      ];
+
+      for (int i = 0; i < prayerTimeList.length; i++) {
+        final DateTime localTime = prayerTimeList[i].toLocal();
+
+        if (localTime.isAfter(now)) {
+          try {
+            final String time =
+                '${formatTwoDigits(localTime.hour)}:${formatTwoDigits(localTime.minute)}';
+            final int notificationId = dayOffset * 5 + i;
+
+            await notificationService.zonedSchedule(
+              id: notificationId,
+              title:
+                  '${prayerTimeEnums[i].label} prayer time is coming - $time',
+              body: prayerTimeEnums[i].notifLabel,
+              scheduledDateTime: localTime,
+            );
+          } catch (_) {
+            // TODO: Add error handling
+          }
         }
       }
     }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -44,6 +46,10 @@ Future<void> main() async {
       SharedPreferenceService();
   await sharedPreferenceService.init();
   await NotificationService().init();
+
+  if (Platform.isIOS) {
+    await NotificationService().requestPermissions();
+  }
 
   await Workmanager().initialize(callbackDispatcher);
 

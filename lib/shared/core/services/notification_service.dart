@@ -25,6 +25,19 @@ class NotificationService {
         priority: Priority.high,
       );
 
+  static const DarwinNotificationDetails iOSPlatformChannelSpecifics =
+      DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      );
+
+  static const NotificationDetails platformNotificationDetails =
+      NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: iOSPlatformChannelSpecifics,
+      );
+
   Future<void> init() async {
     tz.initializeTimeZones();
     final String timeZoneName = await FlutterTimezone.getLocalTimezone();
@@ -64,7 +77,7 @@ class NotificationService {
       title,
       body,
       tz.TZDateTime.from(scheduledDateTime, tz.local),
-      const NotificationDetails(android: androidPlatformChannelSpecifics),
+      platformNotificationDetails,
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
@@ -80,7 +93,18 @@ class NotificationService {
       id,
       title,
       body,
-      const NotificationDetails(android: androidPlatformChannelSpecifics),
+      platformNotificationDetails,
     );
+  }
+
+  Future<void> requestPermissions() async {
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(alert: true, badge: true, sound: true);
+  }
+
+  Future<void> cancelAllNotifications() async {
+    await flutterLocalNotificationsPlugin.cancelAll();
   }
 }
