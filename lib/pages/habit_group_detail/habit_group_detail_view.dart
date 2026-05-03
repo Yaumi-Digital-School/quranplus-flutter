@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/widgets/group_detall_bottomsheet.dart';
+import 'package:qurantafsir_flutter/pages/habit_group_detail/widgets/group_summary_card.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/widgets/user_summary_bottomsheet.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
@@ -10,10 +11,8 @@ import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
-import 'package:qurantafsir_flutter/shared/core/models/habit_group_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/utils/dynamic_link_helper.dart';
-import 'package:qurantafsir_flutter/widgets/habit_group_overview.dart';
 import 'package:qurantafsir_flutter/widgets/habit_personal_weekly_overview.dart';
 
 import '../habit_page/habit_progress/habit_progress_view.dart';
@@ -229,7 +228,7 @@ class _HabitGroupDetailViewState extends ConsumerState<HabitGroupDetailView> {
                 itemCount: state.memberSummaries!.length + 1,
                 itemBuilder: (context, index) {
                   if (index == 0) {
-                    return _buildGroupSummary(state, notifier);
+                    return GroupSummaryCard(state: state, notifier: notifier);
                   }
 
                   final GetHabitGroupMemberPersonalItemResponse userData =
@@ -311,34 +310,6 @@ class _HabitGroupDetailViewState extends ConsumerState<HabitGroupDetailView> {
     );
 
     return true;
-  }
-
-  Widget _buildGroupSummary(
-    HabitGroupDetailState state,
-    HabitGroupDetailNotifier notifier,
-  ) {
-    final GetHabitGroupMemberPersonalItemResponse userData =
-        state.memberSummaries![0];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'All Member Completion',
-          style: QPTextStyle.getSubHeading2SemiBold(context),
-        ),
-        const SizedBox(height: 16),
-        HabitGroupOverviewWidget(
-          type: HabitGroupOverviewType.withCurrentMonthInfo,
-          sevenDaysInformation:
-              state.groupSummaries?.toList() ?? <HabitGroupSummary>[],
-          selectedIdx: state.selectedSummaryIdx,
-          onTapSummary: notifier.onTapGroupCompletionSummaryData,
-          startOfEnabledDate: userData.joinDate,
-        ),
-        const SizedBox(height: 24),
-      ],
-    );
   }
 
   void _selectedItem({

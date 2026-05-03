@@ -6,7 +6,8 @@ import 'package:qurantafsir_flutter/shared/constants/prayer_times.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
-import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/pages/prayer_time_page/widgets/prayer_calculation_selector.dart';
+import 'package:qurantafsir_flutter/pages/prayer_time_page/widgets/prayer_method_info_card.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/prayer_times_notifier.dart';
 
 class PrayerTimePage extends ConsumerWidget {
@@ -128,9 +129,9 @@ class PrayerTimePage extends ConsumerWidget {
                     const SizedBox(height: 16),
                     _buildPrayerTimeItem(context, state),
                     const SizedBox(height: 16),
-                    _buildCalculationDropdowns(context, ref, notifier),
+                    const PrayerCalculationSelector(),
                     const SizedBox(height: 12),
-                    _buildMethodDescription(context, ref),
+                    const PrayerMethodInfoCard(),
                   ],
                 ),
               ),
@@ -277,118 +278,4 @@ class PrayerTimePage extends ConsumerWidget {
     );
   }
 
-  Widget _buildCalculationDropdowns(
-    BuildContext context,
-    WidgetRef ref,
-    PrayerTimeNotifier notifier,
-  ) {
-    final calculationMethod = ref.watch(calculationMethodProvider);
-    final madhab = ref.watch(madhubProvider);
-
-    return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: DropdownButton<String>(
-                isExpanded: true,
-                value: calculationMethod,
-                items:
-                    ['singapore', 'muslimworldleague', 'egyptian', 'ummAlqura']
-                        .map(
-                          (method) => DropdownMenuItem(
-                            value: method,
-                            child: Text(
-                              _formatMethodName(method),
-                              style: QPTextStyle.getDescription2Regular(
-                                context,
-                              ),
-                            ),
-                          ),
-                        )
-                        .toList(),
-                onChanged: (newMethod) {
-                  if (newMethod != null) {
-                    ref.read(calculationMethodProvider.notifier).set(newMethod);
-                    notifier.updatePrayerTimes(newMethod, madhab);
-                  }
-                },
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: DropdownButton<String>(
-                isExpanded: true,
-                value: madhab,
-                items: ['shafi', 'hanafi']
-                    .map(
-                      (school) => DropdownMenuItem(
-                        value: school,
-                        child: Text(
-                          school == 'shafi' ? 'Syafi\'i' : 'Hanafi',
-                          style: QPTextStyle.getDescription2Regular(context),
-                        ),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (newSchool) {
-                  if (newSchool != null) {
-                    ref.read(madhubProvider.notifier).set(newSchool);
-                    notifier.updatePrayerTimes(calculationMethod, newSchool);
-                  }
-                },
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  String _formatMethodName(String method) {
-    switch (method) {
-      case 'singapore':
-        return 'Singapore';
-      case 'muslimworldleague':
-        return 'Muslim World League';
-      case 'egyptian':
-        return 'Egyptian';
-      case 'ummAlqura':
-        return 'Umm Al-Qura';
-      default:
-        return method;
-    }
-  }
-
-  Widget _buildMethodDescription(BuildContext context, WidgetRef ref) {
-    final calculationMethod = ref.watch(calculationMethodProvider);
-    final madhab = ref.watch(madhubProvider);
-
-    String methodDescription = _getMethodDescription(calculationMethod);
-    String madhubText = madhab == 'shafi' ? 'Syafi\'i' : 'Hanafi';
-
-    return SizedBox(
-      width: double.infinity,
-      child: Text(
-        'Metode: $methodDescription · Mazhab $madhubText',
-        style: QPTextStyle.getDescription2Medium(context),
-        textAlign: TextAlign.left,
-      ),
-    );
-  }
-
-  String _getMethodDescription(String method) {
-    switch (method) {
-      case 'singapore':
-        return 'Singapore region (Indonesia, Malaysia, Singapore)';
-      case 'muslimworldleague':
-        return 'Muslim World League';
-      case 'egyptian':
-        return 'Egyptian General Authority of Survey';
-      case 'ummAlqura':
-        return 'Umm Al-Qura University (Saudi Arabia)';
-      default:
-        return method;
-    }
-  }
 }

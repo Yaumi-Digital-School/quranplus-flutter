@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:qurantafsir_flutter/pages/bookmark_v2/bookmark_page_state_notifier.dart';
+import 'package:qurantafsir_flutter/pages/bookmark_v2/widgets/bookmark_list_item.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
@@ -213,64 +214,28 @@ class _BookmarkPageV2State extends ConsumerState<BookmarkPageV2> {
     required BookmarkPageNotifier notifier,
     required ConnectivityStatus connectivityStatus,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: ListTile(
-        minLeadingWidth: 20,
-        leading: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(StoredIcon.iconFavorite.path),
-                ),
+    return BookmarkListItem(
+      iconAssetPath: StoredIcon.iconFavorite.path,
+      surahName: favoriteAyah.surahName,
+      subtitleText: 'Ayah ${favoriteAyah.ayahSurah}',
+      onTap: () async {
+        final onPopParam = await Navigator.push(
+          context,
+          PageTransition(
+            type: PageTransitionType.fade,
+            child: SuratPageV3(
+              param: SuratPageV3Param(
+                startPageInIndex: favoriteAyah.page - 1,
+                firstPagePointerIndex: favoriteAyah.ayahHashCode,
               ),
             ),
-          ],
-        ),
-        title: Text(
-          'Surat ${favoriteAyah.surahName}',
-          style: QPTextStyle.getSubHeading3SemiBold(context),
-          overflow: TextOverflow.ellipsis,
-        ),
-        subtitle: Row(
-          children: <Widget>[
-            Text(
-              'Ayah ${favoriteAyah.ayahSurah.toString()}',
-              style: QPTextStyle.getSubHeading4Regular(context).copyWith(
-                color: QPColors.getColorBasedTheme(
-                  dark: QPColors.whiteRoot,
-                  light: QPColors.whiteFair,
-                  brown: QPColors.brownModeMassive,
-                  context: context,
-                ),
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
-        onTap: () async {
-          var onPopParam = await Navigator.push(
-            context,
-            PageTransition(
-              type: PageTransitionType.fade,
-              child: SuratPageV3(
-                param: SuratPageV3Param(
-                  startPageInIndex: favoriteAyah.page - 1,
-                  firstPagePointerIndex: favoriteAyah.ayahHashCode,
-                ),
-              ),
-            ),
-          );
+          ),
+        );
 
-          if (onPopParam is SuratPageV3OnPopParam) {
-            _onPopFromSurahPage(onPopParam, notifier, connectivityStatus);
-          }
-        },
-      ),
+        if (onPopParam is SuratPageV3OnPopParam) {
+          _onPopFromSurahPage(onPopParam, notifier, connectivityStatus);
+        }
+      },
     );
   }
 
@@ -387,73 +352,28 @@ class _BookmarkPageV2State extends ConsumerState<BookmarkPageV2> {
     required BookmarkPageNotifier notifier,
     required ConnectivityStatus connectivityStatus,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: ListTile(
-        minLeadingWidth: 20,
-        leading: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(StoredIcon.iconBookmark.path),
-                ),
+    return BookmarkListItem(
+      iconAssetPath: StoredIcon.iconBookmark.path,
+      surahName: bookmark.surahName,
+      subtitleText: 'Page ${bookmark.page}',
+      trailingText: bookmark.createdAtFormatted,
+      onTap: () async {
+        final onPopParam = await Navigator.push(
+          context,
+          PageTransition(
+            type: PageTransitionType.fade,
+            child: SuratPageV3(
+              param: SuratPageV3Param(
+                startPageInIndex: bookmark.page - 1,
               ),
             ),
-          ],
-        ),
-        title: Text(
-          "Surat ${bookmark.surahName}",
-          style: QPTextStyle.getSubHeading3SemiBold(context),
-          overflow: TextOverflow.ellipsis,
-        ),
-        subtitle: Row(
-          children: <Widget>[
-            Text(
-              "Page ${bookmark.page.toString()}",
-              style: QPTextStyle.getSubHeading4Regular(context).copyWith(
-                color: QPColors.getColorBasedTheme(
-                  dark: QPColors.whiteRoot,
-                  light: QPColors.whiteFair,
-                  brown: QPColors.brownModeMassive,
-                  context: context,
-                ),
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              bookmark.createdAtFormatted,
-              textAlign: TextAlign.right,
-              style: QPTextStyle.getSubHeading3Regular(context),
-            ),
-          ],
-        ),
-        onTap: () async {
-          var onPopParam = await Navigator.push(
-            context,
-            PageTransition(
-              type: PageTransitionType.fade,
-              child: SuratPageV3(
-                param: SuratPageV3Param(
-                  startPageInIndex: bookmark.page - 1,
-                ),
-              ),
-            ),
-          );
+          ),
+        );
 
-          if (onPopParam is SuratPageV3OnPopParam) {
-            _onPopFromSurahPage(onPopParam, notifier, connectivityStatus);
-          }
-        },
-      ),
+        if (onPopParam is SuratPageV3OnPopParam) {
+          _onPopFromSurahPage(onPopParam, notifier, connectivityStatus);
+        }
+      },
     );
   }
 

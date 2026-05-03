@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_view.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/home_page_state_notifier.dart';
+import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/error_bottom_sheet_content.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/home_header_section.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/home_search_button.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/home_surah_list.dart';
@@ -11,11 +12,9 @@ import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart' as date_util;
-import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/sign_in_bottom_sheet.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 
@@ -147,9 +146,9 @@ class _HomePageV2State extends ConsumerState<HomePageV2> {
       if (!mounted) return;
       GeneralBottomSheet.showBaseBottomSheet(
         context: context,
-        widgetChild: _errorWidget(
-          "Link not found",
-          "Make sure the link you entered is valid",
+        widgetChild: const ErrorBottomSheetContent(
+          title: "Link not found",
+          description: "Make sure the link you entered is valid",
         ),
       );
     });
@@ -160,43 +159,12 @@ class _HomePageV2State extends ConsumerState<HomePageV2> {
       if (!mounted) return;
       GeneralBottomSheet.showBaseBottomSheet(
         context: context,
-        widgetChild: _errorWidget(
-          "Group link not found",
-          "The group may have been deleted by the admin, try contacting the group admin",
+        widgetChild: const ErrorBottomSheetContent(
+          title: "Group link not found",
+          description:
+              "The group may have been deleted by the admin, try contacting the group admin",
         ),
       );
     });
-  }
-
-  Widget _errorWidget(String title, String description) {
-    return Column(
-      children: [
-        const Icon(Icons.error, color: QPColors.errorFair, size: 32),
-        const SizedBox(height: 28),
-        Text(
-          title,
-          style: QPTextStyle.getHeading1SemiBold(
-            context,
-          ).copyWith(color: QPColors.blackMassive),
-        ),
-        const SizedBox(height: 24),
-        Text(
-          description,
-          style: QPTextStyle.getBody2Regular(
-            context,
-          ).copyWith(color: QPColors.neutral700),
-        ),
-        const SizedBox(height: 24),
-        ButtonSecondary(
-          label: "Close",
-          onTap: () {
-            Navigator.pop(context);
-          },
-          textStyle: QPTextStyle.getButton2SemiBold(
-            context,
-          ).copyWith(color: QPColors.brandFair),
-        ),
-      ],
-    );
   }
 }
