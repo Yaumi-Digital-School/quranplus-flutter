@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:adhan_dart/adhan_dart.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:qurantafsir_flutter/shared/constants/prayer_times.dart';
@@ -113,7 +114,11 @@ class PrayerTimeNotifier extends _$PrayerTimeNotifier {
     String cityName,
   ) async {
     await _prayerTimesService.setCoordinates(latitude, longitude, cityName);
-    await _prayerTimesService.setupPrayerTimesReminder();
+    if (Platform.isIOS) {
+      await _prayerTimesService.setupMultiDayPrayerTimesReminder();
+    } else {
+      await _prayerTimesService.setupPrayerTimesReminder();
+    }
   }
 
   Future<void> updatePrayerTimes(
@@ -125,6 +130,18 @@ class PrayerTimeNotifier extends _$PrayerTimeNotifier {
       madhab: madhab,
     );
     state = state.copyWith(prayerTimes: updatedPrayerTimes);
+
+    if (Platform.isIOS) {
+      await _prayerTimesService.setupMultiDayPrayerTimesReminder(
+        calculationMethod: calculationMethod,
+        madhab: madhab,
+      );
+    } else {
+      await _prayerTimesService.setupPrayerTimesReminder(
+        calculationMethod: calculationMethod,
+        madhab: madhab,
+      );
+    }
   }
 
   void refresh() {
