@@ -6,6 +6,8 @@ import 'package:qurantafsir_flutter/shared/utils/number_util.dart';
 import 'package:qurantafsir_flutter/shared/utils/prayer_times.dart';
 
 const reminderNotifNormalizer = 100;
+const quranReminderDays = 7;
+const prayersPerDay = 5;
 
 class PrayerTimesService {
   PrayerTimesService({

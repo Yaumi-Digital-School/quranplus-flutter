@@ -149,7 +149,7 @@ class SuratPageHabitNotifier extends _$SuratPageHabitNotifier {
 
     final bool goalAchieved = totalReadPages >= (_currentSummary!.target);
     if (goalAchieved) {
-      await cancelTodayQuranReminders();
+      await cancelAllQuranReminders();
     }
 
     return goalAchieved;

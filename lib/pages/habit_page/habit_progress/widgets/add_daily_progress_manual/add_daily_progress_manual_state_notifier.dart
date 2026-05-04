@@ -108,7 +108,7 @@ class AddDailyProgressManualNotifier
 
       final int newTotalPages = totalPages + habitDailySummary.totalPages;
       if (newTotalPages >= habitDailySummary.target) {
-        await cancelTodayQuranReminders();
+        await cancelAllQuranReminders();
       }
 
       state = state.copyWith(

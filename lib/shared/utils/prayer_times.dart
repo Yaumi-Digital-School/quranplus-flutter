@@ -43,10 +43,11 @@ Future<void> scheduleIOSPrayerNotifications({
   await prayerTimesService.setupMultiDayPrayerTimesReminder();
 }
 
-Future<void> cancelTodayQuranReminders() async {
+Future<void> cancelAllQuranReminders() async {
   if (Platform.isIOS) {
     final NotificationService notificationService = NotificationService();
-    for (int i = 0; i < 5; i++) {
+    const int totalQuranReminderNotifs = quranReminderDays * prayersPerDay;
+    for (int i = 0; i < totalQuranReminderNotifs; i++) {
       await notificationService.cancel(reminderNotifNormalizer + i);
     }
   } else if (Platform.isAndroid) {
