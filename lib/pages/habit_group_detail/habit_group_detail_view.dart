@@ -121,8 +121,8 @@ class _HabitGroupDetailViewState extends ConsumerState<HabitGroupDetailView> {
                 data: Theme.of(context).copyWith(
                   iconTheme: IconThemeData(
                     color: QPColors.getColorBasedTheme(
-                      dark: QPColors.whiteMassive,
-                      light: QPColors.blackMassive,
+                      dark: QPColors.whiteFair,
+                      light: QPColors.blackSoft,
                       brown: QPColors.brownModeMassive,
                       context: context,
                     ),
