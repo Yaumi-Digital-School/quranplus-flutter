@@ -1,10 +1,8 @@
 import 'package:qurantafsir_flutter/main.dart';
-import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/city_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/tadabbur_api.dart';
 import 'package:qurantafsir_flutter/shared/core/services/alice_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
-import 'package:qurantafsir_flutter/pages/settings_page/settings_page_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/habit_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/habit_group_api.dart';
@@ -22,74 +20,83 @@ import 'package:qurantafsir_flutter/shared/core/services/prayer_times_service.da
 import 'package:qurantafsir_flutter/shared/core/services/remote_config_service/remote_config_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/tadabbur_service.dart';
-import 'package:qurantafsir_flutter/shared/core/state_notifiers/theme_state_notifier.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final StateProvider<DioService> dioServiceProvider =
-    StateProvider<DioService>((ref) {
-  final SharedPreferenceService sharedPreferenceService =
-      ref.watch(sharedPreferenceServiceProvider);
-  final AliceService aliceService = ref.watch(aliceServiceProvider);
+part 'providers.g.dart';
 
-  return DioService(
-    baseUrl: EnvConstants.baseUrl ?? '',
-    accessToken: sharedPreferenceService.getApiToken(),
-    aliceService: aliceService,
-  );
-});
+// ---------------------------------------------------------------------------
+// DioService — replaces the old StateProvider<DioService>
+// ---------------------------------------------------------------------------
+@Riverpod(keepAlive: true)
+class DioServiceNotifier extends _$DioServiceNotifier {
+  @override
+  DioService build() {
+    final SharedPreferenceService sp = ref.watch(sharedPreferenceServiceProvider);
+    final AliceService alice = ref.watch(aliceServiceProvider);
+    return DioService(
+      baseUrl: EnvConstants.baseUrl ?? '',
+      accessToken: sp.getApiToken(),
+      aliceService: alice,
+    );
+  }
+
+  void update(DioService newService) => state = newService;
+  DioService get current => state;
+}
+
+// ---------------------------------------------------------------------------
+// CalculationMethod & Madhub — replace old StateProvider<String>
+// ---------------------------------------------------------------------------
+@Riverpod(keepAlive: true)
+class CalculationMethod extends _$CalculationMethod {
+  @override
+  String build() => 'singapore';
+  void set(String value) => state = value;
+}
+
+@Riverpod(keepAlive: true)
+class Madhub extends _$Madhub {
+  @override
+  String build() => 'shafi';
+  void set(String value) => state = value;
+}
+
+// ---------------------------------------------------------------------------
+// Static service providers (plain Provider<T> — no state, no code gen needed)
+// ---------------------------------------------------------------------------
 
 final Provider<SharedPreferenceService> sharedPreferenceServiceProvider =
-    Provider<SharedPreferenceService>((ref) {
-  final SharedPreferenceService service = SharedPreferenceService();
-
-  return service;
-});
+    Provider<SharedPreferenceService>((ref) => SharedPreferenceService());
 
 final Provider<BookmarkApi> bookmarkApiProvider = Provider<BookmarkApi>((ref) {
   final DioService dioService = ref.watch(dioServiceProvider);
-
-  return BookmarkApi(
-    dioService.getDioWithAccessToken(),
-  );
+  return BookmarkApi(dioService.getDioWithAccessToken());
 });
 
 final Provider<CityApi> cityApiProvider = Provider<CityApi>((ref) {
   final DioService dioService = ref.watch(dioServiceProvider);
-
   return CityApi(dioService.getDioWithAccessToken());
 });
 
 final Provider<HabitApi> habitApiProvider = Provider<HabitApi>((ref) {
   final DioService dioService = ref.watch(dioServiceProvider);
-
-  return HabitApi(
-    dioService.getDioWithAccessToken(),
-  );
+  return HabitApi(dioService.getDioWithAccessToken());
 });
 
 final Provider<HabitGroupApi> habitGroupApiProvider =
     Provider<HabitGroupApi>((ref) {
   final DioService dioService = ref.watch(dioServiceProvider);
-
-  return HabitGroupApi(
-    dioService.getDioWithAccessToken(),
-  );
+  return HabitGroupApi(dioService.getDioWithAccessToken());
 });
 
 final Provider<TadabburApi> tadabburApiProvider = Provider<TadabburApi>((ref) {
   final DioService dioService = ref.watch(dioServiceProvider);
-
-  return TadabburApi(
-    dioService.getDioWithStaticAPIKey(),
-  );
+  return TadabburApi(dioService.getDioWithStaticAPIKey());
 });
 
-final Provider<UserApi> userApiProvider =
-    Provider<UserApi>((Ref ref) {
+final Provider<UserApi> userApiProvider = Provider<UserApi>((Ref ref) {
   final DioService dioService = ref.read(dioServiceProvider);
-
-  return UserApi(
-    dioService.getDio(),
-  );
+  return UserApi(dioService.getDio());
 });
 
 final Provider<AuthenticationService> authenticationService =
@@ -97,14 +104,15 @@ final Provider<AuthenticationService> authenticationService =
   final UserApi userApi = ref.watch(userApiProvider);
   final SharedPreferenceService sharedPreferenceService =
       ref.watch(sharedPreferenceServiceProvider);
-  final StateController<DioService> dioServiceNotifier =
+  final DioServiceNotifier dioNotifier =
       ref.read(dioServiceProvider.notifier);
   final AliceService aliceService = ref.watch(aliceServiceProvider);
 
   return AuthenticationService(
     userApi: userApi,
     sharedPreferenceService: sharedPreferenceService,
-    dioServiceNotifier: dioServiceNotifier,
+    onUpdateDioService: dioNotifier.update,
+    getCurrentDioService: () => dioNotifier.current,
     aliceService: aliceService,
   );
 });
@@ -112,36 +120,25 @@ final Provider<AuthenticationService> authenticationService =
 final Provider<BookmarksService> bookmarksService =
     Provider<BookmarksService>((ref) {
   final BookmarkApi bookmarkApi = ref.watch(bookmarkApiProvider);
-
-  return BookmarksService(
-    bookmarkApi: bookmarkApi,
-  );
+  return BookmarksService(bookmarkApi: bookmarkApi);
 });
 
 final Provider<HabitDailySummaryService> habitDailySummaryService =
-    Provider<HabitDailySummaryService>(
-  (ref) {
-    final SharedPreferenceService sharedPreferenceService =
-        ref.watch(sharedPreferenceServiceProvider);
-    final HabitApi habitApi = ref.watch(habitApiProvider);
-
-    return HabitDailySummaryService(
-      sharedPreferenceService: sharedPreferenceService,
-      habitApi: habitApi,
-    );
-  },
-);
-
-final Provider<FavoriteAyahsService> favoriteAyahsService =
-    Provider<FavoriteAyahsService>((ref) {
-  // final BookmarkApi bookmarkApi = ref.watch(bookmarkApiProvider);
-
-  return FavoriteAyahsService();
+    Provider<HabitDailySummaryService>((ref) {
+  final SharedPreferenceService sharedPreferenceService =
+      ref.watch(sharedPreferenceServiceProvider);
+  final HabitApi habitApi = ref.watch(habitApiProvider);
+  return HabitDailySummaryService(
+    sharedPreferenceService: sharedPreferenceService,
+    habitApi: habitApi,
+  );
 });
 
-Provider<MainPageProvider> mainPageProvider = Provider<MainPageProvider>(
-  (ref) => MainPageProvider(),
-);
+final Provider<FavoriteAyahsService> favoriteAyahsService =
+    Provider<FavoriteAyahsService>((ref) => FavoriteAyahsService());
+
+final Provider<MainPageProvider> mainPageProvider =
+    Provider<MainPageProvider>((ref) => MainPageProvider());
 
 final Provider<DeepLinkService> deepLinkService =
     Provider<DeepLinkService>((ref) {
@@ -150,7 +147,6 @@ final Provider<DeepLinkService> deepLinkService =
   final SharedPreferenceService sharedPref =
       ref.watch(sharedPreferenceServiceProvider);
   final MainPageProvider mainPage = ref.watch(mainPageProvider);
-
   return DeepLinkService(
     habitGroupApi: habitGroupApi,
     authenticationService: auth,
@@ -159,47 +155,16 @@ final Provider<DeepLinkService> deepLinkService =
   );
 });
 
-final StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>
-    settingsPageProvider =
-    StateNotifierProvider<SettingsPageStateNotifier, SettingsPageState>(
-  (Ref ref) {
-    return SettingsPageStateNotifier(
-      repository: ref.watch(authenticationService),
-      sharedPreferenceService: ref.watch(sharedPreferenceServiceProvider),
-    );
-  },
-);
-
-final StateNotifierProvider<ThemeStateNotifier, QPThemeMode> themeProvider =
-    StateNotifierProvider<ThemeStateNotifier, QPThemeMode>(
-  ((ref) => ThemeStateNotifier(
-        sharedPreferenceService: ref.watch(
-          sharedPreferenceServiceProvider,
-        ),
-      )),
-);
-
 final Provider<AliceService> aliceServiceProvider =
-    Provider<AliceService>((ref) {
-  return AliceService(navigatorKey);
-});
+    Provider<AliceService>((ref) => AliceService(navigatorKey));
 
 final Provider<RemoteConfigService> remoteConfigService =
-    Provider<RemoteConfigService>((ref) {
-  return RemoteConfigService();
-});
-
-final StateProvider<String> calculationMethodProvider =
-    StateProvider<String>((ref) => 'singapore');
-
-final StateProvider<String> madhubProvider =
-    StateProvider<String>((ref) => 'shafi');
+    Provider<RemoteConfigService>((ref) => RemoteConfigService());
 
 final Provider<PrayerTimesService> prayerTimesService =
     Provider<PrayerTimesService>((ref) {
   final NotificationService notificationService = NotificationService();
   final SharedPreferenceService sp = ref.watch(sharedPreferenceServiceProvider);
-
   return PrayerTimesService(
     notificationService: notificationService,
     sharedPreferenceService: sp,
@@ -211,7 +176,6 @@ final Provider<TadabburService> tadabburService =
   final TadabburApi tadabburApi = ref.read(tadabburApiProvider);
   final SharedPreferenceService sp = ref.read(sharedPreferenceServiceProvider);
   final RemoteConfigService rc = ref.read(remoteConfigService);
-
   return TadabburService(
     tadabburApi: tadabburApi,
     sharedPreferenceService: sp,

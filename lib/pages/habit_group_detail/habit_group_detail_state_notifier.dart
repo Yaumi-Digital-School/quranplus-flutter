@@ -1,12 +1,13 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/habit_api.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/habit_group_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/user_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_group_summary.dart';
-import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'habit_group_detail_state_notifier.g.dart';
 
 class HabitGroupDetailState {
   HabitGroupDetailState({
@@ -56,119 +57,96 @@ class HabitGroupDetailState {
   }
 }
 
-class HabitGroupDetailStateNotifier
-    extends BaseStateNotifier<HabitGroupDetailState> {
-  HabitGroupDetailStateNotifier({
-    required HabitGroupApi habitGroupApi,
-    required int groupId,
-    required HabitApi habitApi,
-  })  : _habitGroupApi = habitGroupApi,
-        _groupId = groupId,
-        _habitApi = habitApi,
-        super(
-          HabitGroupDetailState(),
-        );
+@riverpod
+class HabitGroupDetailNotifier extends _$HabitGroupDetailNotifier {
+  bool groupNameIsEdited = false;
+  bool isLeaveGrup = false;
+  DateTime? groupCreatedAt;
 
-  final HabitGroupApi _habitGroupApi;
-  final HabitApi _habitApi;
+  int _groupId = 0;
   List<HabitGroupSummary>? _groupSummaries;
-  final int _groupId;
   List<GetHabitGroupMemberPersonalItemResponse>? _memberSummaries;
 
-  bool _groupNameIsEdited = false;
-  bool get groupNameIsEdited => _groupNameIsEdited;
-
-  bool _isLeaveGroup = false;
-  bool get isLeaveGrup => _isLeaveGroup;
-
-  String _groupName = '';
-  DateTime? _groupCreatedAt;
-  DateTime? get groupCreatedAt => _groupCreatedAt;
-
   @override
-  Future<void> initStateNotifier() async {
-    state = state.copyWith(isLoading: true);
+  HabitGroupDetailState build(int groupId) {
+    _groupId = groupId;
+    Future.microtask(() => _load(groupId));
+    return HabitGroupDetailState();
+  }
 
-    await _getHabitGroupDetail();
-    await _getGroupMemberSummaries();
+  Future<void> _load(int groupId) async {
+    state = state.copyWith(isLoading: true);
+    await _getHabitGroupDetail(groupId);
+    await _getGroupMemberSummaries(groupId);
 
     if (!state.isErrorOnFetching) {
       state = state.copyWith(
         isLoading: false,
         groupSummaries: _groupSummaries,
         memberSummaries: _memberSummaries,
-        groupName: _groupName,
       );
     }
   }
 
   bool get userIsAdmin => _memberSummaries?[0].isAdmin ?? false;
 
-  Future<void> _getHabitGroupDetail() async {
-    HttpResponse<GetHabitGroupDetailResponse> habitGroupDetail =
-        await _habitGroupApi.getHabitGroupDetail(
-      groupId: _groupId,
+  Future<void> _getHabitGroupDetail(int groupId) async {
+    final api = ref.read(habitGroupApiProvider);
+    final response = await api.getHabitGroupDetail(
+      groupId: groupId,
       param: GetHabitGroupDetailParam(
         startDate: DateCustomUtils.getFirstDayOfTheWeekFromToday(),
         endDate: DateCustomUtils.getLastDayOfTheWeekFromToday(),
       ),
     );
 
-    if (habitGroupDetail.response.statusCode != 200) {
-      // need new design on error fetching
+    if (response.response.statusCode != 200) {
       state = state.copyWith(isLoading: false, isErrorOnFetching: true);
-
       return;
     }
 
-    _groupSummaries = habitGroupDetail.data.completions
-        .map(
-          (e) => HabitGroupSummary.fromGetGroupDetailCompletionItem(e),
-        )
+    _groupSummaries = response.data.completions
+        .map((e) => HabitGroupSummary.fromGetGroupDetailCompletionItem(e))
         .toList();
 
-    _groupName = habitGroupDetail.data.name;
-    _groupCreatedAt = habitGroupDetail.data.createdAt;
+    groupCreatedAt = response.data.createdAt;
+    state = state.copyWith(groupName: response.data.name);
   }
 
   Future<void> renameGroup(String newName) async {
-    HttpResponse<bool> request = await _habitGroupApi.renameGroup(
+    final api = ref.read(habitGroupApiProvider);
+    final HttpResponse<bool> request = await api.renameGroup(
       request: UpdateHabitGroupRequest(newName: newName),
       groupId: _groupId,
     );
 
     if (request.response.statusCode != 200) {
-      // need new design on error fetching
       state = state.copyWith(isLoading: false, isErrorOnFetching: true);
-
       return;
     }
 
     if (request.data) {
-      _groupNameIsEdited = true;
-      await initStateNotifier();
+      groupNameIsEdited = true;
+      await _load(_groupId);
     }
   }
 
-  Future<void> _getGroupMemberSummaries() async {
-    HttpResponse<List<GetHabitGroupMemberPersonalItemResponse>>
-        habitGroupMemberSummaries =
-        await _habitGroupApi.getHabitGroupMemberSummaries(
-      groupId: _groupId,
+  Future<void> _getGroupMemberSummaries(int groupId) async {
+    final api = ref.read(habitGroupApiProvider);
+    final response = await api.getHabitGroupMemberSummaries(
+      groupId: groupId,
       param: GetHabitGroupMemberSummariesParam(
         startDate: DateCustomUtils.getFirstDayOfTheWeekFromToday(),
         endDate: DateCustomUtils.getLastDayOfTheWeekFromToday(),
       ),
     );
 
-    if (habitGroupMemberSummaries.response.statusCode != 200) {
-      // need new design on error fetching
+    if (response.response.statusCode != 200) {
       state = state.copyWith(isLoading: false, isErrorOnFetching: true);
-
       return;
     }
 
-    _memberSummaries = habitGroupMemberSummaries.data;
+    _memberSummaries = response.data;
   }
 
   void onTapGroupCompletionSummaryData(int tappedIdx) {
@@ -178,13 +156,10 @@ class HabitGroupDetailStateNotifier
   void onSelectUserSummary(int id, String date, bool isCurrentUser) async {
     try {
       state = state.copyWith(isFetchUserSummary: true);
-      final response = await _habitApi.getUserSummary(
+      final response = await ref.read(habitApiProvider).getUserSummary(
         userId: id,
-        param: UserSummaryRequest(
-          date: date,
-        ),
+        param: UserSummaryRequest(date: date),
       );
-
       state = state.copyWith(
         isFetchUserSummary: false,
         userSummaryResponse: response.data,
@@ -196,14 +171,14 @@ class HabitGroupDetailStateNotifier
         stackTrace,
         reason: 'error on onSelectUserSummary() method',
       );
-
       state = state.copyWith(isFetchUserSummary: false);
     }
   }
 
-  Future<void> leaveGroup() async {
-    final HttpResponse<bool> request = await _habitGroupApi.leaveGroup(
-      groupId: _groupId,
+  Future<void> leaveGroup(int groupId) async {
+    final api = ref.read(habitGroupApiProvider);
+    final HttpResponse<bool> request = await api.leaveGroup(
+      groupId: groupId,
       request: LeaveHabitGroupRequest(
         date: DateCustomUtils.getCurrentDateInString(),
       ),
@@ -211,12 +186,11 @@ class HabitGroupDetailStateNotifier
 
     if (request.response.statusCode != 200) {
       state = state.copyWith(isLoading: false, isErrorOnFetching: true);
-
       return;
     }
 
     if (request.data) {
-      _isLeaveGroup = true;
+      isLeaveGrup = true;
     }
   }
 }

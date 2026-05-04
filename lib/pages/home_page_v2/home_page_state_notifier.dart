@@ -2,20 +2,17 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/services.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
-
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart';
 import 'package:qurantafsir_flutter/shared/core/models/verse_topage.dart';
-import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
-import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
-import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
-import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
-import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'home_page_state_notifier.g.dart';
 
 class HomePageState {
   HomePageState({
@@ -74,50 +71,34 @@ class HomePageState {
   }
 }
 
-class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
-  HomePageStateNotifier({
-    required HabitDailySummaryService habitDailySummaryService,
-    required SharedPreferenceService sharedPreferenceService,
-    required this.mainPageProvider,
-    required this.authenticationService,
-    required AudioRecitationStateNotifier audioRecitationStateNotifier,
-  })  : _sharedPreferenceService = sharedPreferenceService,
-        _habitDailySummaryService = habitDailySummaryService,
-        _audioRecitationNotifier = audioRecitationStateNotifier,
-        super(HomePageState(isNeedSync: false));
-
-  final SharedPreferenceService _sharedPreferenceService;
-  final AuthenticationService authenticationService;
-  final HabitDailySummaryService _habitDailySummaryService;
-  final MainPageProvider mainPageProvider;
-  late List<JuzElement> _juzElements;
-  late Map<String, List<String>>? _ayahPage;
+@riverpod
+class HomePageNotifier extends _$HomePageNotifier {
+  final DbLocal _db = DbLocal();
   bool loginBottomSheetAlreadyBuilt = false;
-  String? _token, _name;
-  HabitDailySummary? _dailySummary;
-  late Map<int, int>? _listTaddaburAvailables;
-  DbLocal db = DbLocal();
-
-  final AudioRecitationStateNotifier _audioRecitationNotifier;
-
-  Bookmarks? _lastBookmark;
 
   @override
-  Future<void> initStateNotifier() async {
+  HomePageState build() {
+    Future.microtask(_init);
+    return HomePageState(isNeedSync: false);
+  }
+
+  Future<void> _init() async {
     try {
       _getUsername();
       _isNeedSync();
-      _getVerseToAyahPage();
-      _getJuzElements();
-      _getLastRecordingData();
-      _getLastBookmark();
-      _getDailySummary();
-      _getTaddaburSurahAvaliable();
+      await Future.wait([
+        _getVerseToAyahPage(),
+        _getJuzElements(),
+        _getLastRecordingData(),
+        _getLastBookmark(),
+        _getDailySummary(),
+        _getTaddaburSurahAvaliable(),
+      ]);
     } catch (error, stackTrace) {
       FirebaseCrashlytics.instance.recordError(
         error,
         stackTrace,
-        reason: 'error on initStateNotifier() method',
+        reason: 'error on _init() method',
       );
     }
   }
@@ -128,162 +109,111 @@ class HomePageStateNotifier extends BaseStateNotifier<HomePageState> {
     required Function() onLoadError,
     required Function() onPlayBackError,
   }) async {
-    _setAudioSuratLoaded(surat);
-    final ReciterItemResponse reciterItemResponse =
-        await _sharedPreferenceService.getSelectedReciter();
+    state = state.copyWith(audioSuratLoaded: surat);
+    final sp = ref.read(sharedPreferenceServiceProvider);
+    final reciter = await sp.getSelectedReciter();
 
-    final AudioRecitationState newState = AudioRecitationState(
+    final newAudioState = AudioRecitationState(
       surahName: surat.nameLatin,
       surahId: int.parse(surat.number),
       ayahId: int.parse(surat.startAyat),
       isLoading: true,
-      reciterId: reciterItemResponse.id,
-      reciterName: reciterItemResponse.name,
+      reciterId: reciter.id,
+      reciterName: reciter.name,
     );
 
-    await _audioRecitationNotifier.init(
-      newState,
+    final audioNotifier = ref.read(audioRecitationProvider.notifier);
+    await audioNotifier.init(
+      newAudioState,
       onSuccess: () async {
-        _resetAudioSuratLoaded();
+        state = state.copyWith(audioSuratLoaded: null);
         onSuccess();
       },
       onLoadError: () async {
-        _resetAudioSuratLoaded();
+        state = state.copyWith(audioSuratLoaded: null);
         onLoadError();
       },
       onPlayBackError: () async {
-        _resetAudioSuratLoaded();
+        state = state.copyWith(audioSuratLoaded: null);
         onPlayBackError();
       },
     );
   }
 
-  void _setAudioSuratLoaded(
-    SuratByJuz surat,
-  ) {
-    state = state.copyWith(
-      audioSuratLoaded: surat,
-    );
-  }
-
-  void _resetAudioSuratLoaded() {
-    state = state.copyWith(
-      audioSuratLoaded: null,
-    );
-  }
-
-  Future<void> _getLastRecordingData() async {
-    final LastRecordingData? lastRecordingData =
-        await _sharedPreferenceService.getLastRecordingData();
-
-    state = state.copyWith(
-      lastRecordingData: lastRecordingData,
-    );
-  }
-
-  Future<void> _getDailySummary() async {
-    _dailySummary = await _habitDailySummaryService
-        .getCurrentDayHabitDailySummaryListLocal();
-
-    state = state.copyWith(
-      dailySummary: _dailySummary,
-    );
-  }
-
-  Future<void> _getLastBookmark() async {
-    final List<dynamic>? result = await db.getBookmarks(limit: 1);
-
-    if (result != null && result.isNotEmpty) {
-      _lastBookmark = Bookmarks.fromMap(result[0]);
-    }
-
-    state = state.copyWith(
-      lastBookmark: _lastBookmark,
-    );
-  }
-
   Future<void> refreshDataOnPopFromSurahPage() async {
-    _dailySummary = await _habitDailySummaryService
+    final habitSvc = ref.read(habitDailySummaryService);
+    final sp = ref.read(sharedPreferenceServiceProvider);
+
+    final dailySummary = await habitSvc
         .getCurrentDayHabitDailySummaryListLocal();
-
     await _getLastBookmark();
-    final LastRecordingData? lastRecordingData =
-        await _sharedPreferenceService.getLastRecordingData();
+    final lastRecordingData = await sp.getLastRecordingData();
 
     state = state.copyWith(
-      dailySummary: _dailySummary,
-      lastBookmark: _lastBookmark,
+      dailySummary: dailySummary,
       lastRecordingData: lastRecordingData,
-    );
-  }
-
-  Future<void> _getVerseToAyahPage() async {
-    final String ayahPageJsonParse =
-        await rootBundle.loadString(AppConstants.ayahPageJson);
-    _ayahPage = verseToPageJsonParse(ayahPageJsonParse);
-
-    state = state.copyWith(
-      ayahPage: _ayahPage,
-    );
-  }
-
-  void _getUsername() {
-    _token = _sharedPreferenceService.getApiToken();
-    if (_token == null || _token!.isEmpty) {
-      _name = '';
-    } else {
-      _name = _sharedPreferenceService.getUsername();
-    }
-
-    state = state.copyWith(
-      name: _name,
-    );
-  }
-
-  void _isNeedSync() {
-    final bool isNeedSync = _habitDailySummaryService.isNeedSync();
-    state = state.copyWith(
-      isNeedSync: isNeedSync,
-    );
-  }
-
-  Future<void> _getJuzElements() async {
-    final String jsonJuzInString =
-        await rootBundle.loadString(AppConstants.jsonJuz);
-
-    if (jsonJuzInString.isEmpty) {
-      return;
-    }
-
-    _juzElements = juzFromJson(jsonJuzInString).juz;
-
-    state = state.copyWith(
-      juzElements: _juzElements,
     );
   }
 
   Future<ForceLoginParam?> getAndRemoveForceLoginParam() async {
-    final ForceLoginParam? res =
-        await _sharedPreferenceService.getForceLoginParam();
-
-    if (res != null) {
-      await _sharedPreferenceService.removeForceLoginParam();
-    }
-
+    final sp = ref.read(sharedPreferenceServiceProvider);
+    final res = await sp.getForceLoginParam();
+    if (res != null) await sp.removeForceLoginParam();
     return res;
   }
 
-  Future<void> _getTaddaburSurahAvaliable() async {
-    List<dynamic> taddaburSurahAvailable = await db.getTadabburSurahAvailable();
+  void _getUsername() {
+    final sp = ref.read(sharedPreferenceServiceProvider);
+    final token = sp.getApiToken();
+    final name = token.isEmpty ? '' : sp.getUsername();
+    state = state.copyWith(name: name, token: token);
+  }
 
-    Map<int, int>? tadabburSurahMap = {};
-    for (var surah in taddaburSurahAvailable) {
-      tadabburSurahMap[surah['id']] = surah['total_tadabbur'];
+  void _isNeedSync() {
+    final isNeedSync = ref.read(habitDailySummaryService).isNeedSync();
+    state = state.copyWith(isNeedSync: isNeedSync);
+  }
+
+  Future<void> _getVerseToAyahPage() async {
+    final json = await rootBundle.loadString(AppConstants.ayahPageJson);
+    state = state.copyWith(ayahPage: verseToPageJsonParse(json));
+  }
+
+  Future<void> _getJuzElements() async {
+    final json = await rootBundle.loadString(AppConstants.jsonJuz);
+    if (json.isEmpty) return;
+    state = state.copyWith(juzElements: juzFromJson(json).juz);
+  }
+
+  Future<void> _getLastRecordingData() async {
+    final data = await ref
+        .read(sharedPreferenceServiceProvider)
+        .getLastRecordingData();
+    state = state.copyWith(lastRecordingData: data);
+  }
+
+  Future<void> _getDailySummary() async {
+    final summary = await ref
+        .read(habitDailySummaryService)
+        .getCurrentDayHabitDailySummaryListLocal();
+    state = state.copyWith(dailySummary: summary);
+  }
+
+  Future<void> _getLastBookmark() async {
+    final result = await _db.getBookmarks(limit: 1);
+    Bookmarks? lastBookmark;
+    if (result != null && result.isNotEmpty) {
+      lastBookmark = Bookmarks.fromMap(result[0]);
     }
-    _listTaddaburAvailables = tadabburSurahMap;
+    state = state.copyWith(lastBookmark: lastBookmark);
+  }
 
-    state = state.copyWith(
-      listTaddaburAvailables: _listTaddaburAvailables,
-    );
+  Future<void> _getTaddaburSurahAvaliable() async {
+    final available = await _db.getTadabburSurahAvailable();
+    final Map<int, int> map = {};
+    for (var surah in available) {
+      map[surah['id']] = surah['total_tadabbur'];
+    }
+    state = state.copyWith(listTaddaburAvailables: map);
   }
 }

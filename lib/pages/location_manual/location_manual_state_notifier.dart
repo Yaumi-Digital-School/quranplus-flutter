@@ -1,10 +1,11 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/city_api.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/model/city.dart';
 import 'dart:async';
 
+import 'package:qurantafsir_flutter/shared/core/apis/model/city.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/prayer_times_notifier.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'location_manual_state_notifier.g.dart';
 
 class LocationManualState {
   final bool isLoading;
@@ -30,13 +31,15 @@ class LocationManualState {
   }
 }
 
-class LocationManualNotifier extends StateNotifier<LocationManualState> {
+@riverpod
+class LocationManualNotifier extends _$LocationManualNotifier {
   Timer? _debounce;
-  final CityApi cityApi;
 
-  LocationManualNotifier({
-    required this.cityApi,
-  }) : super(const LocationManualState());
+  @override
+  LocationManualState build() {
+    ref.onDispose(() => _debounce?.cancel());
+    return const LocationManualState();
+  }
 
   void onChanged(String query) {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
@@ -51,6 +54,7 @@ class LocationManualNotifier extends StateNotifier<LocationManualState> {
       if (query.isEmpty) {
         state = state.copyWith(cities: []);
       } else {
+        final cityApi = ref.read(cityApiProvider);
         final response = await cityApi.getCities(keyword: query);
         state = state.copyWith(cities: response.data);
       }
@@ -61,17 +65,19 @@ class LocationManualNotifier extends StateNotifier<LocationManualState> {
     }
   }
 
-  void onSelectCity(
-    WidgetRef ref,
+  Future<void> onSelectCity(
     String id,
     String cityName,
     void Function() onLocationUpdate,
   ) async {
     try {
       state = state.copyWith(isLoading: true);
+      final cityApi = ref.read(cityApiProvider);
       final response = await cityApi.getCityDetail(id: id);
       if (response.data.position != null) {
-        await ref.read(prayerTimeProvider.notifier).changeLocation(
+        await ref
+            .read(prayerTimeProvider.notifier)
+            .changeLocation(
               response.data.position!.lat,
               response.data.position!.lng,
               cityName,
@@ -83,17 +89,4 @@ class LocationManualNotifier extends StateNotifier<LocationManualState> {
       state = state.copyWith(isLoading: false);
     }
   }
-
-  @override
-  void dispose() {
-    _debounce?.cancel();
-    super.dispose();
-  }
 }
-
-final locationManualProvider =
-    StateNotifierProvider<LocationManualNotifier, LocationManualState>((ref) {
-  final api = ref.read(cityApiProvider);
-
-  return LocationManualNotifier(cityApi: api);
-});

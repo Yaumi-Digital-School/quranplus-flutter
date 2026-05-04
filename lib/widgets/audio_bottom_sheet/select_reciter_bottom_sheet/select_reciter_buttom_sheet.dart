@@ -20,7 +20,7 @@ class _SelectRecitatorWidgetState extends ConsumerState<SelectRecitatorWidget> {
   @override
   Widget build(BuildContext context) {
     final SelectReciterBottomSheetState selectReciterState =
-        ref.watch(selectReciterBottomSheetProvider);
+        ref.watch(selectReciterProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,13 +56,13 @@ class _SelectRecitatorWidgetState extends ConsumerState<SelectRecitatorWidget> {
   ) {
     return () async {
       ref.read(audioRecitationProvider.notifier).pauseAudio();
-      await ref.read(selectReciterBottomSheetProvider.notifier).saveDataReciter(
+      await ref.read(selectReciterProvider.notifier).saveDataReciter(
             selectReciterState.reciterId!,
             selectReciterState.reciterName!,
           );
 
       await ref
-          .read(selectReciterBottomSheetProvider.notifier)
+          .read(selectReciterProvider.notifier)
           .backToAudioBottomSheet(
             selectReciterState.reciterId!,
             selectReciterState.reciterName!,

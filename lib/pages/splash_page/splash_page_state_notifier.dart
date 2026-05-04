@@ -3,74 +3,45 @@ import 'dart:async';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
+import 'package:qurantafsir_flutter/main.dart';
 import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
-import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 import 'package:qurantafsir_flutter/shared/core/models/app_update_info.dart';
-import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
-import 'package:qurantafsir_flutter/shared/core/services/deep_link_service.dart';
-import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
-import 'package:qurantafsir_flutter/shared/core/services/prayer_times_service.dart';
-import 'package:qurantafsir_flutter/shared/core/services/remote_config_service/remote_config_service.dart';
-import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
-import 'package:qurantafsir_flutter/shared/core/services/tadabbur_service.dart';
-import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/utils/app_update.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:version/version.dart';
+
+part 'splash_page_state_notifier.g.dart';
 
 class SplashPageState {}
 
-class SplashPageStateNotifier extends BaseStateNotifier<SplashPageState> {
-  SplashPageStateNotifier({
-    required AuthenticationService authenticationService,
-    required RemoteConfigService remoteConfigService,
-    required HabitDailySummaryService habitDailySummaryService,
-    required SharedPreferenceService sharedPreferenceService,
-    required PrayerTimesService prayerTimesService,
-    required DeepLinkService deepLinkService,
-    required TadabburService tadabburService,
-    required this.navigatorKey,
-  })  : _authenticationService = authenticationService,
-        _remoteConfigService = remoteConfigService,
-        _habitDailySummaryService = habitDailySummaryService,
-        _tadabburService = tadabburService,
-        _sharedPreferenceService = sharedPreferenceService,
-        _deepLinkService = deepLinkService,
-        _prayerTimesService = prayerTimesService,
-        super(
-          SplashPageState(),
-        );
-
-  final AuthenticationService _authenticationService;
-  final SharedPreferenceService _sharedPreferenceService;
-  final RemoteConfigService _remoteConfigService;
-  final PrayerTimesService _prayerTimesService;
-  final DeepLinkService _deepLinkService;
-  final TadabburService _tadabburService;
-  final HabitDailySummaryService _habitDailySummaryService;
-  final GlobalKey<NavigatorState> navigatorKey;
-  final DbLocal db = DbLocal();
-
-  late AppUpdateType? appUpdateType;
-
+@riverpod
+class SplashPageNotifier extends _$SplashPageNotifier {
   @override
+  SplashPageState build() => SplashPageState();
+
   Future<void> initStateNotifier({
     ConnectivityStatus? connectivityStatus,
   }) async {
+    final auth = ref.read(authenticationService);
+    final deepLink = ref.read(deepLinkService);
+    final prayerTimes = ref.read(prayerTimesService);
+    final remoteConfig = ref.read(remoteConfigService);
+    final tadabbur = ref.read(tadabburService);
+    final habitSummary = ref.read(habitDailySummaryService);
+
     try {
-      await _deepLinkService.init(navigatorKey);
-      await _authenticationService.initRepository();
-      _prayerTimesService.init();
+      await deepLink.init(navigatorKey);
+      await auth.initRepository();
+      prayerTimes.init();
 
-      if (connectivityStatus != null &&
-          connectivityStatus == ConnectivityStatus.isConnected) {
-        await _remoteConfigService.init();
-        await _tadabburService.syncTadabburPerAyahInformations();
+      if (connectivityStatus == ConnectivityStatus.isConnected) {
+        await remoteConfig.init();
+        await tadabbur.syncTadabburPerAyahInformations();
+        unawaited(auth.ping());
 
-        unawaited(_authenticationService.ping());
-
-        if (_authenticationService.isLoggedIn) {
-          await _habitDailySummaryService.syncHabit();
+        if (auth.isLoggedIn) {
+          await habitSummary.syncHabit();
         }
       }
     } catch (error, stackTrace) {
@@ -87,21 +58,16 @@ class SplashPageStateNotifier extends BaseStateNotifier<SplashPageState> {
     required BuildContext context,
     required ConnectivityStatus connectivityStatus,
   }) async {
-    AppUpdateInfo? appUpdateInfo;
+    if (connectivityStatus != ConnectivityStatus.isConnected) return null;
 
-    if (connectivityStatus == ConnectivityStatus.isConnected) {
-      PackageInfo info = await PackageInfo.fromPlatform();
+    final info = await PackageInfo.fromPlatform();
+    if (!context.mounted) return null;
 
-      if (context.mounted) {
-        appUpdateInfo = AppUpdateUtil.showAppUpdateStatus(
-          context: context,
-          remoteConfigService: _remoteConfigService,
-          currentVersion: Version.parse(info.version),
-          sharedPreferenceService: _sharedPreferenceService,
-        );
-      }
-    }
-
-    return appUpdateInfo;
+    return AppUpdateUtil.showAppUpdateStatus(
+      context: context,
+      remoteConfigService: ref.read(remoteConfigService),
+      currentVersion: Version.parse(info.version),
+      sharedPreferenceService: ref.read(sharedPreferenceServiceProvider),
+    );
   }
 }

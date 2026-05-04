@@ -1,11 +1,13 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/core/models/user.dart';
-import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
-import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
-import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart' show SignInResult;
 import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
 import 'package:qurantafsir_flutter/shared/utils/result_status.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'habit_state_notifier.g.dart';
 
 class HabitPageState {
   HabitPageState({
@@ -34,35 +36,19 @@ class HabitPageState {
   bool get isLoading => authenticationStatus == null;
 }
 
-class HabitPageStateNotifier extends BaseStateNotifier<HabitPageState> {
-  HabitPageStateNotifier({
-    required AuthenticationService repository,
-    required SharedPreferenceService sharedPreferenceService,
-  })  : _repository = repository,
-        _sharedPreferenceService = sharedPreferenceService,
-        super(HabitPageState());
-
-  final AuthenticationService _repository;
-  final SharedPreferenceService _sharedPreferenceService;
-
+@riverpod
+class HabitPageNotifier extends _$HabitPageNotifier {
   @override
-  Future<void> initStateNotifier() async {
-    _getToken();
-  }
-
-  void _getToken() {
-    var token = _sharedPreferenceService.getApiToken();
-
+  HabitPageState build() {
+    final token = ref.read(sharedPreferenceServiceProvider).getApiToken();
     if (token.isEmpty) {
-      state = state.copyWith(
+      return HabitPageState(
         authenticationStatus: AuthenticationStatus.unauthenticated,
       );
-    } else {
-      state = state.copyWith(
-        authenticationStatus: AuthenticationStatus.authenticated,
-        token: token,
-      );
     }
+    return HabitPageState(
+      authenticationStatus: AuthenticationStatus.authenticated,
+    );
   }
 
   Future<void> signIn({
@@ -72,23 +58,16 @@ class HabitPageStateNotifier extends BaseStateNotifier<HabitPageState> {
     required SignInType type,
   }) async {
     state = state.copyWith(resultStatus: ResultStatus.inProgress);
-
     try {
-      final SignInResult result = await _repository.signIn(
-        type: type,
-      );
-
+      final result = await ref.read(authenticationService).signIn(type: type);
       if (result == SignInResult.failedAccountDeleted) {
         state = state.copyWith(
           authenticationStatus: AuthenticationStatus.unknown,
           resultStatus: ResultStatus.canceled,
         );
-
         onAccountDeletedError.call();
-
         return;
       }
-
       state = state.copyWith(
         authenticationStatus: AuthenticationStatus.authenticated,
         resultStatus: ResultStatus.success,

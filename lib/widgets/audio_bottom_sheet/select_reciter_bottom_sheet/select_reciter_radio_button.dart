@@ -31,14 +31,14 @@ class _RadioButtonSelectReciterWidgetState
     final AsyncValue<ButtonAudioState> buttonState =
         ref.watch(buttonAudioStateProvider);
     SelectReciterBottomSheetState selectReciter =
-        ref.watch(selectReciterBottomSheetProvider);
+        ref.watch(selectReciterProvider);
 
     return RadioGroup<int>(
       groupValue: selectReciter.reciterId,
       onChanged: (value) {
         if (value != null) {
           ref
-              .read(selectReciterBottomSheetProvider.notifier)
+              .read(selectReciterProvider.notifier)
               .updateRadioButton(
                 value,
                 selectReciter.listReciter
@@ -135,7 +135,7 @@ class _RadioButtonSelectReciterWidgetState
         ref.read(audioRecitationProvider.notifier).stopAndResetAudioPlayer();
         playedId = 0;
         await ref
-            .read(selectReciterBottomSheetProvider.notifier)
+            .read(selectReciterProvider.notifier)
             .playPreviewAudio(
               selectReciter.listReciter[index].id,
             );

@@ -159,7 +159,7 @@ class _AudioBottomSheetWidgetState
           behavior: HitTestBehavior.opaque,
           onTap: () async {
             ref.read(audioRecitationProvider.notifier).changeReciter(
-                  ref.read(selectReciterBottomSheetProvider.notifier),
+                  ref.read(selectReciterProvider.notifier),
                 );
             ref.read(audioRecitationProvider.notifier).pauseAudio();
 

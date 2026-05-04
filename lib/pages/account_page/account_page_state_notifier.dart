@@ -1,11 +1,12 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/core/models/user.dart';
-import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
-import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
-import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/utils/form_status.dart';
 import 'package:qurantafsir_flutter/shared/utils/result_status.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'account_page_state_notifier.g.dart';
 
 class AccountPageState {
   AccountPageState({
@@ -51,110 +52,82 @@ class AccountPageState {
   }
 }
 
-class AccountPageStateNotifier extends BaseStateNotifier<AccountPageState> {
-  AccountPageStateNotifier({
-    required AuthenticationService repository,
-    required SharedPreferenceService sharedPreferenceService,
-  })  : _repository = repository,
-        _sharedPreferenceService = sharedPreferenceService,
-        super(AccountPageState());
-
-  final AuthenticationService _repository;
-  final SharedPreferenceService _sharedPreferenceService;
+@riverpod
+class AccountPageNotifier extends _$AccountPageNotifier {
   late String _token;
 
   @override
-  Future<void> initStateNotifier() async {
-    var token = _sharedPreferenceService.getApiToken();
-    _token = token;
-    _getUserProfile();
+  AccountPageState build() {
+    _token = ref.read(sharedPreferenceServiceProvider).getApiToken();
+    Future.microtask(_getUserProfile);
+    return AccountPageState();
   }
 
-  void nameChanged(name) async {
-    FormStatus status = FormStatus.dirty;
-    var valid = _checkValidation(
-      name,
-      state.email,
-      _isDate(state.dateOfMonth, state.month, state.year),
-      state.gender,
-    );
-
-    if (valid) {
-      status = FormStatus.valid;
-    }
-
+  void nameChanged(name) {
+    final status =
+        _checkValidation(
+          name,
+          state.email,
+          _isDate(state.dateOfMonth, state.month, state.year),
+          state.gender,
+        )
+        ? FormStatus.valid
+        : FormStatus.dirty;
     state = state.copyWith(formStatus: status, name: name);
   }
 
-  void genderChanged(gender) async {
-    FormStatus status = FormStatus.dirty;
-    var valid = _checkValidation(
-      state.name,
-      state.email,
-      _isDate(state.dateOfMonth, state.month, state.year),
-      gender,
-    );
-
-    if (valid) {
-      status = FormStatus.valid;
-    }
-
+  void genderChanged(gender) {
+    final status =
+        _checkValidation(
+          state.name,
+          state.email,
+          _isDate(state.dateOfMonth, state.month, state.year),
+          gender,
+        )
+        ? FormStatus.valid
+        : FormStatus.dirty;
     state = state.copyWith(formStatus: status, gender: gender);
   }
 
-  void dateOfMonthChanged(String dateOfMonth) async {
-    FormStatus status = FormStatus.dirty;
-    var valid = _checkValidation(
-      state.name,
-      state.email,
-      _isDate(dateOfMonth, state.month, state.year),
-      state.gender,
-    );
-
-    if (valid) {
-      status = FormStatus.valid;
-    }
-
+  void dateOfMonthChanged(String dateOfMonth) {
+    final status =
+        _checkValidation(
+          state.name,
+          state.email,
+          _isDate(dateOfMonth, state.month, state.year),
+          state.gender,
+        )
+        ? FormStatus.valid
+        : FormStatus.dirty;
     state = state.copyWith(formStatus: status, dateOfMonth: dateOfMonth);
   }
 
-  void monthChanged(String month) async {
-    FormStatus status = FormStatus.dirty;
-    var newMonth = month.length == 1 ? '0$month' : month;
-
-    var valid = _checkValidation(
-      state.name,
-      state.email,
-      _isDate(state.dateOfMonth, newMonth, state.year),
-      state.gender,
-    );
-
-    if (valid) {
-      status = FormStatus.valid;
-    }
-
+  void monthChanged(String month) {
+    final newMonth = month.length == 1 ? '0$month' : month;
+    final status =
+        _checkValidation(
+          state.name,
+          state.email,
+          _isDate(state.dateOfMonth, newMonth, state.year),
+          state.gender,
+        )
+        ? FormStatus.valid
+        : FormStatus.dirty;
     state = state.copyWith(formStatus: status, month: month);
   }
 
-  void yearChanged(String year) async {
+  void yearChanged(String year) {
     if (year.length == 4) {
-      FormStatus status = FormStatus.dirty;
-
-      if (int.parse(year) < 1900) {
-        year = '1900';
-      }
-
-      var valid = _checkValidation(
-        state.name,
-        state.email,
-        _isDate(state.dateOfMonth, state.month, year),
-        state.gender,
-      );
-
-      if (valid) {
-        status = FormStatus.valid;
-      }
-
+      if (int.parse(year) < 1900) year = '1900';
+      final status =
+          _checkValidation(
+            state.name,
+            state.email,
+            _isDate(state.dateOfMonth, state.month, year),
+            state.gender,
+          )
+          ? FormStatus.valid
+          : FormStatus.dirty;
       state = state.copyWith(formStatus: status, year: year);
     } else if (year.isEmpty) {
       state = state.copyWith(year: '');
@@ -162,7 +135,8 @@ class AccountPageStateNotifier extends BaseStateNotifier<AccountPageState> {
   }
 
   void saveButtonChecked(Function() callback) async {
-    var valid = state.name.isNotEmpty &&
+    final valid =
+        state.name.isNotEmpty &&
         state.email.isNotEmpty &&
         _isDate(state.dateOfMonth, state.month, state.year).isNotEmpty &&
         state.gender.isNotEmpty;
@@ -176,9 +150,9 @@ class AccountPageStateNotifier extends BaseStateNotifier<AccountPageState> {
 
   String _isDate(String dateOfMonth, String month, String year) {
     try {
-      var formattedDate =
-          DateFormat('d-M-yyyy').parseStrict('$dateOfMonth-$month-$year');
-
+      final formattedDate = DateFormat(
+        'd-M-yyyy',
+      ).parseStrict('$dateOfMonth-$month-$year');
       return formattedDate.toString();
     } catch (error, stackTrace) {
       FirebaseCrashlytics.instance.recordError(
@@ -186,17 +160,11 @@ class AccountPageStateNotifier extends BaseStateNotifier<AccountPageState> {
         stackTrace,
         reason: 'error on _isDate() method',
       );
-
       return '';
     }
   }
 
-  bool _checkValidation(
-    String name,
-    String email,
-    String date,
-    String gender,
-  ) {
+  bool _checkValidation(String name, String email, String date, String gender) {
     return ((name.isNotEmpty && email.isNotEmpty) ||
         date.isNotEmpty ||
         gender.isNotEmpty);
@@ -204,10 +172,8 @@ class AccountPageStateNotifier extends BaseStateNotifier<AccountPageState> {
 
   Future<void> _getUserProfile() async {
     state = state.copyWith(resultStatus: ResultStatus.inProgress);
-
     try {
-      var user = await _repository.getUserProfile(_token);
-
+      final user = await ref.read(authenticationService).getUserProfile(_token);
       state = state.copyWith(
         resultStatus: ResultStatus.success,
         formStatus: FormStatus.pure,
@@ -230,27 +196,25 @@ class AccountPageStateNotifier extends BaseStateNotifier<AccountPageState> {
         stackTrace,
         reason: 'error on _getUserProfile() method',
       );
-
       state = state.copyWith(resultStatus: ResultStatus.failure);
     }
   }
 
   Future<void> _updateUserProfile() async {
     state = state.copyWith(resultStatus: ResultStatus.inProgress);
-
-    var user = User(
+    final user = User(
       name: state.name,
       email: state.email,
       birthDate: _isDate(state.dateOfMonth, state.month, state.year),
       gender: state.gender,
     );
-
     try {
-      var isSuccess = await _repository.updateUserProfile(_token, user);
-
+      final isSuccess = await ref
+          .read(authenticationService)
+          .updateUserProfile(_token, user);
       if (isSuccess) {
         state = state.copyWith(resultStatus: ResultStatus.success);
-        _setUsername(state.name);
+        await ref.read(sharedPreferenceServiceProvider).setUsername(state.name);
       } else {
         state = state.copyWith(resultStatus: ResultStatus.failure);
       }
@@ -260,12 +224,7 @@ class AccountPageStateNotifier extends BaseStateNotifier<AccountPageState> {
         stackTrace,
         reason: 'error on _updateUserProfile() method',
       );
-
       state = state.copyWith(resultStatus: ResultStatus.failure);
     }
-  }
-
-  Future<void> _setUsername(String name) async {
-    await _sharedPreferenceService.setUsername(name);
   }
 }

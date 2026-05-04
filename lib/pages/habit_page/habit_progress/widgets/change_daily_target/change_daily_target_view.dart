@@ -5,13 +5,12 @@ import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
-import 'package:qurantafsir_flutter/shared/ui/state_notifier_connector.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/text_field.dart';
 
 const list = ['Pages', 'Juz'];
 
-class ChangeDailyTargetView extends StatefulWidget {
+class ChangeDailyTargetView extends ConsumerStatefulWidget {
   final HabitDailySummary habitDailySummary;
   const ChangeDailyTargetView({
     super.key,
@@ -19,117 +18,111 @@ class ChangeDailyTargetView extends StatefulWidget {
   });
 
   @override
-  State<ChangeDailyTargetView> createState() => _ChangeDailyTargetViewState();
+  ConsumerState<ChangeDailyTargetView> createState() =>
+      _ChangeDailyTargetViewState();
 }
 
-class _ChangeDailyTargetViewState extends State<ChangeDailyTargetView> {
+class _ChangeDailyTargetViewState extends ConsumerState<ChangeDailyTargetView> {
   String inputUser = "1";
   String typeTarget = "Pages";
 
   @override
-  Widget build(BuildContext context) {
-    return StateNotifierConnector<ChangeDailyTargetStateNotifier,
-        ChangeDailyTargetState>(
-      stateNotifierProvider: StateNotifierProvider<
-          ChangeDailyTargetStateNotifier, ChangeDailyTargetState>(
-        (Ref ref) {
-          return ChangeDailyTargetStateNotifier(
-            habitDailySummary: widget.habitDailySummary,
-          );
-        },
-      ),
-      onStateNotifierReady: (notifier, ref) async =>
-          await notifier.initStateNotifier(),
-      builder: (
-        BuildContext context,
-        ChangeDailyTargetState state,
-        ChangeDailyTargetStateNotifier notifier,
-        WidgetRef ref,
-      ) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-          child: state.isLoading
-              ? const SizedBox(
-                  height: 32,
-                  width: 32,
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Set your daily target',
-                      style: QPTextStyle.getSubHeading2SemiBold(context),
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    Text(
-                      'Set a daily reading target to motivate and help you stay active.',
-                      style: QPTextStyle.getBody3Regular(context),
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    Text(
-                      'Daily Target',
-                      style: QPTextStyle.getSubHeading4Medium(context),
-                    ),
-                    const SizedBox(
-                      height: 9,
-                    ),
-                    Row(
-                      children: [
-                        InputTotalPagesTextField(
-                          defaultValue: int.parse(inputUser),
-                          onChanged: (value) {
-                            inputUser = value;
-                          },
-                        ),
-                        const SizedBox(width: 8),
-                        DropDownListChangeTarget(
-                          onChanged: (type) {
-                            notifier.changeTargetType(type);
-                            typeTarget = type;
-                          },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    if (state.targetType == 'Juz') ...<Widget>[
-                      Text(
-                        '1 juz means 20 pages',
-                        style: QPTextStyle.getDescription2Regular(context),
-                      ),
-                      const SizedBox(height: 8),
-                    ],
-                    Text(
-                      'Changing this will only apply to today and future targets',
-                      style: QPTextStyle.getDescription2Regular(context),
-                    ),
-                    const SizedBox(height: 13),
-                    ButtonSecondary(
-                      label: 'Save',
-                      onTap: () async {
-                        if (inputUser != "" && int.parse(inputUser) > 0) {
-                          await notifier.changeDailyTarget(
-                            int.parse(inputUser),
-                            typeTarget,
-                          );
-                        }
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(changeDailyTargetProvider.notifier)
+          .init(widget.habitDailySummary);
+    });
+  }
 
-                        if (context.mounted) {
-                          Navigator.pop(context, true);
-                        }
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(changeDailyTargetProvider);
+    final notifier = ref.read(changeDailyTargetProvider.notifier);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+      child: state.isLoading
+          ? const SizedBox(
+              height: 32,
+              width: 32,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Set your daily target',
+                  style: QPTextStyle.getSubHeading2SemiBold(context),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  'Set a daily reading target to motivate and help you stay active.',
+                  style: QPTextStyle.getBody3Regular(context),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                Text(
+                  'Daily Target',
+                  style: QPTextStyle.getSubHeading4Medium(context),
+                ),
+                const SizedBox(
+                  height: 9,
+                ),
+                Row(
+                  children: [
+                    InputTotalPagesTextField(
+                      defaultValue: int.parse(inputUser),
+                      onChanged: (value) {
+                        inputUser = value;
+                      },
+                    ),
+                    const SizedBox(width: 8),
+                    DropDownListChangeTarget(
+                      onChanged: (type) {
+                        notifier.changeTargetType(type);
+                        typeTarget = type;
                       },
                     ),
                   ],
                 ),
-        );
-      },
+                const SizedBox(height: 8),
+                if (state.targetType == 'Juz') ...<Widget>[
+                  Text(
+                    '1 juz means 20 pages',
+                    style: QPTextStyle.getDescription2Regular(context),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+                Text(
+                  'Changing this will only apply to today and future targets',
+                  style: QPTextStyle.getDescription2Regular(context),
+                ),
+                const SizedBox(height: 13),
+                ButtonSecondary(
+                  label: 'Save',
+                  onTap: () async {
+                    if (inputUser != "" && int.parse(inputUser) > 0) {
+                      await notifier.changeDailyTarget(
+                        int.parse(inputUser),
+                        typeTarget,
+                      );
+                    }
+
+                    if (context.mounted) {
+                      Navigator.pop(context, true);
+                    }
+                  },
+                ),
+              ],
+            ),
     );
   }
 }
@@ -172,7 +165,6 @@ class DropDownListChangeTargetState extends State<DropDownListChangeTarget> {
             size: 15,
           ),
           onChanged: (String? value) {
-            // This is called when the user selects an item.
             setState(() {
               dropdownValue = value!;
               widget.onChanged(value);

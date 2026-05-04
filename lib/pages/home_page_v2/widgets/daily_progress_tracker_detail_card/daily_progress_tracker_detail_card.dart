@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/daily_progress_tracker_detail_card/history_info_box.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
-import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart';
@@ -183,132 +182,32 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
               children: [
                 if (lastTrackedData != null) ...[
                   Expanded(
-                    child: _buildHistoryInfoBox(
+                    child: HistoryInfoBox(
                       title: 'Last Tracked',
                       icon: Icons.play_circle,
                       mainInfo: lastTrackedData!.surahName,
                       description: 'Page ${lastTrackedData!.page}',
-                      startPageinIndex: lastTrackedData!.page - 1,
-                      context: context,
+                      startPageInIndex: lastTrackedData!.page - 1,
+                      onRefreshParentWidget: onRefreshParentWidget,
                     ),
                   ),
-                  const SizedBox(
-                    width: 12,
-                  ),
+                  const SizedBox(width: 12),
                 ],
                 if (lastBookmark == null)
-                  const Expanded(
-                    child: SizedBox(),
-                  ),
+                  const Expanded(child: SizedBox()),
                 if (lastBookmark != null)
                   Expanded(
-                    child: _buildHistoryInfoBox(
+                    child: HistoryInfoBox(
                       title: 'Last Bookmark',
                       icon: Icons.bookmark,
                       mainInfo: lastBookmark!.surahName,
                       description: 'Page ${lastBookmark!.page}',
-                      startPageinIndex: lastBookmark!.page - 1,
-                      context: context,
+                      startPageInIndex: lastBookmark!.page - 1,
+                      onRefreshParentWidget: onRefreshParentWidget,
                     ),
                   ),
                 if (lastTrackedData == null)
-                  const Expanded(
-                    child: SizedBox(),
-                  ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHistoryInfoBox({
-    required String title,
-    required IconData icon,
-    required String mainInfo,
-    required String description,
-    required int startPageinIndex,
-    required BuildContext context,
-  }) {
-    return GestureDetector(
-      onTap: () async {
-        final dynamic param = await Navigator.pushNamed(
-          context,
-          RoutePaths.routeSurahPage,
-          arguments: SuratPageV3Param(
-            startPageInIndex: startPageinIndex,
-            isStartTracking: true,
-          ),
-        );
-
-        if (onRefreshParentWidget != null &&
-            param != null &&
-            param is SuratPageV3OnPopParam) {
-          onRefreshParentWidget!();
-        }
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 8,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(
-            Radius.circular(8),
-          ),
-          color: Theme.of(context).colorScheme.secondaryContainer,
-        ),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: QPColors.brandFair,
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: QPTextStyle.getDescription2Regular(context).copyWith(
-                    color: QPColors.getColorBasedTheme(
-                      dark: QPColors.whiteHeavy,
-                      light: QPColors.brandFair,
-                      brown: QPColors.brownModeMassive,
-                      context: context,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 4,
-                ),
-                Text(
-                  mainInfo,
-                  style: QPTextStyle.getButton2SemiBold(context).copyWith(
-                    color: QPColors.getColorBasedTheme(
-                      dark: QPColors.whiteFair,
-                      light: QPColors.blackFair,
-                      brown: QPColors.brownModeMassive,
-                      context: context,
-                    ),
-                  ),
-                ),
-                Text(
-                  description,
-                  style: QPTextStyle.baseTextStyle.copyWith(
-                    fontWeight: QPFontWeight.regular,
-                    fontSize: 8,
-                    color: QPColors.getColorBasedTheme(
-                      dark: QPColors.blackRoot,
-                      light: QPColors.blackFair,
-                      brown: QPColors.brownModeMassive,
-                      context: context,
-                    ),
-                  ),
-                ),
+                  const Expanded(child: SizedBox()),
               ],
             ),
           ],

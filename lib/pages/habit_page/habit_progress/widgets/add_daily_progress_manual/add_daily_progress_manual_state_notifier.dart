@@ -3,22 +3,24 @@ import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_progress.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_progress.dart';
-import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
 
+part 'add_daily_progress_manual_state_notifier.g.dart';
+
 class AddDailyProgressManualState {
-  bool isLoading = true;
-  bool? isError = false;
-  bool? isSuccessSubmit = false;
-  HabitDailySummary currentProgress;
+  bool isLoading;
+  bool? isError;
+  bool? isSuccessSubmit;
+  HabitDailySummary? currentProgress;
   List<HabitProgress> progressHistory;
 
   AddDailyProgressManualState({
-    required this.currentProgress,
-    required this.progressHistory,
-    required this.isLoading,
-    this.isError,
-    this.isSuccessSubmit,
+    this.currentProgress,
+    this.progressHistory = const [],
+    this.isLoading = true,
+    this.isError = false,
+    this.isSuccessSubmit = false,
   });
 
   AddDailyProgressManualState copyWith({
@@ -38,27 +40,20 @@ class AddDailyProgressManualState {
   }
 }
 
-class AddDailyProgressManualStateNotifier
-    extends BaseStateNotifier<AddDailyProgressManualState> {
-  AddDailyProgressManualStateNotifier({
-    required HabitDailySummary habitDailySummary,
-  })  : _habitDailySummary = habitDailySummary,
-        super(AddDailyProgressManualState(
-          currentProgress: habitDailySummary,
-          progressHistory: [],
-          isLoading: true,
-        ));
-  late DbLocal db;
-  final HabitDailySummary _habitDailySummary;
+@riverpod
+class AddDailyProgressManualNotifier
+    extends _$AddDailyProgressManualNotifier {
+  final DbLocal _db = DbLocal();
 
   @override
-  Future<void> initStateNotifier() async {
+  AddDailyProgressManualState build() => AddDailyProgressManualState();
+
+  Future<void> init(HabitDailySummary habitDailySummary) async {
     try {
-      state = state.copyWith(isLoading: true);
-      db = DbLocal();
+      state = state.copyWith(isLoading: true, currentProgress: habitDailySummary);
       List<HabitProgress> list = [];
-      if (_habitDailySummary.id != null) {
-        list = await db.getProgressHistory(_habitDailySummary.id!);
+      if (habitDailySummary.id != null) {
+        list = await _db.getProgressHistory(habitDailySummary.id!);
       }
       state = state.copyWith(
         isLoading: false,
@@ -69,45 +64,39 @@ class AddDailyProgressManualStateNotifier
       FirebaseCrashlytics.instance.recordError(
         error,
         stackTrace,
-        reason: 'error on initStateNotifier() method in daily progress manual',
+        reason: 'error on init() method in daily progress manual',
       );
-
-      state = state.copyWith(
-        isLoading: false,
-        isError: true,
-      );
+      state = state.copyWith(isLoading: false, isError: true);
     }
   }
 
   Future<void> addDailyProgressManual(int totalPages) async {
-    try {
-      state = state.copyWith(
-        isLoading: true,
-      );
-      final currentDay = DateTime.now();
+    final habitDailySummary = state.currentProgress;
+    if (habitDailySummary == null) return;
 
+    try {
+      state = state.copyWith(isLoading: true);
+      final currentDay = DateTime.now();
       late int id;
 
-      if (_habitDailySummary.id != null) {
-        id = _habitDailySummary.id!;
-        await db.updateHabitDailySummary(
+      if (habitDailySummary.id != null) {
+        id = habitDailySummary.id!;
+        await _db.updateHabitDailySummary(
           id: id,
           date: currentDay,
-          target: _habitDailySummary.target,
-          totalPages: totalPages + _habitDailySummary.totalPages,
+          target: habitDailySummary.target,
+          totalPages: totalPages + habitDailySummary.totalPages,
         );
-      }
-      if (_habitDailySummary.id == null) {
-        id = await db.insertHabitDailySummary(
+      } else {
+        id = await _db.insertHabitDailySummary(
           date: currentDay,
-          target: _habitDailySummary.target,
+          target: habitDailySummary.target,
           totalPages: totalPages,
         );
       }
-      var uuid = const Uuid();
-      var v1 = uuid.v1();
 
-      await db.insertProgressHistory(
+      final v1 = const Uuid().v1();
+      await _db.insertProgressHistory(
         date: currentDay,
         habitDailySummaryId: id,
         type: HabitProgressType.manual,
@@ -127,11 +116,7 @@ class AddDailyProgressManualStateNotifier
         stackTrace,
         reason: 'error on addDailyProgressManual() method',
       );
-
-      state = state.copyWith(
-        isLoading: false,
-        isError: true,
-      );
+      state = state.copyWith(isLoading: false, isError: true);
     }
   }
 }

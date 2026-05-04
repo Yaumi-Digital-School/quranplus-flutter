@@ -5,7 +5,7 @@ import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
-import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/state_notifiers/theme_state_notifier.dart';
 
 class BaseWidgetBottomSheet extends ConsumerStatefulWidget {
   const BaseWidgetBottomSheet({

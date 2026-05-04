@@ -1,11 +1,14 @@
+import 'dart:io';
+
 import 'package:adhan_dart/adhan_dart.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:qurantafsir_flutter/shared/constants/prayer_times.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/services/prayer_times_service.dart';
-import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/utils/number_util.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'prayer_times_notifier.g.dart';
 
 class PrayerTimeState {
   PrayerTimeState({
@@ -59,14 +62,21 @@ class PrayerTimeState {
   }
 }
 
-class PrayerTimeStateNotifier extends BaseStateNotifier<PrayerTimeState> {
-  PrayerTimeStateNotifier(
-    this.prayerTimesService,
-  ) : super(PrayerTimeState(
-          locationIsOn: false,
-        ));
+@riverpod
+class PrayerTimeNotifier extends _$PrayerTimeNotifier {
+  late PrayerTimesService _prayerTimesService;
 
-  final PrayerTimesService prayerTimesService;
+  @override
+  PrayerTimeState build() {
+    _prayerTimesService = ref.watch(prayerTimesService);
+    final cityName = _prayerTimesService.getCityName();
+    return PrayerTimeState(
+      locationIsOn: false,
+      isLoading: false,
+      prayerTimes: _prayerTimesService.getPrayerTimesByDate(),
+      cityName: cityName,
+    );
+  }
 
   Future<void> checkGpsServices() async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -104,33 +114,43 @@ class PrayerTimeStateNotifier extends BaseStateNotifier<PrayerTimeState> {
     double longitude,
     String cityName,
   ) async {
-    await prayerTimesService.setCoordinates(latitude, longitude, cityName);
-    await prayerTimesService.setupPrayerTimesReminder();
+    await _prayerTimesService.setCoordinates(latitude, longitude, cityName);
+    if (Platform.isIOS) {
+      await _prayerTimesService.setupMultiDayPrayerTimesReminder();
+    } else {
+      await _prayerTimesService.setupPrayerTimesReminder();
+    }
   }
 
   Future<void> updatePrayerTimes(
     String calculationMethod,
     String madhab,
   ) async {
-    final updatedPrayerTimes = prayerTimesService.getTodayPrayerTimes(
+    final updatedPrayerTimes = _prayerTimesService.getPrayerTimesByDate(
       calculationMethod: calculationMethod,
       madhab: madhab,
     );
     state = state.copyWith(prayerTimes: updatedPrayerTimes);
+
+    if (Platform.isIOS) {
+      await _prayerTimesService.setupMultiDayPrayerTimesReminder(
+        calculationMethod: calculationMethod,
+        madhab: madhab,
+      );
+    } else {
+      await _prayerTimesService.setupPrayerTimesReminder(
+        calculationMethod: calculationMethod,
+        madhab: madhab,
+      );
+    }
   }
 
-  @override
-  Future<void> initStateNotifier() async {
-    final updatedCityName = prayerTimesService.getCityName();
+  void refresh() {
+    final cityName = _prayerTimesService.getCityName();
     state = state.copyWith(
       isLoading: false,
-      prayerTimes: prayerTimesService.getTodayPrayerTimes(),
-      cityName: updatedCityName,
+      prayerTimes: _prayerTimesService.getPrayerTimesByDate(),
+      cityName: cityName,
     );
   }
 }
-
-final prayerTimeProvider =
-    StateNotifierProvider<PrayerTimeStateNotifier, PrayerTimeState>((ref) {
-  return PrayerTimeStateNotifier(ref.watch(prayerTimesService));
-});

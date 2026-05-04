@@ -2,9 +2,11 @@ import 'dart:developer';
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/tadabbur_api.dart';
-import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'read_tadabbur_state_notifier.g.dart';
 
 class ReadTadabburState {
   bool isLoading;
@@ -30,26 +32,20 @@ class ReadTadabburState {
   }
 }
 
-class ReadTadabburStateNotifier extends BaseStateNotifier<ReadTadabburState> {
-  ReadTadabburStateNotifier({
-    required TadabburApi tadabburApi,
-    required int surahId,
-  })  : _tadabburApi = tadabburApi,
-        _surahId = surahId,
-        super(ReadTadabburState());
-  final TadabburApi _tadabburApi;
-  final int _surahId;
-
+@riverpod
+class ReadTadabburNotifier extends _$ReadTadabburNotifier {
   @override
-  initStateNotifier() async {
-    await _getListTadabbur(_surahId);
+  ReadTadabburState build(int surahId) {
+    Future.microtask(() => _getListTadabbur(surahId));
+    return ReadTadabburState();
   }
 
   Future<void> _getListTadabbur(int surahId) async {
+    final api = ref.read(tadabburApiProvider);
     try {
       state = state.copyWith(isLoading: true, isError: false);
       final HttpResponse<List<TadabburItemResponse>> result =
-          await _tadabburApi.getListTadabburOfSurah(surahId: surahId);
+          await api.getListTadabburOfSurah(surahId: surahId);
       state = state.copyWith(isLoading: false, listTadabbur: result.data);
     } catch (error, stackTrace) {
       FirebaseCrashlytics.instance.recordError(
@@ -57,7 +53,6 @@ class ReadTadabburStateNotifier extends BaseStateNotifier<ReadTadabburState> {
         stackTrace,
         reason: 'error on _getListTadabbur() method',
       );
-
       log(error.toString());
       state = state.copyWith(isLoading: false, isError: true);
     }

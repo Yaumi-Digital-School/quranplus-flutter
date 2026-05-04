@@ -1,46 +1,35 @@
-import 'package:qurantafsir_flutter/shared/core/apis/model/user_response.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/user_api.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
-import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
-import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
-import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/model/user_response.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'account_deletion_view_state_notifier.g.dart';
 
 class AccountDeletionViewState {}
 
-class AccountDeletionViewStateNotifier
-    extends BaseStateNotifier<AccountDeletionViewState> {
-  AccountDeletionViewStateNotifier({
-    required UserApi userApi,
-    required SharedPreferenceService sharedPreferenceService,
-    required AuthenticationService authenticationService,
-  })  : _userApi = userApi,
-        _authenticationService = authenticationService,
-        _sharedPreferenceService = sharedPreferenceService,
-        super(
-          AccountDeletionViewState(),
-        );
-
-  final UserApi _userApi;
-  final SharedPreferenceService _sharedPreferenceService;
-  final AuthenticationService _authenticationService;
-
+@riverpod
+class AccountDeletionViewNotifier extends _$AccountDeletionViewNotifier {
   @override
-  initStateNotifier() {}
+  AccountDeletionViewState build() => AccountDeletionViewState();
 
   Future<bool> deleteAccount() async {
-    HttpResponse<UserResponse> response = await _userApi.deleteUser(
-      token: _sharedPreferenceService.getApiToken(),
+    final sp = ref.read(sharedPreferenceServiceProvider);
+    final userApi = ref.read(userApiProvider);
+    final auth = ref.read(authenticationService);
+
+    HttpResponse<UserResponse> response = await userApi.deleteUser(
+      token: sp.getApiToken(),
     );
 
     if (response.response.statusCode != 200) {
       return false;
     }
 
-    await _authenticationService.signOut();
-    await _sharedPreferenceService.removeApiToken();
-    await _sharedPreferenceService.removeUsername();
-    await _sharedPreferenceService.removeLastSync();
+    await auth.signOut();
+    await sp.removeApiToken();
+    await sp.removeUsername();
+    await sp.removeLastSync();
     await DbLocal().clearTableHabit();
 
     return true;

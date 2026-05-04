@@ -11,24 +11,21 @@ final Provider<AudioRecitationHandler> audioHandler =
   return AudioRecitationHandler();
 });
 
-final AutoDisposeStreamProvider<Duration> currentDurationProvider =
+final StreamProvider<Duration> currentDurationProvider =
     StreamProvider.autoDispose<Duration>((ref) {
   final AudioRecitationHandler currentAudioHandler = ref.watch(audioHandler);
-
   return currentAudioHandler.getPositionStream();
 });
 
-final AutoDisposeStreamProvider<Duration?> totalDurationProvider =
+final StreamProvider<Duration?> totalDurationProvider =
     StreamProvider.autoDispose<Duration?>((ref) {
   final AudioRecitationHandler currentAudioHandler = ref.watch(audioHandler);
-
   return currentAudioHandler.getDurationStream();
 });
 
-final AutoDisposeStreamProvider<ButtonAudioState> buttonAudioStateProvider =
+final StreamProvider<ButtonAudioState> buttonAudioStateProvider =
     StreamProvider.autoDispose<ButtonAudioState>((ref) {
   final AudioRecitationHandler currentAudioHandler = ref.watch(audioHandler);
-
   return currentAudioHandler.getPlayerStateStream().map((event) {
     final isPlaying = event.playing;
     final processingState = event.processingState;
@@ -47,8 +44,5 @@ final AutoDisposeStreamProvider<ButtonAudioState> buttonAudioStateProvider =
 
 final Provider<AudioApi> audioApiProvider = Provider<AudioApi>((ref) {
   final DioService dioService = ref.watch(dioServiceProvider);
-
-  return AudioApi(
-    dioService.getDioWithAccessToken(),
-  );
+  return AudioApi(dioService.getDioWithAccessToken());
 });

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -27,6 +29,7 @@ import 'package:qurantafsir_flutter/shared/core/services/authentication_service.
 import 'package:qurantafsir_flutter/shared/core/services/notification_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/state_notifiers/theme_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
 import 'package:qurantafsir_flutter/shared/utils/prayer_times.dart';
 import 'package:workmanager/workmanager.dart';
@@ -43,6 +46,10 @@ Future<void> main() async {
       SharedPreferenceService();
   await sharedPreferenceService.init();
   await NotificationService().init();
+
+  if (Platform.isIOS) {
+    await NotificationService().requestPermissions();
+  }
 
   await Workmanager().initialize(callbackDispatcher);
 
@@ -112,10 +119,6 @@ class MyApp extends ConsumerStatefulWidget {
 class _MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(themeProvider.notifier).initStateNotifier();
-    });
-
     super.initState();
   }
 

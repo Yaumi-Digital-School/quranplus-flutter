@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
@@ -10,6 +9,9 @@ import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
 import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'select_reciter_state_notifier.g.dart';
 
 class SelectReciterBottomSheetState {
   const SelectReciterBottomSheetState({
@@ -47,18 +49,24 @@ class SelectReciterBottomSheetState {
   }
 }
 
-class SelectReciterStateNotifier
-    extends StateNotifier<SelectReciterBottomSheetState> {
-  SelectReciterStateNotifier(
-    AudioRecitationHandler audioHandler,
-    super.state,
-    SharedPreferenceService sharedPreferenceService,
-  )   : _sharedPreferenceService = sharedPreferenceService,
-        _audioHandler = audioHandler;
+@Riverpod(keepAlive: true)
+class SelectReciterNotifier extends _$SelectReciterNotifier {
   late AudioApi _audioApi;
-  final AudioRecitationHandler _audioHandler;
-  final SharedPreferenceService _sharedPreferenceService;
+  late AudioRecitationHandler _audioHandler;
+  late SharedPreferenceService _sharedPreferenceService;
   StreamSubscription<PlayerState>? playerStateSubscription;
+
+  @override
+  SelectReciterBottomSheetState build() {
+    _audioHandler = ref.read(audioHandler);
+    _sharedPreferenceService = ref.read(sharedPreferenceServiceProvider);
+    return const SelectReciterBottomSheetState(
+      currentSurahName: "",
+      currentSurahId: 1,
+      currentAyahId: 1,
+      listReciter: [],
+    );
+  }
 
   Future<void> fetchData(
     String surahName,
@@ -96,14 +104,12 @@ class SelectReciterStateNotifier
   Future<void> saveDataReciter(int id, String name) async {
     await _sharedPreferenceService
         .setSelectedReciter(ReciterItemResponse(id: id, name: name));
-
-    //tambah trigger ke audiobottomsheetstate
   }
 
   Future<void> backToAudioBottomSheet(
     int reciterId,
     String reciterName,
-    AudioRecitationStateNotifier audioPlayerNotifier,
+    AudioRecitationNotifier audioPlayerNotifier,
   ) async {
     final AudioRecitationState newState = AudioRecitationState(
       surahName: state.currentSurahName,
@@ -175,24 +181,3 @@ class SelectReciterStateNotifier
     );
   }
 }
-
-final selectReciterBottomSheetProvider = StateNotifierProvider<
-    SelectReciterStateNotifier, SelectReciterBottomSheetState>(
-  (ref) {
-    return SelectReciterStateNotifier(
-      ref.read(audioHandler),
-      const SelectReciterBottomSheetState(
-        currentSurahName: "",
-        currentSurahId: 1,
-        currentAyahId: 1,
-        listReciter: [],
-      ),
-      ref.watch(sharedPreferenceServiceProvider),
-    );
-  },
-);
-// final listReciterProvider = StateProvider<List<ReciterItemResponse>>((ref) {
-//   final stateReiter = ref.watch(selectReciterBottomSheetProvider);
-
-//   return stateReiter.listReciter;
-// });

@@ -1,18 +1,20 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
-import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'change_daily_target_state_notifier.g.dart';
 
 class ChangeDailyTargetState {
   bool isLoading;
   bool isError;
   bool isSuccessSubmit;
-  HabitDailySummary currentProgress;
+  HabitDailySummary? currentProgress;
   String targetType;
 
   ChangeDailyTargetState({
-    required this.currentProgress,
-    this.isLoading = true,
+    this.currentProgress,
+    this.isLoading = false,
     this.isError = false,
     this.isSuccessSubmit = false,
     this.targetType = '',
@@ -35,38 +37,15 @@ class ChangeDailyTargetState {
   }
 }
 
-class ChangeDailyTargetStateNotifier
-    extends BaseStateNotifier<ChangeDailyTargetState> {
-  ChangeDailyTargetStateNotifier({
-    required HabitDailySummary habitDailySummary,
-  })  : _habitDailySummary = habitDailySummary,
-        super(ChangeDailyTargetState(
-          currentProgress: habitDailySummary,
-        ));
-  late DbLocal db;
-  final HabitDailySummary _habitDailySummary;
+@riverpod
+class ChangeDailyTargetNotifier extends _$ChangeDailyTargetNotifier {
+  final DbLocal _db = DbLocal();
 
   @override
-  Future<void> initStateNotifier() async {
-    try {
-      state = state.copyWith(isLoading: true);
-      db = DbLocal();
-      state = state.copyWith(
-        isLoading: false,
-        isError: false,
-      );
-    } catch (error, stackTrace) {
-      FirebaseCrashlytics.instance.recordError(
-        error,
-        stackTrace,
-        reason: 'error on addDailyProgressManual() method',
-      );
+  ChangeDailyTargetState build() => ChangeDailyTargetState();
 
-      state = state.copyWith(
-        isLoading: false,
-        isError: true,
-      );
-    }
+  void init(HabitDailySummary habitDailySummary) {
+    state = state.copyWith(currentProgress: habitDailySummary);
   }
 
   void changeTargetType(String type) {
@@ -74,28 +53,26 @@ class ChangeDailyTargetStateNotifier
   }
 
   Future<void> changeDailyTarget(int target, String type) async {
+    final habitDailySummary = state.currentProgress;
+    if (habitDailySummary == null) return;
+
     try {
-      state = state.copyWith(
-        isLoading: true,
-      );
-
+      state = state.copyWith(isLoading: true);
       final totalPagesTarget = type == "Juz" ? 20 * target : target;
-
       final currentDay = DateTime.now();
 
-      if (_habitDailySummary.id != null) {
-        await db.updateHabitDailySummary(
-          id: _habitDailySummary.id!,
+      if (habitDailySummary.id != null) {
+        await _db.updateHabitDailySummary(
+          id: habitDailySummary.id!,
           date: currentDay,
           target: totalPagesTarget,
-          totalPages: _habitDailySummary.totalPages,
+          totalPages: habitDailySummary.totalPages,
         );
-      }
-      if (_habitDailySummary.id == null) {
-        await db.insertHabitDailySummary(
+      } else {
+        await _db.insertHabitDailySummary(
           date: currentDay,
           target: totalPagesTarget,
-          totalPages: _habitDailySummary.totalPages,
+          totalPages: habitDailySummary.totalPages,
         );
       }
 
@@ -110,11 +87,7 @@ class ChangeDailyTargetStateNotifier
         stackTrace,
         reason: 'error on changeDailyTarget() method',
       );
-
-      state = state.copyWith(
-        isLoading: false,
-        isError: true,
-      );
+      state = state.copyWith(isLoading: false, isError: true);
     }
   }
 }

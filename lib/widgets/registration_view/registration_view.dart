@@ -31,11 +31,7 @@ class RegistrationView extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const SizedBox(height: 24),
-        Image.asset(
-          ImagePath.logoQuranPlusPotrait,
-          width: 83,
-          height: 100,
-        ),
+        Image.asset(ImagePath.logoQuranPlusPotrait, width: 83, height: 100),
         const SizedBox(height: 24),
         Text(
           'Why I must Sign in?',
@@ -91,11 +87,7 @@ class RegistrationView extends ConsumerWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(
-            left: 24,
-            right: 24,
-            bottom: 41,
-          ),
+          padding: const EdgeInsets.only(left: 24, right: 24, bottom: 41),
           child: Column(
             children: [
               ButtonSecondary(
@@ -110,9 +102,7 @@ class RegistrationView extends ConsumerWidget {
                 leftIcon: StoredIcon.iconGoogle.path,
               ),
               if (Platform.isIOS) ...[
-                const SizedBox(
-                  height: 16,
-                ),
+                const SizedBox(height: 16),
                 ButtonSecondary(
                   label: 'Sign In with Apple',
                   onTap: () {
@@ -137,9 +127,11 @@ class RegistrationView extends ConsumerWidget {
     required SignInType type,
     required WidgetRef ref,
   }) async {
-    final ConnectivityStatus connectivityStatus =
-        ref.watch(internetConnectionStatusProviders);
+    final ConnectivityStatus connectivityStatus = ref.read(
+      internetConnectionStatusProvider,
+    );
     final AuthenticationService authService = ref.read(authenticationService);
+
     if (connectivityStatus == ConnectivityStatus.isConnected) {
       final SignInResult res = await authService.signIn(type: type);
       if (context.mounted) {
@@ -151,15 +143,14 @@ class RegistrationView extends ConsumerWidget {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(
-                const SnackBar(
-                  content: Text('Failed to sign in'),
-                ),
+                const SnackBar(content: Text('Failed to sign in')),
               );
             break;
           case SignInResult.success:
-            await ref.read(habitDailySummaryService).syncHabit(
-                  connectivityStatus: connectivityStatus,
-                );
+            ref.invalidate(dioServiceProvider);
+            await ref
+                .read(habitDailySummaryService)
+                .syncHabit(connectivityStatus: connectivityStatus);
             await ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
 
             if (shouldNavigateTabToHome) {

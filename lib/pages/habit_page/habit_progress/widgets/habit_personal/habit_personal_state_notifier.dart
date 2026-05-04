@@ -2,8 +2,10 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
-import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
-import 'package:qurantafsir_flutter/shared/core/state_notifiers/base_state_notifier.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'habit_personal_state_notifier.g.dart';
 
 class HabitPersonalState {
   bool isLoading;
@@ -41,33 +43,27 @@ class HabitPersonalState {
   }
 }
 
-class HabitPersonalStateNotifier extends BaseStateNotifier<HabitPersonalState> {
-  HabitPersonalStateNotifier({
-    required HabitDailySummaryService habitDailySummaryService,
-  })  : _habitDailyService = habitDailySummaryService,
-        super(HabitPersonalState(isNeedSync: false));
-
-  late DbLocal db;
-  final HabitDailySummaryService _habitDailyService;
+@riverpod
+class HabitPersonalNotifier extends _$HabitPersonalNotifier {
+  final DbLocal _db = DbLocal();
 
   @override
-  Future<void> initStateNotifier() async {
-    await fetchData();
+  HabitPersonalState build() {
+    Future.microtask(fetchData);
+    return HabitPersonalState(isNeedSync: false);
   }
 
   Future<void> fetchData() async {
     try {
-      state = state.copyWith(
-        isLoading: true,
-      );
-      db = DbLocal();
-      DateTime now = DateTime.now();
-      String formattedDate = DateFormat('MMMM yyyy').format(now);
-      await _habitDailyService.syncHabit();
-      final List<HabitDailySummary> listHabit = await db.getLastSevenDays(now);
-      final HabitDailySummary currentProgress =
-          await _habitDailyService.getCurrentDayHabitDailySummaryListLocal();
-      final isNeedSync = _habitDailyService.isNeedSync();
+      state = state.copyWith(isLoading: true);
+      final habitDailyService = ref.read(habitDailySummaryService);
+      final now = DateTime.now();
+      final formattedDate = DateFormat('MMMM yyyy').format(now);
+      await habitDailyService.syncHabit();
+      final listHabit = await _db.getLastSevenDays(now);
+      final currentProgress =
+          await habitDailyService.getCurrentDayHabitDailySummaryListLocal();
+      final isNeedSync = habitDailyService.isNeedSync();
       state = state.copyWith(
         isLoading: false,
         currentMonth: formattedDate,
@@ -82,7 +78,6 @@ class HabitPersonalStateNotifier extends BaseStateNotifier<HabitPersonalState> {
         stackTrace,
         reason: 'error on fetchData() method',
       );
-
       state = state.copyWith(isLoading: false, isError: true);
     }
   }

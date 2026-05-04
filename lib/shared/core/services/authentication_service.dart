@@ -1,6 +1,5 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
@@ -26,13 +25,17 @@ class AuthenticationService {
   AuthenticationService({
     required this.userApi,
     required SharedPreferenceService sharedPreferenceService,
-    required this.dioServiceNotifier,
+    required void Function(DioService) onUpdateDioService,
+    required DioService Function() getCurrentDioService,
     required this.aliceService,
-  }) : _sharedPreferenceService = sharedPreferenceService;
+  })  : _onUpdateDioService = onUpdateDioService,
+        _getCurrentDioService = getCurrentDioService,
+        _sharedPreferenceService = sharedPreferenceService;
 
   final UserApi userApi;
   final SharedPreferenceService _sharedPreferenceService;
-  final StateController<DioService> dioServiceNotifier;
+  final void Function(DioService) _onUpdateDioService;
+  final DioService Function() _getCurrentDioService;
   final AliceService aliceService;
   final DbLocal _db = DbLocal();
   late bool _isLoggedIn;
@@ -114,11 +117,11 @@ class AuthenticationService {
       await _setToken(response.data.token!);
       await _setUsername(response.data.data!.name);
 
-      dioServiceNotifier.state = DioService(
+      _onUpdateDioService(DioService(
         baseUrl: EnvConstants.baseUrl!,
         accessToken: _sharedPreferenceService.getApiToken(),
         aliceService: aliceService,
-      );
+      ));
 
       return SignInResult.success;
     } catch (error, stackTrace) {
@@ -142,15 +145,33 @@ class AuthenticationService {
   Future<void> signOut() async {
     _googleSignIn.signOut();
     setIsLoggedIn(false);
-    _sharedPreferenceService.clear();
+
+    final List<double?> location = _sharedPreferenceService.getLocation();
+    final String? cityName = _sharedPreferenceService.getCityName();
+    final DateTime? latestPrayerTimeSynced =
+        _sharedPreferenceService.getLatestPrayerTimeSynced();
+
+    await _sharedPreferenceService.clear();
+
+    if (location[0] != null && location[1] != null) {
+      await _sharedPreferenceService.setLocation(location[0]!, location[1]!);
+    }
+    if (cityName != null) {
+      await _sharedPreferenceService.setCityName(cityName);
+    }
+    if (latestPrayerTimeSynced != null) {
+      await _sharedPreferenceService
+          .setLatestPrayerTimeSynced(latestPrayerTimeSynced);
+    }
+
     _db.clearTableHabit();
     _db.clearTableBookmarks();
     _db.clearTableFavoriteAyahs();
-    dioServiceNotifier.state = DioService(
+    _onUpdateDioService(DioService(
       baseUrl: EnvConstants.baseUrl!,
       aliceService: aliceService,
       accessToken: '',
-    );
+    ));
   }
 
   Future<User> getUserProfile(String token) async {
@@ -207,7 +228,7 @@ class AuthenticationService {
   Future<void> ping() async {
     try {
       final deviceId = await _sharedPreferenceService.getOrCreateDeviceId();
-      await dioServiceNotifier.state
+      await _getCurrentDioService()
           .getDioWithAccessToken()
           .post('/api/user/ping', data: {'device_id': deviceId});
     } catch (_) {}
@@ -225,9 +246,7 @@ class AuthenticationService {
       ),
     );
 
-    Navigator.pop(
-      context,
-    );
+    Navigator.pop(context);
 
     final BottomNavigationBar navbar =
         mainNavbarGlobalKey.currentWidget as BottomNavigationBar;

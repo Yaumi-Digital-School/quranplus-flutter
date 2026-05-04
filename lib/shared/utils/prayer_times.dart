@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/constants/prayer_times.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
@@ -7,7 +9,9 @@ import 'package:qurantafsir_flutter/shared/core/services/prayer_times_service.da
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:workmanager/workmanager.dart';
 
-void schedulePrayerTimes() {
+void scheduleAndroidPrayerTimes() {
+  if (!Platform.isAndroid) return;
+
   Workmanager().registerOneOffTask(
     'prayerTimes-immediate',
     PrayerTimesWorker.prayerTimeReminder.name,
@@ -22,6 +26,21 @@ void schedulePrayerTimes() {
     frequency: const Duration(days: 1),
     existingWorkPolicy: ExistingPeriodicWorkPolicy.update,
   );
+}
+
+/// Schedules prayer time notifications for iOS directly from the foreground.
+/// Schedules 7 days ahead using zonedSchedule (native iOS notification center).
+/// No background task needed — iOS delivers notifications at the exact scheduled time.
+Future<void> scheduleIOSPrayerNotifications({
+  required SharedPreferenceService sharedPreferenceService,
+}) async {
+  final NotificationService notificationService = NotificationService();
+  final PrayerTimesService prayerTimesService = PrayerTimesService(
+    notificationService: notificationService,
+    sharedPreferenceService: sharedPreferenceService,
+  );
+  prayerTimesService.init();
+  await prayerTimesService.setupMultiDayPrayerTimesReminder();
 }
 
 void scheduleQuranReadingReminder({
