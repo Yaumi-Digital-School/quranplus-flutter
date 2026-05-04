@@ -38,7 +38,7 @@ class PrayerTimesService {
     _coordinates = Coordinates(latitude, longitude);
   }
 
-  PrayerTimes? getTodayPrayerTimes({
+  PrayerTimes? getPrayerTimesByDate({
     DateTime? date,
     String calculationMethod = 'singapore',
     String madhab = 'shafi',
@@ -93,7 +93,7 @@ class PrayerTimesService {
     String calculationMethod = 'singapore',
     String madhab = 'shafi',
   }) async {
-    final PrayerTimes? prayerTimes = getTodayPrayerTimes(
+    final PrayerTimes? prayerTimes = getPrayerTimesByDate(
       calculationMethod: calculationMethod,
       madhab: madhab,
     );
@@ -147,7 +147,7 @@ class PrayerTimesService {
 
     for (int dayOffset = 0; dayOffset < days; dayOffset++) {
       final DateTime targetDate = now.add(Duration(days: dayOffset));
-      final PrayerTimes? prayerTimes = getTodayPrayerTimes(
+      final PrayerTimes? prayerTimes = getPrayerTimesByDate(
         date: targetDate,
         calculationMethod: calculationMethod,
         madhab: madhab,

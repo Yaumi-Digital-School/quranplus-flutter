@@ -9,7 +9,7 @@ import 'package:qurantafsir_flutter/shared/core/services/prayer_times_service.da
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:workmanager/workmanager.dart';
 
-void schedulePrayerTimes() {
+void scheduleAndroidPrayerTimes() {
   if (!Platform.isAndroid) return;
 
   Workmanager().registerOneOffTask(
