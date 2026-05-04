@@ -3,6 +3,7 @@ import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_progress.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_progress.dart';
+import 'package:qurantafsir_flutter/shared/utils/prayer_times.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uuid/uuid.dart';
 
@@ -104,6 +105,11 @@ class AddDailyProgressManualNotifier
         pages: totalPages,
         description: "$totalPages Pages",
       );
+
+      final int newTotalPages = totalPages + habitDailySummary.totalPages;
+      if (newTotalPages >= habitDailySummary.target) {
+        await cancelAllQuranReminders();
+      }
 
       state = state.copyWith(
         isLoading: false,

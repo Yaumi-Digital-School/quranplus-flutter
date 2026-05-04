@@ -12,6 +12,7 @@ import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
+import 'package:qurantafsir_flutter/shared/utils/prayer_times.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -146,7 +147,12 @@ class SuratPageHabitNotifier extends _$SuratPageHabitNotifier {
       );
     }
 
-    return totalReadPages >= (_currentSummary!.target);
+    final bool goalAchieved = totalReadPages >= (_currentSummary!.target);
+    if (goalAchieved) {
+      await cancelAllQuranReminders();
+    }
+
+    return goalAchieved;
   }
 
   void setShowMinimizedAudioPlayer(bool value) {
