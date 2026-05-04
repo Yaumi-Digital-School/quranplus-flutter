@@ -43,20 +43,32 @@ Future<void> scheduleIOSPrayerNotifications({
   await prayerTimesService.setupMultiDayPrayerTimesReminder();
 }
 
+Future<void> cancelTodayQuranReminders() async {
+  if (Platform.isIOS) {
+    final NotificationService notificationService = NotificationService();
+    for (int i = 0; i < 5; i++) {
+      await notificationService.cancel(reminderNotifNormalizer + i);
+    }
+  } else if (Platform.isAndroid) {
+    await Workmanager().cancelByTag(PrayerTimesWorker.quranTimeReminder.tag);
+  }
+}
+
 void scheduleQuranReadingReminder({
   required DateTime prayerTime,
   required int id,
 }) {
   final DateTime sched = prayerTime.add(const Duration(minutes: 30));
-  final String formattedDate = DateFormat('h:mm a').format(sched);
   final Duration duration = sched.difference(DateTime.now());
+  if (duration.isNegative) return;
 
+  final String formattedDate = DateFormat('h:mm a').format(sched);
   Workmanager().registerOneOffTask(
     'readingReminder-$formattedDate',
     PrayerTimesWorker.quranTimeReminder.name,
     initialDelay: duration,
     tag: PrayerTimesWorker.quranTimeReminder.tag,
-    existingWorkPolicy: ExistingWorkPolicy.append,
+    existingWorkPolicy: ExistingWorkPolicy.replace,
     inputData: <String, dynamic>{'id': id},
   );
 }
@@ -82,37 +94,31 @@ Future<bool> handleWorker(String task, Map<String, dynamic>? inputData) async {
   }
 
   if (task == PrayerTimesWorker.quranTimeReminder.name) {
-    final DbLocal db = DbLocal();
-    final HabitDailySummary dailySummary = await db
-        .getCurrentDayHabitDailySummary();
-    if (dailySummary.totalPages >= dailySummary.target) {
-      Workmanager().cancelByTag(PrayerTimesWorker.quranTimeReminder.tag);
+    try {
+      final DbLocal db = DbLocal();
+      final HabitDailySummary dailySummary =
+          await db.getCurrentDayHabitDailySummary();
 
-      return Future.value(true);
-    }
+      if (dailySummary.totalPages >= dailySummary.target) {
+        await Workmanager().cancelByTag(PrayerTimesWorker.quranTimeReminder.tag);
+        return true;
+      }
 
-    if (dailySummary.totalPages < dailySummary.target) {
+      final int? id = inputData?['id'];
+      if (id == null) return false;
+
       final NotificationService notificationService = NotificationService();
-      final SharedPreferenceService sharedPreferenceService =
-          SharedPreferenceService();
-      final PrayerTimesService prayerTimesService = PrayerTimesService(
-        notificationService: notificationService,
-        sharedPreferenceService: sharedPreferenceService,
-      );
-      prayerTimesService.init();
       await notificationService.init();
-
-      final int? id = inputData != null ? inputData['id'] : null;
-      if (id == null) return Future.value(false);
-
-      notificationService.show(
+      await notificationService.show(
         id: id,
         title: "Don't miss your Quran reading goal",
         body:
             "Your Quran reading goal is within reach. Take a moment today to reflect on the wisdom of the Quran.",
       );
+    } catch (_) {
+      return false;
     }
   }
 
-  return Future.value(true);
+  return true;
 }

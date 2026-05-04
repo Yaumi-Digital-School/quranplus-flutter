@@ -3,6 +3,9 @@ import 'package:qurantafsir_flutter/shared/constants/prayer_times.dart';
 import 'package:qurantafsir_flutter/shared/core/services/notification_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/utils/number_util.dart';
+import 'package:qurantafsir_flutter/shared/utils/prayer_times.dart';
+
+const reminderNotifNormalizer = 100;
 
 class PrayerTimesService {
   PrayerTimesService({
@@ -116,8 +119,14 @@ class PrayerTimesService {
 
       if (localTime.isAfter(now)) {
         try {
-          // scheduleQuranReadingReminder(prayerTime: localTime, id: i);
+          // Normalizer added to avoid conflicts with other notifications
+          scheduleQuranReadingReminder(
+            prayerTime: localTime,
+            id: i + reminderNotifNormalizer,
+          );
+        } catch (_) {}
 
+        try {
           final String time =
               '${formatTwoDigits(localTime.hour)}:${formatTwoDigits(localTime.minute)}';
           await notificationService.zonedSchedule(
@@ -126,16 +135,16 @@ class PrayerTimesService {
             body: prayerTimeEnums[i].notifLabel,
             scheduledDateTime: localTime,
           );
-        } catch (_) {
-          // TODO: Add error handling
-        }
+        } catch (_) {}
       }
     }
   }
 
   /// Schedules prayer time notifications for multiple days ahead.
   /// Used on iOS where background tasks are unreliable.
-  /// Schedules up to [days] * 5 notifications (must stay under iOS's 64 limit).
+  /// Prayer: 7 days × 5 = 35 notifications (IDs 0–34)
+  /// Quran reminders: 5 days × 5 = 25 notifications (IDs 100–124)
+  /// Total: 60, stays under iOS's 64-notification limit.
   Future<void> setupMultiDayPrayerTimesReminder({
     int days = 7,
     String calculationMethod = 'singapore',
@@ -179,11 +188,60 @@ class PrayerTimesService {
               body: prayerTimeEnums[i].notifLabel,
               scheduledDateTime: localTime,
             );
-          } catch (_) {
-            // TODO: Add error handling
-          }
+          } catch (_) {}
+        }
+      }
+    }
+
+    await setupMultiDayQuranReminders(
+      calculationMethod: calculationMethod,
+      madhab: madhab,
+    );
+  }
+
+  Future<void> setupMultiDayQuranReminders({
+    int days = 7,
+    String calculationMethod = 'singapore',
+    String madhab = 'shafi',
+  }) async {
+    final DateTime now = DateTime.now();
+
+    for (int dayOffset = 0; dayOffset < days; dayOffset++) {
+      final DateTime targetDate = now.add(Duration(days: dayOffset));
+      final PrayerTimes? prayerTimes = getPrayerTimesByDate(
+        date: targetDate,
+        calculationMethod: calculationMethod,
+        madhab: madhab,
+      );
+
+      if (prayerTimes == null) return;
+
+      final List<DateTime> prayerTimeList = <DateTime>[
+        prayerTimes.fajr,
+        prayerTimes.dhuhr,
+        prayerTimes.asr,
+        prayerTimes.maghrib,
+        prayerTimes.isha,
+      ];
+
+      for (int i = 0; i < prayerTimeList.length; i++) {
+        final DateTime reminderTime = prayerTimeList[i].toLocal().add(
+          const Duration(minutes: 30),
+        );
+
+        if (reminderTime.isAfter(now)) {
+          try {
+            await notificationService.zonedSchedule(
+              id: reminderNotifNormalizer + dayOffset * 5 + i,
+              title: "Don't miss your Quran reading goal",
+              body:
+                  "Your Quran reading goal is within reach. Take a moment today to reflect on the wisdom of the Quran.",
+              scheduledDateTime: reminderTime,
+            );
+          } catch (_) {}
         }
       }
     }
   }
+
 }
