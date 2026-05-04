@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -27,27 +29,32 @@ class _SplashPageState extends ConsumerState<SplashPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final SharedPreferenceService sharedPref =
-          ref.read(sharedPreferenceServiceProvider);
-      final String currentDate = DateFormat('yyyy-MM-dd').format(
-        DateTime.now(),
+      final SharedPreferenceService sharedPref = ref.read(
+        sharedPreferenceServiceProvider,
       );
+      final String currentDate = DateFormat(
+        'yyyy-MM-dd',
+      ).format(DateTime.now());
       final DateTime currentDateTime = DateTime.parse(currentDate);
       if (sharedPref.getLatestPrayerTimeSynced() == null ||
           (sharedPref.getLatestPrayerTimeSynced() != null &&
-              sharedPref
-                  .getLatestPrayerTimeSynced()!
-                  .isBefore(currentDateTime))) {
-        schedulePrayerTimes();
+              sharedPref.getLatestPrayerTimeSynced()!.isBefore(
+                currentDateTime,
+              ))) {
+        if (Platform.isIOS) {
+          await scheduleIOSPrayerNotifications(
+            sharedPreferenceService: sharedPref,
+          );
+        } else {
+          scheduleAndroidPrayerTimes();
+        }
         sharedPref.setLatestPrayerTimeSynced(currentDateTime);
       }
 
       final connectivityStatus = ref.read(internetConnectionStatusProvider);
 
       final notifier = ref.read(splashPageProvider.notifier);
-      await notifier.initStateNotifier(
-        connectivityStatus: connectivityStatus,
-      );
+      await notifier.initStateNotifier(connectivityStatus: connectivityStatus);
 
       if (!mounted) return;
       AppUpdateInfo? updateInfo = await notifier.getAppUpdateStatus(
