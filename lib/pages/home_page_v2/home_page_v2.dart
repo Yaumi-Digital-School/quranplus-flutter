@@ -50,12 +50,7 @@ class _HomePageV2State extends ConsumerState<HomePageV2> {
       body: SafeArea(
         child: Stack(
           children: [
-            ListView(
-              children: const [
-                HomeHeaderSection(),
-                HomeSurahList(),
-              ],
-            ),
+            ListView(children: const [HomeHeaderSection(), HomeSurahList()]),
             const Positioned(
               bottom: kHomeSearchButtonDiameter * 2 / 6,
               right: kHomeSearchButtonDiameter * 2 / 6,

@@ -44,7 +44,6 @@ class PrayerTimePage extends ConsumerWidget {
           automaticallyImplyLeading: false,
           elevation: 0.7,
           centerTitle: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         ),
       ),
       body: Padding(

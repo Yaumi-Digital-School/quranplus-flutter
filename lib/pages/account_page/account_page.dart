@@ -29,11 +29,8 @@ class AccountPage extends ConsumerWidget {
           elevation: 0.7,
           foregroundColor: Theme.of(context).colorScheme.primary,
           centerTitle: true,
-          title: const Text(
-            'Account',
-            style: TextStyle(fontSize: 16),
-          ),
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: const Text('Account', style: TextStyle(fontSize: 16)),
+
           leading: IconButton(
             onPressed: () => Navigator.of(context).pop(),
             icon: Icon(
@@ -51,10 +48,7 @@ class AccountPage extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 40),
-              Text(
-                'Name',
-                style: QPTextStyle.getSubHeading2SemiBold(context),
-              ),
+              Text('Name', style: QPTextStyle.getSubHeading2SemiBold(context)),
               const SizedBox(height: 8),
               TextFormField(
                 controller: TextEditingController.fromValue(
@@ -73,8 +67,9 @@ class AccountPage extends ConsumerWidget {
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(8),
                   hintText: 'Name',
-                  hintStyle: QPTextStyle.getSubHeading3Medium(context)
-                      .copyWith(color: Theme.of(context).hintColor),
+                  hintStyle: QPTextStyle.getSubHeading3Medium(
+                    context,
+                  ).copyWith(color: Theme.of(context).hintColor),
                   border: enabledInputBorder,
                   enabledBorder: enabledInputBorder,
                   errorBorder: errorInputBorder,
@@ -82,10 +77,7 @@ class AccountPage extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 24),
-              Text(
-                'Email',
-                style: QPTextStyle.getSubHeading2SemiBold(context),
-              ),
+              Text('Email', style: QPTextStyle.getSubHeading2SemiBold(context)),
               const SizedBox(height: 8),
               TextFormField(
                 controller: TextEditingController(text: state.email),
@@ -95,8 +87,9 @@ class AccountPage extends ConsumerWidget {
                   enabled: false,
                   contentPadding: const EdgeInsets.all(8),
                   hintText: 'email@gmail.com',
-                  hintStyle: QPTextStyle.getSubHeading3Medium(context)
-                      .copyWith(color: Theme.of(context).hintColor),
+                  hintStyle: QPTextStyle.getSubHeading3Medium(
+                    context,
+                  ).copyWith(color: Theme.of(context).hintColor),
                   border: enabledInputBorder,
                   enabledBorder: enabledInputBorder,
                   fillColor: QPColors.getColorBasedTheme(
@@ -118,7 +111,8 @@ class AccountPage extends ConsumerWidget {
                 day: state.dateOfMonth,
                 month: state.month,
                 year: state.year,
-                hasError: state.formStatus == FormStatus.invalid &&
+                hasError:
+                    state.formStatus == FormStatus.invalid &&
                     (state.dateOfMonth.isEmpty ||
                         state.month.isEmpty ||
                         state.year.isEmpty),
@@ -129,7 +123,8 @@ class AccountPage extends ConsumerWidget {
               const SizedBox(height: 24),
               GenderSelector(
                 selectedGenderInitial: state.gender,
-                hasError: state.formStatus == FormStatus.invalid &&
+                hasError:
+                    state.formStatus == FormStatus.invalid &&
                     state.gender.isEmpty,
                 onChanged: notifier.genderChanged,
               ),
@@ -146,14 +141,11 @@ class AccountPage extends ConsumerWidget {
               const SizedBox(height: 24),
               Center(
                 child: GestureDetector(
-                  onTap: () => Navigator.pushNamed(
-                    context,
-                    RoutePaths.accountDeletion,
-                  ),
+                  onTap: () =>
+                      Navigator.pushNamed(context, RoutePaths.accountDeletion),
                   child: Text(
                     'Delete my account',
-                    style: QPTextStyle.getSubHeading3SemiBold(context)
-                        .copyWith(
+                    style: QPTextStyle.getSubHeading3SemiBold(context).copyWith(
                       // Todo: check color based on theme
                       color: QPColors.errorFair,
                     ),

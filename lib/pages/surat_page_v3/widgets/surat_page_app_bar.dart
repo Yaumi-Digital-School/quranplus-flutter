@@ -64,7 +64,7 @@ class SuratPageAppBar extends ConsumerWidget implements PreferredSizeWidget {
           ),
         ],
       ),
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+
       actions: <Widget>[
         Padding(
           padding: const EdgeInsets.only(right: 12),

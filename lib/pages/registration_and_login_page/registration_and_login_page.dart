@@ -3,18 +3,13 @@ import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/widgets/registration_view/registration_view.dart';
 
 class RegistrationAndLoginPageParam {
-  RegistrationAndLoginPageParam({
-    this.shouldNavigateTabToHome = true,
-  });
+  RegistrationAndLoginPageParam({this.shouldNavigateTabToHome = true});
 
   final bool shouldNavigateTabToHome;
 }
 
 class RegistrationAndLoginPage extends StatelessWidget {
-  const RegistrationAndLoginPage({
-    super.key,
-    this.param,
-  });
+  const RegistrationAndLoginPage({super.key, this.param});
 
   final RegistrationAndLoginPageParam? param;
 
@@ -27,11 +22,8 @@ class RegistrationAndLoginPage extends StatelessWidget {
           elevation: 0.7,
           foregroundColor: Theme.of(context).colorScheme.primary,
           centerTitle: true,
-          title: const Text(
-            'Settings',
-            style: TextStyle(fontSize: 16),
-          ),
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: const Text('Settings', style: TextStyle(fontSize: 16)),
+
           leading: IconButton(
             icon: Icon(
               Icons.chevron_left,

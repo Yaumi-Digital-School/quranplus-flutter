@@ -52,7 +52,6 @@ class ReadTadabburPage extends ConsumerWidget {
           automaticallyImplyLeading: false,
           elevation: 0.7,
           centerTitle: true,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         ),
       ),
       body: Stack(
@@ -108,9 +107,7 @@ class ReadTadabburPage extends ConsumerWidget {
               color: Colors.black.withValues(alpha: 0.3),
               height: double.infinity,
               width: double.infinity,
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
+              child: const Center(child: CircularProgressIndicator()),
             ),
         ],
       ),
