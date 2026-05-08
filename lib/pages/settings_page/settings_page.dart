@@ -77,7 +77,10 @@ class SettingsPage extends ConsumerWidget {
                       SettingsPageMenuItem(
                         iconData: Icons.notifications_rounded,
                         onTap: () {
-                          // TODO: add redirection
+                          Navigator.pushNamed(
+                            context,
+                            RoutePaths.routeNotificationSettings,
+                          );
                         },
                         title: 'Notifications',
                       ),

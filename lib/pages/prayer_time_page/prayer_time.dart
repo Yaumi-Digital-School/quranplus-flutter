@@ -8,6 +8,7 @@ import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
+import 'package:qurantafsir_flutter/widgets/general_app_bar.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/prayer_times_notifier.dart';
 
 class PrayerTimePage extends ConsumerWidget {
@@ -19,33 +20,7 @@ class PrayerTimePage extends ConsumerWidget {
     final notifier = ref.read(prayerTimeProvider.notifier);
 
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(54.0),
-        child: AppBar(
-          leading: IconButton(
-            icon: Icon(
-              Icons.chevron_left,
-              color: QPColors.getColorBasedTheme(
-                dark: QPColors.whiteFair,
-                light: QPColors.blackMassive,
-                brown: QPColors.brownModeMassive,
-                context: context,
-              ),
-              size: 24,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          title: Text(
-            "Prayer Times",
-            style: QPTextStyle.getSubHeading2SemiBold(context),
-          ),
-          automaticallyImplyLeading: false,
-          elevation: 0.7,
-          centerTitle: true,
-        ),
-      ),
+      appBar: const GeneralAppBar(title: 'Prayer Times'),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
         child: Column(

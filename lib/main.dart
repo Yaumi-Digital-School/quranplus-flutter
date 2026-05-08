@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:qurantafsir_flutter/pages/account_deletion/account_deletion_view.dart';
+import 'package:qurantafsir_flutter/pages/notification_settings_page/notification_settings_page.dart';
 import 'package:qurantafsir_flutter/pages/habit_group_detail/habit_group_detail_view.dart';
 import 'package:qurantafsir_flutter/pages/location_manual/location_manual_view.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
@@ -205,6 +206,9 @@ class _MyAppState extends ConsumerState<MyApp> {
             break;
           case RoutePaths.routeLocationManualPage:
             selectedRouteWidget = const LocationManualPage();
+            break;
+          case RoutePaths.routeNotificationSettings:
+            selectedRouteWidget = const NotificationSettingsPage();
             break;
           default:
             selectedRouteWidget = const Scaffold(
