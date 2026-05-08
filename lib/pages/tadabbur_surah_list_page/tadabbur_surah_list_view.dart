@@ -13,11 +13,7 @@ class TadabburSurahListView extends ConsumerWidget {
     final state = ref.watch(tadabburSurahListViewProvider);
 
     if (state.isLoading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
@@ -36,11 +32,7 @@ class TadabburSurahListView extends ConsumerWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(
-          top: 24,
-          left: 24,
-          right: 24,
-        ),
+        padding: const EdgeInsets.only(top: 24, left: 24, right: 24),
         child: ListView.builder(
           itemCount: state.tadabburSurahList!.length + 1,
           itemBuilder: ((context, index) {

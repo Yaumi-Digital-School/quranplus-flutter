@@ -28,10 +28,7 @@ class HabitGroupDetailViewParam {
 }
 
 class HabitGroupDetailView extends ConsumerStatefulWidget {
-  const HabitGroupDetailView({
-    super.key,
-    required this.param,
-  });
+  const HabitGroupDetailView({super.key, required this.param});
 
   final HabitGroupDetailViewParam param;
 
@@ -45,10 +42,10 @@ class _HabitGroupDetailViewState extends ConsumerState<HabitGroupDetailView> {
 
   @override
   Widget build(BuildContext context) {
-    final state =
-        ref.watch(habitGroupDetailProvider(widget.param.id));
-    final notifier =
-        ref.read(habitGroupDetailProvider(widget.param.id).notifier);
+    final state = ref.watch(habitGroupDetailProvider(widget.param.id));
+    final notifier = ref.read(
+      habitGroupDetailProvider(widget.param.id).notifier,
+    );
 
     ref.listen(habitGroupDetailProvider(widget.param.id), (prev, next) {
       if (prev?.isLoading == true &&
@@ -76,11 +73,7 @@ class _HabitGroupDetailViewState extends ConsumerState<HabitGroupDetailView> {
     });
 
     if (state.isLoading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return PopScope(
@@ -115,7 +108,7 @@ class _HabitGroupDetailViewState extends ConsumerState<HabitGroupDetailView> {
               state.groupName,
               style: QPTextStyle.getSubHeading2SemiBold(context),
             ),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+
             actions: [
               Theme(
                 data: Theme.of(context).copyWith(
@@ -140,16 +133,12 @@ class _HabitGroupDetailViewState extends ConsumerState<HabitGroupDetailView> {
                             size: 12,
                             color: QPColors.blackMassive,
                           ),
-                          const SizedBox(
-                            width: 14,
-                          ),
+                          const SizedBox(width: 14),
                           Text(
                             "Invite Member",
-                            style:
-                                QPTextStyle.getSubHeading4SemiBold(context)
-                                    .copyWith(
-                              color: QPColors.blackMassive,
-                            ),
+                            style: QPTextStyle.getSubHeading4SemiBold(
+                              context,
+                            ).copyWith(color: QPColors.blackMassive),
                           ),
                         ],
                       ),
@@ -164,16 +153,12 @@ class _HabitGroupDetailViewState extends ConsumerState<HabitGroupDetailView> {
                               size: 12,
                               color: QPColors.blackMassive,
                             ),
-                            const SizedBox(
-                              width: 14,
-                            ),
+                            const SizedBox(width: 14),
                             Text(
                               "Edit Group Name",
                               style: QPTextStyle.getSubHeading4SemiBold(
                                 context,
-                              ).copyWith(
-                                color: QPColors.blackMassive,
-                              ),
+                              ).copyWith(color: QPColors.blackMassive),
                             ),
                           ],
                         ),
@@ -187,16 +172,12 @@ class _HabitGroupDetailViewState extends ConsumerState<HabitGroupDetailView> {
                             size: 12,
                             color: QPColors.blackMassive,
                           ),
-                          const SizedBox(
-                            width: 14,
-                          ),
+                          const SizedBox(width: 14),
                           Text(
                             "Leave Group",
-                            style:
-                                QPTextStyle.getSubHeading4SemiBold(context)
-                                    .copyWith(
-                              color: QPColors.blackMassive,
-                            ),
+                            style: QPTextStyle.getSubHeading4SemiBold(
+                              context,
+                            ).copyWith(color: QPColors.blackMassive),
                           ),
                         ],
                       ),
@@ -218,11 +199,7 @@ class _HabitGroupDetailViewState extends ConsumerState<HabitGroupDetailView> {
         body: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.only(
-                right: 24,
-                left: 24,
-                top: 24,
-              ),
+              padding: const EdgeInsets.only(right: 24, left: 24, top: 24),
               child: ListView.builder(
                 shrinkWrap: true,
                 itemCount: state.memberSummaries!.length + 1,
@@ -237,19 +214,23 @@ class _HabitGroupDetailViewState extends ConsumerState<HabitGroupDetailView> {
                   final GetHabitGroupMemberPersonalItemResponse item =
                       state.memberSummaries![index - 1];
 
-                  final List<HabitDailySummary> dailySummaries = item
-                      .summaries
-                      .map((e) => HabitDailySummary
-                          .fromGetHabitGroupMemberPersonalSummaryItem(e))
+                  final List<HabitDailySummary> dailySummaries = item.summaries
+                      .map(
+                        (e) =>
+                            HabitDailySummary.fromGetHabitGroupMemberPersonalSummaryItem(
+                              e,
+                            ),
+                      )
                       .toList();
 
-                  final String name =
-                      index - 1 == 0 ? 'Your Progress' : item.name;
+                  final String name = index - 1 == 0
+                      ? 'Your Progress'
+                      : item.name;
 
                   final DateTime startEnabledProgressDate =
                       item.joinDate.difference(userData.joinDate).inDays > 0
-                          ? item.joinDate
-                          : userData.joinDate;
+                      ? item.joinDate
+                      : userData.joinDate;
 
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 16.0),
@@ -278,9 +259,7 @@ class _HabitGroupDetailViewState extends ConsumerState<HabitGroupDetailView> {
                 color: Colors.black.withValues(alpha: 0.3),
                 height: double.infinity,
                 width: double.infinity,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
+                child: const Center(child: CircularProgressIndicator()),
               ),
           ],
         ),
@@ -304,9 +283,7 @@ class _HabitGroupDetailViewState extends ConsumerState<HabitGroupDetailView> {
     Navigator.pushReplacementNamed(
       context,
       RoutePaths.routeMain,
-      arguments: MainPageParam(
-        initialSelectedIdx: selectedTabOnPop.index,
-      ),
+      arguments: MainPageParam(initialSelectedIdx: selectedTabOnPop.index),
     );
 
     return true;
@@ -346,8 +323,9 @@ class _HabitGroupDetailViewState extends ConsumerState<HabitGroupDetailView> {
     BuildContext context,
     String groupName,
   ) async {
-    final uri =
-        await DynamicLinkHelper().createDynamicLinkInvite(id: widget.param.id);
+    final uri = await DynamicLinkHelper().createDynamicLinkInvite(
+      id: widget.param.id,
+    );
 
     if (!context.mounted) return;
     HabitGroupBottomSheet.showModalInviteMemberGroup(

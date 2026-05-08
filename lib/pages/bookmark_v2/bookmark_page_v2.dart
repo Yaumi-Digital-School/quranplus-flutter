@@ -46,7 +46,6 @@ class _BookmarkPageV2State extends ConsumerState<BookmarkPageV2> {
               foregroundColor: Theme.of(context).colorScheme.primary,
               centerTitle: true,
               title: const Text("Bookmark", style: TextStyle(fontSize: 16)),
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               automaticallyImplyLeading: false,
             ),
           ),

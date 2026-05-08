@@ -78,22 +78,19 @@ class HomeHeaderSection extends ConsumerWidget {
                     padding: const EdgeInsets.only(bottom: 12),
                     child: Text(
                       "Assalamu'alaikum, $name",
-                      style: QPTextStyle.getSubHeading4SemiBold(
-                        context,
-                      ).copyWith(
-                        color: QPColors.getColorBasedTheme(
-                          dark: QPColors.whiteFair,
-                          light: QPColors.whiteMassive,
-                          brown: QPColors.brownModeMassive,
-                          context: context,
-                        ),
-                      ),
+                      style: QPTextStyle.getSubHeading4SemiBold(context)
+                          .copyWith(
+                            color: QPColors.getColorBasedTheme(
+                              dark: QPColors.whiteFair,
+                              light: QPColors.whiteMassive,
+                              brown: QPColors.brownModeMassive,
+                              context: context,
+                            ),
+                          ),
                     ),
                   ),
                 const AdzanCardWidget(),
-                const SizedBox(height: 12),
                 const HomeHabitCard(),
-                const SizedBox(height: 24),
               ],
             ),
           ),

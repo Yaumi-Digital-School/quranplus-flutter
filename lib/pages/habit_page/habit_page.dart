@@ -22,11 +22,7 @@ class HabitPage extends ConsumerWidget {
         navigationBar.onTap!(0);
       },
       child: state.isLoading
-          ? const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            )
+          ? const Scaffold(body: Center(child: CircularProgressIndicator()))
           : Scaffold(
               appBar: PreferredSize(
                 preferredSize: const Size.fromHeight(54.0),
@@ -39,15 +35,16 @@ class HabitPage extends ConsumerWidget {
                     'Reading Habit Tracker',
                     style: TextStyle(fontSize: 16),
                   ),
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).appBarTheme.backgroundColor,
                 ),
               ),
-              body: state.authenticationStatus ==
+              body:
+                  state.authenticationStatus ==
                       AuthenticationStatus.authenticated
                   ? const HabitProgressView()
-                  : const SingleChildScrollView(
-                      child: RegistrationView(),
-                    ),
+                  : const SingleChildScrollView(child: RegistrationView()),
             ),
     );
   }

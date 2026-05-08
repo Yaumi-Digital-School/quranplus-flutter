@@ -47,7 +47,9 @@ class SettingsPage extends ConsumerWidget {
                   foregroundColor: Theme.of(context).colorScheme.primary,
                   centerTitle: true,
                   title: const Text('Settings', style: TextStyle(fontSize: 16)),
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).appBarTheme.backgroundColor,
                 ),
               ),
               body: SingleChildScrollView(

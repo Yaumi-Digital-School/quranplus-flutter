@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 
-enum QPThemeMode {
-  dark,
-  light,
-  brown,
-}
+enum QPThemeMode { dark, light, brown }
 
 final Map<QPThemeMode, String> themeModeToLabelMode = <QPThemeMode, String>{
   QPThemeMode.dark: 'Dark Mode',
@@ -30,19 +26,28 @@ class QPThemeData {
     return ThemeData(
       scaffoldBackgroundColor: QPColors.whiteFair,
       dividerColor: QPColors.whiteRoot,
+      appBarTheme: const AppBarThemeData(
+        backgroundColor: QPColors.whiteFair,
+        surfaceTintColor: Colors.transparent,
+      ),
       hintColor: QPColors.blackSoft,
       colorScheme: const ColorScheme.light().copyWith(
         primary: QPColors.blackHeavy,
         primaryContainer: QPColors.whiteMassive,
         secondaryContainer: QPColors.whiteHeavy,
         surface: QPColors.whiteSoft,
-      ), dialogTheme: const DialogThemeData(backgroundColor: QPColors.whiteFair),
+      ),
+      dialogTheme: const DialogThemeData(backgroundColor: QPColors.whiteFair),
     );
   }
 
   static ThemeData get darkThemeData {
     return ThemeData(
       scaffoldBackgroundColor: QPColors.darkModeMassive,
+      appBarTheme: const AppBarThemeData(
+        backgroundColor: QPColors.darkModeMassive,
+        surfaceTintColor: Colors.transparent,
+      ),
       dividerColor: QPColors.darkModeFair,
       hintColor: QPColors.blackSoft,
       colorScheme: const ColorScheme.light().copyWith(
@@ -50,13 +55,20 @@ class QPThemeData {
         primaryContainer: QPColors.darkModeHeavy,
         secondaryContainer: QPColors.darkModeFair,
         surface: QPColors.darkModeHeavy,
-      ), dialogTheme: const DialogThemeData(backgroundColor: QPColors.darkModeMassive),
+      ),
+      dialogTheme: const DialogThemeData(
+        backgroundColor: QPColors.darkModeMassive,
+      ),
     );
   }
 
   static ThemeData get brownThemeData {
     return ThemeData(
       scaffoldBackgroundColor: QPColors.brownModeRoot,
+      appBarTheme: const AppBarThemeData(
+        backgroundColor: QPColors.brownModeRoot,
+        surfaceTintColor: Colors.transparent,
+      ),
       dividerColor: QPColors.brownModeFair,
       hintColor: QPColors.brownModeMassive,
       colorScheme: const ColorScheme.light().copyWith(
@@ -64,7 +76,10 @@ class QPThemeData {
         primaryContainer: QPColors.brownModeFair,
         secondaryContainer: QPColors.brownModeRoot,
         surface: QPColors.brownModeSoft,
-      ), dialogTheme: const DialogThemeData(backgroundColor: QPColors.brownModeRoot),
+      ),
+      dialogTheme: const DialogThemeData(
+        backgroundColor: QPColors.brownModeRoot,
+      ),
     );
   }
 

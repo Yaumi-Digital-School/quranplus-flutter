@@ -11,9 +11,7 @@ import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:qurantafsir_flutter/widgets/snackbar.dart';
 
 class AccountDeletionInformationView extends ConsumerWidget {
-  const AccountDeletionInformationView({
-    super.key,
-  });
+  const AccountDeletionInformationView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,7 +28,6 @@ class AccountDeletionInformationView extends ConsumerWidget {
             'Delete Account',
             style: QPTextStyle.getSubHeading2SemiBold(context),
           ),
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           leading: IconButton(
             onPressed: () => Navigator.of(context).pop(),
             icon: const Icon(
@@ -50,9 +47,7 @@ class AccountDeletionInformationView extends ConsumerWidget {
               'What happens after I delete my account?',
               style: QPTextStyle.getSubHeading2SemiBold(context),
             ),
-            const SizedBox(
-              height: 8,
-            ),
+            const SizedBox(height: 8),
             Text(
               'After you delete your account, all data associated with this account (saved bookmarks, favorites, reading progress and target) will be permanently deleted and irrecoverable.',
               textAlign: TextAlign.justify,
@@ -61,18 +56,16 @@ class AccountDeletionInformationView extends ConsumerWidget {
                 color: QPColors.blackFair,
               ),
             ),
-            const SizedBox(
-              height: 8,
-            ),
+            const SizedBox(height: 8),
             RichText(
               textAlign: TextAlign.justify,
               text: TextSpan(
                 text:
                     'If you want to register your new account with the same email, reach us at ',
                 // Todo: check color based on theme
-                style: QPTextStyle.getBody3Regular(context).copyWith(
-                  color: QPColors.blackFair,
-                ),
+                style: QPTextStyle.getBody3Regular(
+                  context,
+                ).copyWith(color: QPColors.blackFair),
                 children: [
                   // Todo: check color based on theme
                   TextSpan(
@@ -82,9 +75,9 @@ class AccountDeletionInformationView extends ConsumerWidget {
                   TextSpan(
                     text: ' and ',
                     // Todo: check color based on theme
-                    style: QPTextStyle.getBody3Regular(context).copyWith(
-                      color: QPColors.blackFair,
-                    ),
+                    style: QPTextStyle.getBody3Regular(
+                      context,
+                    ).copyWith(color: QPColors.blackFair),
                   ),
                   TextSpan(
                     text: 'rizaherzego@gmail.com',
@@ -100,9 +93,7 @@ class AccountDeletionInformationView extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(
-              height: 30,
-            ),
+            const SizedBox(height: 30),
             Center(
               child: GestureDetector(
                 onTap: () {
@@ -112,19 +103,18 @@ class AccountDeletionInformationView extends ConsumerWidget {
                       final bool isSuccess = await notifier.deleteAccount();
 
                       if (isSuccess) {
-                        ref.read(dioServiceProvider.notifier).update(
-                          DioService(
-                            baseUrl: EnvConstants.baseUrl!,
-                            aliceService: ref.read(aliceServiceProvider),
-                            accessToken: '',
-                          ),
-                        );
+                        ref
+                            .read(dioServiceProvider.notifier)
+                            .update(
+                              DioService(
+                                baseUrl: EnvConstants.baseUrl!,
+                                aliceService: ref.read(aliceServiceProvider),
+                                accessToken: '',
+                              ),
+                            );
 
                         if (context.mounted) {
-                          Navigator.popUntil(
-                            context,
-                            (route) => route.isFirst,
-                          );
+                          Navigator.popUntil(context, (route) => route.isFirst);
                         }
 
                         final BottomNavigationBar navbar =
@@ -154,8 +144,7 @@ class AccountDeletionInformationView extends ConsumerWidget {
                 },
                 child: Text(
                   'Delete account',
-                  style:
-                      QPTextStyle.getSubHeading3SemiBold(context).copyWith(
+                  style: QPTextStyle.getSubHeading3SemiBold(context).copyWith(
                     // Todo: check color based on theme
                     color: QPColors.errorFair,
                   ),

@@ -15,10 +15,12 @@ class HomeSurahList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final juzElements =
-        ref.watch(homePageProvider.select((s) => s.juzElements));
-    final tadabburMap =
-        ref.watch(homePageProvider.select((s) => s.listTaddaburAvailables));
+    final juzElements = ref.watch(
+      homePageProvider.select((s) => s.juzElements),
+    );
+    final tadabburMap = ref.watch(
+      homePageProvider.select((s) => s.listTaddaburAvailables),
+    );
     final notifier = ref.read(homePageProvider.notifier);
 
     if (juzElements == null || tadabburMap == null) {
@@ -88,18 +90,9 @@ class HomeSurahList extends ConsumerWidget {
           surat: surat,
           hasTadabbur: hasTadabbur,
           totalTadabburInSurah: tadabburMap[suratNumber],
-          onTap: () => _navigateToSurahPage(
-            surats,
-            index,
-            context,
-            notifier,
-          ),
-          onPlayTap: () => _onPlayAudioPressed(
-            notifier,
-            surats,
-            index,
-            context,
-          ),
+          onTap: () => _navigateToSurahPage(surats, index, context, notifier),
+          onPlayTap: () =>
+              _onPlayAudioPressed(notifier, surats, index, context),
         );
       },
     );
@@ -194,25 +187,57 @@ class _HomeSurahListSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Shimmer.fromColors(
-        baseColor: const Color.fromARGB(255, 236, 233, 233),
-        highlightColor: const Color.fromARGB(255, 224, 218, 218),
-        child: Column(
-          children: [
-            Container(width: double.infinity, height: 100, color: Colors.white),
-            const SizedBox(height: 24),
-            Container(width: double.infinity, height: 100, color: Colors.white),
-            const SizedBox(height: 24),
-            Container(width: double.infinity, height: 100, color: Colors.white),
-            const SizedBox(height: 24),
-            Container(width: double.infinity, height: 100, color: Colors.white),
-            const SizedBox(height: 24),
-            Container(width: double.infinity, height: 100, color: Colors.white),
-            const SizedBox(height: 24),
-            Container(width: double.infinity, height: 100, color: Colors.white),
-          ],
+      color: QPColors.getColorBasedTheme(
+        dark: QPColors.darkModeMassive,
+        light: QPColors.whiteFair,
+        brown: QPColors.brownModeRoot,
+        context: context,
+      ),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Shimmer.fromColors(
+          baseColor: const Color.fromARGB(255, 236, 233, 233),
+          highlightColor: const Color.fromARGB(255, 224, 218, 218),
+          child: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                height: 100,
+                color: Colors.white,
+              ),
+              const SizedBox(height: 24),
+              Container(
+                width: double.infinity,
+                height: 100,
+                color: Colors.white,
+              ),
+              const SizedBox(height: 24),
+              Container(
+                width: double.infinity,
+                height: 100,
+                color: Colors.white,
+              ),
+              const SizedBox(height: 24),
+              Container(
+                width: double.infinity,
+                height: 100,
+                color: Colors.white,
+              ),
+              const SizedBox(height: 24),
+              Container(
+                width: double.infinity,
+                height: 100,
+                color: Colors.white,
+              ),
+              const SizedBox(height: 24),
+              Container(
+                width: double.infinity,
+                height: 100,
+                color: Colors.white,
+              ),
+            ],
+          ),
         ),
       ),
     );

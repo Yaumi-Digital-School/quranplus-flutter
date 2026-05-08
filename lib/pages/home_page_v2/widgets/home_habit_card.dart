@@ -14,38 +14,45 @@ class HomeHabitCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isLoggedIn = ref.watch(authenticationService).isLoggedIn;
-    final dailySummary =
-        ref.watch(homePageProvider.select((s) => s.dailySummary));
-    final isNeedSync =
-        ref.watch(homePageProvider.select((s) => s.isNeedSync));
-    final lastBookmark =
-        ref.watch(homePageProvider.select((s) => s.lastBookmark));
-    final lastRecordingData =
-        ref.watch(homePageProvider.select((s) => s.lastRecordingData));
+    final dailySummary = ref.watch(
+      homePageProvider.select((s) => s.dailySummary),
+    );
+    final isNeedSync = ref.watch(homePageProvider.select((s) => s.isNeedSync));
+    final lastBookmark = ref.watch(
+      homePageProvider.select((s) => s.lastBookmark),
+    );
+    final lastRecordingData = ref.watch(
+      homePageProvider.select((s) => s.lastRecordingData),
+    );
     final notifier = ref.read(homePageProvider.notifier);
 
     if (dailySummary == null) {
       return const DailyProgressTrackerSkeleton();
     }
 
-    if (!isLoggedIn) {
-      return const StartHabitCard();
-    }
+    late Widget child;
 
-    if (dailySummary.totalPages <= 0 && lastBookmark == null) {
-      return _DailyHabitTracker(
+    if (!isLoggedIn) {
+      child = const StartHabitCard();
+    } else if (dailySummary.totalPages <= 0 && lastBookmark == null) {
+      child = _DailyHabitTracker(
         target: dailySummary.target,
         dailyProgress: dailySummary.totalPages,
         isNeedSync: isNeedSync,
       );
+    } else {
+      child = DailyProgressTrackerDetailCard(
+        dailySummary: dailySummary,
+        isNeedSync: isNeedSync,
+        lastBookmark: lastBookmark,
+        lastTrackedData: lastRecordingData,
+        onRefreshParentWidget: notifier.refreshDataOnPopFromSurahPage,
+      );
     }
 
-    return DailyProgressTrackerDetailCard(
-      dailySummary: dailySummary,
-      isNeedSync: isNeedSync,
-      lastBookmark: lastBookmark,
-      lastTrackedData: lastRecordingData,
-      onRefreshParentWidget: notifier.refreshDataOnPopFromSurahPage,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [const SizedBox(height: 12), child, const SizedBox(height: 24)],
     );
   }
 }
