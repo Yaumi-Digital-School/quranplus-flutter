@@ -33,6 +33,14 @@ class PrayerTimesService {
     return sharedPreferenceService.getCityName();
   }
 
+  bool getAutoDetectLocation() {
+    return sharedPreferenceService.getAutoDetectLocation();
+  }
+
+  Future<void> setAutoDetectLocation(bool value) {
+    return sharedPreferenceService.setAutoDetectLocation(value);
+  }
+
   Future<void> setCoordinates(
     double latitude,
     double longitude,

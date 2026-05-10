@@ -17,6 +17,15 @@ class PrayerTimePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cityName = ref.watch(prayerTimeProvider.select((s) => s.cityName));
+    final locationIsOn = ref.watch(
+      prayerTimeProvider.select((s) => s.locationIsOn),
+    );
+    final cooldownSeconds = ref.watch(
+      prayerTimeProvider.select((s) => s.updateLocationCooldownSeconds),
+    );
+    final isFetchingLocation = ref.watch(
+      prayerTimeProvider.select((s) => s.isFetchingLocation),
+    );
     final notifier = ref.read(prayerTimeProvider.notifier);
 
     return Scaffold(
@@ -144,6 +153,147 @@ class PrayerTimePage extends ConsumerWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "Auto-detect location",
+                            style: QPTextStyle.getBody2SemiBold(context)
+                                .copyWith(
+                                  color: QPColors.getColorBasedTheme(
+                                    dark: QPColors.whiteRoot,
+                                    light: QPColors.blackMassive,
+                                    brown: QPColors.brownModeMassive,
+                                    context: context,
+                                  ),
+                                ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 36,
+                          child: FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Switch.adaptive(
+                              activeTrackColor: QPColors.brandHeavy,
+                              inactiveThumbColor: QPColors.getColorBasedTheme(
+                                dark: QPColors.blackHeavy,
+                                light: QPColors.whiteMassive,
+                                brown: QPColors.whiteMassive,
+                                context: context,
+                              ),
+                              inactiveTrackColor: QPColors.whiteSoft,
+                              value: locationIsOn,
+                              onChanged: isFetchingLocation
+                                  ? null
+                                  : (value) async {
+                                      final messenger = ScaffoldMessenger.of(
+                                        context,
+                                      );
+                                      final ok = await notifier.setAutoDetect(
+                                        value,
+                                      );
+                                      if (!ok && value) {
+                                        messenger.showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                              "Couldn't access location. Please enable location permission and services, then try again.",
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (locationIsOn) ...[
+                      const SizedBox(height: 8),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: InkWell(
+                          onTap: (cooldownSeconds > 0 || isFetchingLocation)
+                              ? null
+                              : () async {
+                                  final messenger = ScaffoldMessenger.of(
+                                    context,
+                                  );
+                                  final ok = await notifier
+                                      .updateLocationFromGps();
+                                  if (!ok) {
+                                    messenger.showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          "Couldn't update location. Please try again.",
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              isFetchingLocation
+                                  ? SizedBox(
+                                      width: 14,
+                                      height: 14,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: QPColors.getColorBasedTheme(
+                                          dark: QPColors.whiteFair,
+                                          light: QPColors.brandFair,
+                                          brown: QPColors.brownModeMassive,
+                                          context: context,
+                                        ),
+                                      ),
+                                    )
+                                  : Container(
+                                      decoration: BoxDecoration(
+                                        color: QPColors.getColorBasedTheme(
+                                          dark: QPColors.whiteFair,
+                                          light: QPColors.brandFair,
+                                          brown: QPColors.brownModeMassive,
+                                          context: context,
+                                        ),
+                                        borderRadius: BorderRadius.circular(
+                                          2,
+                                        ), // Set radius here
+                                      ),
+                                      padding: const EdgeInsets.all(2),
+
+                                      child: const Icon(
+                                        Icons.refresh,
+                                        size: 10,
+                                        color: QPColors.whiteMassive,
+                                      ),
+                                    ),
+                              const SizedBox(width: 6),
+                              Text(
+                                isFetchingLocation
+                                    ? "Updating location..."
+                                    : cooldownSeconds > 0
+                                    ? "Update Location (${cooldownSeconds}s)"
+                                    : "Update Location",
+                                style:
+                                    QPTextStyle.getDescription2Medium(
+                                      context,
+                                    ).copyWith(
+                                      decoration: TextDecoration.underline,
+                                      color: QPColors.getColorBasedTheme(
+                                        dark: QPColors.whiteFair,
+                                        light: QPColors.brandFair,
+                                        brown: QPColors.brownModeMassive,
+                                        context: context,
+                                      ),
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                    const Divider(height: 24),
                     InkWell(
                       onTap: () async {
                         await Navigator.pushNamed(
@@ -156,7 +306,7 @@ class PrayerTimePage extends ConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Set location Manually",
+                            "Set location manually",
                             style: QPTextStyle.getBody2SemiBold(context)
                                 .copyWith(
                                   color: QPColors.getColorBasedTheme(
