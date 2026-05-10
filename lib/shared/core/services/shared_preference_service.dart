@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:intl/intl.dart';
+import 'package:qurantafsir_flutter/shared/constants/prayer_times.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart';
@@ -34,6 +35,7 @@ class SharedPreferenceService {
   final String _lngKey = "lngKey";
   final String _autoDetectLocationKey = "autoDetectLocation";
   final String _deviceIdKey = 'device-id';
+  final String _adhanEnabledMapKey = 'adhan-enabled-map';
 
   Future<void> init() async {
     _sharedPreferences = await SharedPreferences.getInstance();
@@ -259,5 +261,23 @@ class SharedPreferenceService {
 
   bool getAutoDetectLocation() {
     return _sharedPreferences.getBool(_autoDetectLocationKey) ?? false;
+  }
+
+  Future<void> setAdhanEnabledMap(Map<PrayerTimesList, bool> map) async {
+    final encoded = json.encode(
+      map.map((key, value) => MapEntry(key.name, value)),
+    );
+    await _sharedPreferences.setString(_adhanEnabledMapKey, encoded);
+  }
+
+  Map<PrayerTimesList, bool>? getAdhanEnabledMap() {
+    final String? raw = _sharedPreferences.getString(_adhanEnabledMapKey);
+    if (raw == null) return null;
+
+    final Map<String, dynamic> decoded = json.decode(raw);
+    return {
+      for (final prayer in PrayerTimesList.values)
+        prayer: decoded[prayer.name] as bool? ?? true,
+    };
   }
 }

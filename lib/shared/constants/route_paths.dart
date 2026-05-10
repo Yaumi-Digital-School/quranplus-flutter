@@ -12,4 +12,5 @@ class RoutePaths {
   static const String routeTadabburContent = "/tadabbur-content";
   static const String routePrayerTimePage = "/prayer-time-page";
   static const String routeLocationManualPage = "/location-manual";
+  static const String routeNotificationSettings = "/notification-settings";
 }

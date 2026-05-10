@@ -105,6 +105,7 @@ class PrayerTimesService {
   Future<void> setupPrayerTimesReminder({
     String calculationMethod = 'singapore',
     String madhab = 'shafi',
+    Map<PrayerTimesList, bool>? adhanEnabled,
   }) async {
     final PrayerTimes? prayerTimes = getPrayerTimesByDate(
       calculationMethod: calculationMethod,
@@ -113,6 +114,8 @@ class PrayerTimesService {
     if (prayerTimes == null) {
       return;
     }
+
+    await notificationService.cancelAllNotifications();
 
     final List<DateTime> prayerTimeList = <DateTime>[
       prayerTimes.fajr,
@@ -125,11 +128,14 @@ class PrayerTimesService {
     final DateTime now = DateTime.now();
 
     for (int i = 0; i < prayerTimeList.length; i++) {
+      final PrayerTimesList prayer = prayerTimeEnums[i];
+      final bool enabled = adhanEnabled?[prayer] ?? true;
       final DateTime localTime = prayerTimeList[i].toLocal();
 
-      if (localTime.isAfter(now)) {
+      if (!localTime.isAfter(now)) continue;
+
+      if (enabled) {
         try {
-          // Normalizer added to avoid conflicts with other notifications
           scheduleQuranReadingReminder(
             prayerTime: localTime,
             id: i + reminderNotifNormalizer,
@@ -141,8 +147,8 @@ class PrayerTimesService {
               '${formatTwoDigits(localTime.hour)}:${formatTwoDigits(localTime.minute)}';
           await notificationService.zonedSchedule(
             id: i,
-            title: '${prayerTimeEnums[i].label} prayer time is coming - $time',
-            body: prayerTimeEnums[i].notifLabel,
+            title: '${prayer.label} prayer time is coming - $time',
+            body: prayer.notifLabel,
             scheduledDateTime: localTime,
           );
         } catch (_) {}
@@ -159,6 +165,7 @@ class PrayerTimesService {
     int days = 7,
     String calculationMethod = 'singapore',
     String madhab = 'shafi',
+    Map<PrayerTimesList, bool>? adhanEnabled,
   }) async {
     await notificationService.cancelAllNotifications();
 
@@ -183,29 +190,31 @@ class PrayerTimesService {
       ];
 
       for (int i = 0; i < prayerTimeList.length; i++) {
+        final PrayerTimesList prayer = prayerTimeEnums[i];
+        final bool enabled = adhanEnabled?[prayer] ?? true;
         final DateTime localTime = prayerTimeList[i].toLocal();
 
-        if (localTime.isAfter(now)) {
-          try {
-            final String time =
-                '${formatTwoDigits(localTime.hour)}:${formatTwoDigits(localTime.minute)}';
-            final int notificationId = dayOffset * 5 + i;
+        if (!localTime.isAfter(now) || !enabled) continue;
 
-            await notificationService.zonedSchedule(
-              id: notificationId,
-              title:
-                  '${prayerTimeEnums[i].label} prayer time is coming - $time',
-              body: prayerTimeEnums[i].notifLabel,
-              scheduledDateTime: localTime,
-            );
-          } catch (_) {}
-        }
+        try {
+          final String time =
+              '${formatTwoDigits(localTime.hour)}:${formatTwoDigits(localTime.minute)}';
+          final int notificationId = dayOffset * 5 + i;
+
+          await notificationService.zonedSchedule(
+            id: notificationId,
+            title: '${prayer.label} prayer time is coming - $time',
+            body: prayer.notifLabel,
+            scheduledDateTime: localTime,
+          );
+        } catch (_) {}
       }
     }
 
     await setupMultiDayQuranReminders(
       calculationMethod: calculationMethod,
       madhab: madhab,
+      adhanEnabled: adhanEnabled,
     );
   }
 
@@ -213,6 +222,7 @@ class PrayerTimesService {
     int days = 7,
     String calculationMethod = 'singapore',
     String madhab = 'shafi',
+    Map<PrayerTimesList, bool>? adhanEnabled,
   }) async {
     final DateTime now = DateTime.now();
 
@@ -235,21 +245,23 @@ class PrayerTimesService {
       ];
 
       for (int i = 0; i < prayerTimeList.length; i++) {
+        final PrayerTimesList prayer = prayerTimeEnums[i];
+        final bool enabled = adhanEnabled?[prayer] ?? true;
         final DateTime reminderTime = prayerTimeList[i].toLocal().add(
           const Duration(minutes: 30),
         );
 
-        if (reminderTime.isAfter(now)) {
-          try {
-            await notificationService.zonedSchedule(
-              id: reminderNotifNormalizer + dayOffset * 5 + i,
-              title: "Don't miss your Quran reading goal",
-              body:
-                  "Your Quran reading goal is within reach. Take a moment today to reflect on the wisdom of the Quran.",
-              scheduledDateTime: reminderTime,
-            );
-          } catch (_) {}
-        }
+        if (!reminderTime.isAfter(now) || !enabled) continue;
+
+        try {
+          await notificationService.zonedSchedule(
+            id: reminderNotifNormalizer + dayOffset * 5 + i,
+            title: "Don't miss your Quran reading goal",
+            body:
+                "Your Quran reading goal is within reach. Take a moment today to reflect on the wisdom of the Quran.",
+            scheduledDateTime: reminderTime,
+          );
+        } catch (_) {}
       }
     }
   }
