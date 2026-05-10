@@ -32,6 +32,7 @@ class SharedPreferenceService {
   final String _cityNameKey = "cityName";
   final String _latKey = "latKey";
   final String _lngKey = "lngKey";
+  final String _autoDetectLocationKey = "autoDetectLocation";
   final String _deviceIdKey = 'device-id';
 
   Future<void> init() async {
@@ -250,5 +251,13 @@ class SharedPreferenceService {
 
   String? getCityName() {
     return _sharedPreferences.getString(_cityNameKey);
+  }
+
+  Future<void> setAutoDetectLocation(bool value) async {
+    await _sharedPreferences.setBool(_autoDetectLocationKey, value);
+  }
+
+  bool getAutoDetectLocation() {
+    return _sharedPreferences.getBool(_autoDetectLocationKey) ?? false;
   }
 }
