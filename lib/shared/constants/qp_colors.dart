@@ -86,9 +86,9 @@ class QPColors {
   static const Color brownModeSoft = Color(0xffEADCC1);
   static const Color brownModeHeavy = Color(0xFFCDB687);
 
-  static const Color themeCardBackroundDark = Color(0xFF1D1D1D);
-  static const Color themeCardBackroundLight = Color(0xFFFFFFFF);
-  static const Color themeCardBackroundBrown = Color(0xFFE4D0A6);
+  static const Color themeCardBackgroundDark = Color(0xFF1D1D1D);
+  static const Color themeCardBackgroundLight = Color(0xFFFFFFFF);
+  static const Color themeCardBackgroundBrown = Color(0xFFE4D0A6);
 
   static Color getColorBasedTheme({
     required Color dark,

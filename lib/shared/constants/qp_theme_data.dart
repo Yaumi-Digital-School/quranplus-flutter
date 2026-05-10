@@ -30,7 +30,7 @@ class QPThemeData {
         backgroundColor: QPColors.whiteFair,
         surfaceTintColor: Colors.transparent,
       ),
-      cardColor: QPColors.themeCardBackroundLight,
+      cardColor: QPColors.themeCardBackgroundLight,
       hintColor: QPColors.blackSoft,
       colorScheme: const ColorScheme.light().copyWith(
         primary: QPColors.blackHeavy,
@@ -49,7 +49,7 @@ class QPThemeData {
         backgroundColor: QPColors.darkModeMassive,
         surfaceTintColor: Colors.transparent,
       ),
-      cardColor: QPColors.themeCardBackroundDark,
+      cardColor: QPColors.themeCardBackgroundDark,
       dividerColor: QPColors.darkModeFair,
       hintColor: QPColors.blackSoft,
       colorScheme: const ColorScheme.light().copyWith(
@@ -71,7 +71,7 @@ class QPThemeData {
         backgroundColor: QPColors.brownModeRoot,
         surfaceTintColor: Colors.transparent,
       ),
-      cardColor: QPColors.themeCardBackroundBrown,
+      cardColor: QPColors.themeCardBackgroundBrown,
       dividerColor: QPColors.brownModeFair,
       hintColor: QPColors.brownModeMassive,
       colorScheme: const ColorScheme.light().copyWith(
