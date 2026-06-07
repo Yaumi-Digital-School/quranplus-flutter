@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:adhan_dart/adhan_dart.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:qurantafsir_flutter/shared/constants/prayer_times.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
@@ -10,30 +12,41 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'prayer_times_notifier.g.dart';
 
+const int updateLocationCooldownDurationSeconds = 30;
+
 class PrayerTimeState {
   PrayerTimeState({
     this.locationIsOn = false,
     this.isLoading = true,
     this.prayerTimes,
     this.cityName,
+    this.updateLocationCooldownSeconds = 0,
+    this.isFetchingLocation = false,
   });
 
   bool isLoading;
   bool locationIsOn;
   PrayerTimes? prayerTimes;
   String? cityName;
+  int updateLocationCooldownSeconds;
+  bool isFetchingLocation;
 
   PrayerTimeState copyWith({
     bool? isLoading,
     bool? locationIsOn,
     PrayerTimes? prayerTimes,
     String? cityName,
+    int? updateLocationCooldownSeconds,
+    bool? isFetchingLocation,
   }) {
     return PrayerTimeState(
       locationIsOn: locationIsOn ?? this.locationIsOn,
       isLoading: isLoading ?? this.isLoading,
       prayerTimes: prayerTimes ?? this.prayerTimes,
       cityName: cityName ?? this.cityName,
+      updateLocationCooldownSeconds:
+          updateLocationCooldownSeconds ?? this.updateLocationCooldownSeconds,
+      isFetchingLocation: isFetchingLocation ?? this.isFetchingLocation,
     );
   }
 
@@ -65,48 +78,179 @@ class PrayerTimeState {
 @riverpod
 class PrayerTimeNotifier extends _$PrayerTimeNotifier {
   late PrayerTimesService _prayerTimesService;
+  Timer? _cooldownTimer;
 
   @override
   PrayerTimeState build() {
     _prayerTimesService = ref.watch(prayerTimesService);
     final cityName = _prayerTimesService.getCityName();
+    final autoDetectEnabled = _prayerTimesService.getAutoDetectLocation();
+    ref.onDispose(() {
+      _cooldownTimer?.cancel();
+      _cooldownTimer = null;
+    });
+
+    if (autoDetectEnabled) {
+      Future.microtask(_silentLocationRefresh);
+    }
+
     return PrayerTimeState(
-      locationIsOn: false,
+      locationIsOn: autoDetectEnabled,
       isLoading: false,
       prayerTimes: _prayerTimesService.getPrayerTimesByDate(),
       cityName: cityName,
     );
   }
 
-  Future<void> checkGpsServices() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    bool isPermissionGiven = false;
-    bool locationCondition = false;
+  Future<void> _silentLocationRefresh() async {
+    final permission = await Geolocator.checkPermission();
+    final hasPermission =
+        permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse;
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
 
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-
-      if (permission == LocationPermission.always ||
-          permission == LocationPermission.whileInUse) {
-        isPermissionGiven = true;
-      }
+    if (!hasPermission || !serviceEnabled) {
+      await _prayerTimesService.setAutoDetectLocation(false);
+      state = state.copyWith(locationIsOn: false);
+      return;
     }
 
-    isPermissionGiven = true;
+    try {
+      final cached = await Geolocator.getLastKnownPosition();
+      if (cached != null) await _applyPosition(cached);
+    } catch (_) {}
 
-    if (isPermissionGiven) {
-      bool servicestatus = await Geolocator.isLocationServiceEnabled();
-
-      if (servicestatus) {
-        locationCondition = true;
-      }
-    }
-
-    state = state.copyWith(locationIsOn: locationCondition);
+    try {
+      final fresh = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 20),
+        ),
+      );
+      await _applyPosition(fresh);
+    } catch (_) {}
   }
 
-  Future<void> updateAutoDetectCondition(bool autoDetectCondition) async {
-    state = state.copyWith(locationIsOn: autoDetectCondition);
+  Future<void> _applyPosition(Position position) async {
+    final label = await _resolveCityLabel(
+      position.latitude,
+      position.longitude,
+    );
+    await changeLocation(position.latitude, position.longitude, label);
+    state = state.copyWith(
+      prayerTimes: _prayerTimesService.getPrayerTimesByDate(),
+      cityName: label,
+    );
+  }
+
+  Future<bool> setAutoDetect(bool enabled) async {
+    await _prayerTimesService.setAutoDetectLocation(enabled);
+
+    if (!enabled) {
+      state = state.copyWith(locationIsOn: false);
+      return true;
+    }
+
+    final hasPermission = await _ensureLocationPermission();
+    if (!hasPermission) {
+      await _prayerTimesService.setAutoDetectLocation(false);
+      state = state.copyWith(locationIsOn: false);
+      return false;
+    }
+
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      await _prayerTimesService.setAutoDetectLocation(false);
+      state = state.copyWith(locationIsOn: false);
+      return false;
+    }
+
+    state = state.copyWith(locationIsOn: true);
+    final fetched = await _fetchAndApplyCurrentLocation();
+    if (!fetched) {
+      await _prayerTimesService.setAutoDetectLocation(false);
+      state = state.copyWith(locationIsOn: false);
+      return false;
+    }
+    return true;
+  }
+
+  Future<bool> updateLocationFromGps() async {
+    if (state.updateLocationCooldownSeconds > 0) return false;
+
+    final fetched = await _fetchAndApplyCurrentLocation();
+    if (fetched) _startUpdateLocationCooldown();
+    return fetched;
+  }
+
+  Future<bool> _ensureLocationPermission() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    return permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse;
+  }
+
+  Future<bool> _fetchAndApplyCurrentLocation() async {
+    state = state.copyWith(isFetchingLocation: true);
+    try {
+      Position? position;
+      try {
+        position = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+            timeLimit: Duration(seconds: 20),
+          ),
+        );
+      } on TimeoutException {
+        position = await Geolocator.getLastKnownPosition();
+      }
+      if (position == null) return false;
+      await _applyPosition(position);
+      return true;
+    } catch (_) {
+      return false;
+    } finally {
+      state = state.copyWith(isFetchingLocation: false);
+    }
+  }
+
+  Future<String> _resolveCityLabel(double latitude, double longitude) async {
+    try {
+      final placemarks = await placemarkFromCoordinates(latitude, longitude);
+      if (placemarks.isEmpty) return 'Current Location';
+      final p = placemarks.first;
+      final city = (p.locality?.isNotEmpty ?? false)
+          ? p.locality!
+          : (p.subAdministrativeArea?.isNotEmpty ?? false)
+          ? p.subAdministrativeArea!
+          : (p.administrativeArea ?? '');
+      final country = p.country ?? '';
+      if (city.isEmpty && country.isEmpty) return 'Current Location';
+      if (city.isEmpty) return country;
+      if (country.isEmpty) return city;
+      return '$city, $country';
+    } catch (_) {
+      return 'Current Location';
+    }
+  }
+
+  void _startUpdateLocationCooldown() {
+    _cooldownTimer?.cancel();
+    state = state.copyWith(
+      updateLocationCooldownSeconds: updateLocationCooldownDurationSeconds,
+    );
+    _cooldownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      final remaining = state.updateLocationCooldownSeconds - 1;
+      if (remaining <= 0) {
+        timer.cancel();
+        _cooldownTimer = null;
+        state = state.copyWith(updateLocationCooldownSeconds: 0);
+      } else {
+        state = state.copyWith(updateLocationCooldownSeconds: remaining);
+      }
+    });
   }
 
   Future<void> changeLocation(

@@ -4,8 +4,8 @@ import 'package:qurantafsir_flutter/pages/read_tadabbur/read_tadabbur_state_noti
 import 'package:qurantafsir_flutter/pages/read_tadabbur/widgets/tadabbur_ayah_card.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
-import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
+import 'package:qurantafsir_flutter/widgets/general_app_bar.dart';
 
 class ReadTadabburParam {
   ReadTadabburParam({
@@ -28,31 +28,7 @@ class ReadTadabburPage extends ConsumerWidget {
     final state = ref.watch(readTadabburProvider(param.surahId));
 
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(54.0),
-        child: AppBar(
-          leading: IconButton(
-            icon: Icon(
-              Icons.chevron_left,
-              color: context.qpColors.resolve(
-                context.qpColors.brand100,
-                light: QPColors.blackMassive,
-              ),
-              size: 24,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          title: Text(
-            "Read Tadabbur",
-            style: QPTextStyle.getSubHeading2SemiBold(context),
-          ),
-          automaticallyImplyLeading: false,
-          elevation: 0.7,
-          centerTitle: true,
-        ),
-      ),
+      appBar: const GeneralAppBar(title: 'Read Tadabbur'),
       body: Stack(
         children: [
           Padding(
