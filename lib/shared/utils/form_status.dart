@@ -1,6 +1,1 @@
-enum FormStatus {
-  pure,
-  dirty,
-  invalid,
-  valid,
-}
+enum FormStatus { pure, dirty, invalid, valid }

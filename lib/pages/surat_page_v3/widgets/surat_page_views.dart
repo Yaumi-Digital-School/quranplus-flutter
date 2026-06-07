@@ -1,9 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_content_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_habit_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_navigation_notifier.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_content_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_content_state.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_habit_state.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/basmalah_widget.dart';
@@ -37,12 +37,14 @@ class FullPagePagesView extends ConsumerWidget {
     List<Widget> allPages = <Widget>[];
 
     for (int idx = 0; idx < contentState.pages!.length; idx++) {
-      allPages.add(_buildPageInFullPage(
-        pageIndex: idx,
-        context: context,
-        contentState: contentState,
-        navNotifier: navNotifier,
-      ));
+      allPages.add(
+        _buildPageInFullPage(
+          pageIndex: idx,
+          context: context,
+          contentState: contentState,
+          navNotifier: navNotifier,
+        ),
+      );
     }
 
     navNotifier.resetSeparatorBuilderIndex();
@@ -75,7 +77,8 @@ class FullPagePagesView extends ConsumerWidget {
 
     while (navNotifier.separatorBuilderIndex <
             contentState.fullPageSeparators!.length &&
-        contentState.fullPageSeparators![navNotifier.separatorBuilderIndex]
+        contentState
+                .fullPageSeparators![navNotifier.separatorBuilderIndex]
                 .page ==
             page) {
       final FullPageSeparator separator =
@@ -88,11 +91,8 @@ class FullPagePagesView extends ConsumerWidget {
 
     List<Widget> textInWidgets = texts
         .map(
-          (String words) => _buildFullPagePerLine(
-            page: page,
-            text: words,
-            context: context,
-          ),
+          (String words) =>
+              _buildFullPagePerLine(page: page, text: words, context: context),
         )
         .toList();
 
@@ -219,12 +219,14 @@ class PerAyahPagesView extends ConsumerWidget {
     List<Widget> allPages = <Widget>[];
 
     for (int idx = 0; idx < contentState.pages!.length; idx++) {
-      allPages.add(_buildPage(
-        quranPageObject: contentState.pages![idx],
-        pageNumberInQuran: idx + 1,
-        contentState: contentState,
-        habitState: habitState,
-      ));
+      allPages.add(
+        _buildPage(
+          quranPageObject: contentState.pages![idx],
+          pageNumberInQuran: idx + 1,
+          contentState: contentState,
+          habitState: habitState,
+        ),
+      );
     }
 
     return PageView(
@@ -246,22 +248,27 @@ class PerAyahPagesView extends ConsumerWidget {
       bool useDivider = i != quranPageObject.verses.length - 1;
       Verse verse = quranPageObject.verses[i];
 
-      ayahs.add(AyahItemWidget(
-        verse: verse,
-        useDivider: useDivider,
-        fontSize: pageNumberInQuran == 1 || pageNumberInQuran == 2
-            ? orientation == Orientation.landscape
-                ? contentState
-                    .readingSettings!.valueFontSizeArabicFirstSheetLandscape
-                : contentState.readingSettings!.valueFontSizeArabicFirstSheet
-            : orientation == Orientation.landscape
-                ? contentState.readingSettings!.valueFontSizeArabicLandscape
-                : contentState.readingSettings!.valueFontSizeArabic,
-        pageNumberInQuran: pageNumberInQuran,
-        orientation: orientation,
-        scrollController: scrollController,
-        startPageInIndex: startPageInIndex,
-      ));
+      ayahs.add(
+        AyahItemWidget(
+          verse: verse,
+          useDivider: useDivider,
+          fontSize: pageNumberInQuran == 1 || pageNumberInQuran == 2
+              ? orientation == Orientation.landscape
+                    ? contentState
+                          .readingSettings!
+                          .valueFontSizeArabicFirstSheetLandscape
+                    : contentState
+                          .readingSettings!
+                          .valueFontSizeArabicFirstSheet
+              : orientation == Orientation.landscape
+              ? contentState.readingSettings!.valueFontSizeArabicLandscape
+              : contentState.readingSettings!.valueFontSizeArabic,
+          pageNumberInQuran: pageNumberInQuran,
+          orientation: orientation,
+          scrollController: scrollController,
+          startPageInIndex: startPageInIndex,
+        ),
+      );
     }
 
     return ListView(

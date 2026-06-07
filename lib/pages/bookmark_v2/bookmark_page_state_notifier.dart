@@ -7,10 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'bookmark_page_state_notifier.g.dart';
 
 class BookmarkPageState {
-  BookmarkPageState({
-    this.listBookmarks,
-    this.listFavoriteAyah,
-  });
+  BookmarkPageState({this.listBookmarks, this.listFavoriteAyah});
 
   List<Bookmarks>? listBookmarks;
   List<FavoriteAyahs>? listFavoriteAyah;
@@ -36,16 +33,15 @@ class BookmarkPageNotifier extends _$BookmarkPageNotifier {
   }) async {
     final bookmarksSvc = ref.read(bookmarksService);
     final favoriteAyahsSvc = ref.read(favoriteAyahsService);
-    final isLoggedIn =
-        ref.read(authenticationService).isLoggedIn;
+    final isLoggedIn = ref.read(authenticationService).isLoggedIn;
 
     if (isLoggedIn && connectivityStatus == ConnectivityStatus.isConnected) {
       await bookmarksSvc.mergeBookmarkToServer();
     }
 
     final localBookmarks = await bookmarksSvc.getBookmarkFromLocal();
-    final localFavoriteAyahs =
-        await favoriteAyahsSvc.getFavoriteAyahListLocal();
+    final localFavoriteAyahs = await favoriteAyahsSvc
+        .getFavoriteAyahListLocal();
 
     state = state.copyWith(
       listBookmarks: localBookmarks,

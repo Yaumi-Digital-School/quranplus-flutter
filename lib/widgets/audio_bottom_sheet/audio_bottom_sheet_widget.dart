@@ -4,6 +4,7 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/constants/button_audio_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/linear_percent_indicator_custom.dart';
@@ -12,9 +13,7 @@ import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/select_reciter_bo
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 
 class AudioBottomSheetWidget extends ConsumerStatefulWidget {
-  const AudioBottomSheetWidget({
-    super.key,
-  });
+  const AudioBottomSheetWidget({super.key});
 
   @override
   ConsumerState<AudioBottomSheetWidget> createState() =>
@@ -30,11 +29,13 @@ class _AudioBottomSheetWidgetState
 
   @override
   Widget build(BuildContext context) {
-    final AsyncValue<ButtonAudioState> buttonState =
-        ref.watch(buttonAudioStateProvider);
+    final AsyncValue<ButtonAudioState> buttonState = ref.watch(
+      buttonAudioStateProvider,
+    );
 
-    final AudioRecitationState audioBottomSheetState =
-        ref.watch(audioRecitationProvider);
+    final AudioRecitationState audioBottomSheetState = ref.watch(
+      audioRecitationProvider,
+    );
 
     return Column(
       children: [
@@ -80,8 +81,8 @@ class _AudioBottomSheetWidgetState
                   child: Padding(
                     padding: const EdgeInsets.only(top: 5, left: 25),
                     child: _buildPreviousSurahCTA(
-                      surahNumberToSurahNameMap[
-                              audioBottomSheetState.surahId - 1]
+                      surahNumberToSurahNameMap[audioBottomSheetState.surahId -
+                              1]
                           .toString(),
                     ),
                   ),
@@ -145,8 +146,8 @@ class _AudioBottomSheetWidgetState
                   child: Padding(
                     padding: const EdgeInsets.only(top: 5, right: 25),
                     child: _buildNextSurahCTA(
-                      surahNumberToSurahNameMap[
-                              audioBottomSheetState.surahId + 1]
+                      surahNumberToSurahNameMap[audioBottomSheetState.surahId +
+                              1]
                           .toString(),
                     ),
                   ),
@@ -158,9 +159,9 @@ class _AudioBottomSheetWidgetState
         GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () async {
-            ref.read(audioRecitationProvider.notifier).changeReciter(
-                  ref.read(selectReciterProvider.notifier),
-                );
+            ref
+                .read(audioRecitationProvider.notifier)
+                .changeReciter(ref.read(selectReciterProvider.notifier));
             ref.read(audioRecitationProvider.notifier).pauseAudio();
 
             Navigator.pop(context);
@@ -191,12 +192,7 @@ class _AudioBottomSheetWidgetState
               Icon(
                 Icons.keyboard_arrow_right,
                 size: 24,
-                color: QPColors.getColorBasedTheme(
-                  dark: QPColors.whiteFair,
-                  light: QPColors.blackFair,
-                  brown: QPColors.brownModeMassive,
-                  context: context,
-                ),
+                color: context.qpColors.neutral100,
               ),
             ],
           ),
@@ -211,16 +207,13 @@ class _AudioBottomSheetWidgetState
         ref.read(audioRecitationProvider.notifier).nextSurah();
       },
       child: Container(
-        constraints: const BoxConstraints(
-          maxWidth: 100,
-        ),
+        constraints: const BoxConstraints(maxWidth: 100),
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          color: QPColors.getColorBasedTheme(
-            dark: QPColors.blackHeavy,
+          color: context.qpColors.resolve(
+            context.qpColors.brand40,
             light: QPColors.whiteMassive,
-            brown: QPColors.brownModeSoft,
-            context: context,
+            dark: QPColors.blackHeavy,
           ),
           borderRadius: const BorderRadius.all(Radius.circular(100)),
           boxShadow: [
@@ -262,15 +255,12 @@ class _AudioBottomSheetWidgetState
       },
       child: Container(
         padding: const EdgeInsets.all(4),
-        constraints: const BoxConstraints(
-          maxWidth: 100,
-        ),
+        constraints: const BoxConstraints(maxWidth: 100),
         decoration: BoxDecoration(
-          color: QPColors.getColorBasedTheme(
-            dark: QPColors.blackHeavy,
+          color: context.qpColors.resolve(
+            context.qpColors.brand40,
             light: QPColors.whiteMassive,
-            brown: QPColors.brownModeSoft,
-            context: context,
+            dark: QPColors.blackHeavy,
           ),
           borderRadius: const BorderRadius.all(Radius.circular(100)),
           boxShadow: [

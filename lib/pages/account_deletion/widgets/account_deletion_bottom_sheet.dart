@@ -19,9 +19,7 @@ class AccountDeletionBottomSheet {
             textAlign: TextAlign.center,
             style: QPTextStyle.getSubHeading1SemiBold(context),
           ),
-          const SizedBox(
-            height: 16,
-          ),
+          const SizedBox(height: 16),
           Text(
             'Are you sure you want to delete your account?\nThis action can’t be undone.',
             textAlign: TextAlign.center,
@@ -30,9 +28,7 @@ class AccountDeletionBottomSheet {
               color: QPColors.blackFair,
             ),
           ),
-          const SizedBox(
-            height: 32,
-          ),
+          const SizedBox(height: 32),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -41,9 +37,7 @@ class AccountDeletionBottomSheet {
                 onTap: () => Navigator.pop(context),
                 size: ButtonSize.regular,
               ),
-              const SizedBox(
-                width: 16,
-              ),
+              const SizedBox(width: 16),
               ButtonSecondary(
                 label: 'Delete',
                 onTap: onConfirm,

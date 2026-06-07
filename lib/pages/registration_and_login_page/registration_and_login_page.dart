@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/widgets/registration_view/registration_view.dart';
 
 class RegistrationAndLoginPageParam {
@@ -27,11 +28,9 @@ class RegistrationAndLoginPage extends StatelessWidget {
           leading: IconButton(
             icon: Icon(
               Icons.chevron_left,
-              color: QPColors.getColorBasedTheme(
-                dark: QPColors.whiteFair,
+              color: context.qpColors.resolve(
+                context.qpColors.brand100,
                 light: QPColors.blackMassive,
-                brown: QPColors.brownModeMassive,
-                context: context,
               ),
               size: 24,
             ),

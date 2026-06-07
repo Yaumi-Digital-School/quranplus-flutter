@@ -51,15 +51,9 @@ enum PrayerTimesWorker {
     name: 'initializePrayerTimesNotifications',
     tag: 'prayerTimesReminder',
   ),
-  quranTimeReminder(
-    name: 'readingReminder',
-    tag: 'quranTimeReminder',
-  );
+  quranTimeReminder(name: 'readingReminder', tag: 'quranTimeReminder');
 
-  const PrayerTimesWorker({
-    required this.name,
-    required this.tag,
-  });
+  const PrayerTimesWorker({required this.name, required this.tag});
 
   final String name;
   final String tag;

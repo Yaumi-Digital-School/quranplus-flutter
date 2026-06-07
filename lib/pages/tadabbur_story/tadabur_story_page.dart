@@ -3,26 +3,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/tadabbur_story/tadabbur_story_state_notifier.dart';
 import 'package:qurantafsir_flutter/pages/tadabbur_story/widgets/stories_widget.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/widgets/on_boarding_widget.dart';
 import 'package:qurantafsir_flutter/widgets/step_widget.dart';
-import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 
 class TadabburStoryPageParams {
-  TadabburStoryPageParams({
-    required this.tadabburId,
-  });
+  TadabburStoryPageParams({required this.tadabburId});
 
   final int tadabburId;
 }
 
 class TadabburStoryPage extends ConsumerStatefulWidget {
-  const TadabburStoryPage({
-    required this.params,
-    super.key,
-  });
+  const TadabburStoryPage({required this.params, super.key});
 
   final TadabburStoryPageParams params;
 
@@ -35,9 +30,7 @@ class _TadabburStoryPageState extends ConsumerState<TadabburStoryPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(tadabburStoryPageProvider.notifier)
-          .init(widget.params);
+      ref.read(tadabburStoryPageProvider.notifier).init(widget.params);
     });
   }
 
@@ -49,9 +42,7 @@ class _TadabburStoryPageState extends ConsumerState<TadabburStoryPage> {
     if (state.isLoading) {
       return const Scaffold(
         backgroundColor: QPColors.whiteMassive,
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
+        body: Center(child: CircularProgressIndicator()),
       );
     }
 
@@ -65,14 +56,11 @@ class _TadabburStoryPageState extends ConsumerState<TadabburStoryPage> {
           final TadabburContentReadingInfo item = state.contentInfos[index];
 
           if (item.content.tadabburContent == null) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           return OnBoardingWidget(
-            onBoardingKey:
-                SharedPreferenceService.isAlreadyOnBoardingTadabbur,
+            onBoardingKey: SharedPreferenceService.isAlreadyOnBoardingTadabbur,
             listWidget: _getListStepParams(context),
             child: StoriesWidget(
               key: GlobalKey(),
@@ -108,8 +96,9 @@ class _TadabburStoryPageState extends ConsumerState<TadabburStoryPage> {
         direction: StepDirection.column,
         mainWidget: Text(
           "Welcome to Tadabbur!",
-          style: QPTextStyle.getSubHeading1SemiBold(context)
-              .copyWith(color: Colors.white),
+          style: QPTextStyle.getSubHeading1SemiBold(
+            context,
+          ).copyWith(color: Colors.white),
         ),
         left: 48,
         bottom: 0,

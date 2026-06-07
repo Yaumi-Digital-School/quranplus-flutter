@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
@@ -8,18 +9,18 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_boo
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_content_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_habit_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_navigation_notifier.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/pre_tracking_animation.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/submission_dialog.dart';
 import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
+import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_widget.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_minimized_info.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
-import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/widgets/utils/general_dialog.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -27,10 +28,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'widgets/widgets.dart';
 
-enum AyahFontSize {
-  big,
-  regular,
-}
+enum AyahFontSize { big, regular }
 
 class SuratPageV3OnPopParam {
   SuratPageV3OnPopParam({
@@ -59,10 +57,7 @@ class SuratPageV3Param {
 }
 
 class SuratPageV3 extends ConsumerStatefulWidget {
-  const SuratPageV3({
-    super.key,
-    required this.param,
-  });
+  const SuratPageV3({super.key, required this.param});
 
   final SuratPageV3Param param;
 
@@ -79,8 +74,9 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
     super.initState();
     WakelockPlus.enable();
     scrollController = AutoScrollController();
-    VisibilityDetectorController.instance.updateInterval =
-        const Duration(milliseconds: 300);
+    VisibilityDetectorController.instance.updateInterval = const Duration(
+      milliseconds: 300,
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _initAllNotifiers();
     });
@@ -146,9 +142,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
     ref.watch(suratPageHabitProvider);
 
     if (navState.isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     final habitNotifier = ref.read(suratPageHabitProvider.notifier);
@@ -164,8 +158,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
         appBar: SuratPageAppBar(
           onTapBack: () => _onTapBack(habitNotifier),
           onTapPlayRecitation: () => _onPlayRecitationAppBar(),
-          onTapOpenSettings: () =>
-              _scaffoldKey.currentState?.openEndDrawer(),
+          onTapOpenSettings: () => _scaffoldKey.currentState?.openEndDrawer(),
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -184,13 +177,10 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
 
     if (connectivityStatus == ConnectivityStatus.isDisconnected &&
         context.mounted) {
-      GeneralBottomSheet.showNoInternetBottomSheet(
-        context,
-        () {
-          Navigator.pop(context);
-          _onPlayRecitationAppBar();
-        },
-      );
+      GeneralBottomSheet.showNoInternetBottomSheet(context, () {
+        Navigator.pop(context);
+        _onPlayRecitationAppBar();
+      });
       return;
     }
 
@@ -246,12 +236,9 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
               );
             },
             onPageChanged: (pageIndex) {
-              navNotifier.updateOnPageChanged(
-                  pageIndex, contentState.pages!);
-              bookmarkNotifier
-                  .checkIsBookmarkExists(navState.currentPage);
-              habitNotifier
-                  .changePageOnRecording(navState.currentPage);
+              navNotifier.updateOnPageChanged(pageIndex, contentState.pages!);
+              bookmarkNotifier.checkIsBookmarkExists(navState.currentPage);
+              habitNotifier.changePageOnRecording(navState.currentPage);
               habitNotifier.setShowMinimizedAudioPlayer(
                 ref.read(suratPageHabitProvider).isOnReadCTAVisible,
               );
@@ -267,7 +254,8 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
               bookmarkNotifier.checkIsBookmarkExists(pageValue);
               navNotifier.updateCurrentPage(pageValue);
               navNotifier.updateVisibleJuz(
-                  contentState.pages![pageIndex].verses[0].juzNumber);
+                contentState.pages![pageIndex].verses[0].juzNumber,
+              );
             },
           );
 
@@ -293,49 +281,48 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Builder(builder: (context) {
-                        final surahNumber =
-                            surahNameToSurahNumberMap[
-                                    navState.visibleSuratName] ??
-                                0;
-                        if (contentState
-                                .availableAyahTadabburs[surahNumber] !=
-                            null) {
-                          return ButtonBrandSoft(
-                            leftWidget: const Icon(
-                              Icons.menu_book,
-                              size: 12,
-                              color: QPColors.brandFair,
-                            ),
-                            title:
-                                'Tadabbur ${navState.visibleSuratName}',
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                RoutePaths.routeReadTadabbur,
-                                arguments: ReadTadabburParam(
-                                  surahName: navState.visibleSuratName,
-                                  surahId: surahNumber,
-                                  isFromSurahPage: true,
-                                ),
-                              );
-                            },
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      }),
+                      Builder(
+                        builder: (context) {
+                          final surahNumber =
+                              surahNameToSurahNumberMap[navState
+                                  .visibleSuratName] ??
+                              0;
+                          if (contentState
+                                  .availableAyahTadabburs[surahNumber] !=
+                              null) {
+                            return ButtonBrandSoft(
+                              leftWidget: const Icon(
+                                Icons.menu_book,
+                                size: 12,
+                                color: QPColors.brandFair,
+                              ),
+                              title: 'Tadabbur ${navState.visibleSuratName}',
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  RoutePaths.routeReadTadabbur,
+                                  arguments: ReadTadabburParam(
+                                    surahName: navState.visibleSuratName,
+                                    surahId: surahNumber,
+                                    isFromSurahPage: true,
+                                  ),
+                                );
+                              },
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      ),
                       if (!habitState.isRecording)
                         ButtonPrimary(
                           label: 'Start Tracking',
                           size: ButtonSize.small,
                           onTap: () async {
                             if (!habitNotifier.isLoggedIn) {
-                              final dynamic res =
-                                  await Navigator.pushNamed(
+                              final dynamic res = await Navigator.pushNamed(
                                 context,
                                 RoutePaths.routeLogin,
-                                arguments:
-                                    RegistrationAndLoginPageParam(
+                                arguments: RegistrationAndLoginPageParam(
                                   shouldNavigateTabToHome: false,
                                 ),
                               );
@@ -347,8 +334,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                                   if (!context.mounted) return;
                                   _startTracking(
                                     context,
-                                    ref.read(suratPageHabitProvider
-                                        .notifier),
+                                    ref.read(suratPageHabitProvider.notifier),
                                   );
                                 });
                               }

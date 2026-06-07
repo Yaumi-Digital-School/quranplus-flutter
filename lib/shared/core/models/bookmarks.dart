@@ -8,10 +8,7 @@ part 'bookmarks.g.dart';
 
 @JsonSerializable()
 class GetBookmarkListResponse {
-  GetBookmarkListResponse({
-    this.data,
-    this.message,
-  });
+  GetBookmarkListResponse({this.data, this.message});
 
   final List<Bookmarks>? data;
   final String? message;
@@ -50,10 +47,7 @@ class CreateBookmarkResponse {
 
 @JsonSerializable()
 class CreateBookmarkRequest {
-  CreateBookmarkRequest({
-    required this.page,
-    this.surahId,
-  });
+  CreateBookmarkRequest({required this.page, this.surahId});
 
   @JsonKey(name: 'surah_id', includeIfNull: false)
   final int? surahId;
@@ -117,9 +111,9 @@ class Bookmarks {
     final DateTime currentTime = DateTime.now();
     final DateTime convertedStr = DateTime.parse(createdAt ?? '');
 
-    final Duration timeDiffInDay = DateUtils.dateOnly(currentTime).difference(
-      DateUtils.dateOnly(convertedStr),
-    );
+    final Duration timeDiffInDay = DateUtils.dateOnly(
+      currentTime,
+    ).difference(DateUtils.dateOnly(convertedStr));
 
     if (timeDiffInDay < const Duration(days: 1)) {
       return '${convertedStr.hour}:${convertedStr.minute.toString().padLeft(2, "0")}';

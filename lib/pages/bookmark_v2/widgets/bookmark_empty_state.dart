@@ -4,6 +4,7 @@ import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 
 class BookmarkEmptyState extends StatelessWidget {
   const BookmarkEmptyState({super.key, required this.message});
@@ -22,11 +23,9 @@ class BookmarkEmptyState extends StatelessWidget {
             height: 200,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: QPColors.getColorBasedTheme(
-                dark: QPColors.darkModeHeavy,
+              color: context.qpColors.resolve(
+                context.qpColors.surface80,
                 light: QPColors.whiteSoft,
-                brown: QPColors.brownModeSoft,
-                context: context,
               ),
             ),
             child: Image.asset(_emptyStateImagePath(context)),
@@ -42,11 +41,10 @@ class BookmarkEmptyState extends StatelessWidget {
         Text(
           message,
           style: QPTextStyle.getSubHeading4Regular(context).copyWith(
-            color: QPColors.getColorBasedTheme(
-              dark: QPColors.whiteRoot,
+            color: context.qpColors.resolve(
+              context.qpColors.brand100,
               light: QPColors.whiteFair,
-              brown: QPColors.brownModeMassive,
-              context: context,
+              dark: QPColors.whiteRoot,
             ),
           ),
           textAlign: TextAlign.center,
@@ -62,19 +60,16 @@ class BookmarkEmptyState extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 6.5),
             width: double.infinity,
             decoration: BoxDecoration(
-              color: QPColors.getColorBasedTheme(
-                dark: QPColors.blackHeavy,
+              color: context.qpColors.resolve(
+                context.qpColors.brand20,
                 light: QPColors.whiteMassive,
-                brown: QPColors.brownModeRoot,
-                context: context,
+                dark: QPColors.blackHeavy,
               ),
               borderRadius: const BorderRadius.all(Radius.circular(10)),
               border: Border.all(
-                color: QPColors.getColorBasedTheme(
-                  dark: QPColors.blackFair,
+                color: context.qpColors.resolve(
+                  context.qpColors.neutral20,
                   light: Colors.transparent,
-                  brown: QPColors.brownModeHeavy,
-                  context: context,
                 ),
               ),
               boxShadow: [
@@ -88,14 +83,9 @@ class BookmarkEmptyState extends StatelessWidget {
             child: Center(
               child: Text(
                 "Start Reading",
-                style: QPTextStyle.getButton1SemiBold(context).copyWith(
-                  color: QPColors.getColorBasedTheme(
-                    dark: QPColors.whiteFair,
-                    light: QPColors.brandFair,
-                    brown: QPColors.brownModeMassive,
-                    context: context,
-                  ),
-                ),
+                style: QPTextStyle.getButton1SemiBold(
+                  context,
+                ).copyWith(color: context.qpColors.brand100),
               ),
             ),
           ),
@@ -105,13 +95,12 @@ class BookmarkEmptyState extends StatelessWidget {
   }
 
   String _emptyStateImagePath(BuildContext context) {
-    final mode = QPThemeData.getThemeModeBasedContext(context);
-    switch (mode) {
+    switch (context.qpThemeMode) {
       case QPThemeMode.brown:
         return ImagePath.emptyStateBrown;
       case QPThemeMode.dark:
         return ImagePath.emptyStateDark;
-      default:
+      case QPThemeMode.light:
         return ImagePath.emptyStateLight;
     }
   }

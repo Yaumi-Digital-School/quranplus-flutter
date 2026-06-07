@@ -6,17 +6,18 @@ import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/error_bottom_shee
 import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/home_header_section.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/home_search_button.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/home_surah_list.dart';
+import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
+import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart' as date_util;
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/sign_in_bottom_sheet.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
-import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 
 class HomePageV2 extends ConsumerStatefulWidget {
   const HomePageV2({super.key});
@@ -41,11 +42,9 @@ class _HomePageV2State extends ConsumerState<HomePageV2> {
     }
 
     return Scaffold(
-      backgroundColor: QPColors.getColorBasedTheme(
-        dark: QPColors.darkModeMassive,
+      backgroundColor: context.qpColors.resolve(
+        context.qpColors.surface100,
         light: QPColors.brandFair,
-        brown: QPColors.brownModeRoot,
-        context: context,
       ),
       body: SafeArea(
         child: Stack(

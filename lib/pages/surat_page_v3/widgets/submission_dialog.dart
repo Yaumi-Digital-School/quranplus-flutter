@@ -87,10 +87,9 @@ class _TrackingSubmissionDialogState extends State<TrackingSubmissionDialog> {
                   onTap: () async {
                     setState(() => isLoading = true);
 
-                    final int pages =
-                        int.tryParse(_controller.text) ?? 0;
-                    final bool isComplete =
-                        await widget.habitNotifier.stopRecording(pages);
+                    final int pages = int.tryParse(_controller.text) ?? 0;
+                    final bool isComplete = await widget.habitNotifier
+                        .stopRecording(pages);
 
                     if (context.mounted) {
                       Navigator.pop(context);
@@ -105,8 +104,7 @@ class _TrackingSubmissionDialogState extends State<TrackingSubmissionDialog> {
                         return;
                       }
 
-                      HabitProgressPostTrackingDialog
-                          .onSubmitPostTrackingDialog(
+                      HabitProgressPostTrackingDialog.onSubmitPostTrackingDialog(
                         context: context,
                         sharedPreferenceService:
                             widget.habitNotifier.sharedPreferenceService,

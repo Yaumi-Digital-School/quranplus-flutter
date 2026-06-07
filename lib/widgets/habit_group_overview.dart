@@ -3,12 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_group_summary.dart';
 
-enum HabitGroupOverviewType {
-  withGroupDetailInfo,
-  withCurrentMonthInfo,
-}
+enum HabitGroupOverviewType { withGroupDetailInfo, withCurrentMonthInfo }
 
 class HabitGroupOverviewWidget extends StatelessWidget {
   HabitGroupOverviewWidget({
@@ -40,23 +38,19 @@ class HabitGroupOverviewWidget extends StatelessWidget {
       onTap: onTapGroupDetailCTA,
       child: Container(
         decoration: BoxDecoration(
-          color: QPColors.getColorBasedTheme(
+          color: context.qpColors.resolve(
+            context.qpColors.surface60,
             dark: QPColors.darkModeFair,
-            light: QPColors.whiteMassive,
-            brown: QPColors.brownModeFair,
-            context: context,
           ),
-          border: Border.fromBorderSide(BorderSide(
-            color: QPColors.getColorBasedTheme(
-              dark: QPColors.darkModeHeavy,
-              light: QPColors.whiteHeavy,
-              brown: QPColors.brownModeHeavy,
-              context: context,
+          border: Border.fromBorderSide(
+            BorderSide(
+              color: context.qpColors.resolve(
+                context.qpColors.surface80,
+                brown: QPColors.brownModeHeavy,
+              ),
             ),
-          )),
-          borderRadius: const BorderRadius.all(
-            Radius.circular(8),
           ),
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
         ),
         child: Column(
           children: [
@@ -107,44 +101,42 @@ class HabitGroupOverviewWidget extends StatelessWidget {
     required int idxInList,
     required BuildContext context,
   }) {
-    final String nameOfDay =
-        DateFormat('EEEE').format(item.date).substring(0, 3);
+    final String nameOfDay = DateFormat(
+      'EEEE',
+    ).format(item.date).substring(0, 3);
     final DateTime cleanDate = DateTime(now.year, now.month, now.day);
     final bool isAfterToday = item.date.difference(cleanDate).inDays > 0;
     final bool isBeforeToday = cleanDate.difference(item.date).inDays > 0;
     final bool isToday = cleanDate.difference(item.date).inDays == 0;
 
-    final bool isSelected = (selectedIdx == null && isToday) ||
+    final bool isSelected =
+        (selectedIdx == null && isToday) ||
         (selectedIdx != null && selectedIdx == idxInList);
 
-    final bool isDisabled = (startOfEnabledDate != null &&
+    final bool isDisabled =
+        (startOfEnabledDate != null &&
         startOfEnabledDate!.difference(item.date).inDays > 0);
 
     BoxDecoration decoration = BoxDecoration(
-      color: QPColors.getColorBasedTheme(
-        dark: Colors.transparent,
+      color: context.qpColors.resolve(
+        context.qpColors.brand20,
         light: Colors.transparent,
-        brown: QPColors.brownModeRoot,
-        context: context,
+        dark: Colors.transparent,
       ),
-      borderRadius: const BorderRadius.all(
-        Radius.circular(8),
-      ),
+      borderRadius: const BorderRadius.all(Radius.circular(8)),
     );
 
     if (isToday) {
-      final Color isTodayColor = QPColors.getColorBasedTheme(
-        dark: Colors.transparent,
+      final Color isTodayColor = context.qpColors.resolve(
+        context.qpColors.brand100,
         light: Colors.transparent,
+        dark: Colors.transparent,
         brown: QPColors.whiteFair,
-        context: context,
       );
 
       decoration = decoration.copyWith(
         border: const Border.fromBorderSide(
-          BorderSide(
-            color: QPColors.warningFair,
-          ),
+          BorderSide(color: QPColors.warningFair),
         ),
         color: isTodayColor,
       );
@@ -155,11 +147,7 @@ class HabitGroupOverviewWidget extends StatelessWidget {
         type == HabitGroupOverviewType.withCurrentMonthInfo) {
       decoration = decoration.copyWith(
         border: isSelected
-            ? const Border.fromBorderSide(
-                BorderSide(
-                  color: QPColors.blackSoft,
-                ),
-              )
+            ? const Border.fromBorderSide(BorderSide(color: QPColors.blackSoft))
             : null,
       );
     }
@@ -168,11 +156,10 @@ class HabitGroupOverviewWidget extends StatelessWidget {
     TextStyle dayStyle = QPTextStyle.getDescription2Regular(context);
     if (isDisabled) {
       dateStyle = QPTextStyle.getSubHeading3SemiBold(context).copyWith(
-        color: QPColors.getColorBasedTheme(
+        color: context.qpColors.resolve(
+          context.qpColors.neutral40,
           dark: QPColors.blackFair,
-          light: QPColors.blackSoft,
           brown: QPColors.blackFair,
-          context: context,
         ),
       );
       dayStyle = QPTextStyle.getDescription2Regular(context);
@@ -192,20 +179,10 @@ class HabitGroupOverviewWidget extends StatelessWidget {
             width: 37,
             child: Column(
               children: [
-                Text(
-                  item.date.day.toString(),
-                  style: dateStyle,
-                ),
-                const SizedBox(
-                  height: 4,
-                ),
-                Text(
-                  nameOfDay,
-                  style: dayStyle,
-                ),
-                const SizedBox(
-                  height: 4,
-                ),
+                Text(item.date.day.toString(), style: dateStyle),
+                const SizedBox(height: 4),
+                Text(nameOfDay, style: dayStyle),
+                const SizedBox(height: 4),
                 Image.asset(
                   _buildUrlStar(
                     completeCount: item.completeCount,
@@ -218,9 +195,7 @@ class HabitGroupOverviewWidget extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(
-          height: 6,
-        ),
+        const SizedBox(height: 6),
         isSelected
             ? Container(
                 decoration: const BoxDecoration(
@@ -240,11 +215,7 @@ class HabitGroupOverviewWidget extends StatelessWidget {
     for (int i = 0; i < numberOfDaysInAWeek; i++) {
       HabitGroupSummary item = sevenDaysInformation[i];
       items.add(
-        _buildDailyRecapInformation(
-          item: item,
-          idxInList: i,
-          context: context,
-        ),
+        _buildDailyRecapInformation(item: item, idxInList: i, context: context),
       );
     }
 
@@ -265,9 +236,9 @@ class HabitGroupOverviewWidget extends StatelessWidget {
               totalMembers == 1
                   ? '$totalMembers member'
                   : '$totalMembers members',
-              style: QPTextStyle.getSubHeading4SemiBold(context).copyWith(
-                color: QPColors.brandFair,
-              ),
+              style: QPTextStyle.getSubHeading4SemiBold(
+                context,
+              ).copyWith(color: QPColors.brandFair),
             ),
           ),
       ],
@@ -279,10 +250,7 @@ class HabitGroupOverviewWidget extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: Text(
-        current,
-        style: QPTextStyle.getSubHeading3SemiBold(context),
-      ),
+      child: Text(current, style: QPTextStyle.getSubHeading3SemiBold(context)),
     );
   }
 
@@ -303,22 +271,16 @@ class HabitGroupOverviewWidget extends StatelessWidget {
                 ),
                 Icon(
                   Icons.chevron_right,
-                  color: QPColors.getColorBasedTheme(
-                    dark: QPColors.whiteFair,
+                  color: context.qpColors.resolve(
+                    context.qpColors.brand100,
                     light: QPColors.blackSoft,
-                    brown: QPColors.brownModeMassive,
-                    context: context,
                   ),
                   size: 30,
                 ),
               ],
             ),
-            const SizedBox(
-              height: 16,
-            ),
-            Divider(
-              color: Theme.of(context).dividerColor,
-            ),
+            const SizedBox(height: 16),
+            Divider(color: Theme.of(context).dividerColor),
           ],
         ),
       ),

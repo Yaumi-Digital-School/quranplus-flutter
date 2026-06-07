@@ -5,6 +5,7 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_conten
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/theme_state_notifier.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
@@ -12,12 +13,7 @@ import 'package:qurantafsir_flutter/widgets/change_theme_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/widgets/theme_box_option_widget.dart';
 
-enum ContentType {
-  arab,
-  translation,
-  tafsir,
-  latins,
-}
+enum ContentType { arab, translation, tafsir, latins }
 
 class SuratPageSettingsDrawer extends ConsumerStatefulWidget {
   const SuratPageSettingsDrawer({super.key});
@@ -37,7 +33,8 @@ class _SuratPageSettingsDrawerState
   void initState() {
     super.initState();
     final contentState = ref.read(suratPageContentProvider);
-    isWithTranslation = contentState.readingSettings?.isWithTranslations ?? false;
+    isWithTranslation =
+        contentState.readingSettings?.isWithTranslations ?? false;
     isWithTafsir = contentState.readingSettings?.isWithTafsirs ?? false;
     isWithLatins = contentState.readingSettings?.isWithLatins ?? false;
   }
@@ -68,10 +65,7 @@ class _SuratPageSettingsDrawerState
   Widget _buildDivider() {
     return const Padding(
       padding: EdgeInsets.symmetric(horizontal: 5.0),
-      child: Divider(
-        height: 10,
-        color: neutral400,
-      ),
+      child: Divider(height: 10, color: neutral400),
     );
   }
 
@@ -82,11 +76,9 @@ class _SuratPageSettingsDrawerState
           title: Text(
             'Content',
             style: QPTextStyle.getSubHeading3SemiBold(context).copyWith(
-              color: QPColors.getColorBasedTheme(
-                dark: QPColors.whiteFair,
-                light: QPColors.brandFair,
+              color: context.qpColors.resolve(
+                context.qpColors.brand100,
                 brown: QPColors.brandHeavy,
-                context: context,
               ),
             ),
           ),
@@ -131,11 +123,9 @@ class _SuratPageSettingsDrawerState
     required BuildContext context,
     required SuratPageContentNotifier contentNotifier,
   }) {
-    final Color checkboxDecorationColor = QPColors.getColorBasedTheme(
+    final Color checkboxDecorationColor = context.qpColors.resolve(
+      context.qpColors.neutral80,
       dark: QPColors.whiteFair,
-      brown: QPColors.blackHeavy,
-      light: QPColors.blackHeavy,
-      context: context,
     );
 
     return Padding(
@@ -146,8 +136,8 @@ class _SuratPageSettingsDrawerState
             value: contentType == ContentType.translation
                 ? isWithTranslation
                 : (contentType == ContentType.tafsir
-                    ? isWithTafsir
-                    : isWithLatins),
+                      ? isWithTafsir
+                      : isWithLatins),
             onChanged: (value) {
               bool res = value ?? false;
 
@@ -173,17 +163,15 @@ class _SuratPageSettingsDrawerState
             checkColor: checkboxDecorationColor,
             activeColor: Theme.of(context).dialogTheme.backgroundColor,
             side: WidgetStateBorderSide.resolveWith(
-              (states) => BorderSide(
-                width: 1.0,
-                color: checkboxDecorationColor,
-              ),
+              (states) =>
+                  BorderSide(width: 1.0, color: checkboxDecorationColor),
             ),
           ),
           Text(
             text,
-            style: QPTextStyle.getSubHeading3Regular(context).copyWith(
-              color: checkboxDecorationColor,
-            ),
+            style: QPTextStyle.getSubHeading3Regular(
+              context,
+            ).copyWith(color: checkboxDecorationColor),
           ),
         ],
       ),
@@ -200,11 +188,9 @@ class _SuratPageSettingsDrawerState
           title: Text(
             'Font Size',
             style: QPTextStyle.getSubHeading3SemiBold(context).copyWith(
-              color: QPColors.getColorBasedTheme(
-                dark: QPColors.whiteFair,
-                light: QPColors.brandFair,
+              color: context.qpColors.resolve(
+                context.qpColors.brand100,
                 brown: QPColors.brandHeavy,
-                context: context,
               ),
             ),
           ),
@@ -234,9 +220,7 @@ class _SuratPageSettingsDrawerState
             ),
           ],
         ),
-        const SizedBox(
-          height: 18,
-        ),
+        const SizedBox(height: 18),
       ],
     );
   }
@@ -261,12 +245,7 @@ class _SuratPageSettingsDrawerState
           ),
         ],
       ),
-      child: Center(
-        child: Icon(
-          iconButton,
-          color: colorIcon,
-        ),
-      ),
+      child: Center(child: Icon(iconButton, color: colorIcon)),
     );
   }
 
@@ -275,29 +254,21 @@ class _SuratPageSettingsDrawerState
     final QPThemeMode theme = ref.read(themeProvider);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 24,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          const SizedBox(
-            height: 24,
-          ),
+          const SizedBox(height: 24),
           Text(
             'Selected Theme',
             style: QPTextStyle.getSubHeading3SemiBold(context).copyWith(
-              color: QPColors.getColorBasedTheme(
-                dark: QPColors.whiteFair,
-                light: QPColors.brandFair,
+              color: context.qpColors.resolve(
+                context.qpColors.brand100,
                 brown: QPColors.brandHeavy,
-                context: context,
               ),
             ),
           ),
-          const SizedBox(
-            height: 18,
-          ),
+          const SizedBox(height: 18),
           SizedBox(
             width: 98,
             child: ThemeBoxOptionWidget(
@@ -305,9 +276,7 @@ class _SuratPageSettingsDrawerState
               colorParam: themeMode.getThemeOptionColor(),
             ),
           ),
-          const SizedBox(
-            height: 16,
-          ),
+          const SizedBox(height: 16),
           ButtonSecondary(
             label: 'Change Theme',
             onTap: () {

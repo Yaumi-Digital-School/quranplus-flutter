@@ -4,6 +4,7 @@ import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/state_notifiers/theme_state_notifier.dart';
 
@@ -88,9 +89,7 @@ class GeneralBottomSheet {
       isScrollControlled: true,
       enableDrag: isDraggable,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(8),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
       ),
       context: context,
       builder: (BuildContext context) {
@@ -128,12 +127,7 @@ class GeneralBottomSheet {
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Color.fromRGBO(
-                      0,
-                      0,
-                      0,
-                      0.1,
-                    ),
+                    color: Color.fromRGBO(0, 0, 0, 0.1),
                     blurRadius: 10,
                     offset: Offset(4, 12),
                   ),
@@ -180,12 +174,7 @@ class GeneralBottomSheet {
         widgetChild: Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 24),
-          color: QPColors.getColorBasedTheme(
-            dark: QPColors.darkModeMassive,
-            light: QPColors.whiteFair,
-            brown: QPColors.brownModeRoot,
-            context: context,
-          ),
+          color: context.qpColors.surface100,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -201,14 +190,12 @@ class GeneralBottomSheet {
               ),
               const SizedBox(height: 28),
               TextButton.icon(
-                icon: Image.asset(
-                  StoredIcon.iconRefresh.path,
-                  width: 24,
-                ),
+                icon: Image.asset(StoredIcon.iconRefresh.path, width: 24),
                 label: Text(
                   'Refresh',
-                  style: QPTextStyle.getCaption1SemiBold(context)
-                      .copyWith(color: QPColors.primaryGreen500),
+                  style: QPTextStyle.getCaption1SemiBold(
+                    context,
+                  ).copyWith(color: QPColors.primaryGreen500),
                 ),
                 onPressed: onRefreshClicked,
               ),

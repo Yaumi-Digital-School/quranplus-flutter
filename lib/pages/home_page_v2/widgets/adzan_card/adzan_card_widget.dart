@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/adzan_card/adzan_card_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
-import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 
 class AdzanCardWidget extends ConsumerWidget {
@@ -36,22 +36,12 @@ class AdzanCardWidget extends ConsumerWidget {
                       ? Icon(
                           Icons.location_on,
                           size: 12,
-                          color: QPColors.getColorBasedTheme(
-                            dark: QPColors.whiteFair,
-                            light: QPColors.brandFair,
-                            brown: QPColors.brownModeMassive,
-                            context: context,
-                          ),
+                          color: context.qpColors.brand100,
                         )
                       : SvgPicture.asset(
                           adzanState.prayerTimesList!.icon.path,
                           colorFilter: ColorFilter.mode(
-                            QPColors.getColorBasedTheme(
-                              dark: QPColors.whiteFair,
-                              light: QPColors.brandFair,
-                              brown: QPColors.brownModeMassive,
-                              context: context,
-                            ),
+                            context.qpColors.brand100,
                             BlendMode.srcIn,
                           ),
                           height: 12,
@@ -62,14 +52,9 @@ class AdzanCardWidget extends ConsumerWidget {
                     adzanState.prayerTimesList == null
                         ? "no location set"
                         : adzanState.prayerTimesList!.label,
-                    style: QPTextStyle.getDescription1Regular(context).copyWith(
-                      color: QPColors.getColorBasedTheme(
-                        dark: QPColors.whiteFair,
-                        light: QPColors.brandFair,
-                        brown: QPColors.brownModeMassive,
-                        context: context,
-                      ),
-                    ),
+                    style: QPTextStyle.getDescription1Regular(
+                      context,
+                    ).copyWith(color: context.qpColors.brand100),
                   ),
                   const SizedBox(width: 4),
                   Text(
@@ -77,25 +62,15 @@ class AdzanCardWidget extends ConsumerWidget {
                             adzanState.date == null
                         ? ""
                         : "${adzanState.date!.hour}:${adzanState.date!.minute}",
-                    style: QPTextStyle.getDescription1Regular(context).copyWith(
-                      color: QPColors.getColorBasedTheme(
-                        dark: QPColors.whiteFair,
-                        light: QPColors.brandFair,
-                        brown: QPColors.brownModeMassive,
-                        context: context,
-                      ),
-                    ),
+                    style: QPTextStyle.getDescription1Regular(
+                      context,
+                    ).copyWith(color: context.qpColors.brand100),
                   ),
                   const SizedBox(width: 12),
                   if (adzanState.prayerTimesList != null)
                     Container(
                       width: 1,
-                      color: QPColors.getColorBasedTheme(
-                        dark: QPColors.blackFair,
-                        light: QPColors.whiteRoot,
-                        brown: QPColors.brownModeHeavy,
-                        context: context,
-                      ),
+                      color: context.qpColors.neutral20,
                       height: 16,
                     ),
                   const SizedBox(width: 12),
@@ -103,12 +78,7 @@ class AdzanCardWidget extends ConsumerWidget {
                     Icon(
                       Icons.location_on,
                       size: 12,
-                      color: QPColors.getColorBasedTheme(
-                        dark: QPColors.whiteFair,
-                        light: QPColors.brandFair,
-                        brown: QPColors.brownModeMassive,
-                        context: context,
-                      ),
+                      color: context.qpColors.brand100,
                     ),
                   const SizedBox(width: 4),
                   if (adzanState.prayerTimesList != null)
@@ -117,15 +87,9 @@ class AdzanCardWidget extends ConsumerWidget {
                         adzanState.cityName ?? "",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: QPTextStyle.getDescription1Regular(context)
-                            .copyWith(
-                              color: QPColors.getColorBasedTheme(
-                                dark: QPColors.whiteFair,
-                                light: QPColors.brandFair,
-                                brown: QPColors.brownModeMassive,
-                                context: context,
-                              ),
-                            ),
+                        style: QPTextStyle.getDescription1Regular(
+                          context,
+                        ).copyWith(color: context.qpColors.brand100),
                       ),
                     ),
                 ],
@@ -136,12 +100,7 @@ class AdzanCardWidget extends ConsumerWidget {
               child: SvgPicture.asset(
                 StoredIcon.iconArrowRight.path,
                 colorFilter: ColorFilter.mode(
-                  QPColors.getColorBasedTheme(
-                    dark: QPColors.whiteFair,
-                    light: QPColors.brandFair,
-                    brown: QPColors.brownModeMassive,
-                    context: context,
-                  ),
+                  context.qpColors.brand100,
                   BlendMode.srcIn,
                 ),
               ),

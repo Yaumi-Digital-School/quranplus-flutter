@@ -16,10 +16,12 @@ class RemoteConfigService {
 
       _remoteConfig = FirebaseRemoteConfig.instance;
 
-      await _remoteConfig!.setConfigSettings(RemoteConfigSettings(
-        fetchTimeout: const Duration(seconds: 10),
-        minimumFetchInterval: const Duration(seconds: 0),
-      ));
+      await _remoteConfig!.setConfigSettings(
+        RemoteConfigSettings(
+          fetchTimeout: const Duration(seconds: 10),
+          minimumFetchInterval: const Duration(seconds: 0),
+        ),
+      );
 
       await _remoteConfig!.fetchAndActivate();
     } catch (error, stackTrace) {
@@ -37,20 +39,12 @@ class RemoteConfigService {
   */
 
   int get syncTadabburDataIntervalInDays =>
-      _remoteConfig?.getInt(
-        RemoteConfigKey.syncTadabburDataIntervalInDays,
-      ) ??
+      _remoteConfig?.getInt(RemoteConfigKey.syncTadabburDataIntervalInDays) ??
       1;
 
   String get forceUpdateMinVersion =>
-      _remoteConfig?.getString(
-        RemoteConfigKey.forceUpdateMinVersion,
-      ) ??
-      '';
+      _remoteConfig?.getString(RemoteConfigKey.forceUpdateMinVersion) ?? '';
 
   String get optionalUpdateMinVersion =>
-      _remoteConfig?.getString(
-        RemoteConfigKey.optionalUpdateMinVersion,
-      ) ??
-      '';
+      _remoteConfig?.getString(RemoteConfigKey.optionalUpdateMinVersion) ?? '';
 }

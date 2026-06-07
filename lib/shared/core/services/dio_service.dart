@@ -60,14 +60,12 @@ class DioService {
       })
       ..interceptors.add(
         InterceptorsWrapper(
-          onRequest: (
-            RequestOptions option,
-            RequestInterceptorHandler handler,
-          ) async {
-            option.cancelToken = _cancelToken;
+          onRequest:
+              (RequestOptions option, RequestInterceptorHandler handler) async {
+                option.cancelToken = _cancelToken;
 
-            return handler.next(option);
-          },
+                return handler.next(option);
+              },
           onError: _onDioError,
         ),
       );
@@ -83,14 +81,12 @@ class DioService {
       })
       ..interceptors.add(
         InterceptorsWrapper(
-          onRequest: (
-            RequestOptions option,
-            RequestInterceptorHandler handler,
-          ) async {
-            option.cancelToken = _cancelToken;
+          onRequest:
+              (RequestOptions option, RequestInterceptorHandler handler) async {
+                option.cancelToken = _cancelToken;
 
-            return handler.next(option);
-          },
+                return handler.next(option);
+              },
           onError: _onDioError,
         ),
       );
@@ -106,14 +102,12 @@ class DioService {
       })
       ..interceptors.add(
         InterceptorsWrapper(
-          onRequest: (
-            RequestOptions option,
-            RequestInterceptorHandler handler,
-          ) async {
-            option.cancelToken = _cancelToken;
+          onRequest:
+              (RequestOptions option, RequestInterceptorHandler handler) async {
+                option.cancelToken = _cancelToken;
 
-            return handler.next(option);
-          },
+                return handler.next(option);
+              },
           onError: _onDioError,
         ),
       );

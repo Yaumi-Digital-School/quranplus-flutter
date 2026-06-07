@@ -89,46 +89,56 @@ class TadabburStoryPageNotifier extends _$TadabburStoryPageNotifier {
   }
 
   Future<List<TadabburContentReadingInfo>> _initContent(
-      TadabburStoryPageParams params) async {
+    TadabburStoryPageParams params,
+  ) async {
     final content = await _getTadabburContent(params.tadabburId);
     List<TadabburContentReadingInfo> res = [];
     _currentIndex = 0;
 
     if (content != null) {
-      final lastReadingIndex =
-          await _db.getTadabburReadingContentInfoByTadabburID(params.tadabburId);
-      res.add(TadabburContentReadingInfo(
-        content: content,
-        latestReadIndex: lastReadingIndex,
-        tadabburID: params.tadabburId,
-      ));
+      final lastReadingIndex = await _db
+          .getTadabburReadingContentInfoByTadabburID(params.tadabburId);
+      res.add(
+        TadabburContentReadingInfo(
+          content: content,
+          latestReadIndex: lastReadingIndex,
+          tadabburID: params.tadabburId,
+        ),
+      );
 
       if (content.previousTadabburId != null) {
         _currentIndex = 1;
-        final prevContent =
-            await _getTadabburContent(content.previousTadabburId!);
+        final prevContent = await _getTadabburContent(
+          content.previousTadabburId!,
+        );
         if (prevContent != null) {
-          final lastIdx = await _db
-              .getTadabburReadingContentInfoByTadabburID(content.previousTadabburId!);
-          res.insert(0, TadabburContentReadingInfo(
-            content: prevContent,
-            latestReadIndex: lastIdx,
-            tadabburID: content.previousTadabburId!,
-          ));
+          final lastIdx = await _db.getTadabburReadingContentInfoByTadabburID(
+            content.previousTadabburId!,
+          );
+          res.insert(
+            0,
+            TadabburContentReadingInfo(
+              content: prevContent,
+              latestReadIndex: lastIdx,
+              tadabburID: content.previousTadabburId!,
+            ),
+          );
         }
       }
 
       if (content.nextTadabburId != null) {
-        final nextContent =
-            await _getTadabburContent(content.nextTadabburId!);
+        final nextContent = await _getTadabburContent(content.nextTadabburId!);
         if (nextContent != null) {
-          final lastIdx = await _db
-              .getTadabburReadingContentInfoByTadabburID(content.nextTadabburId!);
-          res.add(TadabburContentReadingInfo(
-            content: nextContent,
-            latestReadIndex: lastIdx,
-            tadabburID: content.nextTadabburId!,
-          ));
+          final lastIdx = await _db.getTadabburReadingContentInfoByTadabburID(
+            content.nextTadabburId!,
+          );
+          res.add(
+            TadabburContentReadingInfo(
+              content: nextContent,
+              latestReadIndex: lastIdx,
+              tadabburID: content.nextTadabburId!,
+            ),
+          );
         }
       }
     }
@@ -138,11 +148,16 @@ class TadabburStoryPageNotifier extends _$TadabburStoryPageNotifier {
 
   Future<void> _next() async {
     if (_currentIndex != state.contentInfos.length - 1) return;
-    if (state.contentInfos[_currentIndex].content.nextTadabburId == null) return;
+    if (state.contentInfos[_currentIndex].content.nextTadabburId == null) {
+      return;
+    }
 
     List<TadabburContentReadingInfo> res = [
       ...state.contentInfos,
-      TadabburContentReadingInfo(content: TadabburContentResponse(), tadabburID: 0),
+      TadabburContentReadingInfo(
+        content: TadabburContentResponse(),
+        tadabburID: 0,
+      ),
     ];
 
     state = state.copyWith(contentInfos: res, isLoading: false);
@@ -152,7 +167,9 @@ class TadabburStoryPageNotifier extends _$TadabburStoryPageNotifier {
     final content = await _getTadabburContent(nextId);
 
     if (content != null) {
-      final lastIdx = await _db.getTadabburReadingContentInfoByTadabburID(nextId);
+      final lastIdx = await _db.getTadabburReadingContentInfoByTadabburID(
+        nextId,
+      );
       List<TadabburContentReadingInfo> updated = state.contentInfos;
       updated[state.contentInfos.length - 1] = TadabburContentReadingInfo(
         content: content,
@@ -165,12 +182,17 @@ class TadabburStoryPageNotifier extends _$TadabburStoryPageNotifier {
 
   Future<void> _prev() async {
     if (_currentIndex != 0) return;
-    if (state.contentInfos[_currentIndex].content.previousTadabburId == null) return;
+    if (state.contentInfos[_currentIndex].content.previousTadabburId == null) {
+      return;
+    }
 
     _currentIndex += 1;
 
     List<TadabburContentReadingInfo> res = [
-      TadabburContentReadingInfo(content: TadabburContentResponse(), tadabburID: 0),
+      TadabburContentReadingInfo(
+        content: TadabburContentResponse(),
+        tadabburID: 0,
+      ),
       ...state.contentInfos,
     ];
 
@@ -181,7 +203,9 @@ class TadabburStoryPageNotifier extends _$TadabburStoryPageNotifier {
     final content = await _getTadabburContent(prevId);
 
     if (content != null) {
-      final lastIdx = await _db.getTadabburReadingContentInfoByTadabburID(prevId);
+      final lastIdx = await _db.getTadabburReadingContentInfoByTadabburID(
+        prevId,
+      );
       res[0] = TadabburContentReadingInfo(
         content: content,
         latestReadIndex: lastIdx,
@@ -194,8 +218,8 @@ class TadabburStoryPageNotifier extends _$TadabburStoryPageNotifier {
   Future<TadabburContentResponse?> _getTadabburContent(int tadabburId) async {
     final api = ref.read(tadabburApiProvider);
     try {
-      HttpResponse<TadabburContentResponse> response =
-          await api.getTadabburContent(tadabburId: tadabburId);
+      HttpResponse<TadabburContentResponse> response = await api
+          .getTadabburContent(tadabburId: tadabburId);
       if (response.response.statusCode == 200) return response.data;
     } catch (error, stackTrace) {
       FirebaseCrashlytics.instance.recordError(

@@ -4,6 +4,7 @@ import 'package:qurantafsir_flutter/pages/read_tadabbur/read_tadabbur_state_noti
 import 'package:qurantafsir_flutter/pages/read_tadabbur/widgets/tadabbur_ayah_card.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/widgets/button.dart';
 
 class ReadTadabburParam {
@@ -33,11 +34,9 @@ class ReadTadabburPage extends ConsumerWidget {
           leading: IconButton(
             icon: Icon(
               Icons.chevron_left,
-              color: QPColors.getColorBasedTheme(
-                dark: QPColors.whiteFair,
+              color: context.qpColors.resolve(
+                context.qpColors.brand100,
                 light: QPColors.blackMassive,
-                brown: QPColors.brownModeMassive,
-                context: context,
               ),
               size: 24,
             ),

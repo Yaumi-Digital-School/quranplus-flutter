@@ -1,11 +1,12 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_favorite_ayahs.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_progress.dart';
-import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur_ayah_available.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur_ayah_available.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur_reading_content_info.dart';
 import 'package:qurantafsir_flutter/shared/core/database/migration.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
@@ -16,7 +17,6 @@ import 'package:qurantafsir_flutter/shared/core/models/habit_sync.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
 
 class DbLocal {
@@ -49,10 +49,7 @@ class DbLocal {
       version: _currentVersion,
       onCreate: _onCreate,
       onUpgrade: (Database db, int oldVersion, int newVersion) async {
-        await migration.migrate(
-          db,
-          oldVersion: oldVersion,
-        );
+        await migration.migrate(db, oldVersion: oldVersion);
       },
     );
   }
@@ -88,9 +85,7 @@ class DbLocal {
   }
 
   //read database
-  Future<List?> getBookmarks({
-    int? limit,
-  }) async {
+  Future<List?> getBookmarks({int? limit}) async {
     final Database dbClient = await _db;
     final List<Map<String, Object?>> result = await dbClient.query(
       BookmarksTable.tableName,
@@ -298,9 +293,7 @@ class DbLocal {
 
     final queryBeforeSixDay = await dbClient.query(
       HabitDailySummaryTable.tableName,
-      columns: [
-        HabitDailySummaryTable.date,
-      ],
+      columns: [HabitDailySummaryTable.date],
       where: '${HabitDailySummaryTable.date} < ?',
       whereArgs: [formattedSixDayBefore],
       limit: 1,
@@ -328,8 +321,10 @@ class DbLocal {
 
     for (var element in result) {
       final elementDate = element[HabitDailySummaryTable.date];
-      final parsedElementDate =
-          DateCustomUtils.stringToDate(elementDate, DateFormatType.yyyyMMdd);
+      final parsedElementDate = DateCustomUtils.stringToDate(
+        elementDate,
+        DateFormatType.yyyyMMdd,
+      );
       final difference = parsedElementDate.difference(firstDay).inDays;
       summaryLastSevenDay[difference] = HabitDailySummary.fromJson(element);
     }
@@ -468,15 +463,12 @@ class DbLocal {
     final String currentTimestampWithTz = DateCustomUtils.formatISOTime(date);
     db ??= await _db;
 
-    return await db.insert(
-      HabitDailySummaryTable.tableName,
-      {
-        HabitDailySummaryTable.target: target,
-        HabitDailySummaryTable.totalPages: totalPages,
-        HabitDailySummaryTable.date: formattedDate,
-        HabitDailySummaryTable.targetUpdatedTime: currentTimestampWithTz,
-      },
-    );
+    return await db.insert(HabitDailySummaryTable.tableName, {
+      HabitDailySummaryTable.target: target,
+      HabitDailySummaryTable.totalPages: totalPages,
+      HabitDailySummaryTable.date: formattedDate,
+      HabitDailySummaryTable.targetUpdatedTime: currentTimestampWithTz,
+    });
   }
 
   Future<int> updateHabitDailySummary({
@@ -577,8 +569,7 @@ class DbLocal {
       final String lastSyncDate = sharedPreferenceService.getLastSync();
       var dbClient = await _db;
 
-      final resultQueryHabitDaily = await dbClient.rawQuery(
-        '''
+      final resultQueryHabitDaily = await dbClient.rawQuery('''
             SELECT ${HabitDailySummaryTable.target},
              ${HabitDailySummaryTable.date},
              ${HabitDailySummaryTable.targetUpdatedTime},
@@ -587,8 +578,7 @@ class DbLocal {
              WHERE datetime(${HabitDailySummaryTable.updatedAt}) > datetime('$lastSyncDate')
              AND (JULIANDAY('now') - JULIANDAY(${HabitDailySummaryTable.updatedAt})) <= 7
              ORDER BY ${HabitDailySummaryTable.date} ASC;
-       ''',
-      );
+       ''');
       final List<HabitSyncRequestDailySummaryItem> result = [];
 
       for (var element in resultQueryHabitDaily) {
@@ -625,8 +615,7 @@ class DbLocal {
     String lastSyncDate,
   ) async {
     var dbClient = await _db;
-    final resultQueryHabitProgress = await dbClient.rawQuery(
-      '''SELECT 
+    final resultQueryHabitProgress = await dbClient.rawQuery('''SELECT 
          ${HabitProgressTable.uuid},
          ${HabitProgressTable.pages},
          ${HabitProgressTable.description},
@@ -636,8 +625,7 @@ class DbLocal {
          WHERE datetime(${HabitProgressTable.createdAt}) > datetime('$lastSyncDate')
          AND ${HabitProgressTable.habitDailySummaryID} = $id
          AND (JULIANDAY('now') - JULIANDAY(${HabitProgressTable.createdAt})) <= 7
-      ''',
-    );
+      ''');
 
     final List<HabitSyncRequestProgressItem> result = [];
     for (var element in resultQueryHabitProgress) {
@@ -675,30 +663,27 @@ class DbLocal {
     await db.transaction((txn) async {
       await txn.delete(TadabburAyahAvailableTable.tableName);
 
-      await txn.rawInsert(
-        '''
+      await txn.rawInsert('''
         INSERT INTO ${TadabburAyahAvailableTable.tableName} 
         (${TadabburAyahAvailableTable.surahID}, ${TadabburAyahAvailableTable.listOfAyahInStr})
         VALUES $values
-      ''',
-      );
+      ''');
     });
   }
 
   Future<List> getTadabburAyahAvailables() async {
     final Database db = await _db;
 
-    List resultQuery = await db.query(
-      TadabburAyahAvailableTable.tableName,
-    );
+    List resultQuery = await db.query(TadabburAyahAvailableTable.tableName);
 
     return resultQuery;
   }
 
   Future<List> getTadabburSurahAvailable() async {
     var dbClient = await _db;
-    final resultQueryTadabburAvailable =
-        await dbClient.query(TadabburTable.tableName);
+    final resultQueryTadabburAvailable = await dbClient.query(
+      TadabburTable.tableName,
+    );
 
     return resultQueryTadabburAvailable;
   }
@@ -719,13 +704,11 @@ class DbLocal {
     await db.transaction((txn) async {
       await txn.delete(TadabburTable.tableName);
 
-      await txn.rawInsert(
-        '''
+      await txn.rawInsert('''
         INSERT INTO ${TadabburTable.tableName} 
         (${TadabburTable.surahID}, ${TadabburTable.totalTadabbur})
         VALUES $values
-      ''',
-      );
+      ''');
     });
   }
 

@@ -5,6 +5,7 @@ import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/daily_progress_tr
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart';
@@ -124,17 +125,13 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
             Text(
               formattedDate,
               style: QPTextStyle.getDescription2Regular(context).copyWith(
-                color: QPColors.getColorBasedTheme(
+                color: context.qpColors.resolve(
+                  context.qpColors.neutral100,
                   dark: QPColors.whiteRoot,
-                  light: QPColors.blackFair,
-                  brown: QPColors.brownModeMassive,
-                  context: context,
                 ),
               ),
             ),
-            const SizedBox(
-              height: 17,
-            ),
+            const SizedBox(height: 17),
             Row(
               children: [
                 Expanded(
@@ -149,9 +146,7 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
                     backgroundColor: QPColors.brandRoot,
                   ),
                 ),
-                const SizedBox(
-                  width: 8,
-                ),
+                const SizedBox(width: 8),
                 Text(
                   '$progressInPercentage%',
                   style: QPTextStyle.getBody3Regular(context),
@@ -166,18 +161,14 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
                     ? '$dailyProgressToInt/$target Pages'
                     : '$dailyProgressToInt/$target Page',
                 style: QPTextStyle.getBody3Regular(context).copyWith(
-                  color: QPColors.getColorBasedTheme(
+                  color: context.qpColors.resolve(
+                    context.qpColors.neutral100,
                     dark: QPColors.whiteRoot,
-                    light: QPColors.blackFair,
-                    brown: QPColors.brownModeMassive,
-                    context: context,
                   ),
                 ),
               ),
             ),
-            const SizedBox(
-              height: 16,
-            ),
+            const SizedBox(height: 16),
             Row(
               children: [
                 if (lastTrackedData != null) ...[
@@ -193,8 +184,7 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                 ],
-                if (lastBookmark == null)
-                  const Expanded(child: SizedBox()),
+                if (lastBookmark == null) const Expanded(child: SizedBox()),
                 if (lastBookmark != null)
                   Expanded(
                     child: HistoryInfoBox(
@@ -206,8 +196,7 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
                       onRefreshParentWidget: onRefreshParentWidget,
                     ),
                   ),
-                if (lastTrackedData == null)
-                  const Expanded(child: SizedBox()),
+                if (lastTrackedData == null) const Expanded(child: SizedBox()),
               ],
             ),
           ],
@@ -226,35 +215,21 @@ class DailyProgressTrackerDetailCard extends StatelessWidget {
       },
       style: ElevatedButton.styleFrom(
         elevation: 0,
-        backgroundColor: QPColors.getColorBasedTheme(
-          dark: QPColors.blackHeavy,
+        backgroundColor: context.qpColors.resolve(
+          context.qpColors.brand20,
           light: QPColors.whiteMassive,
-          brown: QPColors.brownModeRoot,
-          context: context,
+          dark: QPColors.blackHeavy,
         ),
         shape: RoundedRectangleBorder(
           borderRadius: const BorderRadius.all(Radius.circular(24)),
-          side: BorderSide(
-            color: QPColors.getColorBasedTheme(
-              dark: QPColors.blackFair,
-              light: QPColors.whiteRoot,
-              brown: QPColors.brownModeHeavy,
-              context: context,
-            ),
-            width: 1,
-          ),
+          side: BorderSide(color: context.qpColors.neutral20, width: 1),
         ),
       ),
       child: Text(
         'See Details',
-        style: QPTextStyle.getSubHeading4SemiBold(context).copyWith(
-          color: QPColors.getColorBasedTheme(
-            dark: QPColors.whiteFair,
-            light: QPColors.brandFair,
-            brown: QPColors.brownModeMassive,
-            context: context,
-          ),
-        ),
+        style: QPTextStyle.getSubHeading4SemiBold(
+          context,
+        ).copyWith(color: context.qpColors.brand100),
       ),
     );
   }
@@ -269,18 +244,8 @@ class DailyProgressTrackerSkeleton extends StatelessWidget {
       width: double.infinity,
       height: 160,
       child: Shimmer.fromColors(
-        baseColor: const Color.fromARGB(
-          255,
-          236,
-          233,
-          233,
-        ),
-        highlightColor: const Color.fromARGB(
-          255,
-          224,
-          218,
-          218,
-        ),
+        baseColor: const Color.fromARGB(255, 236, 233, 233),
+        highlightColor: const Color.fromARGB(255, 224, 218, 218),
         child: Container(
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(15)),

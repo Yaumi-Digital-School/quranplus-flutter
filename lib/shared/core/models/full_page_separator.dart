@@ -4,9 +4,7 @@ part 'full_page_separator.g.dart';
 
 @JsonSerializable()
 class FullPageSeparatorList {
-  FullPageSeparatorList({
-    required this.separators,
-  });
+  FullPageSeparatorList({required this.separators});
 
   final List<FullPageSeparator> separators;
 

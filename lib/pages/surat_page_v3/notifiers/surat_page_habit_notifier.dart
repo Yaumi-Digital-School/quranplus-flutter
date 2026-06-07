@@ -1,13 +1,13 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_navigation_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_habit_state.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
-import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart';
+import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
@@ -49,21 +49,19 @@ class SuratPageHabitNotifier extends _$SuratPageHabitNotifier {
     _scrollController.addListener(_listenOnScrollChanges);
 
     final audioState = ref.read(audioRecitationProvider);
-    state = state.copyWith(
-      showMinimizedAudioPlayer: !audioState.isStopped,
-    );
+    state = state.copyWith(showMinimizedAudioPlayer: !audioState.isStopped);
   }
 
   void _listenOnScrollChanges() {
     final double currentOffset = _scrollController.offset;
     final bool onScrollUpChecking =
         (_scrollUpOffset - currentOffset >= 150) &&
-            _scrollController.position.userScrollDirection ==
-                ScrollDirection.forward;
+        _scrollController.position.userScrollDirection ==
+            ScrollDirection.forward;
     final bool onScrollDownChecking =
         (currentOffset - _scrollDownOffset >= 150) &&
-            _scrollController.position.userScrollDirection ==
-                ScrollDirection.reverse;
+        _scrollController.position.userScrollDirection ==
+            ScrollDirection.reverse;
 
     if (onScrollUpChecking) {
       if (!state.isOnReadCTAVisible) {
@@ -97,9 +95,7 @@ class SuratPageHabitNotifier extends _$SuratPageHabitNotifier {
     if (recordedPagesList.contains(addedPage)) return;
 
     recordedPagesList.add(addedPage);
-    state = state.copyWith(
-      recordedPagesAsRead: state.recordedPagesAsRead + 1,
-    );
+    state = state.copyWith(recordedPagesAsRead: state.recordedPagesAsRead + 1);
   }
 
   Future<void> startRecording() async {
@@ -165,8 +161,8 @@ class SuratPageHabitNotifier extends _$SuratPageHabitNotifier {
   }
 
   Future<void> playOnAyah(Verse verse) async {
-    final ReciterItemResponse reciterItemResponse =
-        await _sharedPref.getSelectedReciter();
+    final ReciterItemResponse reciterItemResponse = await _sharedPref
+        .getSelectedReciter();
 
     final AudioRecitationState newState = AudioRecitationState(
       surahName: verse.surahName,

@@ -23,15 +23,9 @@ class GenderSelector extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text(
-              'Gender',
-              style: QPTextStyle.getSubHeading2SemiBold(context),
-            ),
+            Text('Gender', style: QPTextStyle.getSubHeading2SemiBold(context)),
             if (hasError)
-              Text(
-                '*',
-                style: subHeadingSemiBold2.apply(color: errorColor),
-              ),
+              Text('*', style: subHeadingSemiBold2.apply(color: errorColor)),
           ],
         ),
         const SizedBox(height: 8),
@@ -68,10 +62,7 @@ class GenderSelector extends StatelessWidget {
         ),
         if (hasError) ...[
           const SizedBox(height: 2),
-          Text(
-            'Required',
-            style: captionLight2.apply(color: errorColor),
-          ),
+          Text('Required', style: captionLight2.apply(color: errorColor)),
         ],
       ],
     );

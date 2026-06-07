@@ -5,6 +5,7 @@ import 'package:qurantafsir_flutter/pages/home_page_v2/widgets/home_surah_item.d
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
@@ -50,12 +51,7 @@ class HomeSurahList extends ConsumerWidget {
             ),
             Container(
               padding: const EdgeInsets.only(bottom: 20, top: 16),
-              color: QPColors.getColorBasedTheme(
-                dark: QPColors.darkModeMassive,
-                light: QPColors.whiteFair,
-                brown: QPColors.brownModeRoot,
-                context: context,
-              ),
+              color: context.qpColors.surface100,
               child: _buildSuratsByJuz(
                 context: context,
                 juz: juz,
@@ -187,12 +183,7 @@ class _HomeSurahListSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: QPColors.getColorBasedTheme(
-        dark: QPColors.darkModeMassive,
-        light: QPColors.whiteFair,
-        brown: QPColors.brownModeRoot,
-        context: context,
-      ),
+      color: context.qpColors.surface100,
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 24),

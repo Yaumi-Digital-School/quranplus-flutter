@@ -4,6 +4,7 @@ import 'package:qurantafsir_flutter/pages/home_page_v2/home_page_state_notifier.
 import 'package:qurantafsir_flutter/pages/read_tadabbur/read_tadabbur_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/juz.dart';
@@ -65,8 +66,7 @@ class HomeSurahItem extends ConsumerWidget {
                           spreadRadius: 1.0,
                         ),
                       ],
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(20)),
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
                     ),
                     child: Text(
                       surat.number,
@@ -90,9 +90,7 @@ class HomeSurahItem extends ConsumerWidget {
                             "Page ${surat.startPage}, Ayat ${surat.startAyat}",
                             style: QPTextStyle.getDescription2Regular(
                               context,
-                            ).copyWith(
-                              color: Theme.of(context).hintColor,
-                            ),
+                            ).copyWith(color: Theme.of(context).hintColor),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -129,11 +127,10 @@ class HomeSurahItem extends ConsumerWidget {
                                 ),
                               )
                             : IconButton(
-                                color: QPColors.getColorBasedTheme(
+                                color: context.qpColors.resolve(
+                                  context.qpColors.brand100,
                                   dark: QPColors.brandFair,
-                                  light: QPColors.brandFair,
                                   brown: QPColors.brandFair,
-                                  context: context,
                                 ),
                                 padding: const EdgeInsets.all(6),
                                 alignment: Alignment.center,
@@ -149,8 +146,7 @@ class HomeSurahItem extends ConsumerWidget {
             ),
             if (hasTadabbur)
               Padding(
-                padding:
-                    const EdgeInsets.only(left: 60, right: 120, bottom: 8),
+                padding: const EdgeInsets.only(left: 60, right: 120, bottom: 8),
                 child: ButtonPill(
                   onTap: () {
                     Navigator.pushNamed(
@@ -164,12 +160,7 @@ class HomeSurahItem extends ConsumerWidget {
                   },
                   label: "$totalTadabburInSurah Tadabbur available",
                   icon: Icons.menu_book,
-                  colorText: QPColors.getColorBasedTheme(
-                    dark: QPColors.whiteFair,
-                    light: QPColors.brandFair,
-                    brown: QPColors.brownModeMassive,
-                    context: context,
-                  ),
+                  colorText: context.qpColors.brand100,
                 ),
               ),
           ],

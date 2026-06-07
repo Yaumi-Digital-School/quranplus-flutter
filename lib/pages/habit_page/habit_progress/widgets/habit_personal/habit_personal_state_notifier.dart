@@ -61,8 +61,8 @@ class HabitPersonalNotifier extends _$HabitPersonalNotifier {
       final formattedDate = DateFormat('MMMM yyyy').format(now);
       await habitDailyService.syncHabit();
       final listHabit = await _db.getLastSevenDays(now);
-      final currentProgress =
-          await habitDailyService.getCurrentDayHabitDailySummaryListLocal();
+      final currentProgress = await habitDailyService
+          .getCurrentDayHabitDailySummaryListLocal();
       final isNeedSync = habitDailyService.isNeedSync();
       state = state.copyWith(
         isLoading: false,

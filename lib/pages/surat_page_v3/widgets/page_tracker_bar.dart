@@ -4,10 +4,7 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_hab
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
 class PageTrackerBar extends ConsumerWidget {
-  const PageTrackerBar({
-    super.key,
-    required this.onTap,
-  });
+  const PageTrackerBar({super.key, required this.onTap});
 
   final VoidCallback onTap;
 

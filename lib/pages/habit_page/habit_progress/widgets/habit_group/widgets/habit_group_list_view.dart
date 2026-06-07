@@ -39,15 +39,15 @@ class HabitGroupListView extends StatelessWidget {
             itemCount: listGroup.length,
             itemBuilder: (BuildContext context, int index) {
               final GetHabitGroupsItem item = listGroup[index];
-              final List<HabitGroupSummary> sevenDaysInformation =
-                  item.completions
-                      .map(
-                        (element) =>
-                            HabitGroupSummary.fromGetGroupListCompletionItem(
+              final List<HabitGroupSummary> sevenDaysInformation = item
+                  .completions
+                  .map(
+                    (element) =>
+                        HabitGroupSummary.fromGetGroupListCompletionItem(
                           element,
                         ),
-                      )
-                      .toList();
+                  )
+                  .toList();
 
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
@@ -60,9 +60,7 @@ class HabitGroupListView extends StatelessWidget {
                     final res = await Navigator.pushNamed(
                       context,
                       RoutePaths.routeHabitGroupDetail,
-                      arguments: HabitGroupDetailViewParam(
-                        id: item.id,
-                      ),
+                      arguments: HabitGroupDetailViewParam(id: item.id),
                     );
 
                     if (res is bool && res && onEditedGroupName != null) {

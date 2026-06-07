@@ -14,11 +14,7 @@ class GeneralSearchDialog {
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(19)),
           ),
-          content: SizedBox(
-            height: 205,
-            width: 253,
-            child: widgetChild,
-          ),
+          content: SizedBox(height: 205, width: 253, child: widgetChild),
         );
       },
     );
@@ -29,9 +25,7 @@ class GeneralSearchDialog {
       context,
       Column(
         children: [
-          const SizedBox(
-            height: 5.0,
-          ),
+          const SizedBox(height: 5.0),
           SizedBox(
             height: MediaQuery.of(context).size.height / 10,
             width: MediaQuery.of(context).size.width,
@@ -43,13 +37,8 @@ class GeneralSearchDialog {
               ),
             ),
           ),
-          const SizedBox(
-            height: 16.0,
-          ),
-          ButtonSecondary(
-            label: 'Search',
-            onTap: function,
-          ),
+          const SizedBox(height: 16.0),
+          ButtonSecondary(label: 'Search', onTap: function),
         ],
       ),
     );
@@ -59,12 +48,7 @@ class GeneralSearchDialog {
     BuildContext context,
     Map<String, List<String>> verseMapper,
   ) {
-    return searchDialog(
-      context,
-      SearchByPageOrAyah(
-        verseMapper: verseMapper,
-      ),
-    );
+    return searchDialog(context, SearchByPageOrAyah(verseMapper: verseMapper));
   }
 
   static Future searchDialogWithTabbar(
@@ -136,11 +120,7 @@ class Alert {
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(9)),
           ),
-          content: SizedBox(
-            height: 245,
-            width: 321,
-            child: widgetChild,
-          ),
+          content: SizedBox(height: 245, width: 321, child: widgetChild),
         );
       },
     );

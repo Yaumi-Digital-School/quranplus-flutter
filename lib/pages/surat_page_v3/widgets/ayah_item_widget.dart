@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_bookmark_notifier.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_content_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_habit_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_navigation_notifier.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_content_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_content_state.dart';
 import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_widget.dart';
@@ -60,8 +61,7 @@ class AyahItemWidget extends ConsumerWidget {
         .latins?[verse.surahNumberInIndex][verse.verseNumberInIndex];
     String? tafsir = contentState
         .tafsirs?[verse.surahNumberInIndex][verse.verseNumberInIndex];
-    bool isWithTranslations =
-        contentState.readingSettings!.isWithTranslations;
+    bool isWithTranslations = contentState.readingSettings!.isWithTranslations;
     bool isWithTafsirs = contentState.readingSettings!.isWithTafsirs;
     bool isWithLatins = contentState.readingSettings!.isWithLatins;
     bool isFavorited = bookmarkNotifier.isAyahFavorited(verse.id);
@@ -87,8 +87,7 @@ class AyahItemWidget extends ConsumerWidget {
         key: key,
         child: Column(
           children: <Widget>[
-            if (useBasmalahBeforeAyah)
-              BasmalahWidget(orientation: orientation),
+            if (useBasmalahBeforeAyah) BasmalahWidget(orientation: orientation),
             _buildAyahContent(
               context,
               allVerses,
@@ -98,8 +97,7 @@ class AyahItemWidget extends ConsumerWidget {
               habitNotifier,
               connectivityStatus,
             ),
-            if (isWithLatins)
-              _buildLatinSection(context, latin!, contentState),
+            if (isWithLatins) _buildLatinSection(context, latin!, contentState),
             if (isWithTranslations)
               _buildTranslationSection(context, translation!, contentState),
             if (isWithTafsirs)
@@ -114,8 +112,7 @@ class AyahItemWidget extends ConsumerWidget {
               ),
             if (useDivider)
               const Padding(
-                padding:
-                    EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+                padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
                 child: HorizontalDivider(),
               ),
           ],
@@ -177,21 +174,16 @@ class AyahItemWidget extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   IconButton(
-                    color: QPColors.getColorBasedTheme(
-                      dark: QPColors.blackFair,
+                    color: context.qpColors.resolve(
+                      context.qpColors.neutral20,
                       light: QPColors.blackFair,
-                      brown: QPColors.brownModeHeavy,
-                      context: context,
                     ),
                     padding: const EdgeInsets.all(0),
                     alignment: Alignment.centerLeft,
                     icon: const Icon(Icons.play_circle_outline),
                     iconSize: 20,
-                    onPressed: () => _playOnAyah(
-                      context,
-                      habitNotifier,
-                      connectivityStatus,
-                    ),
+                    onPressed: () =>
+                        _playOnAyah(context, habitNotifier, connectivityStatus),
                   ),
                   Expanded(
                     child: Text(
@@ -230,11 +222,10 @@ class AyahItemWidget extends ConsumerWidget {
             fontSize: orientation == Orientation.landscape
                 ? contentState.readingSettings!.valueFontSizeLandscape
                 : contentState.readingSettings?.valueFontSize,
-            color: QPColors.getColorBasedTheme(
-              dark: QPColors.blackSoft,
+            color: context.qpColors.resolve(
+              context.qpColors.brand100,
               light: QPColors.neutral600,
-              brown: QPColors.brownModeMassive,
-              context: context,
+              dark: QPColors.blackSoft,
             ),
           ),
         ),
@@ -270,11 +261,9 @@ class AyahItemWidget extends ConsumerWidget {
     return Container(
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: QPColors.getColorBasedTheme(
-          dark: QPColors.darkModeFair,
-          light: QPColors.whiteSoft,
+        color: context.qpColors.resolve(
+          context.qpColors.surface40,
           brown: QPColors.brownModeHeavy,
-          context: context,
         ),
         borderRadius: const BorderRadius.all(Radius.circular(8)),
       ),
@@ -289,12 +278,7 @@ class AyahItemWidget extends ConsumerWidget {
                 style: QPTextStyle.getDescription1Regular(context).copyWith(
                   height: 1.5,
                   fontSize: contentState.readingSettings?.valueFontSize,
-                  color: QPColors.getColorBasedTheme(
-                    dark: QPColors.whiteFair,
-                    light: QPColors.blackFair,
-                    brown: QPColors.brownModeMassive,
-                    context: context,
-                  ),
+                  color: context.qpColors.neutral100,
                 ),
               ),
             ),
@@ -304,11 +288,10 @@ class AyahItemWidget extends ConsumerWidget {
               child: Text(
                 'Tafsir Ringkasan Kemenag',
                 style: QPTextStyle.getDescription1Regular(context).copyWith(
-                  color: QPColors.getColorBasedTheme(
-                    dark: QPColors.blackSoft,
+                  color: context.qpColors.resolve(
+                    context.qpColors.brand100,
                     light: Colors.black.withValues(alpha: 0.5),
-                    brown: QPColors.brownModeMassive,
-                    context: context,
+                    dark: QPColors.blackSoft,
                   ),
                 ),
               ),
@@ -326,13 +309,10 @@ class AyahItemWidget extends ConsumerWidget {
   ) async {
     if (connectivityStatus == ConnectivityStatus.isDisconnected &&
         context.mounted) {
-      GeneralBottomSheet.showNoInternetBottomSheet(
-        context,
-        () {
-          Navigator.pop(context);
-          _playOnAyah(context, habitNotifier, connectivityStatus);
-        },
-      );
+      GeneralBottomSheet.showNoInternetBottomSheet(context, () {
+        Navigator.pop(context);
+        _playOnAyah(context, habitNotifier, connectivityStatus);
+      });
       return;
     }
 

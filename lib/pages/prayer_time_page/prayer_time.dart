@@ -7,6 +7,7 @@ import 'package:qurantafsir_flutter/pages/prayer_time_page/widgets/prayer_time_r
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/prayer_times_notifier.dart';
 
@@ -25,11 +26,9 @@ class PrayerTimePage extends ConsumerWidget {
           leading: IconButton(
             icon: Icon(
               Icons.chevron_left,
-              color: QPColors.getColorBasedTheme(
-                dark: QPColors.whiteFair,
+              color: context.qpColors.resolve(
+                context.qpColors.brand100,
                 light: QPColors.blackMassive,
-                brown: QPColors.brownModeMassive,
-                context: context,
               ),
               size: 24,
             ),
@@ -81,11 +80,9 @@ class PrayerTimePage extends ConsumerWidget {
                                   borderRadius: const BorderRadius.all(
                                     Radius.circular(16),
                                   ),
-                                  color: QPColors.getColorBasedTheme(
-                                    dark: QPColors.darkModeFair,
+                                  color: context.qpColors.resolve(
+                                    context.qpColors.surface20,
                                     light: QPColors.brandRoot,
-                                    brown: QPColors.brownModeHeavy,
-                                    context: context,
                                   ),
                                 ),
                                 child: Padding(
@@ -99,12 +96,7 @@ class PrayerTimePage extends ConsumerWidget {
                                       Icon(
                                         Icons.location_on,
                                         size: 12,
-                                        color: QPColors.getColorBasedTheme(
-                                          dark: QPColors.whiteFair,
-                                          light: QPColors.brandFair,
-                                          brown: QPColors.brownModeMassive,
-                                          context: context,
-                                        ),
+                                        color: context.qpColors.brand100,
                                       ),
                                       const SizedBox(width: 4),
                                       Flexible(
@@ -184,11 +176,10 @@ class PrayerTimePage extends ConsumerWidget {
                             "Set location Manually",
                             style: QPTextStyle.getBody2SemiBold(context)
                                 .copyWith(
-                                  color: QPColors.getColorBasedTheme(
-                                    dark: QPColors.whiteRoot,
+                                  color: context.qpColors.resolve(
+                                    context.qpColors.brand100,
                                     light: QPColors.blackMassive,
-                                    brown: QPColors.brownModeMassive,
-                                    context: context,
+                                    dark: QPColors.whiteRoot,
                                   ),
                                 ),
                           ),
@@ -197,11 +188,10 @@ class PrayerTimePage extends ConsumerWidget {
                             child: Icon(
                               Icons.arrow_forward_ios_rounded,
                               size: 14,
-                              color: QPColors.getColorBasedTheme(
-                                dark: QPColors.whiteRoot,
+                              color: context.qpColors.resolve(
+                                context.qpColors.brand100,
                                 light: QPColors.blackMassive,
-                                brown: QPColors.brownModeMassive,
-                                context: context,
+                                dark: QPColors.whiteRoot,
                               ),
                             ),
                           ),

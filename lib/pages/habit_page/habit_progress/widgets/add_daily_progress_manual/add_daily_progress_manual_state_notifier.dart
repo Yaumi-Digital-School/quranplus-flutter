@@ -1,6 +1,6 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_progress.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_progress.dart';
 import 'package:qurantafsir_flutter/shared/utils/prayer_times.dart';
@@ -42,8 +42,7 @@ class AddDailyProgressManualState {
 }
 
 @riverpod
-class AddDailyProgressManualNotifier
-    extends _$AddDailyProgressManualNotifier {
+class AddDailyProgressManualNotifier extends _$AddDailyProgressManualNotifier {
   final DbLocal _db = DbLocal();
 
   @override
@@ -51,7 +50,10 @@ class AddDailyProgressManualNotifier
 
   Future<void> init(HabitDailySummary habitDailySummary) async {
     try {
-      state = state.copyWith(isLoading: true, currentProgress: habitDailySummary);
+      state = state.copyWith(
+        isLoading: true,
+        currentProgress: habitDailySummary,
+      );
       List<HabitProgress> list = [];
       if (habitDailySummary.id != null) {
         list = await _db.getProgressHistory(habitDailySummary.id!);

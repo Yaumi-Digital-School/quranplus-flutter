@@ -27,14 +27,15 @@ class AppUpdateUtil {
       remoteConfigService.optionalUpdateMinVersion,
     );
 
-    final String shownOptionalUpdateMinVersion =
-        sharedPreferenceService.getShownOptionalUpdateMinVersion();
+    final String shownOptionalUpdateMinVersion = sharedPreferenceService
+        .getShownOptionalUpdateMinVersion();
 
     if (currentVersion < optionalUpdateMinVersion) {
       return AppUpdateInfo(
         type: AppUpdateType.optionalUpdate,
         optionalUpdateMinVersion: optionalUpdateMinVersion,
-        shouldShowUpdateMinVersion: shownOptionalUpdateMinVersion !=
+        shouldShowUpdateMinVersion:
+            shownOptionalUpdateMinVersion !=
             optionalUpdateMinVersion.toString(),
       );
     }

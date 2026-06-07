@@ -1,7 +1,1 @@
-enum ResultStatus {
-  pure,
-  inProgress,
-  success,
-  failure,
-  canceled,
-}
+enum ResultStatus { pure, inProgress, success, failure, canceled }

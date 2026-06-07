@@ -6,6 +6,7 @@ import 'package:qurantafsir_flutter/pages/account_page/widgets/gender_selector.d
 import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
@@ -92,12 +93,7 @@ class AccountPage extends ConsumerWidget {
                   ).copyWith(color: Theme.of(context).hintColor),
                   border: enabledInputBorder,
                   enabledBorder: enabledInputBorder,
-                  fillColor: QPColors.getColorBasedTheme(
-                    dark: QPColors.blackFair,
-                    light: QPColors.whiteRoot,
-                    brown: QPColors.brownModeHeavy,
-                    context: context,
-                  ),
+                  fillColor: context.qpColors.neutral20,
                   filled: true,
                 ),
               ),

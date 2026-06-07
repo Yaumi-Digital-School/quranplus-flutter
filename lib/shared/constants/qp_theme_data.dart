@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 
 enum QPThemeMode { dark, light, brown }
 
@@ -38,6 +39,7 @@ class QPThemeData {
         surface: QPColors.whiteSoft,
       ),
       dialogTheme: const DialogThemeData(backgroundColor: QPColors.whiteFair),
+      extensions: const <ThemeExtension<dynamic>>[QPThemedColors.light],
     );
   }
 
@@ -50,7 +52,7 @@ class QPThemeData {
       ),
       dividerColor: QPColors.darkModeFair,
       hintColor: QPColors.blackSoft,
-      colorScheme: const ColorScheme.light().copyWith(
+      colorScheme: const ColorScheme.dark().copyWith(
         primary: QPColors.whiteFair,
         primaryContainer: QPColors.darkModeHeavy,
         secondaryContainer: QPColors.darkModeFair,
@@ -59,6 +61,7 @@ class QPThemeData {
       dialogTheme: const DialogThemeData(
         backgroundColor: QPColors.darkModeMassive,
       ),
+      extensions: const <ThemeExtension<dynamic>>[QPThemedColors.dark],
     );
   }
 
@@ -80,20 +83,7 @@ class QPThemeData {
       dialogTheme: const DialogThemeData(
         backgroundColor: QPColors.brownModeRoot,
       ),
+      extensions: const <ThemeExtension<dynamic>>[QPThemedColors.brown],
     );
-  }
-
-  static QPThemeMode getThemeModeBasedContext(BuildContext context) {
-    final theme = Theme.of(context);
-    final scaffoldBackgroundColor = theme.scaffoldBackgroundColor;
-    if (scaffoldBackgroundColor == QPColors.brownModeRoot) {
-      return QPThemeMode.brown;
-    }
-
-    if (scaffoldBackgroundColor == QPColors.darkModeMassive) {
-      return QPThemeMode.dark;
-    }
-
-    return QPThemeMode.light;
   }
 }

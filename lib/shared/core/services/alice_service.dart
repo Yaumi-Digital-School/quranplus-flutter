@@ -5,13 +5,13 @@ import 'package:flutter/widgets.dart';
 
 class AliceService {
   AliceService(GlobalKey<NavigatorState> navigatorKey)
-      : alice = Alice(
-          configuration: AliceConfiguration(
-            navigatorKey: navigatorKey,
-            showNotification: false,
-            showInspectorOnShake: true,
-          ),
-        ) {
+    : alice = Alice(
+        configuration: AliceConfiguration(
+          navigatorKey: navigatorKey,
+          showNotification: false,
+          showInspectorOnShake: true,
+        ),
+      ) {
     alice.addAdapter(dioAdapter);
   }
 

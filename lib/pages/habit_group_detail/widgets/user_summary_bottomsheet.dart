@@ -4,10 +4,10 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/user_summary.dart';
-import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
-import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart'
     as date_util_custom;
+import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
+import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 
 class UserSummaryBottomSheet {
   static void showBottomSheet({
@@ -31,11 +31,7 @@ class UserSummaryBottomSheet {
 
     final emptyState = Column(
       children: [
-        const Icon(
-          Icons.history,
-          size: 40,
-          color: QPColors.whiteRoot,
-        ),
+        const Icon(Icons.history, size: 40, color: QPColors.whiteRoot),
         const SizedBox(height: 20),
         Text(
           "Progress history is here",
@@ -68,11 +64,7 @@ class UserSummaryBottomSheet {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Icon(
-                  Icons.history,
-                  size: 12,
-                  color: QPColors.brandFair,
-                ),
+                const Icon(Icons.history, size: 12, color: QPColors.brandFair),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Column(
@@ -94,10 +86,11 @@ class UserSummaryBottomSheet {
                 const SizedBox(width: 40),
                 Text(
                   item.inputTime.substring(0, item.inputTime.length - 3),
-                  style: QPTextStyle.getSubHeading4Regular(
-                    context,
-                  ) // Todo: check color based on theme
-                      .copyWith(color: QPColors.blackFair),
+                  style:
+                      QPTextStyle.getSubHeading4Regular(
+                            context,
+                          ) // Todo: check color based on theme
+                          .copyWith(color: QPColors.blackFair),
                 ),
               ],
             ),
@@ -111,10 +104,7 @@ class UserSummaryBottomSheet {
       widgetChild: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: QPTextStyle.getSubHeading3SemiBold(context),
-          ),
+          Text(title, style: QPTextStyle.getSubHeading3SemiBold(context)),
           Text(
             dateInformation,
             style: QPTextStyle.getButton2Medium(context).copyWith(
@@ -158,8 +148,9 @@ class UserSummaryBottomSheet {
           SizedBox(
             height: 180,
             width: double.infinity,
-            child:
-                data.habitProgresses.isEmpty ? emptyState : listProgressWidget,
+            child: data.habitProgresses.isEmpty
+                ? emptyState
+                : listProgressWidget,
           ),
         ],
       ),

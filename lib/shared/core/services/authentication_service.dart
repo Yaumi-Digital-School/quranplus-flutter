@@ -3,23 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/model/user_response.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/user_api.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
 import 'package:qurantafsir_flutter/shared/core/models/force_login_param.dart';
 import 'package:qurantafsir_flutter/shared/core/models/user.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/model/user_response.dart';
 import 'package:qurantafsir_flutter/shared/core/services/alice_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-enum SignInResult {
-  success,
-  failedGeneral,
-  failedAccountDeleted,
-}
+enum SignInResult { success, failedGeneral, failedAccountDeleted }
 
 class AuthenticationService {
   AuthenticationService({
@@ -28,9 +24,9 @@ class AuthenticationService {
     required void Function(DioService) onUpdateDioService,
     required DioService Function() getCurrentDioService,
     required this.aliceService,
-  })  : _onUpdateDioService = onUpdateDioService,
-        _getCurrentDioService = getCurrentDioService,
-        _sharedPreferenceService = sharedPreferenceService;
+  }) : _onUpdateDioService = onUpdateDioService,
+       _getCurrentDioService = getCurrentDioService,
+       _sharedPreferenceService = sharedPreferenceService;
 
   final UserApi userApi;
   final SharedPreferenceService _sharedPreferenceService;
@@ -48,17 +44,12 @@ class AuthenticationService {
   }
 
   Future<void> initRepository() async {
-    _googleSignIn = GoogleSignIn(scopes: [
-      'email',
-      'profile',
-    ]);
+    _googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
 
     _isLoggedIn = _sharedPreferenceService.getApiToken().isNotEmpty;
   }
 
-  Future<SignInResult> signIn({
-    required SignInType type,
-  }) async {
+  Future<SignInResult> signIn({required SignInType type}) async {
     try {
       late RegisterOrLoginRequest request;
 
@@ -78,11 +69,11 @@ class AuthenticationService {
         case SignInType.apple:
           final AuthorizationCredentialAppleID credential =
               await SignInWithApple.getAppleIDCredential(
-            scopes: [
-              AppleIDAuthorizationScopes.email,
-              AppleIDAuthorizationScopes.fullName,
-            ],
-          );
+                scopes: [
+                  AppleIDAuthorizationScopes.email,
+                  AppleIDAuthorizationScopes.fullName,
+                ],
+              );
 
           request = RegisterOrLoginRequest(
             name: credential.givenName != null
@@ -117,11 +108,13 @@ class AuthenticationService {
       await _setToken(response.data.token!);
       await _setUsername(response.data.data!.name);
 
-      _onUpdateDioService(DioService(
-        baseUrl: EnvConstants.baseUrl!,
-        accessToken: _sharedPreferenceService.getApiToken(),
-        aliceService: aliceService,
-      ));
+      _onUpdateDioService(
+        DioService(
+          baseUrl: EnvConstants.baseUrl!,
+          accessToken: _sharedPreferenceService.getApiToken(),
+          aliceService: aliceService,
+        ),
+      );
 
       return SignInResult.success;
     } catch (error, stackTrace) {
@@ -148,8 +141,8 @@ class AuthenticationService {
 
     final List<double?> location = _sharedPreferenceService.getLocation();
     final String? cityName = _sharedPreferenceService.getCityName();
-    final DateTime? latestPrayerTimeSynced =
-        _sharedPreferenceService.getLatestPrayerTimeSynced();
+    final DateTime? latestPrayerTimeSynced = _sharedPreferenceService
+        .getLatestPrayerTimeSynced();
 
     await _sharedPreferenceService.clear();
 
@@ -160,18 +153,21 @@ class AuthenticationService {
       await _sharedPreferenceService.setCityName(cityName);
     }
     if (latestPrayerTimeSynced != null) {
-      await _sharedPreferenceService
-          .setLatestPrayerTimeSynced(latestPrayerTimeSynced);
+      await _sharedPreferenceService.setLatestPrayerTimeSynced(
+        latestPrayerTimeSynced,
+      );
     }
 
     _db.clearTableHabit();
     _db.clearTableBookmarks();
     _db.clearTableFavoriteAyahs();
-    _onUpdateDioService(DioService(
-      baseUrl: EnvConstants.baseUrl!,
-      aliceService: aliceService,
-      accessToken: '',
-    ));
+    _onUpdateDioService(
+      DioService(
+        baseUrl: EnvConstants.baseUrl!,
+        aliceService: aliceService,
+        accessToken: '',
+      ),
+    );
   }
 
   Future<User> getUserProfile(String token) async {
@@ -184,9 +180,7 @@ class AuthenticationService {
 
       var data = response.data.data;
       if (data == null) {
-        throw Exception(
-          'getUserProfile error: ${response.data.errorMessage}',
-        );
+        throw Exception('getUserProfile error: ${response.data.errorMessage}');
       }
 
       return data;
@@ -202,8 +196,10 @@ class AuthenticationService {
 
   Future<bool> updateUserProfile(String token, User user) async {
     try {
-      HttpResponse<UserResponse> response =
-          await userApi.updateUserProfile(token, user);
+      HttpResponse<UserResponse> response = await userApi.updateUserProfile(
+        token,
+        user,
+      );
 
       if (response.response.statusCode != 200) {
         throw Exception('updateUserProfile failed');
@@ -228,9 +224,10 @@ class AuthenticationService {
   Future<void> ping() async {
     try {
       final deviceId = await _sharedPreferenceService.getOrCreateDeviceId();
-      await _getCurrentDioService()
-          .getDioWithAccessToken()
-          .post('/api/user/ping', data: {'device_id': deviceId});
+      await _getCurrentDioService().getDioWithAccessToken().post(
+        '/api/user/ping',
+        data: {'device_id': deviceId},
+      );
     } catch (_) {}
   }
 
@@ -240,10 +237,7 @@ class AuthenticationService {
     required Map<String, dynamic> arguments,
   }) {
     _sharedPreferenceService.setForceLoginParam(
-      ForceLoginParam(
-        nextPath: redirectTo,
-        arguments: arguments,
-      ),
+      ForceLoginParam(nextPath: redirectTo, arguments: arguments),
     );
 
     Navigator.pop(context);

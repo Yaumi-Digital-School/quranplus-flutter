@@ -97,11 +97,13 @@ Future<bool> handleWorker(String task, Map<String, dynamic>? inputData) async {
   if (task == PrayerTimesWorker.quranTimeReminder.name) {
     try {
       final DbLocal db = DbLocal();
-      final HabitDailySummary dailySummary =
-          await db.getCurrentDayHabitDailySummary();
+      final HabitDailySummary dailySummary = await db
+          .getCurrentDayHabitDailySummary();
 
       if (dailySummary.totalPages >= dailySummary.target) {
-        await Workmanager().cancelByTag(PrayerTimesWorker.quranTimeReminder.tag);
+        await Workmanager().cancelByTag(
+          PrayerTimesWorker.quranTimeReminder.tag,
+        );
         return true;
       }
 

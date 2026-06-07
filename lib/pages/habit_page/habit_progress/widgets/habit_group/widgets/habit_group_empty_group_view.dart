@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/habit_group/widgets/habit_group_create_group_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 
 class HabitGroupEmptyGroupView extends StatelessWidget {
   const HabitGroupEmptyGroupView({
@@ -45,20 +46,18 @@ class HabitGroupEmptyGroupView extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: QPColors.getColorBasedTheme(
+          color: context.qpColors.resolve(
+            context.qpColors.surface60,
             dark: QPColors.darkModeFair,
-            light: QPColors.whiteMassive,
-            brown: QPColors.brownModeFair,
-            context: context,
           ),
-          border: Border.fromBorderSide(BorderSide(
-            color: QPColors.getColorBasedTheme(
-              dark: QPColors.darkModeHeavy,
-              light: QPColors.whiteHeavy,
-              brown: QPColors.brownModeHeavy,
-              context: context,
+          border: Border.fromBorderSide(
+            BorderSide(
+              color: context.qpColors.resolve(
+                context.qpColors.surface80,
+                brown: QPColors.brownModeHeavy,
+              ),
             ),
-          )),
+          ),
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           boxShadow: [
             BoxShadow(
@@ -97,9 +96,7 @@ class HabitGroupEmptyGroupView extends StatelessWidget {
                     "Set goals, track, and monitor reading progress",
                     style: QPTextStyle.getBody3Regular(
                       context,
-                    ).copyWith(
-                      color: QPColors.blackFair,
-                    ),
+                    ).copyWith(color: QPColors.blackFair),
                   ),
                 ],
               ),
@@ -107,11 +104,9 @@ class HabitGroupEmptyGroupView extends StatelessWidget {
             const SizedBox(width: 20),
             Icon(
               Icons.arrow_forward_ios,
-              color: QPColors.getColorBasedTheme(
-                dark: QPColors.whiteMassive,
-                light: QPColors.blackMassive,
+              color: context.qpColors.resolve(
+                context.qpColors.neutral60,
                 brown: QPColors.brownModeMassive,
-                context: context,
               ),
               size: 18,
             ),

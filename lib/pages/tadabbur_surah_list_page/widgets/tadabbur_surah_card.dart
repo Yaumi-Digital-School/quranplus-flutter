@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/pages/read_tadabbur/read_tadabbur_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 
@@ -26,33 +27,16 @@ class TadabburSurahCard extends StatelessWidget {
         Navigator.pushNamed(
           context,
           RoutePaths.routeReadTadabbur,
-          arguments: ReadTadabburParam(
-            surahId: surahID,
-            surahName: title,
-          ),
+          arguments: ReadTadabburParam(surahId: surahID, surahName: title),
         );
       },
       child: Container(
         decoration: BoxDecoration(
-          color: QPColors.getColorBasedTheme(
-            dark: QPColors.darkModeHeavy,
-            light: QPColors.whiteMassive,
-            brown: QPColors.brownModeFair,
-            context: context,
-          ),
+          color: context.qpColors.surface60,
           border: Border.fromBorderSide(
-            BorderSide(
-              color: QPColors.getColorBasedTheme(
-                dark: QPColors.darkModeFair,
-                light: QPColors.whiteRoot,
-                brown: QPColors.brownModeHeavy,
-                context: context,
-              ),
-            ),
+            BorderSide(color: context.qpColors.surface20),
           ),
-          borderRadius: const BorderRadius.all(
-            Radius.circular(8),
-          ),
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
         ),
         child: Padding(
           padding: const EdgeInsets.only(
@@ -82,67 +66,41 @@ class TadabburSurahCard extends StatelessWidget {
                     title,
                     style: QPTextStyle.getSubHeading3SemiBold(context),
                   ),
-                  const SizedBox(
-                    height: 8,
-                  ),
+                  const SizedBox(height: 8),
                   Row(
                     children: [
                       Icon(
                         Icons.menu_book,
                         size: 16,
-                        color: QPColors.getColorBasedTheme(
-                          dark: QPColors.whiteFair,
-                          light: QPColors.blackFair,
-                          brown: QPColors.brownModeMassive,
-                          context: context,
-                        ),
+                        color: context.qpColors.neutral100,
                       ),
-                      const SizedBox(
-                        width: 8,
-                      ),
+                      const SizedBox(width: 8),
                       Text(
                         '$availableTadabbur Tadabbur available',
-                        style: QPTextStyle.getSubHeading4SemiBold(context)
-                            .copyWith(
-                          color: QPColors.getColorBasedTheme(
-                            dark: QPColors.whiteFair,
-                            light: QPColors.blackFair,
-                            brown: QPColors.brownModeMassive,
-                            context: context,
-                          ),
-                        ),
+                        style: QPTextStyle.getSubHeading4SemiBold(
+                          context,
+                        ).copyWith(color: context.qpColors.neutral100),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-            const SizedBox(
-              height: 8,
-            ),
+            const SizedBox(height: 8),
             Icon(
               Icons.keyboard_arrow_right,
               size: 24,
-              color: QPColors.getColorBasedTheme(
-                dark: QPColors.whiteFair,
-                light: QPColors.blackFair,
-                brown: QPColors.brownModeMassive,
-                context: context,
-              ),
+              color: context.qpColors.neutral100,
             ),
           ],
         ),
-        const SizedBox(
-          height: 16,
-        ),
+        const SizedBox(height: 16),
         Text(
           DateCustomUtils.getDateRangeFormatted(lastUpdatedAt),
           style: QPTextStyle.getDescription2Regular(context).copyWith(
-            color: QPColors.getColorBasedTheme(
-              dark: QPColors.blackSoft,
-              light: QPColors.blackSoft,
+            color: context.qpColors.resolve(
+              context.qpColors.neutral40,
               brown: QPColors.brownModeMassive,
-              context: context,
             ),
           ),
         ),

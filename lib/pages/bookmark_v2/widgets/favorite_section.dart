@@ -22,9 +22,7 @@ class FavoriteSection extends ConsumerWidget {
     }
 
     if (listFavoriteAyah.isEmpty) {
-      return const BookmarkEmptyState(
-        message: 'There is no favorite ayah yet',
-      );
+      return const BookmarkEmptyState(message: 'There is no favorite ayah yet');
     }
 
     return ListView.builder(
@@ -72,9 +70,7 @@ class FavoriteSection extends ConsumerWidget {
         connectivityStatus: connectivityStatus,
       );
     } else {
-      await notifier.initStateNotifier(
-        connectivityStatus: connectivityStatus,
-      );
+      await notifier.initStateNotifier(connectivityStatus: connectivityStatus);
     }
   }
 }

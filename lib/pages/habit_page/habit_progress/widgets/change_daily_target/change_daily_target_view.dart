@@ -12,10 +12,7 @@ const list = ['Pages', 'Juz'];
 
 class ChangeDailyTargetView extends ConsumerStatefulWidget {
   final HabitDailySummary habitDailySummary;
-  const ChangeDailyTargetView({
-    super.key,
-    required this.habitDailySummary,
-  });
+  const ChangeDailyTargetView({super.key, required this.habitDailySummary});
 
   @override
   ConsumerState<ChangeDailyTargetView> createState() =>
@@ -47,9 +44,7 @@ class _ChangeDailyTargetViewState extends ConsumerState<ChangeDailyTargetView> {
           ? const SizedBox(
               height: 32,
               width: 32,
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
+              child: Center(child: CircularProgressIndicator()),
             )
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,23 +54,17 @@ class _ChangeDailyTargetViewState extends ConsumerState<ChangeDailyTargetView> {
                   'Set your daily target',
                   style: QPTextStyle.getSubHeading2SemiBold(context),
                 ),
-                const SizedBox(
-                  height: 8,
-                ),
+                const SizedBox(height: 8),
                 Text(
                   'Set a daily reading target to motivate and help you stay active.',
                   style: QPTextStyle.getBody3Regular(context),
                 ),
-                const SizedBox(
-                  height: 16,
-                ),
+                const SizedBox(height: 16),
                 Text(
                   'Daily Target',
                   style: QPTextStyle.getSubHeading4Medium(context),
                 ),
-                const SizedBox(
-                  height: 9,
-                ),
+                const SizedBox(height: 9),
                 Row(
                   children: [
                     InputTotalPagesTextField(
@@ -130,10 +119,7 @@ class _ChangeDailyTargetViewState extends ConsumerState<ChangeDailyTargetView> {
 class DropDownListChangeTarget extends StatefulWidget {
   final void Function(String) onChanged;
 
-  const DropDownListChangeTarget({
-    super.key,
-    required this.onChanged,
-  });
+  const DropDownListChangeTarget({super.key, required this.onChanged});
 
   @override
   State<DropDownListChangeTarget> createState() =>
@@ -160,10 +146,7 @@ class DropDownListChangeTargetState extends State<DropDownListChangeTarget> {
           elevation: 16,
           value: dropdownValue,
           style: TextStyle(color: neutral600, fontSize: 12, fontWeight: medium),
-          icon: const Icon(
-            Icons.arrow_drop_down,
-            size: 15,
-          ),
+          icon: const Icon(Icons.arrow_drop_down, size: 15),
           onChanged: (String? value) {
             setState(() {
               dropdownValue = value!;

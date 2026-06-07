@@ -30,10 +30,7 @@ class SuratPageBookmarkNotifier extends _$SuratPageBookmarkNotifier {
   SuratPageBookmarkState build() => const SuratPageBookmarkState();
 
   Future<void> load() async {
-    await Future.wait([
-      _loadBookmarks(),
-      _loadFavorites(),
-    ]);
+    await Future.wait([_loadBookmarks(), _loadFavorites()]);
   }
 
   Future<void> _loadBookmarks() async {
@@ -51,9 +48,7 @@ class SuratPageBookmarkNotifier extends _$SuratPageBookmarkNotifier {
   }
 
   void checkIsBookmarkExists(int page) {
-    state = state.copyWith(
-      visibleIconBookmark: _bookmarkList.contains(page),
-    );
+    state = state.copyWith(visibleIconBookmark: _bookmarkList.contains(page));
   }
 
   bool isAyahFavorited(int ayahID) => _favoriteAyahList.contains(ayahID);
@@ -74,10 +69,7 @@ class SuratPageBookmarkNotifier extends _$SuratPageBookmarkNotifier {
     }
 
     _bookmarkList.add(page);
-    state = state.copyWith(
-      visibleIconBookmark: true,
-      isBookmarkChanged: true,
-    );
+    state = state.copyWith(visibleIconBookmark: true, isBookmarkChanged: true);
   }
 
   Future<void> deleteBookmark(
@@ -89,22 +81,19 @@ class SuratPageBookmarkNotifier extends _$SuratPageBookmarkNotifier {
     }
     await _db.deleteBookmark(page);
     _bookmarkList.removeWhere((p) => p == page);
-    state = state.copyWith(
-      visibleIconBookmark: false,
-      isBookmarkChanged: true,
-    );
+    state = state.copyWith(visibleIconBookmark: false, isBookmarkChanged: true);
   }
 
   Future<void> _toggleBookmark({required int page, String? surahName}) async {
     try {
       // ignore: unused_local_variable
-      Future<HttpResponse<CreateBookmarkResponse>> _ =
-          _bookmarkApi.createBookmark(
-        request: CreateBookmarkRequest(
-          surahId: surahNameToSurahNumberMap[surahName],
-          page: page,
-        ),
-      );
+      Future<HttpResponse<CreateBookmarkResponse>> _ = _bookmarkApi
+          .createBookmark(
+            request: CreateBookmarkRequest(
+              surahId: surahNameToSurahNumberMap[surahName],
+              page: page,
+            ),
+          );
     } catch (error, stackTrace) {
       FirebaseCrashlytics.instance.recordError(
         error,
@@ -144,12 +133,14 @@ class SuratPageBookmarkNotifier extends _$SuratPageBookmarkNotifier {
     required int ayahID,
     required int page,
   }) async {
-    await _db.saveFavoriteAyahs(FavoriteAyahs(
-      surahId: surahNumber,
-      page: page,
-      ayahSurah: ayahNumber,
-      ayahHashCode: ayahID,
-    ));
+    await _db.saveFavoriteAyahs(
+      FavoriteAyahs(
+        surahId: surahNumber,
+        page: page,
+        ayahSurah: ayahNumber,
+        ayahHashCode: ayahID,
+      ),
+    );
     _favoriteAyahList.add(ayahID);
   }
 }

@@ -33,8 +33,9 @@ class _OnBoardingWidgetState extends State<OnBoardingWidget> {
   void initSharedPreferences() async {
     await sharedPreferences.init();
     setState(() {
-      isVisible =
-          !sharedPreferences.getIsAlreadyOnBoarding(widget.onBoardingKey);
+      isVisible = !sharedPreferences.getIsAlreadyOnBoarding(
+        widget.onBoardingKey,
+      );
     });
   }
 
@@ -69,8 +70,9 @@ class _OnBoardingWidgetState extends State<OnBoardingWidget> {
                       setState(() {
                         isVisible = false;
                       });
-                      sharedPreferences
-                          .setAlreadyOnBoarding(widget.onBoardingKey);
+                      sharedPreferences.setAlreadyOnBoarding(
+                        widget.onBoardingKey,
+                      );
 
                       return;
                     }

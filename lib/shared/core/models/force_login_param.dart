@@ -4,10 +4,7 @@ part 'force_login_param.g.dart';
 
 @JsonSerializable()
 class ForceLoginParam {
-  ForceLoginParam({
-    this.nextPath,
-    this.arguments,
-  });
+  ForceLoginParam({this.nextPath, this.arguments});
 
   final String? nextPath;
   final Map<String, dynamic>? arguments;

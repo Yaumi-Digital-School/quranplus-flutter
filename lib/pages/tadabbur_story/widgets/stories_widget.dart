@@ -1,8 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/tadabbur.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class StoriesWidget extends StatefulWidget {
   const StoriesWidget({
@@ -41,9 +41,7 @@ class _StoriesWidgetState extends State<StoriesWidget> {
 
     content = widget.contentInfo.content;
 
-    _pageController = PageController(
-      initialPage: _currentIndex,
-    );
+    _pageController = PageController(initialPage: _currentIndex);
   }
 
   @override
@@ -61,11 +59,7 @@ class _StoriesWidgetState extends State<StoriesWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(
-              top: 12,
-              right: 24,
-              left: 24,
-            ),
+            padding: const EdgeInsets.only(top: 12, right: 24, left: 24),
             child: Column(
               children: [
                 Row(
@@ -78,10 +72,9 @@ class _StoriesWidgetState extends State<StoriesWidget> {
                             children: [
                               Text(
                                 "Ayah ${content.ayahNumber}",
-                                style: QPTextStyle.getButton3Medium(context)
-                                    .copyWith(
-                                  color: QPColors.blackSoft,
-                                ),
+                                style: QPTextStyle.getButton3Medium(
+                                  context,
+                                ).copyWith(color: QPColors.blackSoft),
                               ),
                               const SizedBox(width: 6),
                               Container(
@@ -97,19 +90,16 @@ class _StoriesWidgetState extends State<StoriesWidget> {
                                 content.surahInfo?.surahName ?? '',
                                 style: QPTextStyle.getButton3Medium(
                                   context,
-                                ).copyWith(
-                                  color: QPColors.blackSoft,
-                                ),
+                                ).copyWith(color: QPColors.blackSoft),
                               ),
                             ],
                           ),
                           const SizedBox(height: 4),
                           Text(
                             content.title ?? '',
-                            style: QPTextStyle.getButton1SemiBold(context)
-                                .copyWith(
-                              color: QPColors.blackHeavy,
-                            ),
+                            style: QPTextStyle.getButton1SemiBold(
+                              context,
+                            ).copyWith(color: QPColors.blackHeavy),
                           ),
                         ],
                       ),
@@ -153,8 +143,9 @@ class _StoriesWidgetState extends State<StoriesWidget> {
                                   ),
                                 )
                               : null,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(8)),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(8),
+                          ),
                         ),
                         child: Container(
                           margin: const EdgeInsets.all(1),
@@ -163,8 +154,9 @@ class _StoriesWidgetState extends State<StoriesWidget> {
                             color: index < _currentIndex
                                 ? QPColors.brandFair
                                 : QPColors.whiteRoot,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(8)),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(8),
+                            ),
                           ),
                         ),
                       ),
@@ -189,9 +181,7 @@ class _StoriesWidgetState extends State<StoriesWidget> {
                       CachedNetworkImage(
                         width: MediaQuery.of(context).size.width,
                         progressIndicatorBuilder: (context, url, progress) =>
-                            const Center(
-                          child: CircularProgressIndicator(),
-                        ),
+                            const Center(child: CircularProgressIndicator()),
                         imageUrl: currentStory.content,
                       ),
                     ],

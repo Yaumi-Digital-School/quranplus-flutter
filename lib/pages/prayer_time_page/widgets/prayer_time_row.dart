@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qurantafsir_flutter/shared/constants/prayer_times.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/prayer_times_notifier.dart';
 
 class PrayerTimeRow extends ConsumerWidget {
@@ -11,8 +12,9 @@ class PrayerTimeRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final prayerTimes =
-        ref.watch(prayerTimeProvider.select((s) => s.prayerTimes));
+    final prayerTimes = ref.watch(
+      prayerTimeProvider.select((s) => s.prayerTimes),
+    );
 
     final formatter = PrayerTimeState(prayerTimes: prayerTimes);
 
@@ -27,11 +29,9 @@ class PrayerTimeRow extends ConsumerWidget {
                   width: 24,
                   height: 24,
                   decoration: BoxDecoration(
-                    color: QPColors.getColorBasedTheme(
-                      dark: QPColors.darkModeFair,
+                    color: context.qpColors.resolve(
+                      context.qpColors.surface20,
                       light: QPColors.brandRoot,
-                      brown: QPColors.brownModeHeavy,
-                      context: context,
                     ),
                     shape: BoxShape.circle,
                   ),
@@ -50,11 +50,10 @@ class PrayerTimeRow extends ConsumerWidget {
                 Text(
                   prayerTime.name,
                   style: QPTextStyle.baseTextStyle.copyWith(
-                    color: QPColors.getColorBasedTheme(
-                      dark: QPColors.whiteRoot,
+                    color: context.qpColors.resolve(
+                      context.qpColors.brand100,
                       light: QPColors.blackMassive,
-                      brown: QPColors.brownModeMassive,
-                      context: context,
+                      dark: QPColors.whiteRoot,
                     ),
                   ),
                 ),
@@ -62,11 +61,10 @@ class PrayerTimeRow extends ConsumerWidget {
                 Text(
                   formatter.getPrayerTimesFormatted(prayerTime),
                   style: QPTextStyle.baseTextStyle.copyWith(
-                    color: QPColors.getColorBasedTheme(
-                      dark: QPColors.whiteRoot,
+                    color: context.qpColors.resolve(
+                      context.qpColors.brand100,
                       light: QPColors.blackMassive,
-                      brown: QPColors.brownModeMassive,
-                      context: context,
+                      dark: QPColors.whiteRoot,
                     ),
                   ),
                 ),

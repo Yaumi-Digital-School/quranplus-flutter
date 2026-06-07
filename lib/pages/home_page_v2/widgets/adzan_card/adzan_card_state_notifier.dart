@@ -9,17 +9,12 @@ class AdzanState {
   final DateTime? date;
   final String? cityName;
 
-  const AdzanState(
-    this.prayerTimesList,
-    this.date,
-    this.cityName,
-  );
+  const AdzanState(this.prayerTimesList, this.date, this.cityName);
 }
 
 @riverpod
 AdzanState adzanCard(Ref ref) {
-  final PrayerTimeState prayerTimeState =
-      ref.watch(prayerTimeProvider);
+  final PrayerTimeState prayerTimeState = ref.watch(prayerTimeProvider);
   final String? cityName = prayerTimeState.cityName;
   final DateTime now = DateTime.now();
 

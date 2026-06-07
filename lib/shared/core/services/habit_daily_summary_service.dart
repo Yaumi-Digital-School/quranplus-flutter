@@ -27,8 +27,9 @@ class HabitDailySummaryService {
   }
 
   Future<HabitSyncRequest> _getLocalDataRequest() async {
-    final resultHabitDailySummaries =
-        await _db.getLocalDbToSync(sharedPreferenceService);
+    final resultHabitDailySummaries = await _db.getLocalDbToSync(
+      sharedPreferenceService,
+    );
     final lastSync = sharedPreferenceService.getLastSync();
 
     return HabitSyncRequest(
@@ -37,15 +38,13 @@ class HabitDailySummaryService {
     );
   }
 
-  Future<void> syncHabit({
-    ConnectivityStatus? connectivityStatus,
-  }) async {
+  Future<void> syncHabit({ConnectivityStatus? connectivityStatus}) async {
     try {
       final HabitSyncRequest request = await _getLocalDataRequest();
 
       if (connectivityStatus == ConnectivityStatus.isDisconnected) {
-        final habitNeedToSyncTimer =
-            sharedPreferenceService.getHabitNeedToSyncTimer();
+        final habitNeedToSyncTimer = sharedPreferenceService
+            .getHabitNeedToSyncTimer();
         if (habitNeedToSyncTimer == "" && request.dailySummaries.isNotEmpty) {
           await sharedPreferenceService.setHabitNeedToSyncTimer(DateTime.now());
         }
@@ -53,10 +52,8 @@ class HabitDailySummaryService {
         return;
       }
 
-      final HttpResponse<List<HabitSyncResponseItem>> response =
-          await _habitApi.syncHabit(
-        request: request,
-      );
+      final HttpResponse<List<HabitSyncResponseItem>> response = await _habitApi
+          .syncHabit(request: request);
 
       if (response.response.statusCode != 200) {
         return;
@@ -70,9 +67,7 @@ class HabitDailySummaryService {
         return;
       }
 
-      await _db.upsertHabitDailySummaryOnSync(
-        response: response.data,
-      );
+      await _db.upsertHabitDailySummaryOnSync(response: response.data);
     } catch (error, stackTrace) {
       FirebaseCrashlytics.instance.recordError(
         error,
@@ -90,8 +85,9 @@ class HabitDailySummaryService {
 
       final currentTime = DateTime.now();
       final habitNeedToSyncTime = DateTime.parse(habitNeedToSync);
-      final differenceInSeconds =
-          currentTime.difference(habitNeedToSyncTime).inSeconds;
+      final differenceInSeconds = currentTime
+          .difference(habitNeedToSyncTime)
+          .inSeconds;
 
       if (differenceInSeconds > threeHourInSeconds) {
         return true;

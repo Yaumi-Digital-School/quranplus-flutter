@@ -107,8 +107,7 @@ class SuratPageContentNotifier extends _$SuratPageContentNotifier {
 
   Future<void> _generateBaseTafsirs() async {
     List<dynamic> map = await json.decode(
-      await rootBundle
-          .loadString('data/quran_tafsirs/indonesia_kemenag.json'),
+      await rootBundle.loadString('data/quran_tafsirs/indonesia_kemenag.json'),
     );
     _tafsirs = map
         .map((e) => (e as List).map((e) => (e as String)).toList())
@@ -116,13 +115,14 @@ class SuratPageContentNotifier extends _$SuratPageContentNotifier {
   }
 
   Future<void> setIsWithTranslations(bool value) async {
-    final settings =
-        state.readingSettings!.copyWith(isWithTranslations: value);
+    final settings = state.readingSettings!.copyWith(isWithTranslations: value);
     if (state.translations == null || state.translations!.isEmpty) {
       await _generateTranslations();
     }
-    state =
-        state.copyWith(readingSettings: settings, translations: _translations);
+    state = state.copyWith(
+      readingSettings: settings,
+      translations: _translations,
+    );
     _sharedPref.setReadingSettings(settings);
   }
 
@@ -211,11 +211,11 @@ class SuratPageContentNotifier extends _$SuratPageContentNotifier {
   }
 
   void setIsInFullPage(bool isInFullPage) {
-    final settings =
-        state.readingSettings!.copyWith(isInFullPage: isInFullPage);
+    final settings = state.readingSettings!.copyWith(
+      isInFullPage: isInFullPage,
+    );
     state = state.copyWith(readingSettings: settings);
     _sharedPref.setReadingSettings(settings);
     ref.read(suratPageNavigationProvider.notifier).recreatePageController();
   }
-
 }

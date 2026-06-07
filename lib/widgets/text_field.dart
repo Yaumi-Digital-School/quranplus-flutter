@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 
 class InputTotalPagesTextField extends StatelessWidget {
@@ -32,10 +33,7 @@ class InputTotalPagesTextField extends StatelessWidget {
           floatingLabelBehavior: FloatingLabelBehavior.never,
           contentPadding: EdgeInsets.zero,
           label: Center(
-            child: Text(
-              "0",
-              style: buttonMedium3.copyWith(color: neutral400),
-            ),
+            child: Text("0", style: buttonMedium3.copyWith(color: neutral400)),
           ),
           filled: true,
           fillColor: Colors.white,
@@ -80,10 +78,7 @@ class TextFieldWithDropdown extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (label != null)
-          _FieldLabel(
-            label: label!,
-          ),
+        if (label != null) _FieldLabel(label: label!),
         // Autocomplete(optionsBuilder: optionsBuilder),
         Autocomplete<String>(
           optionsBuilder: (TextEditingValue textEditingValue) {
@@ -92,9 +87,9 @@ class TextFieldWithDropdown extends StatelessWidget {
             }
 
             return options.where((String option) {
-              return option
-                  .toLowerCase()
-                  .contains(textEditingValue.text.toLowerCase());
+              return option.toLowerCase().contains(
+                textEditingValue.text.toLowerCase(),
+              );
             });
           },
           optionsViewBuilder: (_, onSelected, options) {
@@ -103,8 +98,8 @@ class TextFieldWithDropdown extends StatelessWidget {
             final double textFieldWidth = textFieldBox.size.width;
             final int currOptionsInContainer =
                 (options.length >= maxOptionsInContainer)
-                    ? maxOptionsInContainer
-                    : options.length;
+                ? maxOptionsInContainer
+                : options.length;
             final double maxContainerHeight =
                 (currOptionsInContainer * 28) + 14;
 
@@ -118,9 +113,7 @@ class TextFieldWithDropdown extends StatelessWidget {
                   // width: 200,
                   width: textFieldWidth,
                   child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
                     itemCount: options.length,
                     itemBuilder: (BuildContext context, int index) {
                       final String option = options.elementAt(index);
@@ -131,9 +124,7 @@ class TextFieldWithDropdown extends StatelessWidget {
                           onSelected(option);
                         },
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 8,
-                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 8),
                           child: Text(
                             option,
                             style: QPTextStyle.getSubHeading4SemiBold(context),
@@ -146,43 +137,40 @@ class TextFieldWithDropdown extends StatelessWidget {
               ),
             );
           },
-          fieldViewBuilder: (
-            BuildContext context,
-            TextEditingController textEditingController,
-            FocusNode focusNode,
-            Function onFieldSubmitted,
-          ) {
-            return SizedBox(
-              height: 40,
-              child: TextFormField(
-                key: textFieldKey,
-                controller: textEditingController,
-                focusNode: focusNode,
-                textAlign: TextAlign.center,
-                style: QPTextStyle.getSubHeading4SemiBold(context),
-                decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.all(8),
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: QPColors.blackSoft,
-                      width: 0.5,
+          fieldViewBuilder:
+              (
+                BuildContext context,
+                TextEditingController textEditingController,
+                FocusNode focusNode,
+                Function onFieldSubmitted,
+              ) {
+                return SizedBox(
+                  height: 40,
+                  child: TextFormField(
+                    key: textFieldKey,
+                    controller: textEditingController,
+                    focusNode: focusNode,
+                    textAlign: TextAlign.center,
+                    style: QPTextStyle.getSubHeading4SemiBold(context),
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.all(8),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: QPColors.blackSoft,
+                          width: 0.5,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      ),
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
                   ),
-                ),
-              ),
-            );
-          },
+                );
+              },
         ),
         if (additionalInformation != null) ...[
-          const SizedBox(
-            height: 4,
-          ),
+          const SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              additionalInformation!,
-            ],
+            children: [additionalInformation!],
           ),
         ],
       ],
@@ -191,9 +179,7 @@ class TextFieldWithDropdown extends StatelessWidget {
 }
 
 class _FieldLabel extends StatelessWidget {
-  const _FieldLabel({
-    required this.label,
-  });
+  const _FieldLabel({required this.label});
 
   final String label;
 
@@ -201,10 +187,7 @@ class _FieldLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
-      child: Text(
-        label,
-        style: QPTextStyle.getSubHeading4Medium(context),
-      ),
+      child: Text(label, style: QPTextStyle.getSubHeading4Medium(context)),
     );
   }
 }
@@ -239,12 +222,8 @@ class FormFieldWidget extends StatelessWidget {
           if (label != null)
             Column(
               children: [
-                _FieldLabel(
-                  label: label!,
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
+                _FieldLabel(label: label!),
+                const SizedBox(height: 8),
               ],
             ),
           TextFormField(
@@ -265,14 +244,13 @@ class FormFieldWidget extends StatelessWidget {
               ),
               hintText: hintTextForm,
               // Todo: check color based on theme
-              hintStyle: QPTextStyle.getSubHeading4Regular(context)
-                  .copyWith(color: QPColors.blackFair),
+              hintStyle: QPTextStyle.getSubHeading4Regular(
+                context,
+              ).copyWith(color: QPColors.blackFair),
               filled: true,
-              fillColor: QPColors.getColorBasedTheme(
-                dark: QPColors.darkModeMassive,
+              fillColor: context.qpColors.resolve(
+                context.qpColors.surface100,
                 light: QPColors.background,
-                brown: QPColors.brownModeRoot,
-                context: context,
               ),
               enabledBorder: const OutlineInputBorder(
                 borderSide: BorderSide(color: neutral500, width: 0.5),
@@ -289,14 +267,10 @@ class FormFieldWidget extends StatelessWidget {
             ),
           ),
           if (additionalInformation != null) ...[
-            const SizedBox(
-              height: 12,
-            ),
+            const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                additionalInformation!,
-              ],
+              children: [additionalInformation!],
             ),
           ],
         ],

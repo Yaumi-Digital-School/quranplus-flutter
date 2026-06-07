@@ -35,8 +35,9 @@ class HabitDailySummary {
       ),
       id: json[HabitDailySummaryTable.columnID],
       targetUpdatedTime: json[HabitDailySummaryTable.targetUpdatedTime],
-      createdAt:
-          createdAtString == null ? null : DateTime.parse(createdAtString),
+      createdAt: createdAtString == null
+          ? null
+          : DateTime.parse(createdAtString),
       updatedAt: updateAtString == null ? null : DateTime.parse(updateAtString),
     );
   }
@@ -56,9 +57,9 @@ class HabitDailySummary {
   }
 
   Map<String, dynamic> toJson() => {
-        HabitDailySummaryTable.target: target,
-        HabitDailySummaryTable.totalPages: totalPages,
-      };
+    HabitDailySummaryTable.target: target,
+    HabitDailySummaryTable.totalPages: totalPages,
+  };
 
   factory HabitDailySummary.fromMap(Map<String, dynamic> map) {
     return HabitDailySummary(

@@ -7,9 +7,7 @@ import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:store_redirect/store_redirect.dart';
 
 class ForceUpdateDialog extends StatelessWidget {
-  const ForceUpdateDialog({
-    super.key,
-  });
+  const ForceUpdateDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,27 +17,19 @@ class ForceUpdateDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(
-              ImagePath.forceUpdateIcon,
-            ),
-            const SizedBox(
-              height: 28,
-            ),
+            Image.asset(ImagePath.forceUpdateIcon),
+            const SizedBox(height: 28),
             Text(
               '📣 Update Required!',
               style: QPTextStyle.getSubHeading2SemiBold(context),
             ),
-            const SizedBox(
-              height: 8,
-            ),
+            const SizedBox(height: 8),
             Text(
               'Stay up-to-date with the latest\nfeatures and security updates.',
               textAlign: TextAlign.center,
               style: QPTextStyle.getBody3Medium(context),
             ),
-            const SizedBox(
-              height: 28,
-            ),
+            const SizedBox(height: 28),
             ButtonPrimary(
               label: 'Update',
               onTap: () {

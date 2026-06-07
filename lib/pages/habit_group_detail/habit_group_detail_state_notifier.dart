@@ -156,10 +156,12 @@ class HabitGroupDetailNotifier extends _$HabitGroupDetailNotifier {
   void onSelectUserSummary(int id, String date, bool isCurrentUser) async {
     try {
       state = state.copyWith(isFetchUserSummary: true);
-      final response = await ref.read(habitApiProvider).getUserSummary(
-        userId: id,
-        param: UserSummaryRequest(date: date),
-      );
+      final response = await ref
+          .read(habitApiProvider)
+          .getUserSummary(
+            userId: id,
+            param: UserSummaryRequest(date: date),
+          );
       state = state.copyWith(
         isFetchUserSummary: false,
         userSummaryResponse: response.data,
