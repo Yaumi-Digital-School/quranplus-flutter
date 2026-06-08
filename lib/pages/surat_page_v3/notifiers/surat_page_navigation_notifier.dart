@@ -14,9 +14,6 @@ class SuratPageNavigationNotifier extends _$SuratPageNavigationNotifier {
   int _currentSurahNumber = 0;
   final List<int> _firstPageSurahPointer = <int>[];
 
-  // Public mutable field used during full-page rendering build cycle
-  int separatorBuilderIndex = 0;
-
   List<int> get firstPageKeys => _firstPageSurahPointer;
 
   @override
@@ -77,10 +74,6 @@ class SuratPageNavigationNotifier extends _$SuratPageNavigationNotifier {
         visibleSuratName: surahNumberToSurahNameMap[surahNumber]!,
       );
     }
-  }
-
-  void resetSeparatorBuilderIndex() {
-    separatorBuilderIndex = 0;
   }
 
   void addFirstPagePointer(int value) => _firstPageSurahPointer.add(value);

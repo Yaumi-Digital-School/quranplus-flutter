@@ -155,6 +155,12 @@ class SuratPageHabitNotifier extends _$SuratPageHabitNotifier {
     state = state.copyWith(showMinimizedAudioPlayer: value);
   }
 
+  void setOnReadCTAVisible(bool value) {
+    if (state.isOnReadCTAVisible != value) {
+      state = state.copyWith(isOnReadCTAVisible: value);
+    }
+  }
+
   void stopRecitation() {
     _audioNotifier.stopAndResetAudioPlayer();
     setShowMinimizedAudioPlayer(false);

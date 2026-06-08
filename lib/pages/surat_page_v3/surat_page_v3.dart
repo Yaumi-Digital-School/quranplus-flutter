@@ -229,19 +229,20 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
     final Widget pages = contentState.readingSettings!.isInFullPage
         ? FullPagePagesView(
             orientation: orientation,
-            scrollController: scrollController,
             onTapToggleCTA: () {
-              habitNotifier.setShowMinimizedAudioPlayer(
-                !ref.read(suratPageHabitProvider).isOnReadCTAVisible,
-              );
+              final isVisible = ref
+                  .read(suratPageHabitProvider)
+                  .isOnReadCTAVisible;
+              habitNotifier.setOnReadCTAVisible(!isVisible);
             },
             onPageChanged: (pageIndex) {
+              final int pageValue = pageIndex + 1;
               navNotifier.updateOnPageChanged(pageIndex, contentState.pages!);
-              bookmarkNotifier.checkIsBookmarkExists(navState.currentPage);
-              habitNotifier.changePageOnRecording(navState.currentPage);
-              habitNotifier.setShowMinimizedAudioPlayer(
-                ref.read(suratPageHabitProvider).isOnReadCTAVisible,
-              );
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!mounted) return;
+                bookmarkNotifier.checkIsBookmarkExists(pageValue);
+                habitNotifier.changePageOnRecording(pageValue);
+              });
             },
           )
         : PerAyahPagesView(
@@ -250,12 +251,15 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
             startPageInIndex: widget.param.startPageInIndex,
             onPageChanged: (pageIndex) {
               final int pageValue = pageIndex + 1;
-              habitNotifier.changePageOnRecording(pageValue);
-              bookmarkNotifier.checkIsBookmarkExists(pageValue);
               navNotifier.updateCurrentPage(pageValue);
               navNotifier.updateVisibleJuz(
                 contentState.pages![pageIndex].verses[0].juzNumber,
               );
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!mounted) return;
+                habitNotifier.changePageOnRecording(pageValue);
+                bookmarkNotifier.checkIsBookmarkExists(pageValue);
+              });
             },
           );
 

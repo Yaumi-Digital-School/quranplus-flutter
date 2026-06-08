@@ -18,44 +18,50 @@ class FullPagePagesView extends ConsumerWidget {
   const FullPagePagesView({
     super.key,
     required this.orientation,
-    required this.scrollController,
     required this.onTapToggleCTA,
     required this.onPageChanged,
   });
 
   final Orientation orientation;
-  final AutoScrollController scrollController;
   final VoidCallback onTapToggleCTA;
   final void Function(int pageIndex) onPageChanged;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final navState = ref.watch(suratPageNavigationProvider);
+    final pageController = ref.watch(
+      suratPageNavigationProvider.select((s) => s.pageController),
+    );
     final contentState = ref.watch(suratPageContentProvider);
-    final navNotifier = ref.read(suratPageNavigationProvider.notifier);
 
-    List<Widget> allPages = <Widget>[];
-
-    for (int idx = 0; idx < contentState.pages!.length; idx++) {
-      allPages.add(
-        _buildPageInFullPage(
-          pageIndex: idx,
-          context: context,
-          contentState: contentState,
-          navNotifier: navNotifier,
-        ),
-      );
+    final Map<int, List<FullPageSeparator>> separatorsByPage = {};
+    for (final FullPageSeparator sep in contentState.fullPageSeparators ?? []) {
+      separatorsByPage.putIfAbsent(sep.page, () => []).add(sep);
     }
-
-    navNotifier.resetSeparatorBuilderIndex();
 
     return GestureDetector(
       onTap: onTapToggleCTA,
-      child: PageView(
-        reverse: true,
-        controller: navState.pageController,
-        onPageChanged: onPageChanged,
-        children: allPages,
+      child: NotificationListener<ScrollStartNotification>(
+        onNotification: (notification) {
+          if (notification.depth == 0) {
+            ref
+                .read(suratPageHabitProvider.notifier)
+                .setOnReadCTAVisible(false);
+          }
+          return false;
+        },
+        child: PageView.builder(
+          allowImplicitScrolling: true,
+          reverse: true,
+          controller: pageController,
+          onPageChanged: onPageChanged,
+          itemCount: contentState.pages!.length,
+          itemBuilder: (context, idx) => _buildPageInFullPage(
+            pageIndex: idx,
+            context: context,
+            contentState: contentState,
+            separatorsByPage: separatorsByPage,
+          ),
+        ),
       ),
     );
   }
@@ -64,7 +70,7 @@ class FullPagePagesView extends ConsumerWidget {
     required int pageIndex,
     required BuildContext context,
     required SuratPageContentState contentState,
-    required SuratPageNavigationNotifier navNotifier,
+    required Map<int, List<FullPageSeparator>> separatorsByPage,
   }) {
     final List<String> texts = List<String>.filled(15, '');
     final int page = pageIndex + 1;
@@ -75,21 +81,13 @@ class FullPagePagesView extends ConsumerWidget {
       }
     }
 
-    while (navNotifier.separatorBuilderIndex <
-            contentState.fullPageSeparators!.length &&
-        contentState
-                .fullPageSeparators![navNotifier.separatorBuilderIndex]
-                .page ==
-            page) {
-      final FullPageSeparator separator =
-          contentState.fullPageSeparators![navNotifier.separatorBuilderIndex];
+    for (final FullPageSeparator separator in separatorsByPage[page] ?? []) {
       if (!separator.bismillah) {
         texts[separator.line - 1] = separator.unicode!;
       }
-      navNotifier.separatorBuilderIndex++;
     }
 
-    List<Widget> textInWidgets = texts
+    final List<Widget> textInWidgets = texts
         .map(
           (String words) =>
               _buildFullPagePerLine(page: page, text: words, context: context),
@@ -100,8 +98,9 @@ class FullPagePagesView extends ConsumerWidget {
     final double topPadding = MediaQuery.of(context).size.height * 0.05;
 
     if (orientation == Orientation.landscape) {
+      // Each pre-built landscape page uses its own internal scroll controller
+      // to avoid attaching the shared AutoScrollController to multiple views.
       return SingleChildScrollView(
-        controller: scrollController,
         padding: const EdgeInsets.only(top: 40),
         child: Column(
           mainAxisSize: MainAxisSize.max,
@@ -181,6 +180,8 @@ class FullPagePagesView extends ConsumerWidget {
       );
     }
 
+    // Portrait, regular pages: Quran page fonts are sized to fit at 30 — plain
+    // Text avoids AutoSizeText's iterative layout measurement passes.
     return Expanded(
       child: AutoSizeText(
         text,
@@ -212,28 +213,26 @@ class PerAyahPagesView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final navState = ref.watch(suratPageNavigationProvider);
+    final pageController = ref.watch(
+      suratPageNavigationProvider.select((s) => s.pageController),
+    );
     final contentState = ref.watch(suratPageContentProvider);
     final habitState = ref.watch(suratPageHabitProvider);
 
-    List<Widget> allPages = <Widget>[];
-
-    for (int idx = 0; idx < contentState.pages!.length; idx++) {
-      allPages.add(
-        _buildPage(
-          quranPageObject: contentState.pages![idx],
-          pageNumberInQuran: idx + 1,
-          contentState: contentState,
-          habitState: habitState,
-        ),
-      );
-    }
-
-    return PageView(
+    // allowImplicitScrolling is intentionally NOT set here: the shared
+    // AutoScrollController cannot be attached to multiple ListViews
+    // simultaneously (one per pre-built adjacent page), which would crash.
+    return PageView.builder(
       reverse: true,
-      controller: navState.pageController,
+      controller: pageController,
       onPageChanged: onPageChanged,
-      children: allPages,
+      itemCount: contentState.pages!.length,
+      itemBuilder: (context, idx) => _buildPage(
+        quranPageObject: contentState.pages![idx],
+        pageNumberInQuran: idx + 1,
+        contentState: contentState,
+        habitState: habitState,
+      ),
     );
   }
 
@@ -243,10 +242,10 @@ class PerAyahPagesView extends ConsumerWidget {
     required SuratPageContentState contentState,
     required SuratPageHabitState habitState,
   }) {
-    List<Widget> ayahs = <Widget>[];
+    final List<Widget> ayahs = <Widget>[];
     for (int i = 0; i < quranPageObject.verses.length; i++) {
-      bool useDivider = i != quranPageObject.verses.length - 1;
-      Verse verse = quranPageObject.verses[i];
+      final bool useDivider = i != quranPageObject.verses.length - 1;
+      final Verse verse = quranPageObject.verses[i];
 
       ayahs.add(
         AyahItemWidget(
