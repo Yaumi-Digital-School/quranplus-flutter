@@ -15,6 +15,7 @@ import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/favorite_ayahs_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
+import 'package:qurantafsir_flutter/shared/core/services/mushaf_font_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/notification_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/prayer_times_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/remote_config_service/remote_config_service.dart';
@@ -69,6 +70,11 @@ class Madhub extends _$Madhub {
 
 final Provider<SharedPreferenceService> sharedPreferenceServiceProvider =
     Provider<SharedPreferenceService>((ref) => SharedPreferenceService());
+
+// Root-level so the loaded-font set survives the reader page being disposed
+// and reopened (the surat page notifiers are autoDispose).
+final Provider<MushafFontService> mushafFontServiceProvider =
+    Provider<MushafFontService>((ref) => MushafFontService());
 
 final Provider<BookmarkApi> bookmarkApiProvider = Provider<BookmarkApi>((ref) {
   final DioService dioService = ref.watch(dioServiceProvider);

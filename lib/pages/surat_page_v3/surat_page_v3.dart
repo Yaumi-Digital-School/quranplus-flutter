@@ -16,6 +16,7 @@ import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.da
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
+import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_widget.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_minimized_info.dart';
@@ -91,9 +92,15 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
     navNotifier.init(widget.param.startPageInIndex);
     habitNotifier.init(scrollController);
 
+    final fontService = ref.read(mushafFontServiceProvider);
+
     await Future.wait([
       contentNotifier.load(widget.param.startPageInIndex),
       bookmarkNotifier.load(),
+      // Warm the opening page's fonts (and neighbors) while the JSON pages
+      // load, so the first frame doesn't hit the lazy synchronous font parse.
+      fontService.preloadAroundPage(widget.param.startPageInIndex + 1),
+      fontService.preloadSurahNameFont(),
     ]);
 
     if (!mounted) return;
@@ -248,6 +255,11 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                 navNotifier.updateOnPageChanged(pageIndex, contentState.pages!);
                 bookmarkNotifier.checkIsBookmarkExists(pageValue);
                 habitNotifier.changePageOnRecording(pageValue);
+                unawaited(
+                  ref
+                      .read(mushafFontServiceProvider)
+                      .preloadAroundPage(pageValue),
+                );
               });
             },
           )
@@ -265,6 +277,11 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
                 if (!mounted) return;
                 habitNotifier.changePageOnRecording(pageValue);
                 bookmarkNotifier.checkIsBookmarkExists(pageValue);
+                unawaited(
+                  ref
+                      .read(mushafFontServiceProvider)
+                      .preloadAroundPage(pageValue),
+                );
               });
             },
           );
