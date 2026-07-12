@@ -132,16 +132,18 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
 
   @override
   Widget build(BuildContext context) {
-    final navState = ref.watch(suratPageNavigationProvider);
+    // Only watch isLoading so that page changes (currentPage, visibleSuratName)
+    // do not trigger a full scaffold rebuild during the slide animation.
+    final bool isLoading = ref.watch(
+      suratPageNavigationProvider.select((s) => s.isLoading),
+    );
 
-    // Watch all providers to keep them alive during async initialization.
-    // Without these, auto-dispose providers get disposed before child
-    // ConsumerWidgets are built (since we return early during loading).
+    // Keep providers alive during async init without causing extra rebuilds.
+    ref.listen(suratPageBookmarkProvider, (_, __) {});
     ref.watch(suratPageContentProvider);
-    ref.watch(suratPageBookmarkProvider);
     ref.watch(suratPageHabitProvider);
 
-    if (navState.isLoading) {
+    if (isLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
@@ -220,7 +222,11 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
   Widget _buildBody(BuildContext context) {
     final contentState = ref.watch(suratPageContentProvider);
     final habitState = ref.watch(suratPageHabitProvider);
-    final navState = ref.watch(suratPageNavigationProvider);
+    // ref.read (not watch): navState changes (currentPage, visibleSuratName)
+    // must not trigger body rebuilds during animation. The CTA is hidden
+    // during swipes, so a slightly-stale surah name is safe. When the CTA is
+    // re-shown (habit state change → rebuild), ref.read returns the current value.
+    final navState = ref.read(suratPageNavigationProvider);
     final habitNotifier = ref.read(suratPageHabitProvider.notifier);
     final navNotifier = ref.read(suratPageNavigationProvider.notifier);
     final bookmarkNotifier = ref.read(suratPageBookmarkProvider.notifier);
@@ -237,9 +243,9 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
             },
             onPageChanged: (pageIndex) {
               final int pageValue = pageIndex + 1;
-              navNotifier.updateOnPageChanged(pageIndex, contentState.pages!);
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (!mounted) return;
+                navNotifier.updateOnPageChanged(pageIndex, contentState.pages!);
                 bookmarkNotifier.checkIsBookmarkExists(pageValue);
                 habitNotifier.changePageOnRecording(pageValue);
               });

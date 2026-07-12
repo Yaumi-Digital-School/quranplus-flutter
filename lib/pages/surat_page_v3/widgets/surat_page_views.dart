@@ -43,9 +43,11 @@ class FullPagePagesView extends ConsumerWidget {
       child: NotificationListener<ScrollStartNotification>(
         onNotification: (notification) {
           if (notification.depth == 0) {
-            ref
-                .read(suratPageHabitProvider.notifier)
-                .setOnReadCTAVisible(false);
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ref
+                  .read(suratPageHabitProvider.notifier)
+                  .setOnReadCTAVisible(false);
+            });
           }
           return false;
         },
@@ -180,19 +182,91 @@ class FullPagePagesView extends ConsumerWidget {
       );
     }
 
-    // Portrait, regular pages: Quran page fonts are sized to fit at 30 — plain
-    // Text avoids AutoSizeText's iterative layout measurement passes.
+    // Portrait, regular pages (the common reading path). Uses a cached,
+    // pre-fitted plain Text instead of AutoSizeText: the fitted font size is
+    // computed once per (font, width, line) and reused, removing AutoSizeText's
+    // repeated multi-pass Arabic text shaping on every build/layout — the main
+    // source of the fullpage swipe lag.
     return Expanded(
-      child: AutoSizeText(
-        text,
-        style: TextStyle(
-          height: 1.5,
-          fontFamily: fontFamily,
-          fontSize: 30,
-          color: Theme.of(context).colorScheme.primary,
-        ),
+      child: _FittedMushafLine(
+        text: text,
+        fontFamily: fontFamily,
+        color: Theme.of(context).colorScheme.primary,
       ),
     );
+  }
+}
+
+/// Renders one mushaf line as plain [Text], sized so a too-wide line shrinks to
+/// fill the available width (matching the previous AutoSizeText behaviour).
+///
+/// The fitted size is derived from a single [TextPainter] measurement and
+/// cached, so rebuilds — including the next page built mid-swipe by
+/// `allowImplicitScrolling` — reuse it instead of re-shaping the text.
+class _FittedMushafLine extends StatelessWidget {
+  const _FittedMushafLine({
+    required this.text,
+    required this.fontFamily,
+    required this.color,
+  });
+
+  final String text;
+  final String fontFamily;
+  final Color color;
+
+  static const double _baseFontSize = 30;
+
+  /// Fitted font sizes keyed by font family + rounded available width + line.
+  static final Map<String, double> _sizeCache = <String, double>{};
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double maxWidth = constraints.maxWidth;
+        final String cacheKey = '$fontFamily|${maxWidth.round()}|$text';
+        final double fontSize = _sizeCache.putIfAbsent(
+          cacheKey,
+          () => _computeFittedSize(maxWidth),
+        );
+
+        return Text(
+          text,
+          maxLines: 1,
+          style: TextStyle(
+            height: 1.5,
+            fontFamily: fontFamily,
+            fontSize: fontSize,
+            color: color,
+          ),
+        );
+      },
+    );
+  }
+
+  double _computeFittedSize(double maxWidth) {
+    if (maxWidth <= 0 || text.isEmpty) return _baseFontSize;
+
+    final TextPainter painter = TextPainter(
+      text: TextSpan(
+        text: text,
+        style: const TextStyle(
+          height: 1.5,
+        ).copyWith(fontFamily: fontFamily, fontSize: _baseFontSize),
+      ),
+      textDirection: TextDirection.rtl,
+      maxLines: 1,
+    )..layout();
+
+    final double intrinsicWidth = painter.width;
+    painter.dispose();
+
+    // Lines that already fit keep the design size; wider lines shrink to fill
+    // the width. Glyph width scales ~linearly with font size.
+    if (intrinsicWidth <= 0 || intrinsicWidth <= maxWidth) {
+      return _baseFontSize;
+    }
+    return _baseFontSize * maxWidth / intrinsicWidth;
   }
 }
 
