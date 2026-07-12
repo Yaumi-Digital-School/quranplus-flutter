@@ -145,10 +145,12 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
       suratPageNavigationProvider.select((s) => s.isLoading),
     );
 
-    // Keep providers alive during async init without causing extra rebuilds.
+    // Keep providers alive during async init without causing extra rebuilds
+    // (ref.watch would rebuild the whole Scaffold on every state change; the
+    // spots that need these states watch them with narrow selects).
     ref.listen(suratPageBookmarkProvider, (_, __) {});
-    ref.watch(suratPageContentProvider);
-    ref.watch(suratPageHabitProvider);
+    ref.listen(suratPageContentProvider, (_, __) {});
+    ref.listen(suratPageHabitProvider, (_, __) {});
 
     if (isLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -228,12 +230,6 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
 
   Widget _buildBody(BuildContext context) {
     final contentState = ref.watch(suratPageContentProvider);
-    final habitState = ref.watch(suratPageHabitProvider);
-    // ref.read (not watch): navState changes (currentPage, visibleSuratName)
-    // must not trigger body rebuilds during animation. The CTA is hidden
-    // during swipes, so a slightly-stale surah name is safe. When the CTA is
-    // re-shown (habit state change → rebuild), ref.read returns the current value.
-    final navState = ref.read(suratPageNavigationProvider);
     final habitNotifier = ref.read(suratPageHabitProvider.notifier);
     final navNotifier = ref.read(suratPageNavigationProvider.notifier);
     final bookmarkNotifier = ref.read(suratPageBookmarkProvider.notifier);
@@ -288,107 +284,135 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
 
     final double bottomPadding = MediaQuery.of(context).size.height * 0.025;
 
+    // The overlays are self-rebuilding Consumers so gesture-time habit changes
+    // (CTA hide on swipe start, recording progress on page settle) repaint
+    // only these small widgets and never reconstruct the PageView above.
     return Stack(
       children: [
         pages,
-        if (habitState.isRecording)
-          Positioned(
-            child: PageTrackerBar(
-              onTap: () => _buildTrackerSubmissionDialog(habitNotifier),
-            ),
-          ),
-        if (habitState.isOnReadCTAVisible)
-          Positioned(
-            bottom: bottomPadding,
-            width: MediaQuery.of(context).size.width - 16,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Builder(
-                        builder: (context) {
-                          final surahNumber =
-                              surahNameToSurahNumberMap[navState
-                                  .visibleSuratName] ??
-                              0;
-                          if (contentState
-                                  .availableAyahTadabburs[surahNumber] !=
-                              null) {
-                            return ButtonBrandSoft(
-                              leftWidget: const Icon(
-                                Icons.menu_book,
-                                size: 12,
-                                color: QPColors.brandFair,
-                              ),
-                              title: 'Tadabbur ${navState.visibleSuratName}',
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  RoutePaths.routeReadTadabbur,
-                                  arguments: ReadTadabburParam(
-                                    surahName: navState.visibleSuratName,
-                                    surahId: surahNumber,
-                                    isFromSurahPage: true,
-                                  ),
-                                );
-                              },
-                            );
-                          }
-                          return const SizedBox.shrink();
-                        },
-                      ),
-                      if (!habitState.isRecording)
-                        ButtonPrimary(
-                          label: 'Start Tracking',
-                          size: ButtonSize.small,
-                          onTap: () async {
-                            if (!habitNotifier.isLoggedIn) {
-                              final dynamic res = await Navigator.pushNamed(
+        Consumer(
+          builder: (context, ref, _) {
+            final bool isRecording = ref.watch(
+              suratPageHabitProvider.select((s) => s.isRecording),
+            );
+            if (!isRecording) return const SizedBox.shrink();
+
+            return Positioned(
+              child: PageTrackerBar(
+                onTap: () => _buildTrackerSubmissionDialog(habitNotifier),
+              ),
+            );
+          },
+        ),
+        Consumer(
+          builder: (context, ref, _) {
+            final (
+              bool isCTAVisible,
+              bool isRecording,
+              bool showMinimizedAudioPlayer,
+            ) = ref.watch(
+              suratPageHabitProvider.select(
+                (s) => (
+                  s.isOnReadCTAVisible,
+                  s.isRecording,
+                  s.showMinimizedAudioPlayer,
+                ),
+              ),
+            );
+            if (!isCTAVisible) return const SizedBox.shrink();
+
+            final String visibleSuratName = ref.watch(
+              suratPageNavigationProvider.select((s) => s.visibleSuratName),
+            );
+            final availableAyahTadabburs = ref.watch(
+              suratPageContentProvider.select((s) => s.availableAyahTadabburs),
+            );
+            final int surahNumber =
+                surahNameToSurahNumberMap[visibleSuratName] ?? 0;
+
+            return Positioned(
+              bottom: bottomPadding,
+              width: MediaQuery.of(context).size.width - 16,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        if (availableAyahTadabburs[surahNumber] != null)
+                          ButtonBrandSoft(
+                            leftWidget: const Icon(
+                              Icons.menu_book,
+                              size: 12,
+                              color: QPColors.brandFair,
+                            ),
+                            title: 'Tadabbur $visibleSuratName',
+                            onTap: () {
+                              Navigator.pushNamed(
                                 context,
-                                RoutePaths.routeLogin,
-                                arguments: RegistrationAndLoginPageParam(
-                                  shouldNavigateTabToHome: false,
+                                RoutePaths.routeReadTadabbur,
+                                arguments: ReadTadabburParam(
+                                  surahName: visibleSuratName,
+                                  surahId: surahNumber,
+                                  isFromSurahPage: true,
                                 ),
                               );
+                            },
+                          )
+                        else
+                          const SizedBox.shrink(),
+                        if (!isRecording)
+                          ButtonPrimary(
+                            label: 'Start Tracking',
+                            size: ButtonSize.small,
+                            onTap: () async {
+                              if (!habitNotifier.isLoggedIn) {
+                                final dynamic res = await Navigator.pushNamed(
+                                  context,
+                                  RoutePaths.routeLogin,
+                                  arguments: RegistrationAndLoginPageParam(
+                                    shouldNavigateTabToHome: false,
+                                  ),
+                                );
 
-                              if (res is bool && res) {
-                                setState(() {});
-                                await _initAllNotifiers();
-                                Future.delayed(Duration.zero, () {
-                                  if (!context.mounted) return;
-                                  _startTracking(
-                                    context,
-                                    ref.read(suratPageHabitProvider.notifier),
-                                  );
-                                });
+                                if (res is bool && res) {
+                                  setState(() {});
+                                  await _initAllNotifiers();
+                                  Future.delayed(Duration.zero, () {
+                                    if (!context.mounted) return;
+                                    _startTracking(
+                                      context,
+                                      ref.read(suratPageHabitProvider.notifier),
+                                    );
+                                  });
+                                }
+                                return;
                               }
-                              return;
-                            }
 
-                            _startTracking(context, habitNotifier);
-                          },
-                        ),
-                    ],
-                  ),
-                  if (habitState.showMinimizedAudioPlayer) ...<Widget>[
-                    const SizedBox(height: 20),
-                    AudioMinimizedInfo(
-                      onTapContainer: () {
-                        GeneralBottomSheet.showBaseBottomSheet(
-                          context: context,
-                          widgetChild: const AudioBottomSheetWidget(),
-                        );
-                      },
-                      onClose: () => habitNotifier.stopRecitation(),
+                              _startTracking(context, habitNotifier);
+                            },
+                          ),
+                      ],
                     ),
+                    if (showMinimizedAudioPlayer) ...<Widget>[
+                      const SizedBox(height: 20),
+                      AudioMinimizedInfo(
+                        onTapContainer: () {
+                          GeneralBottomSheet.showBaseBottomSheet(
+                            context: context,
+                            widgetChild: const AudioBottomSheetWidget(),
+                          );
+                        },
+                        onClose: () => habitNotifier.stopRecitation(),
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
+        ),
       ],
     );
   }

@@ -5,7 +5,6 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_con
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_habit_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_navigation_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_content_state.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_habit_state.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/basmalah_widget.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -273,7 +272,9 @@ class PerAyahPagesView extends ConsumerWidget {
       suratPageNavigationProvider.select((s) => s.pageController),
     );
     final contentState = ref.watch(suratPageContentProvider);
-    final habitState = ref.watch(suratPageHabitProvider);
+    final bool isRecording = ref.watch(
+      suratPageHabitProvider.select((s) => s.isRecording),
+    );
 
     // allowImplicitScrolling is intentionally NOT set here: the shared
     // AutoScrollController cannot be attached to multiple ListViews
@@ -287,7 +288,7 @@ class PerAyahPagesView extends ConsumerWidget {
         quranPageObject: contentState.pages![idx],
         pageNumberInQuran: idx + 1,
         contentState: contentState,
-        habitState: habitState,
+        isRecording: isRecording,
       ),
     );
   }
@@ -296,7 +297,7 @@ class PerAyahPagesView extends ConsumerWidget {
     required QuranPage quranPageObject,
     required int pageNumberInQuran,
     required SuratPageContentState contentState,
-    required SuratPageHabitState habitState,
+    required bool isRecording,
   }) {
     final List<Widget> ayahs = <Widget>[];
     for (int i = 0; i < quranPageObject.verses.length; i++) {
@@ -327,9 +328,7 @@ class PerAyahPagesView extends ConsumerWidget {
     }
 
     return ListView(
-      padding: habitState.isRecording
-          ? const EdgeInsets.only(top: 20)
-          : EdgeInsets.zero,
+      padding: isRecording ? const EdgeInsets.only(top: 20) : EdgeInsets.zero,
       controller: scrollController,
       key: PageStorageKey('page$pageNumberInQuran'),
       children: ayahs,
