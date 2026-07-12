@@ -7,7 +7,6 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_nav
 import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_content_state.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_habit_state.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/basmalah_widget.dart';
-import 'package:qurantafsir_flutter/shared/core/models/full_page_separator.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -33,11 +32,6 @@ class FullPagePagesView extends ConsumerWidget {
     );
     final contentState = ref.watch(suratPageContentProvider);
 
-    final Map<int, List<FullPageSeparator>> separatorsByPage = {};
-    for (final FullPageSeparator sep in contentState.fullPageSeparators ?? []) {
-      separatorsByPage.putIfAbsent(sep.page, () => []).add(sep);
-    }
-
     return GestureDetector(
       onTap: onTapToggleCTA,
       child: NotificationListener<ScrollStartNotification>(
@@ -61,7 +55,6 @@ class FullPagePagesView extends ConsumerWidget {
             pageIndex: idx,
             context: context,
             contentState: contentState,
-            separatorsByPage: separatorsByPage,
           ),
         ),
       ),
@@ -72,22 +65,11 @@ class FullPagePagesView extends ConsumerWidget {
     required int pageIndex,
     required BuildContext context,
     required SuratPageContentState contentState,
-    required Map<int, List<FullPageSeparator>> separatorsByPage,
   }) {
-    final List<String> texts = List<String>.filled(15, '');
     final int page = pageIndex + 1;
-
-    for (final Verse verse in contentState.pages![pageIndex].verses) {
-      for (final Word word in verse.words) {
-        texts[word.lineNumber - 1] += word.code;
-      }
-    }
-
-    for (final FullPageSeparator separator in separatorsByPage[page] ?? []) {
-      if (!separator.bismillah) {
-        texts[separator.line - 1] = separator.unicode!;
-      }
-    }
+    // Precomputed on load (separator lines already applied), so building a
+    // page — including the neighbor pre-built mid-swipe — is a list lookup.
+    final List<String> texts = contentState.fullPageLineTexts![pageIndex];
 
     final List<Widget> textInWidgets = texts
         .map(

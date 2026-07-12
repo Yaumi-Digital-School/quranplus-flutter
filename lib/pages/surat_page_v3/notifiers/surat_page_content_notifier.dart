@@ -39,16 +39,61 @@ class SuratPageContentNotifier extends _$SuratPageContentNotifier {
     if (settings.isWithTafsirs) await _generateBaseTafsirs();
 
     final separators = await _getFullPageSeparators();
+    final separatorsByPage = _groupSeparatorsByPage(separators);
 
     state = SuratPageContentState(
       pages: pages,
       fullPageSeparators: separators,
+      fullPageLineTexts: _buildFullPageLineTexts(pages, separatorsByPage),
+      separatorsByPage: separatorsByPage,
       translations: _translations,
       tafsirs: _tafsirs,
       latins: _latins,
       readingSettings: settings,
       availableAyahTadabburs: state.availableAyahTadabburs,
     );
+  }
+
+  Map<int, List<FullPageSeparator>> _groupSeparatorsByPage(
+    List<FullPageSeparator> separators,
+  ) {
+    final Map<int, List<FullPageSeparator>> byPage = {};
+    for (final FullPageSeparator separator in separators) {
+      byPage.putIfAbsent(separator.page, () => []).add(separator);
+    }
+    return byPage;
+  }
+
+  /// Precomputes the 15 mushaf line strings for every page, with surah-header
+  /// separator lines already applied (bismillah lines stay empty so the view
+  /// renders BasmalahWidget), so PageView item builds are a plain list lookup.
+  List<List<String>> _buildFullPageLineTexts(
+    List<QuranPage> pages,
+    Map<int, List<FullPageSeparator>> separatorsByPage,
+  ) {
+    return List<List<String>>.generate(pages.length, (int pageIndex) {
+      final List<StringBuffer> buffers = List<StringBuffer>.generate(
+        15,
+        (_) => StringBuffer(),
+      );
+      for (final Verse verse in pages[pageIndex].verses) {
+        for (final Word word in verse.words) {
+          buffers[word.lineNumber - 1].write(word.code);
+        }
+      }
+
+      final List<String> lines = buffers
+          .map((StringBuffer buffer) => buffer.toString())
+          .toList();
+      for (final FullPageSeparator separator
+          in separatorsByPage[pageIndex + 1] ?? []) {
+        if (!separator.bismillah) {
+          lines[separator.line - 1] = separator.unicode!;
+        }
+      }
+
+      return lines;
+    });
   }
 
   Future<void> _getTadabburAyahAvailable() async {
