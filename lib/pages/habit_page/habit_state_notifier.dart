@@ -1,8 +1,9 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:qurantafsir_flutter/shared/core/models/user.dart';
 import 'package:qurantafsir_flutter/shared/constants/app_constants.dart';
+import 'package:qurantafsir_flutter/shared/core/models/user.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
-import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart' show SignInResult;
+import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart'
+    show SignInResult;
 import 'package:qurantafsir_flutter/shared/utils/authentication_status.dart';
 import 'package:qurantafsir_flutter/shared/utils/result_status.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

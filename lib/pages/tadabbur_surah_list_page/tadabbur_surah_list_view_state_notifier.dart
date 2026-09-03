@@ -7,10 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'tadabbur_surah_list_view_state_notifier.g.dart';
 
 class TadabburSurahListViewState {
-  TadabburSurahListViewState({
-    this.tadabburSurahList,
-    this.isLoading = true,
-  });
+  TadabburSurahListViewState({this.tadabburSurahList, this.isLoading = true});
 
   final List<GetTadabburSurahListItemResponse>? tadabburSurahList;
   final bool isLoading;
@@ -37,8 +34,8 @@ class TadabburSurahListViewNotifier extends _$TadabburSurahListViewNotifier {
   Future<void> _getAvailableTadabburSurahList() async {
     final api = ref.read(tadabburApiProvider);
     try {
-      HttpResponse<List<GetTadabburSurahListItemResponse>> request =
-          await api.getAvailableTadabburSurahList();
+      HttpResponse<List<GetTadabburSurahListItemResponse>> request = await api
+          .getAvailableTadabburSurahList();
 
       if ((request.response.statusCode ?? 400) == 200) {
         state = state.copyWith(

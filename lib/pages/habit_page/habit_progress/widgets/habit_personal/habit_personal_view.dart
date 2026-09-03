@@ -6,6 +6,7 @@ import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/chan
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/theme.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/widgets/adaptive_theme_dialog.dart';
@@ -28,17 +29,13 @@ class _HabitPersonalState extends ConsumerState<HabitPersonalView> {
     final state = ref.watch(habitPersonalProvider);
 
     if (state.isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     return ListView(
       shrinkWrap: true,
       children: [
-        const SizedBox(
-          height: 32,
-        ),
+        const SizedBox(height: 32),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
@@ -53,29 +50,18 @@ class _HabitPersonalState extends ConsumerState<HabitPersonalView> {
                 "Now you can update and set your personal reading progress and target",
                 style: QPTextStyle.getSubHeading3Regular(context),
               ),
-              const SizedBox(
-                height: 24,
-              ),
+              const SizedBox(height: 24),
               Card(
-                color: QPColors.getColorBasedTheme(
+                color: context.qpColors.resolve(
+                  context.qpColors.surface60,
                   dark: QPColors.darkModeFair,
-                  light: QPColors.whiteMassive,
-                  brown: QPColors.brownModeFair,
-                  context: context,
                 ),
                 elevation: 1.2,
                 shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(8),
-                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    12,
-                    16,
-                    12,
-                    24,
-                  ),
+                  padding: const EdgeInsets.fromLTRB(12, 16, 12, 24),
                   child: Column(
                     children: [
                       Text(
@@ -85,16 +71,12 @@ class _HabitPersonalState extends ConsumerState<HabitPersonalView> {
                       const SizedBox(height: 24),
                       _buildProgressDaily(state.lastSevenDays),
                       const SizedBox(height: 16),
-                      Container(
-                        height: 1,
-                        color: neutral300,
-                      ),
+                      Container(height: 1, color: neutral300),
                       const SizedBox(height: 20),
                       state.currentProgress != null
                           ? DailyProgressTracker(
                               target: state.currentProgress!.target,
-                              dailyProgress:
-                                  state.currentProgress!.totalPages,
+                              dailyProgress: state.currentProgress!.totalPages,
                               isNeedSync: state.isNeedSync,
                             )
                           : DailyProgressTracker(
@@ -106,18 +88,14 @@ class _HabitPersonalState extends ConsumerState<HabitPersonalView> {
                       ButtonNeutral(
                         label: "Change Target",
                         onTap: () {
-                          _showDialogChangeDailyTarget(
-                            state.currentProgress!,
-                          );
+                          _showDialogChangeDailyTarget(state.currentProgress!);
                         },
                       ),
                       const SizedBox(height: 16),
                       ButtonNeutral(
                         label: "Add Progress Manually",
                         onTap: () {
-                          _showDialogAddDailyProgress(
-                            state.currentProgress!,
-                          );
+                          _showDialogAddDailyProgress(state.currentProgress!);
                         },
                       ),
                       const SizedBox(height: 16),
@@ -173,11 +151,10 @@ class _HabitPersonalState extends ConsumerState<HabitPersonalView> {
         horizontal: paddingHorizontal.toDouble(),
       ),
       decoration: BoxDecoration(
-        color: QPColors.getColorBasedTheme(
-          dark: Colors.transparent,
+        color: context.qpColors.resolve(
+          context.qpColors.brand20,
           light: Colors.transparent,
-          brown: QPColors.brownModeRoot,
-          context: context,
+          dark: Colors.transparent,
         ),
         border: isToday
             ? const Border.fromBorderSide(
@@ -186,19 +163,15 @@ class _HabitPersonalState extends ConsumerState<HabitPersonalView> {
             : null,
         borderRadius: const BorderRadius.all(Radius.circular(8)),
       ),
-      child: Column(children: [
-        Text(
-          nameOfDay,
-          style: QPTextStyle.getSubHeading3SemiBold(context),
-        ),
-        const SizedBox(height: 6),
-        Image.asset(_buildUrlStar(progress, isToday)),
-        const SizedBox(height: 6),
-        Text(
-          numberOfDay,
-          style: QPTextStyle.getSubHeading3SemiBold(context),
-        ),
-      ]),
+      child: Column(
+        children: [
+          Text(nameOfDay, style: QPTextStyle.getSubHeading3SemiBold(context)),
+          const SizedBox(height: 6),
+          Image.asset(_buildUrlStar(progress, isToday)),
+          const SizedBox(height: 6),
+          Text(numberOfDay, style: QPTextStyle.getSubHeading3SemiBold(context)),
+        ],
+      ),
     );
   }
 
@@ -218,13 +191,12 @@ class _HabitPersonalState extends ConsumerState<HabitPersonalView> {
   }
 
   void _showDialogChangeDailyTarget(HabitDailySummary currentProgress) async {
-    final isRefresh = await showQPGeneralDialog(
+    final isRefresh =
+        await showQPGeneralDialog(
           context: context,
           builder: (BuildContext context) {
             return AdaptiveThemeDialog(
-              child: ChangeDailyTargetView(
-                habitDailySummary: currentProgress,
-              ),
+              child: ChangeDailyTargetView(habitDailySummary: currentProgress),
             );
           },
         ) ??
@@ -235,7 +207,8 @@ class _HabitPersonalState extends ConsumerState<HabitPersonalView> {
   }
 
   void _showDialogAddDailyProgress(HabitDailySummary currentProgress) async {
-    final isRefresh = await showQPGeneralDialog(
+    final isRefresh =
+        await showQPGeneralDialog(
           context: context,
           builder: (context) {
             return AdaptiveThemeDialog(

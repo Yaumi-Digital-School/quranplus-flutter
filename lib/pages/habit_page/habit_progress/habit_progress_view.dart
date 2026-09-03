@@ -4,12 +4,10 @@ import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/habi
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/habit_personal/habit_personal_view.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 
-enum HabitProgressTab {
-  personal,
-  group,
-}
+enum HabitProgressTab { personal, group }
 
 extension HabitProgressTabIndex on HabitProgressTab {
   int get index {
@@ -23,9 +21,7 @@ extension HabitProgressTabIndex on HabitProgressTab {
 }
 
 class HabitProgressView extends ConsumerStatefulWidget {
-  const HabitProgressView({
-    super.key,
-  });
+  const HabitProgressView({super.key});
 
   @override
   ConsumerState<HabitProgressView> createState() => _HabitProgressViewState();
@@ -36,8 +32,9 @@ class _HabitProgressViewState extends ConsumerState<HabitProgressView> {
 
   @override
   void initState() {
-    selectedTab =
-        ref.read(mainPageProvider).getAndResetHabitGroupProgressSelectedTab();
+    selectedTab = ref
+        .read(mainPageProvider)
+        .getAndResetHabitGroupProgressSelectedTab();
 
     super.initState();
   }
@@ -46,18 +43,14 @@ class _HabitProgressViewState extends ConsumerState<HabitProgressView> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(
-          height: 24,
-        ),
+        const SizedBox(height: 24),
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 32),
           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 14),
           decoration: BoxDecoration(
-            color: QPColors.getColorBasedTheme(
-              dark: QPColors.darkModeHeavy,
+            color: context.qpColors.resolve(
+              context.qpColors.surface80,
               light: QPColors.whiteMassive,
-              brown: QPColors.brownModeSoft,
-              context: context,
             ),
             boxShadow: [
               BoxShadow(
@@ -104,25 +97,17 @@ class _HabitProgressViewState extends ConsumerState<HabitProgressView> {
   ) {
     final bool isSelected = selectedTab == tab;
     final Color labelColor = isSelected
-        ? QPColors.getColorBasedTheme(
-            dark: QPColors.whiteMassive,
+        ? context.qpColors.resolve(
+            context.qpColors.brand100,
             light: QPColors.whiteMassive,
-            brown: QPColors.brownModeMassive,
-            context: context,
+            dark: QPColors.whiteMassive,
           )
-        : QPColors.getColorBasedTheme(
-            dark: QPColors.whiteFair,
-            light: QPColors.brandFair,
-            brown: QPColors.brownModeMassive,
-            context: context,
-          );
+        : context.qpColors.brand100;
 
     final Color? indicatorBackgroundColor = isSelected
-        ? QPColors.getColorBasedTheme(
-            dark: QPColors.blackFair,
+        ? context.qpColors.resolve(
+            context.qpColors.neutral20,
             light: QPColors.brandFair,
-            brown: QPColors.brownModeHeavy,
-            context: context,
           )
         : null;
 
@@ -142,9 +127,9 @@ class _HabitProgressViewState extends ConsumerState<HabitProgressView> {
         ),
         child: Text(
           title,
-          style: QPTextStyle.getSubHeading4SemiBold(context).copyWith(
-            color: labelColor,
-          ),
+          style: QPTextStyle.getSubHeading4SemiBold(
+            context,
+          ).copyWith(color: labelColor),
           textAlign: TextAlign.center,
         ),
       ),

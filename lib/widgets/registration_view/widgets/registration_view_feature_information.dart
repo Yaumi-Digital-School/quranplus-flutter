@@ -49,18 +49,13 @@ class RegistrationViewFeatureInformation extends StatelessWidget {
                     style: QPTextStyle.getSubHeading4SemiBold(context),
                   ),
                   if (isNew) ...<Widget>[
-                    const SizedBox(
-                      width: 8,
-                    ),
+                    const SizedBox(width: 8),
                     const NewFlagBadge(),
                   ],
                 ],
               ),
               const SizedBox(height: 8),
-              Text(
-                description,
-                style: QPTextStyle.getBody3Regular(context),
-              ),
+              Text(description, style: QPTextStyle.getBody3Regular(context)),
             ],
           ),
         ),

@@ -4,6 +4,7 @@ import 'package:qurantafsir_flutter/pages/location_manual/location_manual_state_
 import 'package:qurantafsir_flutter/pages/location_manual/widgets/cities_widget.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 
 import 'widgets/cities_not_found_widget.dart';
 
@@ -12,8 +13,9 @@ class LocationManualPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final LocationManualState locationManualState =
-        ref.watch(locationManualProvider);
+    final LocationManualState locationManualState = ref.watch(
+      locationManualProvider,
+    );
 
     return Scaffold(
       body: Stack(
@@ -24,11 +26,7 @@ class LocationManualPage extends ConsumerWidget {
               child: CircularProgressIndicator(),
             ),
           Padding(
-            padding: const EdgeInsets.only(
-              right: 24,
-              left: 24,
-              top: 32,
-            ),
+            padding: const EdgeInsets.only(right: 24, left: 24, top: 32),
             child: SafeArea(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,13 +37,12 @@ class LocationManualPage extends ConsumerWidget {
                     "Location",
                     style: QPTextStyle.getSubHeading1SemiBold(context),
                   ),
-                  const SizedBox(
-                    height: 24,
-                  ),
+                  const SizedBox(height: 24),
                   TextField(
                     style: QPTextStyle.getSubHeading4Regular(context),
-                    onChanged:
-                        ref.read(locationManualProvider.notifier).onChanged,
+                    onChanged: ref
+                        .read(locationManualProvider.notifier)
+                        .onChanged,
                     decoration: InputDecoration(
                       prefixIcon: const Icon(
                         Icons.location_on_sharp,
@@ -53,12 +50,7 @@ class LocationManualPage extends ConsumerWidget {
                         size: 24,
                       ),
                       filled: true,
-                      fillColor: QPColors.getColorBasedTheme(
-                        dark: QPColors.darkModeHeavy,
-                        light: QPColors.whiteMassive,
-                        brown: QPColors.brownModeFair,
-                        context: context,
-                      ),
+                      fillColor: context.qpColors.surface60,
                       isDense: true,
                       hintText: "Type your city here",
                       contentPadding: EdgeInsets.zero,
@@ -85,9 +77,7 @@ class LocationManualPage extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 48,
-                  ),
+                  const SizedBox(height: 48),
                   if (locationManualState.cities.isNotEmpty)
                     const Flexible(child: CitiesWidget()),
                   if (!locationManualState.isLoading &&

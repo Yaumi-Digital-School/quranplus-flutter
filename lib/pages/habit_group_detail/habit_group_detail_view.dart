@@ -8,6 +8,7 @@ import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/habit_group.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
@@ -89,11 +90,9 @@ class _HabitGroupDetailViewState extends ConsumerState<HabitGroupDetailView> {
             leading: IconButton(
               icon: Icon(
                 Icons.chevron_left,
-                color: QPColors.getColorBasedTheme(
-                  dark: QPColors.whiteFair,
+                color: context.qpColors.resolve(
+                  context.qpColors.brand100,
                   light: QPColors.blackSoft,
-                  brown: QPColors.brownModeMassive,
-                  context: context,
                 ),
                 size: 30,
               ),
@@ -113,11 +112,9 @@ class _HabitGroupDetailViewState extends ConsumerState<HabitGroupDetailView> {
               Theme(
                 data: Theme.of(context).copyWith(
                   iconTheme: IconThemeData(
-                    color: QPColors.getColorBasedTheme(
-                      dark: QPColors.whiteFair,
+                    color: context.qpColors.resolve(
+                      context.qpColors.brand100,
                       light: QPColors.blackSoft,
-                      brown: QPColors.brownModeMassive,
-                      context: context,
                     ),
                   ),
                 ),

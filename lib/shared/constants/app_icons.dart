@@ -11,9 +11,10 @@
 ///      fonts:
 ///       - asset: fonts/MyFlutterApp.ttf
 ///
-/// 
+///
 ///
 library;
+
 import 'package:flutter/widgets.dart';
 
 class CustomIcons {
@@ -22,6 +23,14 @@ class CustomIcons {
   static const _kFontFam = 'CustomIcons';
   static const String? _kFontPkg = null;
 
-  static const IconData sliders = IconData(0xf1de, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData book = IconData(0xf314, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData sliders = IconData(
+    0xf1de,
+    fontFamily: _kFontFam,
+    fontPackage: _kFontPkg,
+  );
+  static const IconData book = IconData(
+    0xf314,
+    fontFamily: _kFontFam,
+    fontPackage: _kFontPkg,
+  );
 }

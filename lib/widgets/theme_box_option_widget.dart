@@ -25,18 +25,15 @@ class ThemeBoxOptionWidget extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.only(
-              top: 22,
-              right: 12,
-              left: 12,
-            ),
+            padding: const EdgeInsets.only(top: 22, right: 12, left: 12),
             decoration: BoxDecoration(
               color: colorParam.firstColor,
               borderRadius: const BorderRadius.all(Radius.circular(8)),
               border: Border.fromBorderSide(
                 BorderSide(
-                  color:
-                      isSelected ? QPColors.brandFair : colorParam.firstColor,
+                  color: isSelected
+                      ? QPColors.brandFair
+                      : colorParam.firstColor,
                   width: 2,
                 ),
               ),
@@ -78,11 +75,7 @@ class ThemeBoxOptionWidget extends StatelessWidget {
               if (isSelected)
                 const Padding(
                   padding: EdgeInsets.only(right: 10),
-                  child: Icon(
-                    Icons.check,
-                    size: 16,
-                    color: QPColors.brandFair,
-                  ),
+                  child: Icon(Icons.check, size: 16, color: QPColors.brandFair),
                 ),
               Text(
                 theme,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_minimized_info_icon_button.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
 
@@ -31,8 +32,9 @@ class _AudioMinimizedInfoState extends ConsumerState<AudioMinimizedInfo> {
 
   @override
   Widget build(BuildContext context) {
-    final AudioRecitationState audioPlayerState =
-        ref.watch(audioRecitationProvider);
+    final AudioRecitationState audioPlayerState = ref.watch(
+      audioRecitationProvider,
+    );
 
     return GestureDetector(
       onTap: widget.onTapContainer,
@@ -40,11 +42,9 @@ class _AudioMinimizedInfoState extends ConsumerState<AudioMinimizedInfo> {
         height: 70,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(16)),
-          color: QPColors.getColorBasedTheme(
+          color: context.qpColors.resolve(
+            context.qpColors.surface100,
             dark: QPColors.darkModeFair,
-            light: QPColors.whiteFair,
-            brown: QPColors.brownModeRoot,
-            context: context,
           ),
           boxShadow: <BoxShadow>[
             BoxShadow(
@@ -69,9 +69,7 @@ class _AudioMinimizedInfoState extends ConsumerState<AudioMinimizedInfo> {
                   audioPlayerState.surahName,
                   style: QPTextStyle.getSubHeading3SemiBold(context),
                 ),
-                const SizedBox(
-                  height: 6,
-                ),
+                const SizedBox(height: 6),
                 Text(
                   'Ayah ${audioPlayerState.ayahId}',
                   style: QPTextStyle.getButton3SemiBold(context),
@@ -83,11 +81,9 @@ class _AudioMinimizedInfoState extends ConsumerState<AudioMinimizedInfo> {
               icon: const Icon(Icons.close),
               iconSize: 24,
               onPressed: widget.onClose,
-              color: QPColors.getColorBasedTheme(
-                dark: QPColors.whiteFair,
+              color: context.qpColors.resolve(
+                context.qpColors.brand100,
                 light: QPColors.blackMassive,
-                brown: QPColors.brownModeMassive,
-                context: context,
               ),
             ),
           ],

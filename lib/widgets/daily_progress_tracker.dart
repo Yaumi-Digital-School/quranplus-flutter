@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
-import 'package:intl/intl.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 
 class DailyProgressTracker extends StatelessWidget {
   const DailyProgressTracker({
@@ -33,23 +34,17 @@ class DailyProgressTracker extends StatelessWidget {
           "Today's Progress",
           style: QPTextStyle.getSubHeading1SemiBold(context),
         ),
-        const SizedBox(
-          height: 4,
-        ),
+        const SizedBox(height: 4),
         Text(
           formattedDate,
           style: QPTextStyle.getSubHeading4Medium(context).copyWith(
-            color: QPColors.getColorBasedTheme(
+            color: context.qpColors.resolve(
+              context.qpColors.neutral100,
               dark: QPColors.whiteRoot,
-              light: QPColors.blackFair,
-              brown: QPColors.brownModeMassive,
-              context: context,
             ),
           ),
         ),
-        const SizedBox(
-          height: 16,
-        ),
+        const SizedBox(height: 16),
         SizedBox(
           width: double.infinity,
           child: LinearPercentIndicator(
@@ -71,11 +66,9 @@ class DailyProgressTracker extends StatelessWidget {
                 ? '$dailyProgressToInt / $target pages'
                 : '$dailyProgressToInt / $target page',
             style: QPTextStyle.getSubHeading4Regular(context).copyWith(
-              color: QPColors.getColorBasedTheme(
+              color: context.qpColors.resolve(
+                context.qpColors.neutral100,
                 dark: QPColors.whiteRoot,
-                light: QPColors.blackFair,
-                brown: QPColors.brownModeMassive,
-                context: context,
               ),
             ),
           ),

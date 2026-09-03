@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/shared/constants/button_audio_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/audio_provider.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_recitation_state_notifier.dart';
@@ -28,10 +29,12 @@ class _RadioButtonSelectReciterWidgetState
 
   @override
   Widget build(BuildContext context) {
-    final AsyncValue<ButtonAudioState> buttonState =
-        ref.watch(buttonAudioStateProvider);
-    SelectReciterBottomSheetState selectReciter =
-        ref.watch(selectReciterProvider);
+    final AsyncValue<ButtonAudioState> buttonState = ref.watch(
+      buttonAudioStateProvider,
+    );
+    SelectReciterBottomSheetState selectReciter = ref.watch(
+      selectReciterProvider,
+    );
 
     return RadioGroup<int>(
       groupValue: selectReciter.reciterId,
@@ -41,9 +44,7 @@ class _RadioButtonSelectReciterWidgetState
               .read(selectReciterProvider.notifier)
               .updateRadioButton(
                 value,
-                selectReciter.listReciter
-                    .firstWhere((r) => r.id == value)
-                    .name,
+                selectReciter.listReciter.firstWhere((r) => r.id == value).name,
               );
         }
       },
@@ -62,20 +63,16 @@ class _RadioButtonSelectReciterWidgetState
                   flex: 7,
                   child: Theme(
                     data: Theme.of(context).copyWith(
-                      unselectedWidgetColor: QPColors.getColorBasedTheme(
+                      unselectedWidgetColor: context.qpColors.resolve(
+                        context.qpColors.brand100,
                         dark: QPColors.brandFair,
-                        light: QPColors.brandFair,
-                        brown: QPColors.brownModeMassive,
-                        context: context,
                       ),
                     ),
                     child: RadioListTile<int>(
                       value: item.id,
-                      activeColor: QPColors.getColorBasedTheme(
+                      activeColor: context.qpColors.resolve(
+                        context.qpColors.brand100,
                         dark: QPColors.brandFair,
-                        light: QPColors.brandFair,
-                        brown: QPColors.brownModeMassive,
-                        context: context,
                       ),
                       title: Text(
                         item.name,
@@ -84,43 +81,41 @@ class _RadioButtonSelectReciterWidgetState
                     ),
                   ),
                 ),
-              Expanded(
-                flex: 1,
-                child: buttonState.when(
-                  data: (data) {
-                    IconData icon =
-                        item.id == playedId && data != ButtonAudioState.stop
-                            ? Icons.pause
-                            : Icons.play_arrow;
+                Expanded(
+                  flex: 1,
+                  child: buttonState.when(
+                    data: (data) {
+                      IconData icon =
+                          item.id == playedId && data != ButtonAudioState.stop
+                          ? Icons.pause
+                          : Icons.play_arrow;
 
-                    return InkWell(
-                      onTap: _onTapAudioPreviewReciter(
-                        data,
-                        selectReciter,
-                        index,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: SelectReciterAudioPreviewButton(
-                          icon: icon,
+                      return InkWell(
+                        onTap: _onTapAudioPreviewReciter(
+                          data,
+                          selectReciter,
+                          index,
                         ),
-                      ),
-                    );
-                  },
-                  error: (error, stacktrace) {
-                    return Container();
-                  },
-                  loading: () => const SizedBox(
-                    height: 36,
-                    width: 36,
-                    child: CircularProgressIndicator(),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: SelectReciterAudioPreviewButton(icon: icon),
+                        ),
+                      );
+                    },
+                    error: (error, stacktrace) {
+                      return Container();
+                    },
+                    loading: () => const SizedBox(
+                      height: 36,
+                      width: 36,
+                      child: CircularProgressIndicator(),
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -136,9 +131,7 @@ class _RadioButtonSelectReciterWidgetState
         playedId = 0;
         await ref
             .read(selectReciterProvider.notifier)
-            .playPreviewAudio(
-              selectReciter.listReciter[index].id,
-            );
+            .playPreviewAudio(selectReciter.listReciter[index].id);
 
         playedId = selectReciter.listReciter[index].id;
 

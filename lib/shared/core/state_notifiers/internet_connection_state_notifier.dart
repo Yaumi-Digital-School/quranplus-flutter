@@ -1,6 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'internet_connection_state_notifier.g.dart';
 
@@ -12,11 +12,15 @@ class InternetConnectionStatus extends _$InternetConnectionStatus {
   ConnectivityStatus build() {
     _lastResult = ConnectivityStatus.isConnected;
 
-    final subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> results) {
-      final bool hasConnection = results.any((r) =>
-          r == ConnectivityResult.ethernet ||
-          r == ConnectivityResult.mobile ||
-          r == ConnectivityResult.wifi);
+    final subscription = Connectivity().onConnectivityChanged.listen((
+      List<ConnectivityResult> results,
+    ) {
+      final bool hasConnection = results.any(
+        (r) =>
+            r == ConnectivityResult.ethernet ||
+            r == ConnectivityResult.mobile ||
+            r == ConnectivityResult.wifi,
+      );
       final newState = hasConnection
           ? ConnectivityStatus.isConnected
           : ConnectivityStatus.isDisconnected;

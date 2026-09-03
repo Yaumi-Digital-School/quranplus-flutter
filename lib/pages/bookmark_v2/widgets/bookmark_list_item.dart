@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 
 class BookmarkListItem extends StatelessWidget {
   const BookmarkListItem({
@@ -20,7 +21,6 @@ class BookmarkListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(subtitleText);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: ListTile(
@@ -47,11 +47,9 @@ class BookmarkListItem extends StatelessWidget {
             Text(
               subtitleText,
               style: QPTextStyle.getSubHeading4Regular(context).copyWith(
-                color: QPColors.getColorBasedTheme(
+                color: context.qpColors.resolve(
+                  context.qpColors.neutral100,
                   dark: QPColors.whiteRoot,
-                  light: QPColors.blackFair,
-                  brown: QPColors.brownModeMassive,
-                  context: context,
                 ),
               ),
               overflow: TextOverflow.ellipsis,

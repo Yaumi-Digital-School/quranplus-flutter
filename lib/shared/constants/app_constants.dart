@@ -6,12 +6,6 @@ class AppConstants {
   static const String appName = 'Quran Tafsir';
 }
 
-enum SignInType {
-  google,
-  apple,
-}
+enum SignInType { google, apple }
 
-enum AppUpdateType {
-  forceUpdate,
-  optionalUpdate,
-}
+enum AppUpdateType { forceUpdate, optionalUpdate }

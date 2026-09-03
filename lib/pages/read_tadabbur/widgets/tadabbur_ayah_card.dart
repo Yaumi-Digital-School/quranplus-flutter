@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/pages/tadabbur_story/tadabur_story_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/utils/date_util.dart';
 
@@ -30,32 +31,16 @@ class TadabburAyahCard extends StatelessWidget {
         Navigator.pushNamed(
           context,
           RoutePaths.routeTadabburContent,
-          arguments: TadabburStoryPageParams(
-            tadabburId: tadabburId,
-          ),
+          arguments: TadabburStoryPageParams(tadabburId: tadabburId),
         );
       },
       child: Container(
         decoration: BoxDecoration(
-          color: QPColors.getColorBasedTheme(
-            dark: QPColors.darkModeHeavy,
-            light: QPColors.whiteMassive,
-            brown: QPColors.brownModeFair,
-            context: context,
-          ),
+          color: context.qpColors.surface60,
           border: Border.fromBorderSide(
-            BorderSide(
-              color: QPColors.getColorBasedTheme(
-                dark: QPColors.darkModeFair,
-                light: QPColors.whiteRoot,
-                brown: QPColors.brownModeHeavy,
-                context: context,
-              ),
-            ),
+            BorderSide(color: context.qpColors.surface20),
           ),
-          borderRadius: const BorderRadius.all(
-            Radius.circular(8),
-          ),
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
         ),
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -69,70 +54,38 @@ class TadabburAyahCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Ayah $ayahNumber",
-          style: QPTextStyle.getButton3Medium(context),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
+        Text("Ayah $ayahNumber", style: QPTextStyle.getButton3Medium(context)),
+        const SizedBox(height: 8),
         Row(
           children: [
-            Icon(
-              Icons.menu_book,
-              size: 16,
-              color: QPColors.getColorBasedTheme(
-                dark: QPColors.whiteFair,
-                light: QPColors.blackFair,
-                brown: QPColors.brownModeMassive,
-                context: context,
-              ),
-            ),
-            const SizedBox(
-              width: 8,
-            ),
+            Icon(Icons.menu_book, size: 16, color: context.qpColors.neutral100),
+            const SizedBox(width: 8),
             Expanded(
               flex: 7,
               child: Text(
                 title,
-                style: QPTextStyle.getButton1SemiBold(context).copyWith(
-                  color: QPColors.getColorBasedTheme(
-                    dark: QPColors.whiteFair,
-                    light: QPColors.blackFair,
-                    brown: QPColors.brownModeMassive,
-                    context: context,
-                  ),
-                ),
+                style: QPTextStyle.getButton1SemiBold(
+                  context,
+                ).copyWith(color: context.qpColors.neutral100),
               ),
             ),
-            const SizedBox(
-              width: 8,
-            ),
+            const SizedBox(width: 8),
             Icon(
               Icons.keyboard_arrow_right,
               size: 24,
-              color: QPColors.getColorBasedTheme(
-                dark: QPColors.whiteFair,
-                light: QPColors.blackFair,
-                brown: QPColors.brownModeMassive,
-                context: context,
-              ),
+              color: context.qpColors.neutral100,
             ),
           ],
         ),
-        const SizedBox(
-          height: 8,
-        ),
+        const SizedBox(height: 8),
         Row(
           children: [
             Text(
               source,
               style: QPTextStyle.getButton3SemiBold(context).copyWith(
-                color: QPColors.getColorBasedTheme(
+                color: context.qpColors.resolve(
+                  context.qpColors.neutral100,
                   dark: QPColors.blackRoot,
-                  light: QPColors.blackFair,
-                  brown: QPColors.brownModeMassive,
-                  context: context,
                 ),
               ),
             ),
@@ -140,11 +93,10 @@ class TadabburAyahCard extends StatelessWidget {
             Text(
               DateCustomUtils.getDateRangeFormatted(createdAt),
               style: QPTextStyle.getDescription2Regular(context).copyWith(
-                color: QPColors.getColorBasedTheme(
-                  dark: QPColors.blackRoot,
+                color: context.qpColors.resolve(
+                  context.qpColors.brand100,
                   light: QPColors.blackSoft,
-                  brown: QPColors.brownModeMassive,
-                  context: context,
+                  dark: QPColors.blackRoot,
                 ),
               ),
             ),

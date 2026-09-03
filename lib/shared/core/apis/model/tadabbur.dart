@@ -20,22 +20,17 @@ class GetTadabburSurahListItemResponse {
 
   factory GetTadabburSurahListItemResponse.fromJson(
     Map<String, dynamic> json,
-  ) =>
-      _$GetTadabburSurahListItemResponseFromJson(json);
+  ) => _$GetTadabburSurahListItemResponseFromJson(json);
 }
 
 @JsonSerializable()
 class GetTadabburSurahListItemSurah {
-  GetTadabburSurahListItemSurah({
-    required this.name,
-  });
+  GetTadabburSurahListItemSurah({required this.name});
 
   @JsonKey(name: 'indonesia_name')
   final String name;
 
-  factory GetTadabburSurahListItemSurah.fromJson(
-    Map<String, dynamic> json,
-  ) =>
+  factory GetTadabburSurahListItemSurah.fromJson(Map<String, dynamic> json) =>
       _$GetTadabburSurahListItemSurahFromJson(json);
 }
 
@@ -48,9 +43,7 @@ class GetListTadabburSurahAvailable {
   @JsonKey(name: 'total_tadabbur')
   final int totalTadabbur;
 
-  factory GetListTadabburSurahAvailable.fromJson(
-    Map<String, dynamic> json,
-  ) =>
+  factory GetListTadabburSurahAvailable.fromJson(Map<String, dynamic> json) =>
       _$GetListTadabburSurahAvailableFromJson(json);
 }
 
@@ -170,9 +163,7 @@ class TadabburContentResponse {
 
 @JsonSerializable()
 class TadabburContentResponseSurah {
-  TadabburContentResponseSurah({
-    required this.surahName,
-  });
+  TadabburContentResponseSurah({required this.surahName});
 
   @JsonKey(name: 'indonesia_name')
   final String surahName;

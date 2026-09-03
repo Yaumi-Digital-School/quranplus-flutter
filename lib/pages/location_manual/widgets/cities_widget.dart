@@ -3,14 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/location_manual/location_manual_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 
 class CitiesWidget extends ConsumerWidget {
   const CitiesWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final LocationManualState locationManualState =
-        ref.watch(locationManualProvider);
+    final LocationManualState locationManualState = ref.watch(
+      locationManualProvider,
+    );
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 40),
@@ -34,22 +36,18 @@ class CitiesWidget extends ConsumerWidget {
                 Text(
                   locationManualState.cities[index].city,
                   style: QPTextStyle.getSubHeading4SemiBold(context).copyWith(
-                    color: QPColors.getColorBasedTheme(
-                      dark: QPColors.whiteFair,
+                    color: context.qpColors.resolve(
+                      context.qpColors.brand100,
                       light: QPColors.blackHeavy,
-                      brown: QPColors.brownModeMassive,
-                      context: context,
                     ),
                   ),
                 ),
                 Text(
                   locationManualState.cities[index].label,
                   style: QPTextStyle.getDescription2Regular(context).copyWith(
-                    color: QPColors.getColorBasedTheme(
+                    color: context.qpColors.resolve(
+                      context.qpColors.neutral100,
                       dark: QPColors.whiteRoot,
-                      light: QPColors.blackFair,
-                      brown: QPColors.brownModeMassive,
-                      context: context,
                     ),
                   ),
                 ),
@@ -59,11 +57,9 @@ class CitiesWidget extends ConsumerWidget {
         ),
         separatorBuilder: (BuildContext context, int index) {
           return Divider(
-            color: QPColors.getColorBasedTheme(
-              dark: QPColors.blackFair,
-              light: QPColors.whiteRoot,
+            color: context.qpColors.resolve(
+              context.qpColors.neutral20,
               brown: QPColors.brownModeMassive,
-              context: context,
             ),
           );
         },

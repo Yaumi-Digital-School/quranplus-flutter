@@ -11,10 +11,7 @@ import 'package:store_redirect/store_redirect.dart';
 import 'package:version/version.dart';
 
 class OptionalUpdateDialog extends ConsumerWidget {
-  const OptionalUpdateDialog({
-    super.key,
-    required this.optionalMinVersion,
-  });
+  const OptionalUpdateDialog({super.key, required this.optionalMinVersion});
 
   final Version optionalMinVersion;
 
@@ -26,27 +23,19 @@ class OptionalUpdateDialog extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(
-              ImagePath.forceUpdateIcon,
-            ),
-            const SizedBox(
-              height: 28,
-            ),
+            Image.asset(ImagePath.forceUpdateIcon),
+            const SizedBox(height: 28),
             Text(
               'New update available!',
               style: QPTextStyle.getSubHeading2SemiBold(context),
             ),
-            const SizedBox(
-              height: 8,
-            ),
+            const SizedBox(height: 8),
             Text(
               'To improve your experience, we recommend\nto update the app.',
               textAlign: TextAlign.center,
               style: QPTextStyle.getBody3Medium(context),
             ),
-            const SizedBox(
-              height: 28,
-            ),
+            const SizedBox(height: 28),
             ButtonPrimary(
               label: 'Update',
               onTap: () {
@@ -56,14 +45,13 @@ class OptionalUpdateDialog extends ConsumerWidget {
                 );
               },
             ),
-            const SizedBox(
-              height: 12,
-            ),
+            const SizedBox(height: 12),
             ButtonSecondary(
               label: 'No, Later',
               onTap: () {
-                SharedPreferenceService sharedpref =
-                    ref.read(sharedPreferenceServiceProvider);
+                SharedPreferenceService sharedpref = ref.read(
+                  sharedPreferenceServiceProvider,
+                );
 
                 sharedpref.setShownOptionalUpdateMinVersion(
                   optionalMinVersion.toString(),

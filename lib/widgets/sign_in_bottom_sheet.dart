@@ -8,9 +8,7 @@ import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
 
 class SignInBottomSheet {
-  static void showAccountDeletedInfo({
-    required BuildContext context,
-  }) {
+  static void showAccountDeletedInfo({required BuildContext context}) {
     return GeneralBottomSheet.showBaseBottomSheet(
       context: context,
       widgetChild: Column(
@@ -21,9 +19,7 @@ class SignInBottomSheet {
             textAlign: TextAlign.center,
             style: QPTextStyle.getSubHeading1SemiBold(context),
           ),
-          const SizedBox(
-            height: 16,
-          ),
+          const SizedBox(height: 16),
           RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
@@ -59,9 +55,7 @@ class SignInBottomSheet {
               ],
             ),
           ),
-          const SizedBox(
-            height: 32,
-          ),
+          const SizedBox(height: 32),
           ButtonPrimary(
             label: 'OK',
             onTap: () => Navigator.pop(context),
@@ -91,11 +85,7 @@ class SignInBottomSheet {
               shape: BoxShape.circle,
             ),
             child: const Center(
-              child: Icon(
-                Icons.person,
-                size: 20,
-                color: QPColors.blackSoft,
-              ),
+              child: Icon(Icons.person, size: 20, color: QPColors.blackSoft),
             ),
           ),
           const SizedBox(height: 24),

@@ -35,10 +35,7 @@ class DateOfBirthPicker extends StatelessWidget {
               style: QPTextStyle.getSubHeading2SemiBold(context),
             ),
             if (hasError)
-              Text(
-                '*',
-                style: subHeadingSemiBold2.apply(color: errorColor),
-              ),
+              Text('*', style: subHeadingSemiBold2.apply(color: errorColor)),
           ],
         ),
         const SizedBox(height: 8),
@@ -89,7 +86,8 @@ class DateOfBirthPicker extends StatelessWidget {
                   onYearChanged('');
                   return;
                 }
-                final maxYear = int.parse(DateFormat.y().format(DateTime.now())) - 1;
+                final maxYear =
+                    int.parse(DateFormat.y().format(DateTime.now())) - 1;
                 if (int.parse(value) > maxYear) {
                   onYearChanged(maxYear.toString());
                 } else {
@@ -101,10 +99,7 @@ class DateOfBirthPicker extends StatelessWidget {
         ),
         if (hasError) ...[
           const SizedBox(height: 4),
-          Text(
-            'Required',
-            style: captionLight2.apply(color: errorColor),
-          ),
+          Text('Required', style: captionLight2.apply(color: errorColor)),
         ],
       ],
     );
@@ -137,9 +132,7 @@ class DateOfBirthPicker extends StatelessWidget {
           counterText: '',
           contentPadding: const EdgeInsets.all(8),
           hintText: hint,
-          hintStyle: bodyMedium2.copyWith(
-            color: Theme.of(context).hintColor,
-          ),
+          hintStyle: bodyMedium2.copyWith(color: Theme.of(context).hintColor),
           border: enabledInputBorder,
           enabledBorder: enabledInputBorder,
           errorBorder: errorInputBorder,

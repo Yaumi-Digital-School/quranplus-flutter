@@ -6,11 +6,10 @@ import 'package:qurantafsir_flutter/pages/settings_page/settings_page.dart';
 import 'package:qurantafsir_flutter/pages/tadabbur_surah_list_page/tadabbur_surah_list_view.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 
 class MainPageParam {
-  MainPageParam({
-    this.initialSelectedIdx = 0,
-  });
+  MainPageParam({this.initialSelectedIdx = 0});
 
   final int initialSelectedIdx;
 }
@@ -18,10 +17,7 @@ class MainPageParam {
 GlobalKey mainNavbarGlobalKey = GlobalKey<State<BottomNavigationBar>>();
 
 class MainPage extends StatefulWidget {
-  const MainPage({
-    super.key,
-    this.param,
-  });
+  const MainPage({super.key, this.param});
 
   final MainPageParam? param;
 
@@ -63,23 +59,11 @@ class _MainPageState extends State<MainPage> {
       bottomNavigationBar: BottomNavigationBar(
         key: mainNavbarGlobalKey,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: QPColors.getColorBasedTheme(
-          dark: QPColors.darkModeHeavy,
-          light: QPColors.whiteMassive,
-          brown: QPColors.brownModeFair,
-          context: context,
-        ),
+        backgroundColor: context.qpColors.surface60,
         items: <BottomNavigationBarItem>[
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
+          const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
-            icon: ImageIcon(
-              AssetImage(
-                StoredIcon.iconHabitArrow.path,
-              ),
-            ),
+            icon: ImageIcon(AssetImage(StoredIcon.iconHabitArrow.path)),
             label: 'Habit',
           ),
           const BottomNavigationBarItem(
@@ -97,12 +81,7 @@ class _MainPageState extends State<MainPage> {
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: QPColors.brandFair,
-        unselectedItemColor: QPColors.getColorBasedTheme(
-          dark: QPColors.whiteFair,
-          light: QPColors.blackFair,
-          brown: QPColors.brownModeMassive,
-          context: context,
-        ),
+        unselectedItemColor: context.qpColors.neutral100,
         selectedFontSize: 12,
         onTap: (index) => onItemTapped(index),
       ),

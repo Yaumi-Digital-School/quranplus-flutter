@@ -5,6 +5,7 @@ import 'package:qurantafsir_flutter/pages/bookmark_v2/widgets/bookmark_section.d
 import 'package:qurantafsir_flutter/pages/bookmark_v2/widgets/favorite_section.dart';
 import 'package:qurantafsir_flutter/pages/main_page/main_page.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
 
 class BookmarkPageV2 extends ConsumerStatefulWidget {
@@ -57,11 +58,9 @@ class _BookmarkPageV2State extends ConsumerState<BookmarkPageV2> {
                 Container(
                   height: 50,
                   decoration: BoxDecoration(
-                    color: QPColors.getColorBasedTheme(
-                      dark: QPColors.darkModeHeavy,
+                    color: context.qpColors.resolve(
+                      context.qpColors.surface80,
                       light: QPColors.whiteMassive,
-                      brown: QPColors.brownModeSoft,
-                      context: context,
                     ),
                     borderRadius: const BorderRadius.all(Radius.circular(20)),
                     boxShadow: <BoxShadow>[
@@ -76,24 +75,16 @@ class _BookmarkPageV2State extends ConsumerState<BookmarkPageV2> {
                     padding: const EdgeInsets.all(4.0),
                     indicatorSize: TabBarIndicatorSize.tab,
                     dividerHeight: 0,
-                    unselectedLabelColor: QPColors.getColorBasedTheme(
-                      dark: QPColors.whiteFair,
-                      light: QPColors.brandFair,
-                      brown: QPColors.brownModeMassive,
-                      context: context,
-                    ),
-                    labelColor: QPColors.getColorBasedTheme(
-                      dark: QPColors.whiteMassive,
+                    unselectedLabelColor: context.qpColors.brand100,
+                    labelColor: context.qpColors.resolve(
+                      context.qpColors.brand100,
                       light: QPColors.whiteMassive,
-                      brown: QPColors.brownModeMassive,
-                      context: context,
+                      dark: QPColors.whiteMassive,
                     ),
                     indicator: BoxDecoration(
-                      color: QPColors.getColorBasedTheme(
-                        dark: QPColors.blackFair,
+                      color: context.qpColors.resolve(
+                        context.qpColors.neutral20,
                         light: QPColors.brandFair,
-                        brown: QPColors.brownModeHeavy,
-                        context: context,
                       ),
                       borderRadius: const BorderRadius.all(Radius.circular(20)),
                     ),

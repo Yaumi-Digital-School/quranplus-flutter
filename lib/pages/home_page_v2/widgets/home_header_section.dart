@@ -8,6 +8,7 @@ import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 
 class HomeHeaderSection extends ConsumerWidget {
   const HomeHeaderSection({super.key});
@@ -17,21 +18,14 @@ class HomeHeaderSection extends ConsumerWidget {
     final name = ref.watch(homePageProvider.select((s) => s.name));
 
     return Container(
-      color: QPColors.getColorBasedTheme(
-        dark: QPColors.darkModeMassive,
-        light: QPColors.whiteFair,
-        brown: QPColors.brownModeRoot,
-        context: context,
-      ),
+      color: context.qpColors.surface100,
       child: Stack(
         children: [
           Container(
             height: name.isEmpty ? 150 : 200,
-            color: QPColors.getColorBasedTheme(
-              dark: QPColors.darkModeMassive,
+            color: context.qpColors.resolve(
+              context.qpColors.surface100,
               light: QPColors.brandFair,
-              brown: QPColors.brownModeRoot,
-              context: context,
             ),
           ),
           Padding(
@@ -46,11 +40,9 @@ class HomeHeaderSection extends ConsumerWidget {
                     SvgPicture.asset(
                       StoredIcon.iconQuranPlus.path,
                       colorFilter: ColorFilter.mode(
-                        QPColors.getColorBasedTheme(
-                          dark: QPColors.whiteFair,
+                        context.qpColors.resolve(
+                          context.qpColors.brand100,
                           light: QPColors.whiteFair,
-                          brown: QPColors.brownModeMassive,
-                          context: context,
                         ),
                         BlendMode.srcIn,
                       ),
@@ -60,11 +52,9 @@ class HomeHeaderSection extends ConsumerWidget {
                     SvgPicture.asset(
                       ImagePath.quranPlusText,
                       colorFilter: ColorFilter.mode(
-                        QPColors.getColorBasedTheme(
-                          dark: QPColors.whiteFair,
+                        context.qpColors.resolve(
+                          context.qpColors.brand100,
                           light: QPColors.whiteFair,
-                          brown: QPColors.brownModeMassive,
-                          context: context,
                         ),
                         BlendMode.srcIn,
                       ),
@@ -80,11 +70,9 @@ class HomeHeaderSection extends ConsumerWidget {
                       "Assalamu'alaikum, $name",
                       style: QPTextStyle.getSubHeading4SemiBold(context)
                           .copyWith(
-                            color: QPColors.getColorBasedTheme(
-                              dark: QPColors.whiteFair,
+                            color: context.qpColors.resolve(
+                              context.qpColors.brand100,
                               light: QPColors.whiteMassive,
-                              brown: QPColors.brownModeMassive,
-                              context: context,
                             ),
                           ),
                     ),

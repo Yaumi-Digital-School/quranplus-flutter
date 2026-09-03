@@ -20,7 +20,7 @@ class ThemeNotifier extends _$ThemeNotifier {
         : QPThemeMode.light;
   }
 
-  void setMode(QPThemeMode newMode) async {
+  Future<void> setMode(QPThemeMode newMode) async {
     await _sharedPreferenceService.setTheme(newMode.name);
     state = newMode;
   }

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/pages/habit_page/habit_progress/widgets/add_daily_progress_manual/add_daily_progress_manual_state_notifier.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_progress.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_progress.dart';
@@ -12,7 +13,10 @@ import 'package:qurantafsir_flutter/widgets/text_field.dart';
 
 class AddDailyProgressManualView extends ConsumerStatefulWidget {
   final HabitDailySummary habitDailySummary;
-  const AddDailyProgressManualView({super.key, required this.habitDailySummary});
+  const AddDailyProgressManualView({
+    super.key,
+    required this.habitDailySummary,
+  });
 
   @override
   ConsumerState<AddDailyProgressManualView> createState() =>
@@ -38,8 +42,9 @@ class _AddDailyProgressManualViewState
     final state = ref.watch(addDailyProgressManualProvider);
     final target = widget.habitDailySummary.target;
     final totalPages = widget.habitDailySummary.totalPages;
-    final formattedDate =
-        DateFormat("EEEE, dd MMMM yyyy").format(widget.habitDailySummary.date);
+    final formattedDate = DateFormat(
+      "EEEE, dd MMMM yyyy",
+    ).format(widget.habitDailySummary.date);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
@@ -47,9 +52,7 @@ class _AddDailyProgressManualViewState
           ? const SizedBox(
               height: 32,
               width: 32,
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
+              child: Center(child: CircularProgressIndicator()),
             )
           : Column(
               mainAxisSize: MainAxisSize.min,
@@ -76,8 +79,7 @@ class _AddDailyProgressManualViewState
                         style: QPTextStyle.getDescription2Regular(context),
                       )
                     : Column(
-                        children:
-                            _buildProgressHistory(state.progressHistory),
+                        children: _buildProgressHistory(state.progressHistory),
                       ),
                 const SizedBox(height: 24),
                 Text(
@@ -129,11 +131,10 @@ class _AddDailyProgressManualViewState
           ? "Updated Manually"
           : "Updated by Reading";
 
-      final Color textColor = QPColors.getColorBasedTheme(
-        dark: QPColors.blackRoot,
+      final Color textColor = context.qpColors.resolve(
+        context.qpColors.brand100,
         light: QPColors.blackMassive,
-        brown: QPColors.brownModeMassive,
-        context: context,
+        dark: QPColors.blackRoot,
       );
 
       final content = Row(
@@ -141,15 +142,11 @@ class _AddDailyProgressManualViewState
         children: [
           Text(
             "${inputTime.substring(0, inputTime.length - 3)} - $description",
-            style: QPTextStyle.getCaption(context).copyWith(
-              color: textColor,
-            ),
+            style: QPTextStyle.getCaption(context).copyWith(color: textColor),
           ),
           Text(
             updateDesc,
-            style: QPTextStyle.getCaption(context).copyWith(
-              color: textColor,
-            ),
+            style: QPTextStyle.getCaption(context).copyWith(color: textColor),
           ),
         ],
       );

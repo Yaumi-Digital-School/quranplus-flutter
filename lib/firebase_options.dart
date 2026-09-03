@@ -63,7 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '531557853716',
     projectId: 'qurantafsir-63d22',
     storageBucket: 'qurantafsir-63d22.appspot.com',
-    iosClientId: '531557853716-jes240iger950195d6e3u10lmueqg5q5.apps.googleusercontent.com',
+    iosClientId:
+        '531557853716-jes240iger950195d6e3u10lmueqg5q5.apps.googleusercontent.com',
     iosBundleId: 'com.example.qurantafsirFlutter',
   );
 }

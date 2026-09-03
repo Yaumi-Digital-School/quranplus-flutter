@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 
 class TadabburAvailableFlag extends StatelessWidget {
   const TadabburAvailableFlag({super.key});
@@ -21,14 +21,9 @@ class TadabburAvailableFlag extends StatelessWidget {
           const SizedBox(width: 4),
           Text(
             'Tadabbur Available',
-            style: QPTextStyle.getButton3Medium(context).copyWith(
-              color: QPColors.getColorBasedTheme(
-                dark: QPColors.whiteFair,
-                light: QPColors.brandFair,
-                brown: QPColors.brownModeMassive,
-                context: context,
-              ),
-            ),
+            style: QPTextStyle.getButton3Medium(
+              context,
+            ).copyWith(color: context.qpColors.brand100),
           ),
         ],
       ),

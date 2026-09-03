@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/surat_page_v3.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 
 class HistoryInfoBox extends StatelessWidget {
@@ -55,36 +56,27 @@ class HistoryInfoBox extends StatelessWidget {
                 Text(
                   title,
                   style: QPTextStyle.getDescription2Regular(context).copyWith(
-                    color: QPColors.getColorBasedTheme(
+                    color: context.qpColors.resolve(
+                      context.qpColors.brand100,
                       dark: QPColors.whiteHeavy,
-                      light: QPColors.brandFair,
-                      brown: QPColors.brownModeMassive,
-                      context: context,
                     ),
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   mainInfo,
-                  style: QPTextStyle.getButton2SemiBold(context).copyWith(
-                    color: QPColors.getColorBasedTheme(
-                      dark: QPColors.whiteFair,
-                      light: QPColors.blackFair,
-                      brown: QPColors.brownModeMassive,
-                      context: context,
-                    ),
-                  ),
+                  style: QPTextStyle.getButton2SemiBold(
+                    context,
+                  ).copyWith(color: context.qpColors.neutral100),
                 ),
                 Text(
                   description,
                   style: QPTextStyle.baseTextStyle.copyWith(
                     fontWeight: QPFontWeight.regular,
                     fontSize: 8,
-                    color: QPColors.getColorBasedTheme(
+                    color: context.qpColors.resolve(
+                      context.qpColors.neutral100,
                       dark: QPColors.blackRoot,
-                      light: QPColors.blackFair,
-                      brown: QPColors.brownModeMassive,
-                      context: context,
                     ),
                   ),
                 ),

@@ -11,6 +11,7 @@ import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
@@ -134,11 +135,9 @@ class SettingsPage extends ConsumerWidget {
                             "Quran Plus Version",
                             style: QPTextStyle.getSubHeading3Regular(context)
                                 .copyWith(
-                                  color: QPColors.getColorBasedTheme(
+                                  color: context.qpColors.resolve(
+                                    context.qpColors.neutral100,
                                     dark: QPColors.blackFair,
-                                    light: QPColors.blackFair,
-                                    brown: QPColors.brownModeMassive,
-                                    context: context,
                                   ),
                                 ),
                           ),

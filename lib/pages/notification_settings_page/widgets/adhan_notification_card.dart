@@ -5,6 +5,7 @@ import 'package:qurantafsir_flutter/pages/notification_settings_page/notificatio
 import 'package:qurantafsir_flutter/shared/constants/prayer_times.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/prayer_times_notifier.dart';
 
@@ -56,11 +57,9 @@ class AdhanNotificationCard extends ConsumerWidget {
                   Text(
                     "Can't show prayer times, because no location set.",
                     style: QPTextStyle.getSubHeading4Regular(context).copyWith(
-                      color: QPColors.getColorBasedTheme(
-                        dark: QPColors.whiteFair,
+                      color: context.qpColors.resolve(
+                        context.qpColors.neutral100,
                         light: QPColors.blackSoft,
-                        brown: QPColors.brownModeMassive,
-                        context: context,
                       ),
                     ),
                     textAlign: TextAlign.center,
@@ -75,11 +74,9 @@ class AdhanNotificationCard extends ConsumerWidget {
                       style: QPTextStyle.getSubHeading4SemiBold(context)
                           .copyWith(
                             decoration: TextDecoration.underline,
-                            color: QPColors.getColorBasedTheme(
-                              dark: QPColors.whiteFair,
+                            color: context.qpColors.resolve(
+                              context.qpColors.neutral100,
                               light: QPColors.blackMassive,
-                              brown: QPColors.brownModeMassive,
-                              context: context,
                             ),
                           ),
                     ),
@@ -132,11 +129,9 @@ class _AdhanNotificationRow extends StatelessWidget {
           SvgPicture.asset(
             prayer.icon.path,
             colorFilter: ColorFilter.mode(
-              QPColors.getColorBasedTheme(
-                dark: QPColors.whiteFair,
+              context.qpColors.resolve(
+                context.qpColors.brand100,
                 light: QPColors.brandHeavy,
-                brown: QPColors.brownModeMassive,
-                context: context,
               ),
               BlendMode.srcIn,
             ),
@@ -148,11 +143,9 @@ class _AdhanNotificationRow extends StatelessWidget {
             child: Text(
               prayer.label,
               style: QPTextStyle.getBody2Medium(context).copyWith(
-                color: QPColors.getColorBasedTheme(
-                  dark: QPColors.whiteFair,
+                color: context.qpColors.resolve(
+                  context.qpColors.brand100,
                   light: QPColors.brandHeavy,
-                  brown: QPColors.brownModeMassive,
-                  context: context,
                 ),
               ),
             ),
@@ -160,11 +153,9 @@ class _AdhanNotificationRow extends StatelessWidget {
           Text(
             time,
             style: QPTextStyle.getBody2Medium(context).copyWith(
-              color: QPColors.getColorBasedTheme(
-                dark: QPColors.whiteFair,
+              color: context.qpColors.resolve(
+                context.qpColors.neutral100,
                 light: QPColors.blackSoft,
-                brown: QPColors.brownModeMassive,
-                context: context,
               ),
             ),
           ),
@@ -173,11 +164,10 @@ class _AdhanNotificationRow extends StatelessWidget {
             value: enabled,
             onChanged: onChanged,
             activeTrackColor: QPColors.brandHeavy,
-            inactiveThumbColor: QPColors.getColorBasedTheme(
+            inactiveThumbColor: context.qpColors.resolve(
+              context.qpColors.surface60,
               dark: QPColors.blackHeavy,
-              light: QPColors.whiteMassive,
               brown: QPColors.whiteMassive,
-              context: context,
             ),
             inactiveTrackColor: QPColors.whiteSoft,
           ),

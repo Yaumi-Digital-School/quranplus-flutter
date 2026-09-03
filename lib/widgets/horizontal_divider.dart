@@ -5,9 +5,6 @@ class HorizontalDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Divider(
-      height: 1,
-      color: Theme.of(context).dividerColor,
-    );
+    return Divider(height: 1, color: Theme.of(context).dividerColor);
   }
 }

@@ -10,8 +10,9 @@ class AudioMinimizedInfoIconButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<ButtonAudioState> buttonState =
-        ref.watch(buttonAudioStateProvider);
+    final AsyncValue<ButtonAudioState> buttonState = ref.watch(
+      buttonAudioStateProvider,
+    );
 
     return buttonState.when(
       data: (data) {
@@ -46,9 +47,7 @@ class AudioMinimizedInfoIconButton extends ConsumerWidget {
 }
 
 class _IconButton extends StatelessWidget {
-  const _IconButton({
-    required this.icon,
-  });
+  const _IconButton({required this.icon});
 
   final IconData icon;
 
@@ -61,13 +60,7 @@ class _IconButton extends StatelessWidget {
         color: QPColors.brandFair,
         shape: BoxShape.circle,
       ),
-      child: Center(
-        child: Icon(
-          icon,
-          color: Colors.white,
-          size: 20,
-        ),
-      ),
+      child: Center(child: Icon(icon, color: Colors.white, size: 20)),
     );
   }
 }

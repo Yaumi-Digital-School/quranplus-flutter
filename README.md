@@ -54,7 +54,7 @@ Stack:
 4. Extend `_$ClassName` dan implement `build()` sebagai initial state.
 5. Generate file `.g.dart`:
    ```
-   fvm flutter pub run build_runner build --delete-conflicting-outputs
+   fvm dart run build_runner build --delete-conflicting-outputs
    ```
    Selama development, jalankan `... build_runner watch ...` supaya auto-regenerate setiap save.
 

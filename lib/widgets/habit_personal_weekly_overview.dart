@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 
 enum HabitPersonalWeeklyOverviewType {
@@ -57,23 +58,19 @@ class _HabitPersonalWeeklyOverviewWidgetState
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(
-          Radius.circular(8),
-        ),
-        color: QPColors.getColorBasedTheme(
-          dark: QPColors.darkModeFair,
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
+        color: context.qpColors.resolve(
+          context.qpColors.surface40,
           light: QPColors.whiteFair,
-          brown: QPColors.brownModeFair,
-          context: context,
         ),
-        border: Border.fromBorderSide(BorderSide(
-          color: QPColors.getColorBasedTheme(
-            dark: QPColors.darkModeHeavy,
-            light: QPColors.whiteHeavy,
-            brown: QPColors.brownModeHeavy,
-            context: context,
+        border: Border.fromBorderSide(
+          BorderSide(
+            color: context.qpColors.resolve(
+              context.qpColors.surface80,
+              brown: QPColors.brownModeHeavy,
+            ),
           ),
-        )),
+        ),
       ),
       child: Column(
         children: [
@@ -91,17 +88,11 @@ class _HabitPersonalWeeklyOverviewWidgetState
     List<Widget> recaps = <Widget>[];
 
     for (int i = 0; i < summaries.length; i++) {
-      recaps.add(
-        _buildDailyRecapInformation(summaries[i], i, context),
-      );
+      recaps.add(_buildDailyRecapInformation(summaries[i], i, context));
     }
 
     return Padding(
-      padding: const EdgeInsets.only(
-        left: 16,
-        right: 16,
-        bottom: 16,
-      ),
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: recaps,
@@ -161,45 +152,42 @@ class _HabitPersonalWeeklyOverviewWidgetState
     BuildContext context,
   ) {
     final int? selectedPersonalInformationIdx = widget.selectedIdx;
-    final String nameOfDay =
-        DateFormat('EEEE').format(item.date).substring(0, 3);
+    final String nameOfDay = DateFormat(
+      'EEEE',
+    ).format(item.date).substring(0, 3);
     final String numberOfDay = DateFormat('d').format(item.date);
     final bool isToday = cleanDateNow.difference(item.date).inDays == 0;
     final bool isBeforeToday = item.date.difference(cleanDateNow).inDays < 0;
     final bool isAfterToday = item.date.difference(cleanDateNow).inDays > 0;
     final bool isSelected =
         (selectedPersonalInformationIdx == null && isToday) ||
-            (selectedPersonalInformationIdx != null &&
-                selectedPersonalInformationIdx == idxInList);
+        (selectedPersonalInformationIdx != null &&
+            selectedPersonalInformationIdx == idxInList);
 
-    final bool isDisabled = (widget.startEnabledProgressDate != null &&
+    final bool isDisabled =
+        (widget.startEnabledProgressDate != null &&
         widget.startEnabledProgressDate!.difference(item.date).inDays > 0);
 
     BoxDecoration decoration = BoxDecoration(
-      color: QPColors.getColorBasedTheme(
-        dark: Colors.transparent,
+      color: context.qpColors.resolve(
+        context.qpColors.brand20,
         light: Colors.transparent,
-        brown: QPColors.brownModeRoot,
-        context: context,
+        dark: Colors.transparent,
       ),
-      borderRadius: const BorderRadius.all(
-        Radius.circular(8),
-      ),
+      borderRadius: const BorderRadius.all(Radius.circular(8)),
     );
 
     if (isToday) {
-      final Color isTodayColor = QPColors.getColorBasedTheme(
-        dark: Colors.transparent,
+      final Color isTodayColor = context.qpColors.resolve(
+        context.qpColors.brand100,
         light: Colors.transparent,
+        dark: Colors.transparent,
         brown: QPColors.whiteFair,
-        context: context,
       );
 
       decoration = decoration.copyWith(
         border: const Border.fromBorderSide(
-          BorderSide(
-            color: QPColors.warningFair,
-          ),
+          BorderSide(color: QPColors.warningFair),
         ),
         color: isTodayColor,
       );
@@ -208,11 +196,7 @@ class _HabitPersonalWeeklyOverviewWidgetState
     if (!isDisabled && isBeforeToday) {
       decoration = decoration.copyWith(
         border: isSelected
-            ? const Border.fromBorderSide(
-                BorderSide(
-                  color: QPColors.blackSoft,
-                ),
-              )
+            ? const Border.fromBorderSide(BorderSide(color: QPColors.blackSoft))
             : null,
       );
     }
@@ -221,11 +205,10 @@ class _HabitPersonalWeeklyOverviewWidgetState
     TextStyle dayStyle = QPTextStyle.getDescription2Regular(context);
     if (isDisabled) {
       dateStyle = QPTextStyle.getSubHeading3SemiBold(context).copyWith(
-        color: QPColors.getColorBasedTheme(
+        color: context.qpColors.resolve(
+          context.qpColors.neutral40,
           dark: QPColors.blackFair,
-          light: QPColors.blackSoft,
           brown: QPColors.blackFair,
-          context: context,
         ),
       );
       dayStyle = QPTextStyle.getDescription2Regular(context);
@@ -247,20 +230,10 @@ class _HabitPersonalWeeklyOverviewWidgetState
             width: 37,
             child: Column(
               children: [
-                Text(
-                  numberOfDay,
-                  style: dateStyle,
-                ),
-                const SizedBox(
-                  height: 4,
-                ),
-                Text(
-                  nameOfDay,
-                  style: dayStyle,
-                ),
-                const SizedBox(
-                  height: 4,
-                ),
+                Text(numberOfDay, style: dateStyle),
+                const SizedBox(height: 4),
+                Text(nameOfDay, style: dayStyle),
+                const SizedBox(height: 4),
                 Image.asset(
                   _buildUrlStar(
                     totalPages: item.totalPages,
@@ -273,9 +246,7 @@ class _HabitPersonalWeeklyOverviewWidgetState
             ),
           ),
         ),
-        const SizedBox(
-          height: 6,
-        ),
+        const SizedBox(height: 6),
         isSelected
             ? Container(
                 decoration: const BoxDecoration(

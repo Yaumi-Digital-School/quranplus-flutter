@@ -19,8 +19,9 @@ class SelectRecitatorWidget extends ConsumerStatefulWidget {
 class _SelectRecitatorWidgetState extends ConsumerState<SelectRecitatorWidget> {
   @override
   Widget build(BuildContext context) {
-    final SelectReciterBottomSheetState selectReciterState =
-        ref.watch(selectReciterProvider);
+    final SelectReciterBottomSheetState selectReciterState = ref.watch(
+      selectReciterProvider,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,20 +30,14 @@ class _SelectRecitatorWidgetState extends ConsumerState<SelectRecitatorWidget> {
           "Select Reciter",
           style: QPTextStyle.getSubHeading2SemiBold(context),
         ),
-        const SizedBox(
-          height: 5,
-        ),
+        const SizedBox(height: 5),
         Text(
           "Select available reciter for audio recitation",
           style: QPTextStyle.getBody3Regular(context),
         ),
-        const SizedBox(
-          height: 24,
-        ),
+        const SizedBox(height: 24),
         const SelectReciterRadioButton(),
-        const SizedBox(
-          height: 16,
-        ),
+        const SizedBox(height: 16),
         ButtonSecondary(
           label: "Save",
           onTap: _onTapSaveReciterOption(selectReciterState),
@@ -51,12 +46,12 @@ class _SelectRecitatorWidgetState extends ConsumerState<SelectRecitatorWidget> {
     );
   }
 
-  _onTapSaveReciterOption(
-    SelectReciterBottomSheetState selectReciterState,
-  ) {
+  _onTapSaveReciterOption(SelectReciterBottomSheetState selectReciterState) {
     return () async {
       ref.read(audioRecitationProvider.notifier).pauseAudio();
-      await ref.read(selectReciterProvider.notifier).saveDataReciter(
+      await ref
+          .read(selectReciterProvider.notifier)
+          .saveDataReciter(
             selectReciterState.reciterId!,
             selectReciterState.reciterName!,
           );

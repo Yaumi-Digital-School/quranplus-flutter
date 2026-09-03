@@ -1,20 +1,21 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/main.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/city_api.dart';
-import 'package:qurantafsir_flutter/shared/core/apis/tadabbur_api.dart';
-import 'package:qurantafsir_flutter/shared/core/services/alice_service.dart';
-import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/bookmark_api.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/city_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/habit_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/habit_group_api.dart';
+import 'package:qurantafsir_flutter/shared/core/apis/tadabbur_api.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/user_api.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
+import 'package:qurantafsir_flutter/shared/core/services/alice_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
+import 'package:qurantafsir_flutter/shared/core/services/bookmarks_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/deep_link_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qurantafsir_flutter/shared/core/services/bookmarks_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/favorite_ayahs_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
+import 'package:qurantafsir_flutter/shared/core/services/main_page_provider.dart';
+import 'package:qurantafsir_flutter/shared/core/services/mushaf_font_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/notification_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/prayer_times_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/remote_config_service/remote_config_service.dart';
@@ -52,6 +53,11 @@ class DioServiceNotifier extends _$DioServiceNotifier {
 
 final Provider<SharedPreferenceService> sharedPreferenceServiceProvider =
     Provider<SharedPreferenceService>((ref) => SharedPreferenceService());
+
+// Root-level so the loaded-font set survives the reader page being disposed
+// and reopened (the surat page notifiers are autoDispose).
+final Provider<MushafFontService> mushafFontServiceProvider =
+    Provider<MushafFontService>((ref) => MushafFontService());
 
 final Provider<BookmarkApi> bookmarkApiProvider = Provider<BookmarkApi>((ref) {
   final DioService dioService = ref.watch(dioServiceProvider);

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
-
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 
 class SettingsPageMenuItem extends StatelessWidget {
@@ -49,15 +48,17 @@ class SettingsPageMenuItem extends StatelessWidget {
             const SizedBox(width: 16),
             Text(
               title,
-              style: QPTextStyle.getSubHeading2SemiBold(context)
-                  .copyWith(color: customColor),
+              style: QPTextStyle.getSubHeading2SemiBold(
+                context,
+              ).copyWith(color: customColor),
             ),
             const Spacer(),
             if (subtitle != null)
               Text(
                 subtitle!,
-                style: QPTextStyle.getBody3Regular(context)
-                    .copyWith(color: customColor),
+                style: QPTextStyle.getBody3Regular(
+                  context,
+                ).copyWith(color: customColor),
               ),
             const SizedBox(width: 16),
             Icon(

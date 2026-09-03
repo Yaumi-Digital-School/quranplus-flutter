@@ -4,10 +4,7 @@ part 'habit_sync.g.dart';
 
 @JsonSerializable()
 class HabitSyncRequest {
-  HabitSyncRequest({
-    this.lastSync,
-    required this.dailySummaries,
-  });
+  HabitSyncRequest({this.lastSync, required this.dailySummaries});
 
   final String? lastSync;
   @JsonKey(name: 'habit_daily_summaries', toJson: _Helper.dailySummariesToJson)
@@ -22,13 +19,11 @@ class HabitSyncRequest {
 class _Helper {
   static List<Map<String, dynamic>> dailySummariesToJson(
     List<HabitSyncRequestDailySummaryItem> dailySummaries,
-  ) =>
-      dailySummaries.map((e) => e.toJson()).toList();
+  ) => dailySummaries.map((e) => e.toJson()).toList();
 
   static List<Map<String, dynamic>> progressesToJson(
     List<HabitSyncRequestProgressItem> progresses,
-  ) =>
-      progresses.map((e) => e.toJson()).toList();
+  ) => progresses.map((e) => e.toJson()).toList();
 }
 
 @JsonSerializable()
@@ -49,8 +44,7 @@ class HabitSyncRequestDailySummaryItem {
 
   factory HabitSyncRequestDailySummaryItem.fromJson(
     Map<String, dynamic> json,
-  ) =>
-      _$HabitSyncRequestDailySummaryItemFromJson(json);
+  ) => _$HabitSyncRequestDailySummaryItemFromJson(json);
 
   Map<String, dynamic> toJson() =>
       _$HabitSyncRequestDailySummaryItemToJson(this);

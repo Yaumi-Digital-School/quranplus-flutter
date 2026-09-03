@@ -20,12 +20,7 @@ class HabitProgressPostTrackingDialog {
       context: context,
       builder: (context) {
         return AdaptiveThemeDialog(
-          contentPadding: const EdgeInsets.fromLTRB(
-            24.0,
-            20.0,
-            24.0,
-            24.0,
-          ),
+          contentPadding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 24.0),
           borderRadiusValue: 19,
           child: _PostSubmissionRemarks(
             sharedPreferenceService: sharedPreferenceService,
@@ -67,14 +62,13 @@ class HabitProgressPostTrackingDialog {
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.pop(context);
-                    final BottomNavigationBar navbar = mainNavbarGlobalKey
-                        .currentWidget as BottomNavigationBar;
+                    final BottomNavigationBar navbar =
+                        mainNavbarGlobalKey.currentWidget
+                            as BottomNavigationBar;
                     navbar.onTap!(1);
                   },
                 ),
-                const SizedBox(
-                  width: 10,
-                ),
+                const SizedBox(width: 10),
                 ButtonSecondary(
                   size: ButtonSize.small,
                   label: 'Back to Homepage',
@@ -82,12 +76,11 @@ class HabitProgressPostTrackingDialog {
                     Navigator.pop(context);
                     Navigator.pop(
                       context,
-                      SuratPageV3OnPopParam(
-                        isHabitDailySummaryChanged: true,
-                      ),
+                      SuratPageV3OnPopParam(isHabitDailySummaryChanged: true),
                     );
-                    final BottomNavigationBar navbar = mainNavbarGlobalKey
-                        .currentWidget as BottomNavigationBar;
+                    final BottomNavigationBar navbar =
+                        mainNavbarGlobalKey.currentWidget
+                            as BottomNavigationBar;
                     navbar.onTap!(0);
                   },
                 ),
@@ -115,8 +108,9 @@ class _PostSubmissionRemarks extends StatelessWidget {
   Widget build(BuildContext context) {
     final String userName = sharedPreferenceService.getUsername();
     final String titleText = isComplete ? 'Awesome!' : 'Good Job!';
-    final String titleIcon =
-        isComplete ? ImagePath.partyPopper : ImagePath.emojiClap;
+    final String titleIcon = isComplete
+        ? ImagePath.partyPopper
+        : ImagePath.emojiClap;
     final String subtitleText = isComplete
         ? 'Alhamdulillah, $userName!\nYou have reached your target!'
         : 'Good Job, $userName!\nJust a little more to reach your target';
@@ -127,36 +121,25 @@ class _PostSubmissionRemarks extends StatelessWidget {
         Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            const SizedBox(
-              height: 60,
-            ),
+            const SizedBox(height: 60),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Image.asset(
-                  titleIcon,
-                  height: 20,
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
+                Image.asset(titleIcon, height: 20),
+                const SizedBox(width: 5),
                 Text(
                   titleText,
                   style: QPTextStyle.getSubHeading2Medium(context),
                 ),
               ],
             ),
-            const SizedBox(
-              height: 21,
-            ),
+            const SizedBox(height: 21),
             Text(
               subtitleText,
               textAlign: TextAlign.center,
               style: QPTextStyle.getBody3Regular(context),
             ),
-            const SizedBox(
-              height: 43,
-            ),
+            const SizedBox(height: 43),
             cta,
           ],
         ),

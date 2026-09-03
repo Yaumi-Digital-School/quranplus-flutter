@@ -4,10 +4,7 @@ part 'last_recording_data.g.dart';
 
 @JsonSerializable()
 class LastRecordingData {
-  LastRecordingData({
-    required this.surahName,
-    required this.page,
-  });
+  LastRecordingData({required this.surahName, required this.page});
 
   factory LastRecordingData.fromJson(Map<String, dynamic> json) =>
       _$LastRecordingDataFromJson(json);

@@ -71,8 +71,9 @@ class AudioRecitationNotifier extends _$AudioRecitationNotifier {
     final bool shouldGoToNextSurah =
         state.ayahId + 1 > (surahNumberToTotalAyahMap[state.surahId] ?? 0);
 
-    final int nextSurahId =
-        shouldGoToNextSurah ? state.surahId + 1 : state.surahId;
+    final int nextSurahId = shouldGoToNextSurah
+        ? state.surahId + 1
+        : state.surahId;
     final int nextAyahNumber = shouldGoToNextSurah ? 1 : state.ayahId + 1;
 
     final response = await _audioApi.getAudioForSpecificReciterAndAyah(
@@ -86,9 +87,7 @@ class AudioRecitationNotifier extends _$AudioRecitationNotifier {
       title:
           '${surahNumberToSurahNameMap[nextSurahId]} - Ayat: $nextAyahNumber',
       artist: state.reciterName,
-      extras: <String, dynamic>{
-        'url': response.data.audioFileUrl,
-      },
+      extras: <String, dynamic>{'url': response.data.audioFileUrl},
     );
 
     localPlaylist.add(item);
@@ -99,8 +98,9 @@ class AudioRecitationNotifier extends _$AudioRecitationNotifier {
       final bool shouldGoToNextSurah =
           state.ayahId + 1 > (surahNumberToTotalAyahMap[state.surahId] ?? 0);
 
-      final int nextSurahId =
-          shouldGoToNextSurah ? state.surahId + 1 : state.surahId;
+      final int nextSurahId = shouldGoToNextSurah
+          ? state.surahId + 1
+          : state.surahId;
       final int nextAyahNumber = shouldGoToNextSurah ? 1 : state.ayahId + 1;
 
       MediaItem nextMedia = localPlaylist.last;
@@ -148,10 +148,7 @@ class AudioRecitationNotifier extends _$AudioRecitationNotifier {
         ayahNumber: initState.ayahId,
       );
 
-      _initAudioHandlerState(
-        initState,
-        response.data.audioFileUrl,
-      );
+      _initAudioHandlerState(initState, response.data.audioFileUrl);
 
       await getNextAyahMedia();
 
@@ -182,9 +179,7 @@ class AudioRecitationNotifier extends _$AudioRecitationNotifier {
       title: '${newState.surahName} - Ayat: ${newState.ayahId}',
       artUri: Uri.directory('images/logogram.png', windows: false),
       artist: state.reciterName,
-      extras: <String, dynamic>{
-        'url': url,
-      },
+      extras: <String, dynamic>{'url': url},
     );
 
     _audioHandler.setMediaItem(item);
@@ -224,9 +219,7 @@ class AudioRecitationNotifier extends _$AudioRecitationNotifier {
         id: '$surahId-1-${state.reciterId}',
         title: '$surahName - Ayat: 1',
         artist: state.reciterName,
-        extras: <String, dynamic>{
-          'url': response.data.audioFileUrl,
-        },
+        extras: <String, dynamic>{'url': response.data.audioFileUrl},
       );
 
       _audioHandler.setMediaItem(item);

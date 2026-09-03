@@ -1,46 +1,52 @@
-import 'package:just_audio/just_audio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:qurantafsir_flutter/shared/constants/button_audio_enum.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/audio_api.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
-import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/audio_recitation/audio_recitation_handler.dart';
+import 'package:qurantafsir_flutter/shared/core/services/dio_service.dart';
 
 final Provider<AudioRecitationHandler> audioHandler =
     Provider<AudioRecitationHandler>((ref) {
-  return AudioRecitationHandler();
-});
+      return AudioRecitationHandler();
+    });
 
 final StreamProvider<Duration> currentDurationProvider =
     StreamProvider.autoDispose<Duration>((ref) {
-  final AudioRecitationHandler currentAudioHandler = ref.watch(audioHandler);
-  return currentAudioHandler.getPositionStream();
-});
+      final AudioRecitationHandler currentAudioHandler = ref.watch(
+        audioHandler,
+      );
+      return currentAudioHandler.getPositionStream();
+    });
 
 final StreamProvider<Duration?> totalDurationProvider =
     StreamProvider.autoDispose<Duration?>((ref) {
-  final AudioRecitationHandler currentAudioHandler = ref.watch(audioHandler);
-  return currentAudioHandler.getDurationStream();
-});
+      final AudioRecitationHandler currentAudioHandler = ref.watch(
+        audioHandler,
+      );
+      return currentAudioHandler.getDurationStream();
+    });
 
 final StreamProvider<ButtonAudioState> buttonAudioStateProvider =
     StreamProvider.autoDispose<ButtonAudioState>((ref) {
-  final AudioRecitationHandler currentAudioHandler = ref.watch(audioHandler);
-  return currentAudioHandler.getPlayerStateStream().map((event) {
-    final isPlaying = event.playing;
-    final processingState = event.processingState;
-    if (processingState == ProcessingState.loading ||
-        processingState == ProcessingState.buffering) {
-      return ButtonAudioState.loading;
-    } else if (!isPlaying && processingState == ProcessingState.idle) {
-      return ButtonAudioState.stop;
-    } else if (!isPlaying || processingState == ProcessingState.completed) {
-      return ButtonAudioState.paused;
-    } else {
-      return ButtonAudioState.playing;
-    }
-  });
-});
+      final AudioRecitationHandler currentAudioHandler = ref.watch(
+        audioHandler,
+      );
+      return currentAudioHandler.getPlayerStateStream().map((event) {
+        final isPlaying = event.playing;
+        final processingState = event.processingState;
+        if (processingState == ProcessingState.loading ||
+            processingState == ProcessingState.buffering) {
+          return ButtonAudioState.loading;
+        } else if (!isPlaying && processingState == ProcessingState.idle) {
+          return ButtonAudioState.stop;
+        } else if (!isPlaying || processingState == ProcessingState.completed) {
+          return ButtonAudioState.paused;
+        } else {
+          return ButtonAudioState.playing;
+        }
+      });
+    });
 
 final Provider<AudioApi> audioApiProvider = Provider<AudioApi>((ref) {
   final DioService dioService = ref.watch(dioServiceProvider);

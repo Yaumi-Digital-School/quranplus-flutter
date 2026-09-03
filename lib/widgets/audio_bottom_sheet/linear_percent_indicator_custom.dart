@@ -11,10 +11,12 @@ class LinearPercentIndicatorCustom extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue<Duration> currentDuration =
-        ref.watch(currentDurationProvider);
-    final AsyncValue<Duration?> totalDuration =
-        ref.watch(totalDurationProvider);
+    final AsyncValue<Duration> currentDuration = ref.watch(
+      currentDurationProvider,
+    );
+    final AsyncValue<Duration?> totalDuration = ref.watch(
+      totalDurationProvider,
+    );
     final AudioHandler currentAudioHandler = ref.watch(audioHandler);
 
     return ProgressBar(

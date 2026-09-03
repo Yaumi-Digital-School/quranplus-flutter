@@ -17,14 +17,9 @@ class AdaptiveThemeDialog extends StatelessWidget {
     return Dialog(
       backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(borderRadiusValue),
-        ),
+        borderRadius: BorderRadius.all(Radius.circular(borderRadiusValue)),
       ),
-      child: Padding(
-        padding: contentPadding,
-        child: child,
-      ),
+      child: Padding(padding: contentPadding, child: child),
     );
   }
 }

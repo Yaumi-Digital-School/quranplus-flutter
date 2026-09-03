@@ -4,8 +4,7 @@ part 'habit_group.g.dart';
 
 @JsonSerializable()
 class GetHabitGroupsItem {
-  GetHabitGroupsItem(
-  {
+  GetHabitGroupsItem({
     required this.joinDate,
     required this.id,
     required this.name,
@@ -45,10 +44,7 @@ class GetHabitGroupsCompletionItem {
 
 @JsonSerializable()
 class GetHabitGroupsParam {
-  GetHabitGroupsParam({
-    required this.startDate,
-    required this.endDate,
-  });
+  GetHabitGroupsParam({required this.startDate, required this.endDate});
 
   @JsonKey(name: 'start_date')
   final String startDate;
@@ -63,9 +59,7 @@ class GetHabitGroupsParam {
 
 @JsonSerializable()
 class UpdateHabitGroupRequest {
-  UpdateHabitGroupRequest({
-    required this.newName,
-  });
+  UpdateHabitGroupRequest({required this.newName});
 
   @JsonKey(name: 'new_name')
   final String newName;
@@ -78,10 +72,7 @@ class UpdateHabitGroupRequest {
 
 @JsonSerializable()
 class CreateHabitGroupRequest {
-  CreateHabitGroupRequest({
-    required this.name,
-    required this.date,
-  });
+  CreateHabitGroupRequest({required this.name, required this.date});
 
   final String name;
   final String date;
@@ -94,10 +85,7 @@ class CreateHabitGroupRequest {
 
 @JsonSerializable()
 class CreateHabitGroupResponse {
-  CreateHabitGroupResponse({
-    required this.name,
-    required this.id,
-  });
+  CreateHabitGroupResponse({required this.name, required this.id});
 
   final int id;
   final String name;
@@ -119,9 +107,7 @@ class GetHabitGroupDetailResponse {
   final DateTime createdAt;
   final List<GetHabitGroupDetailCompletionItem> completions;
 
-  factory GetHabitGroupDetailResponse.fromJson(
-    Map<String, dynamic> json,
-  ) =>
+  factory GetHabitGroupDetailResponse.fromJson(Map<String, dynamic> json) =>
       _$GetHabitGroupDetailResponseFromJson(json);
 }
 
@@ -141,16 +127,12 @@ class GetHabitGroupDetailCompletionItem {
 
   factory GetHabitGroupDetailCompletionItem.fromJson(
     Map<String, dynamic> json,
-  ) =>
-      _$GetHabitGroupDetailCompletionItemFromJson(json);
+  ) => _$GetHabitGroupDetailCompletionItemFromJson(json);
 }
 
 @JsonSerializable()
 class GetHabitGroupDetailParam {
-  GetHabitGroupDetailParam({
-    required this.startDate,
-    required this.endDate,
-  });
+  GetHabitGroupDetailParam({required this.startDate, required this.endDate});
 
   @JsonKey(name: 'start_date')
   final String startDate;
@@ -177,8 +159,7 @@ class GetHabitGroupMemberSummariesParam {
 
   factory GetHabitGroupMemberSummariesParam.fromJson(
     Map<String, dynamic> json,
-  ) =>
-      _$GetHabitGroupMemberSummariesParamFromJson(json);
+  ) => _$GetHabitGroupMemberSummariesParamFromJson(json);
 
   Map<String, dynamic> toJson() =>
       _$GetHabitGroupMemberSummariesParamToJson(this);
@@ -205,8 +186,7 @@ class GetHabitGroupMemberPersonalItemResponse {
 
   factory GetHabitGroupMemberPersonalItemResponse.fromJson(
     Map<String, dynamic> json,
-  ) =>
-      _$GetHabitGroupMemberPersonalItemResponseFromJson(json);
+  ) => _$GetHabitGroupMemberPersonalItemResponseFromJson(json);
 }
 
 @JsonSerializable()
@@ -224,15 +204,12 @@ class GetHabitGroupMemberPersonalSummaryItem {
 
   factory GetHabitGroupMemberPersonalSummaryItem.fromJson(
     Map<String, dynamic> json,
-  ) =>
-      _$GetHabitGroupMemberPersonalSummaryItemFromJson(json);
+  ) => _$GetHabitGroupMemberPersonalSummaryItemFromJson(json);
 }
 
 @JsonSerializable()
 class JoinHabitGroupRequest {
-  JoinHabitGroupRequest({
-    required this.date,
-  });
+  JoinHabitGroupRequest({required this.date});
 
   final String date;
 
@@ -257,9 +234,7 @@ class JoinHabitGroupResponse {
 
 @JsonSerializable()
 class LeaveHabitGroupRequest {
-  LeaveHabitGroupRequest({
-    required this.date,
-  });
+  LeaveHabitGroupRequest({required this.date});
 
   final String date;
 

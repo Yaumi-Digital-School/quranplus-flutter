@@ -28,28 +28,28 @@ class Surat {
   Tafsir tafsir;
 
   factory Surat.fromJson(Map<String, dynamic> json) => Surat(
-        number: json["number"],
-        name: json["name"],
-        nameLatin: json["name_latin"],
-        slug: json["slug"],
-        numberOfAyah: json["number_of_ayah"],
-        suratNameTranslation: json["surat_name_translation"],
-        ayats: Ayat.fromJson(json["ayats"]),
-        translations: Translation.fromJson(json["translations"]),
-        tafsir: Tafsir.fromJson(json["tafsir"]),
-      );
+    number: json["number"],
+    name: json["name"],
+    nameLatin: json["name_latin"],
+    slug: json["slug"],
+    numberOfAyah: json["number_of_ayah"],
+    suratNameTranslation: json["surat_name_translation"],
+    ayats: Ayat.fromJson(json["ayats"]),
+    translations: Translation.fromJson(json["translations"]),
+    tafsir: Tafsir.fromJson(json["tafsir"]),
+  );
 
   Map<String, dynamic> toJson() => {
-        "number": number,
-        "name": name,
-        "name_latin": nameLatin,
-        "slug": slug,
-        "number_of_ayah": numberOfAyah,
-        "surat_name_translation": suratNameTranslation,
-        "ayats": ayats.toJson(),
-        "translations": translations.toJson(),
-        "tafsir": tafsir.toJson(),
-      };
+    "number": number,
+    "name": name,
+    "name_latin": nameLatin,
+    "slug": slug,
+    "number_of_ayah": numberOfAyah,
+    "surat_name_translation": suratNameTranslation,
+    "ayats": ayats.toJson(),
+    "translations": translations.toJson(),
+    "tafsir": tafsir.toJson(),
+  };
 
   int get numToInt => int.parse(number);
 }

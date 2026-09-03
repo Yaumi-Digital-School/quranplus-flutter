@@ -5,9 +5,8 @@ import 'package:qurantafsir_flutter/shared/core/models/bookmarks.dart';
 import 'package:retrofit/retrofit.dart';
 
 class BookmarksService {
-  BookmarksService({
-    required BookmarkApi bookmarkApi,
-  }) : _bookmarkApi = bookmarkApi;
+  BookmarksService({required BookmarkApi bookmarkApi})
+    : _bookmarkApi = bookmarkApi;
 
   bool _isMerged = false;
   final DbLocal _db = DbLocal();
@@ -32,8 +31,8 @@ class BookmarksService {
   Future<List<Bookmarks>> _getBookmarkList() async {
     List<Bookmarks> listBookmark = <Bookmarks>[];
 
-    HttpResponse<GetBookmarkListResponse> response =
-        await _bookmarkApi.getBookmarkList();
+    HttpResponse<GetBookmarkListResponse> response = await _bookmarkApi
+        .getBookmarkList();
 
     if (response.response.statusCode == 200 && response.data.data != null) {
       listBookmark = response.data.data!;
@@ -74,10 +73,8 @@ class BookmarksService {
       );
     }
 
-    final HttpResponse<GetBookmarkListResponse> _ =
-        await _bookmarkApi.mergeBookmarks(
-      request: request,
-    );
+    final HttpResponse<GetBookmarkListResponse> _ = await _bookmarkApi
+        .mergeBookmarks(request: request);
 
     final List<Bookmarks> serverBookmarks = await _getBookmarkList();
     await _db.clearTableBookmarks();

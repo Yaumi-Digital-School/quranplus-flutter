@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 
 class SelectReciterAudioPreviewButton extends StatelessWidget {
-  const SelectReciterAudioPreviewButton({
-    super.key,
-    required this.icon,
-  });
+  const SelectReciterAudioPreviewButton({super.key, required this.icon});
 
   final IconData icon;
 
@@ -15,21 +13,13 @@ class SelectReciterAudioPreviewButton extends StatelessWidget {
       height: 18,
       width: 18,
       decoration: BoxDecoration(
-        color: QPColors.getColorBasedTheme(
+        color: context.qpColors.resolve(
+          context.qpColors.brand100,
           dark: QPColors.brandFair,
-          light: QPColors.brandFair,
-          brown: QPColors.brownModeMassive,
-          context: context,
         ),
         shape: BoxShape.circle,
       ),
-      child: Center(
-        child: Icon(
-          icon,
-          color: QPColors.whiteFair,
-          size: 12,
-        ),
-      ),
+      child: Center(child: Icon(icon, color: QPColors.whiteFair, size: 12)),
     );
   }
 }

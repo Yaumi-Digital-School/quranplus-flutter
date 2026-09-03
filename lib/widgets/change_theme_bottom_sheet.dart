@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qurantafsir_flutter/shared/core/models/theme_option_color_param.dart';
-import 'package:qurantafsir_flutter/shared/core/state_notifiers/theme_state_notifier.dart';
-import 'package:qurantafsir_flutter/widgets/adaptive_theme_dialog.dart';
-import 'package:qurantafsir_flutter/widgets/theme_box_option_widget.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
-import 'package:qurantafsir_flutter/widgets/utils/general_dialog.dart';
+import 'package:qurantafsir_flutter/shared/core/models/theme_option_color_param.dart';
+import 'package:qurantafsir_flutter/shared/core/state_notifiers/theme_state_notifier.dart';
+import 'package:qurantafsir_flutter/widgets/theme_box_option_widget.dart';
 
 class ChangeThemeBottomSheet extends ConsumerStatefulWidget {
   const ChangeThemeBottomSheet({super.key});
@@ -21,8 +19,7 @@ class _ChangeThemeBottomSheetState
     extends ConsumerState<ChangeThemeBottomSheet> {
   @override
   Widget build(BuildContext context) {
-    final ThemeNotifier themeStateNotifier =
-        ref.read(themeProvider.notifier);
+    final ThemeNotifier themeStateNotifier = ref.read(themeProvider.notifier);
 
     final QPThemeMode stateTheme = ref.read(themeProvider);
 
@@ -50,10 +47,8 @@ class _ChangeThemeBottomSheetState
                   thirdColor: QPColors.whiteRoot,
                 ),
                 isSelected: stateTheme == QPThemeMode.light,
-                onTap: () async => _setTheme(
-                  QPThemeMode.light,
-                  themeStateNotifier,
-                ),
+                onTap: () async =>
+                    _setTheme(QPThemeMode.light, themeStateNotifier),
               ),
             ),
             const SizedBox(width: 16),
@@ -66,10 +61,8 @@ class _ChangeThemeBottomSheetState
                   thirdColor: QPColors.darkModeFair,
                 ),
                 isSelected: stateTheme == QPThemeMode.dark,
-                onTap: () async => _setTheme(
-                  QPThemeMode.dark,
-                  themeStateNotifier,
-                ),
+                onTap: () async =>
+                    _setTheme(QPThemeMode.dark, themeStateNotifier),
               ),
             ),
             const SizedBox(width: 16),
@@ -82,10 +75,8 @@ class _ChangeThemeBottomSheetState
                   thirdColor: QPColors.brownModeFair,
                 ),
                 isSelected: stateTheme == QPThemeMode.brown,
-                onTap: () async => _setTheme(
-                  QPThemeMode.brown,
-                  themeStateNotifier,
-                ),
+                onTap: () async =>
+                    _setTheme(QPThemeMode.brown, themeStateNotifier),
               ),
             ),
           ],
@@ -94,46 +85,10 @@ class _ChangeThemeBottomSheetState
     );
   }
 
-  Future<void> _setTheme(
-    QPThemeMode mode,
-    ThemeNotifier themeNotifier,
-  ) async {
-    showQPGeneralDialog(
-      context: context,
-      isBarrierDismissable: false,
-      builder: (BuildContext context) {
-        return AdaptiveThemeDialog(
-          contentPadding: const EdgeInsets.fromLTRB(
-            24.0,
-            20.0,
-            24.0,
-            24.0,
-          ),
-          borderRadiusValue: 19,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const CircularProgressIndicator(),
-              const SizedBox(
-                height: 24,
-              ),
-              Text(
-                'Applying theme...',
-                style: QPTextStyle.getSubHeading2Regular(context),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-    await Future.delayed(const Duration(seconds: 1), () {
-      themeNotifier.setMode(mode);
-    });
-
-    await Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        Navigator.pop(context);
-      }
-    });
+  Future<void> _setTheme(QPThemeMode mode, ThemeNotifier themeNotifier) async {
+    await themeNotifier.setMode(mode);
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
 }

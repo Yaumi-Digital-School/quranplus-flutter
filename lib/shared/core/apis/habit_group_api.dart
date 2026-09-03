@@ -32,7 +32,7 @@ abstract class HabitGroupApi {
 
   @GET('/api/habit/group/{group_id}/members/summaries')
   Future<HttpResponse<List<GetHabitGroupMemberPersonalItemResponse>>>
-      getHabitGroupMemberSummaries({
+  getHabitGroupMemberSummaries({
     @Path('group_id') required int groupId,
     @Queries() required GetHabitGroupMemberSummariesParam param,
   });

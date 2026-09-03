@@ -39,24 +39,14 @@ class StartHabitCard extends StatelessWidget {
             width: double.infinity,
             height: 108,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                16.0,
-                16.0,
-                16.0,
-                0,
-              ),
+              padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
               child: Column(
                 children: <Widget>[
                   const Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: EdgeInsets.fromLTRB(
-                          7.0,
-                          0,
-                          7.0,
-                          5.0,
-                        ),
+                        padding: EdgeInsets.fromLTRB(7.0, 0, 7.0, 5.0),
                         child: Text(
                           'New! Habit Feature',
                           style: TextStyle(

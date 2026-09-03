@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
@@ -102,8 +103,9 @@ class SelectReciterNotifier extends _$SelectReciterNotifier {
   }
 
   Future<void> saveDataReciter(int id, String name) async {
-    await _sharedPreferenceService
-        .setSelectedReciter(ReciterItemResponse(id: id, name: name));
+    await _sharedPreferenceService.setSelectedReciter(
+      ReciterItemResponse(id: id, name: name),
+    );
   }
 
   Future<void> backToAudioBottomSheet(
@@ -175,9 +177,6 @@ class SelectReciterNotifier extends _$SelectReciterNotifier {
   }
 
   Future<void> updateRadioButton(int reciterId, String reciterName) async {
-    state = state.copyWith(
-      reciterId: reciterId,
-      reciterName: reciterName,
-    );
+    state = state.copyWith(reciterId: reciterId, reciterName: reciterName);
   }
 }

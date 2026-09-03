@@ -39,8 +39,7 @@ class AudioRecitationHandler extends BaseAudioHandler {
 
     return (await File(filePath).writeAsBytes(
       buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
-    ))
-        .uri;
+    )).uri;
   }
 
   void _initHandler() {
@@ -81,12 +80,12 @@ class AudioRecitationHandler extends BaseAudioHandler {
   StreamSubscription<PlayerState> getStreamOnFinishedEvent(
     VoidCallback onFinished,
   ) {
-    final StreamSubscription<PlayerState> res =
-        _player.playerStateStream.listen((playerState) {
-      if (playerState.processingState == ProcessingState.completed) {
-        onFinished();
-      }
-    });
+    final StreamSubscription<PlayerState> res = _player.playerStateStream
+        .listen((playerState) {
+          if (playerState.processingState == ProcessingState.completed) {
+            onFinished();
+          }
+        });
 
     return res;
   }
@@ -101,12 +100,7 @@ class AudioRecitationHandler extends BaseAudioHandler {
     final Duration duration =
         await _player.setUrl(item.extras?['url']) ?? const Duration();
 
-    mediaItem.add(
-      item.copyWith(
-        duration: duration,
-        artUri: icon,
-      ),
-    );
+    mediaItem.add(item.copyWith(duration: duration, artUri: icon));
   }
 
   Stream<Duration> getPositionStream() {

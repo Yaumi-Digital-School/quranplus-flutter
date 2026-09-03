@@ -48,13 +48,13 @@ class HabitGroupNotifier extends _$HabitGroupNotifier {
   Future<void> createGroup(String groupName) async {
     state = state.copyWith(isLoading: true);
     final api = ref.read(habitGroupApiProvider);
-    final HttpResponse<CreateHabitGroupResponse> request =
-        await api.createGroup(
-      request: CreateHabitGroupRequest(
-        name: groupName,
-        date: DateCustomUtils.getCurrentDateInString(),
-      ),
-    );
+    final HttpResponse<CreateHabitGroupResponse> request = await api
+        .createGroup(
+          request: CreateHabitGroupRequest(
+            name: groupName,
+            date: DateCustomUtils.getCurrentDateInString(),
+          ),
+        );
 
     if (request.response.statusCode != 200) {
       state = state.copyWith(isSuccessLoad: false);
@@ -70,13 +70,10 @@ class HabitGroupNotifier extends _$HabitGroupNotifier {
     final api = ref.read(habitGroupApiProvider);
 
     try {
-      final HttpResponse<List<GetHabitGroupsItem>> request =
-          await api.getAllGroups(
-        param: GetHabitGroupsParam(
-          startDate: firstDay,
-          endDate: lastDay,
-        ),
-      );
+      final HttpResponse<List<GetHabitGroupsItem>> request = await api
+          .getAllGroups(
+            param: GetHabitGroupsParam(startDate: firstDay, endDate: lastDay),
+          );
 
       if (request.response.statusCode == 200) {
         state = state.copyWith(isLoading: false, listGroup: request.data);

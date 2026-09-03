@@ -44,8 +44,8 @@ class ReadTadabburNotifier extends _$ReadTadabburNotifier {
     final api = ref.read(tadabburApiProvider);
     try {
       state = state.copyWith(isLoading: true, isError: false);
-      final HttpResponse<List<TadabburItemResponse>> result =
-          await api.getListTadabburOfSurah(surahId: surahId);
+      final HttpResponse<List<TadabburItemResponse>> result = await api
+          .getListTadabburOfSurah(surahId: surahId);
       state = state.copyWith(isLoading: false, listTadabbur: result.data);
     } catch (error, stackTrace) {
       FirebaseCrashlytics.instance.recordError(

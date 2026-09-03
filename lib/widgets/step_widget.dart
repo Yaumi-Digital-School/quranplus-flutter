@@ -26,11 +26,7 @@ class StepParams {
   });
 }
 
-enum StepDirection {
-  column,
-  row,
-  rowReverse,
-}
+enum StepDirection { column, row, rowReverse }
 
 class StepWidget extends StatelessWidget {
   final void Function() onTapNextButton;
@@ -54,8 +50,9 @@ class StepWidget extends StatelessWidget {
             stepParams.description,
             textAlign: TextAlign.center,
             // Todo: check color based on theme
-            style: QPTextStyle.getSubHeading3SemiBold(context)
-                .copyWith(color: Colors.white),
+            style: QPTextStyle.getSubHeading3SemiBold(
+              context,
+            ).copyWith(color: Colors.white),
           ),
           const SizedBox(height: 24),
           InkWell(
@@ -69,8 +66,9 @@ class StepWidget extends StatelessWidget {
               child: Text(
                 stepParams.buttonTitle,
                 // Todo: check color based on theme
-                style: QPTextStyle.getButton2Medium(context)
-                    .copyWith(color: Colors.white),
+                style: QPTextStyle.getButton2Medium(
+                  context,
+                ).copyWith(color: Colors.white),
               ),
             ),
           ),
@@ -93,8 +91,9 @@ class StepWidget extends StatelessWidget {
             children: [
               Positioned(
                 top: stepParams.marginTopMainWidget,
-                right:
-                    stepParams.direction == StepDirection.rowReverse ? 0 : null,
+                right: stepParams.direction == StepDirection.rowReverse
+                    ? 0
+                    : null,
                 child: Column(
                   crossAxisAlignment: stepParams.direction == StepDirection.row
                       ? CrossAxisAlignment.start
@@ -103,8 +102,9 @@ class StepWidget extends StatelessWidget {
                     Text(
                       stepParams.description,
                       // Todo: check color based on theme
-                      style: QPTextStyle.getSubHeading3SemiBold(context)
-                          .copyWith(color: Colors.white),
+                      style: QPTextStyle.getSubHeading3SemiBold(
+                        context,
+                      ).copyWith(color: Colors.white),
                       textAlign: stepParams.direction == StepDirection.row
                           ? TextAlign.left
                           : TextAlign.right,
@@ -124,8 +124,9 @@ class StepWidget extends StatelessWidget {
                         child: Text(
                           stepParams.buttonTitle,
                           // Todo: check color based on theme
-                          style: QPTextStyle.getButton2Medium(context)
-                              .copyWith(color: Colors.white),
+                          style: QPTextStyle.getButton2Medium(
+                            context,
+                          ).copyWith(color: Colors.white),
                         ),
                       ),
                     ),

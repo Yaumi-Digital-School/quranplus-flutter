@@ -28,9 +28,9 @@ class CitiesNotFoundWidget extends StatelessWidget {
                 const TextSpan(text: 'Check your spelling or activate '),
                 TextSpan(
                   text: 'Auto-detect location',
-                  style: QPTextStyle.getDescription2Medium(context).copyWith(
-                    decoration: TextDecoration.underline,
-                  ),
+                  style: QPTextStyle.getDescription2Medium(
+                    context,
+                  ).copyWith(decoration: TextDecoration.underline),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
                       Navigator.pop(context);

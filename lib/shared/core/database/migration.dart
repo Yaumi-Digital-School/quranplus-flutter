@@ -2,13 +2,12 @@ import 'dart:developer';
 
 import 'package:qurantafsir_flutter/shared/core/database/db_bookmarks.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_favorite_ayahs.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_habit_progress.dart';
-import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur_ayah_available.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur.dart';
+import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur_ayah_available.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_tadabbur_reading_content_info.dart';
 import 'package:sqflite/sqflite.dart';
-
-import 'package:qurantafsir_flutter/shared/core/database/db_habit_daily_summary.dart';
 
 class DbMigration {
   int get migrationsCount => _migrations.length;
@@ -23,10 +22,7 @@ class DbMigration {
     _migrate_7,
   ];
 
-  Future<void> migrate(
-    Database db, {
-    int oldVersion = 0,
-  }) async {
+  Future<void> migrate(Database db, {int oldVersion = 0}) async {
     final int startMigrationIndex = oldVersion;
     log('starting migration index : $startMigrationIndex', name: 'migrations');
 
@@ -116,15 +112,13 @@ class DbMigration {
   }
 
   Future<void> _migrate_5(Database db) async {
-    await db.execute(
-      '''
+    await db.execute('''
         CREATE table if not exists ${TadabburAyahAvailableTable.tableName}(
           ${TadabburAyahAvailableTable.id} integer primary key autoincrement not null,
           ${TadabburAyahAvailableTable.surahID} integer not null,
           ${TadabburAyahAvailableTable.listOfAyahInStr} text
         )
-      ''',
-    );
+      ''');
   }
 
   Future<void> _migrate_6(Database db) async {

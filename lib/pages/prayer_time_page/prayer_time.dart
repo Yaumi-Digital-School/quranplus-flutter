@@ -7,6 +7,7 @@ import 'package:qurantafsir_flutter/pages/prayer_time_page/widgets/upcoming_pray
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/widgets/general_app_bar.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/prayer_times_notifier.dart';
@@ -92,11 +93,9 @@ class PrayerTimePage extends ConsumerWidget {
                                   borderRadius: const BorderRadius.all(
                                     Radius.circular(16),
                                   ),
-                                  color: QPColors.getColorBasedTheme(
-                                    dark: QPColors.darkModeFair,
+                                  color: context.qpColors.resolve(
+                                    context.qpColors.surface20,
                                     light: QPColors.brandRoot,
-                                    brown: QPColors.brownModeHeavy,
-                                    context: context,
                                   ),
                                 ),
                                 child: Padding(
@@ -110,12 +109,7 @@ class PrayerTimePage extends ConsumerWidget {
                                       Icon(
                                         Icons.location_on,
                                         size: 12,
-                                        color: QPColors.getColorBasedTheme(
-                                          dark: QPColors.whiteFair,
-                                          light: QPColors.brandFair,
-                                          brown: QPColors.brownModeMassive,
-                                          context: context,
-                                        ),
+                                        color: context.qpColors.brand100,
                                       ),
                                       const SizedBox(width: 4),
                                       Flexible(
@@ -184,11 +178,10 @@ class PrayerTimePage extends ConsumerWidget {
                             "Auto-detect location",
                             style: QPTextStyle.getBody2SemiBold(context)
                                 .copyWith(
-                                  color: QPColors.getColorBasedTheme(
-                                    dark: QPColors.whiteRoot,
+                                  color: context.qpColors.resolve(
+                                    context.qpColors.neutral100,
                                     light: QPColors.blackMassive,
-                                    brown: QPColors.brownModeMassive,
-                                    context: context,
+                                    dark: QPColors.whiteRoot,
                                   ),
                                 ),
                           ),
@@ -199,11 +192,10 @@ class PrayerTimePage extends ConsumerWidget {
                             fit: BoxFit.fitWidth,
                             child: Switch.adaptive(
                               activeTrackColor: QPColors.brandHeavy,
-                              inactiveThumbColor: QPColors.getColorBasedTheme(
+                              inactiveThumbColor: context.qpColors.resolve(
+                                context.qpColors.surface60,
                                 dark: QPColors.blackHeavy,
-                                light: QPColors.whiteMassive,
                                 brown: QPColors.whiteMassive,
-                                context: context,
                               ),
                               inactiveTrackColor: QPColors.whiteSoft,
                               value: locationIsOn,
@@ -263,22 +255,12 @@ class PrayerTimePage extends ConsumerWidget {
                                       height: 14,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2,
-                                        color: QPColors.getColorBasedTheme(
-                                          dark: QPColors.whiteFair,
-                                          light: QPColors.brandFair,
-                                          brown: QPColors.brownModeMassive,
-                                          context: context,
-                                        ),
+                                        color: context.qpColors.brand100,
                                       ),
                                     )
                                   : Container(
                                       decoration: BoxDecoration(
-                                        color: QPColors.getColorBasedTheme(
-                                          dark: QPColors.whiteFair,
-                                          light: QPColors.brandFair,
-                                          brown: QPColors.brownModeMassive,
-                                          context: context,
-                                        ),
+                                        color: context.qpColors.brand100,
                                         borderRadius: BorderRadius.circular(
                                           2,
                                         ), // Set radius here
@@ -303,12 +285,7 @@ class PrayerTimePage extends ConsumerWidget {
                                       context,
                                     ).copyWith(
                                       decoration: TextDecoration.underline,
-                                      color: QPColors.getColorBasedTheme(
-                                        dark: QPColors.whiteFair,
-                                        light: QPColors.brandFair,
-                                        brown: QPColors.brownModeMassive,
-                                        context: context,
-                                      ),
+                                      color: context.qpColors.brand100,
                                     ),
                               ),
                             ],
@@ -332,11 +309,10 @@ class PrayerTimePage extends ConsumerWidget {
                             "Set location manually",
                             style: QPTextStyle.getBody2SemiBold(context)
                                 .copyWith(
-                                  color: QPColors.getColorBasedTheme(
-                                    dark: QPColors.whiteRoot,
+                                  color: context.qpColors.resolve(
+                                    context.qpColors.brand100,
                                     light: QPColors.blackMassive,
-                                    brown: QPColors.brownModeMassive,
-                                    context: context,
+                                    dark: QPColors.whiteRoot,
                                   ),
                                 ),
                           ),
@@ -345,11 +321,10 @@ class PrayerTimePage extends ConsumerWidget {
                             child: Icon(
                               Icons.arrow_forward_ios_rounded,
                               size: 14,
-                              color: QPColors.getColorBasedTheme(
-                                dark: QPColors.whiteRoot,
+                              color: context.qpColors.resolve(
+                                context.qpColors.brand100,
                                 light: QPColors.blackMassive,
-                                brown: QPColors.brownModeMassive,
-                                context: context,
+                                dark: QPColors.whiteRoot,
                               ),
                             ),
                           ),

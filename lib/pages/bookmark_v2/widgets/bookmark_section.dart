@@ -22,9 +22,7 @@ class BookmarkSection extends ConsumerWidget {
     }
 
     if (listBookmarks.isEmpty) {
-      return const BookmarkEmptyState(
-        message: 'There is no bookmark ayah yet',
-      );
+      return const BookmarkEmptyState(message: 'There is no bookmark ayah yet');
     }
 
     return ListView.builder(
@@ -42,9 +40,7 @@ class BookmarkSection extends ConsumerWidget {
               PageTransition(
                 type: PageTransitionType.fade,
                 child: SuratPageV3(
-                  param: SuratPageV3Param(
-                    startPageInIndex: bookmark.page - 1,
-                  ),
+                  param: SuratPageV3Param(startPageInIndex: bookmark.page - 1),
                 ),
               ),
             );
@@ -72,9 +68,7 @@ class BookmarkSection extends ConsumerWidget {
         connectivityStatus: connectivityStatus,
       );
     } else {
-      await notifier.initStateNotifier(
-        connectivityStatus: connectivityStatus,
-      );
+      await notifier.initStateNotifier(connectivityStatus: connectivityStatus);
     }
   }
 }
