@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:audio_service/audio_service.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -48,9 +46,9 @@ Future<void> main() async {
   await sharedPreferenceService.init();
   await NotificationService().init();
 
-  if (Platform.isIOS) {
-    await NotificationService().requestPermissions();
-  }
+  // Request notification permission on both platforms — Android 13+ needs the
+  // runtime POST_NOTIFICATIONS grant, otherwise every notification is dropped.
+  await NotificationService().requestPermissions();
 
   await Workmanager().initialize(callbackDispatcher);
 
