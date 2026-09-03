@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:qurantafsir_flutter/pages/prayer_time_page/widgets/prayer_calculation_selector.dart';
-import 'package:qurantafsir_flutter/pages/prayer_time_page/widgets/prayer_method_info_card.dart';
+import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/pages/prayer_time_page/widgets/prayer_time_row.dart';
+import 'package:qurantafsir_flutter/pages/prayer_time_page/widgets/upcoming_prayer_times_section.dart';
 import 'package:qurantafsir_flutter/shared/constants/image.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
@@ -31,8 +31,8 @@ class PrayerTimePage extends ConsumerWidget {
 
     return Scaffold(
       appBar: const GeneralAppBar(title: 'Prayer Times'),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -54,11 +54,38 @@ class PrayerTimePage extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "Prayer Times",
-                                style: QPTextStyle.getSubHeading2SemiBold(
-                                  context,
-                                ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                textBaseline: TextBaseline.alphabetic,
+                                children: [
+                                  Text(
+                                    "Today",
+                                    style: QPTextStyle.getSubHeading2SemiBold(
+                                      context,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Flexible(
+                                    child: Text(
+                                      DateFormat(
+                                        'EEEE, d MMM yyyy',
+                                      ).format(DateTime.now()),
+                                      style:
+                                          QPTextStyle.getDescription2Medium(
+                                            context,
+                                          ).copyWith(
+                                            color: QPColors.getColorBasedTheme(
+                                              dark: QPColors.whiteRoot,
+                                              light: QPColors.blackFair,
+                                              brown: QPColors.brownModeMassive,
+                                              context: context,
+                                            ),
+                                          ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
                               ),
                               const SizedBox(height: 16),
                               Container(
@@ -113,10 +140,6 @@ class PrayerTimePage extends ConsumerWidget {
                     ),
                     const SizedBox(height: 16),
                     const PrayerTimeRow(),
-                    const SizedBox(height: 16),
-                    const PrayerCalculationSelector(),
-                    const SizedBox(height: 12),
-                    const PrayerMethodInfoCard(),
                   ],
                 ),
               ),
@@ -312,6 +335,8 @@ class PrayerTimePage extends ConsumerWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 24),
+            const UpcomingPrayerTimesSection(),
           ],
         ),
       ),

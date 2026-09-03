@@ -1,4 +1,6 @@
-class SuratPageHabitState {
+import 'package:equatable/equatable.dart';
+
+class SuratPageHabitState extends Equatable {
   const SuratPageHabitState({
     this.isRecording = false,
     this.recordedPagesAsRead = 0,
@@ -30,4 +32,13 @@ class SuratPageHabitState {
           showMinimizedAudioPlayer ?? this.showMinimizedAudioPlayer,
     );
   }
+
+  @override
+  List<Object?> get props => [
+    isRecording,
+    recordedPagesAsRead,
+    isOnReadCTAVisible,
+    isHabitDailySummaryChanged,
+    showMinimizedAudioPlayer,
+  ];
 }

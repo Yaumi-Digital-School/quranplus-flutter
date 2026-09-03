@@ -52,7 +52,6 @@ app.*.map.json
 /android/app/release
 
 # FVM 
-.fvm/flutter_sdk
 
 # env
 *env.json
@@ -60,3 +59,6 @@ env*.json
 
 # jks
 *.jks
+
+# FVM Version Cache
+.fvm/

@@ -1,27 +1,20 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:qurantafsir_flutter/pages/read_tadabbur/read_tadabbur_page.dart';
 import 'package:qurantafsir_flutter/pages/registration_and_login_page/registration_and_login_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_bookmark_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_content_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_habit_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_navigation_notifier.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/pre_tracking_animation.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/submission_dialog.dart';
 import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
-import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
-import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
-import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_widget.dart';
-import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_minimized_info.dart';
-import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
+import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/widgets/utils/general_dialog.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -92,15 +85,9 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
     navNotifier.init(widget.param.startPageInIndex);
     habitNotifier.init(scrollController);
 
-    final fontService = ref.read(mushafFontServiceProvider);
-
     await Future.wait([
       contentNotifier.load(widget.param.startPageInIndex),
       bookmarkNotifier.load(),
-      // Warm the opening page's fonts (and neighbors) while the JSON pages
-      // load, so the first frame doesn't hit the lazy synchronous font parse.
-      fontService.preloadAroundPage(widget.param.startPageInIndex + 1),
-      fontService.preloadSurahNameFont(),
     ]);
 
     if (!mounted) return;
@@ -139,17 +126,17 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
 
   @override
   Widget build(BuildContext context) {
-    // Only watch isLoading so that page changes (currentPage, visibleSuratName)
-    // do not trigger a full scaffold rebuild during the slide animation.
     final bool isLoading = ref.watch(
       suratPageNavigationProvider.select((s) => s.isLoading),
     );
 
-    // Keep providers alive during async init without causing extra rebuilds
-    // (ref.watch would rebuild the whole Scaffold on every state change; the
-    // spots that need these states watch them with narrow selects).
-    ref.listen(suratPageBookmarkProvider, (_, __) {});
+    // Keep these auto-dispose providers alive during async initialization
+    // without rebuilding the whole page when they emit. We return early during
+    // loading and the child ConsumerWidgets do their own narrow watching, so a
+    // no-op listen is enough to hold them (a plain watch would rebuild the whole
+    // tree on every emission).
     ref.listen(suratPageContentProvider, (_, __) {});
+    ref.listen(suratPageBookmarkProvider, (_, __) {});
     ref.listen(suratPageHabitProvider, (_, __) {});
 
     if (isLoading) {
@@ -229,34 +216,27 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
   }
 
   Widget _buildBody(BuildContext context) {
-    final contentState = ref.watch(suratPageContentProvider);
+    final bool isInFullPage = ref.watch(
+      suratPageContentProvider.select((s) => s.readingSettings!.isInFullPage),
+    );
     final habitNotifier = ref.read(suratPageHabitProvider.notifier);
     final navNotifier = ref.read(suratPageNavigationProvider.notifier);
     final bookmarkNotifier = ref.read(suratPageBookmarkProvider.notifier);
     final Orientation orientation = MediaQuery.of(context).orientation;
 
-    final Widget pages = contentState.readingSettings!.isInFullPage
+    final Widget pages = isInFullPage
         ? FullPagePagesView(
             orientation: orientation,
+            scrollController: scrollController,
             onTapToggleCTA: () {
-              final isVisible = ref
-                  .read(suratPageHabitProvider)
-                  .isOnReadCTAVisible;
-              habitNotifier.setOnReadCTAVisible(!isVisible);
+              habitNotifier.toggleReadCTAVisible();
             },
             onPageChanged: (pageIndex) {
-              final int pageValue = pageIndex + 1;
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (!mounted) return;
-                navNotifier.updateOnPageChanged(pageIndex, contentState.pages!);
-                bookmarkNotifier.checkIsBookmarkExists(pageValue);
-                habitNotifier.changePageOnRecording(pageValue);
-                unawaited(
-                  ref
-                      .read(mushafFontServiceProvider)
-                      .preloadAroundPage(pageValue),
-                );
-              });
+              final pages = ref.read(suratPageContentProvider).pages!;
+              navNotifier.updateOnPageChanged(pageIndex, pages);
+              bookmarkNotifier.checkIsBookmarkExists(pageIndex + 1);
+              habitNotifier.changePageOnRecording(pageIndex + 1);
+              habitNotifier.setIsOnReadCTAVisible(true);
             },
           )
         : PerAyahPagesView(
@@ -264,157 +244,54 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
             scrollController: scrollController,
             startPageInIndex: widget.param.startPageInIndex,
             onPageChanged: (pageIndex) {
+              final pages = ref.read(suratPageContentProvider).pages!;
               final int pageValue = pageIndex + 1;
+              habitNotifier.changePageOnRecording(pageValue);
+              bookmarkNotifier.checkIsBookmarkExists(pageValue);
               navNotifier.updateCurrentPage(pageValue);
               navNotifier.updateVisibleJuz(
-                contentState.pages![pageIndex].verses[0].juzNumber,
+                pages[pageIndex].verses[0].juzNumber,
               );
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (!mounted) return;
-                habitNotifier.changePageOnRecording(pageValue);
-                bookmarkNotifier.checkIsBookmarkExists(pageValue);
-                unawaited(
-                  ref
-                      .read(mushafFontServiceProvider)
-                      .preloadAroundPage(pageValue),
-                );
-              });
             },
           );
 
-    final double bottomPadding = MediaQuery.of(context).size.height * 0.025;
-
-    // The overlays are self-rebuilding Consumers so gesture-time habit changes
-    // (CTA hide on swipe start, recording progress on page settle) repaint
-    // only these small widgets and never reconstruct the PageView above.
     return Stack(
       children: [
         pages,
-        Consumer(
-          builder: (context, ref, _) {
-            final bool isRecording = ref.watch(
-              suratPageHabitProvider.select((s) => s.isRecording),
-            );
-            if (!isRecording) return const SizedBox.shrink();
-
-            return Positioned(
-              child: PageTrackerBar(
-                onTap: () => _buildTrackerSubmissionDialog(habitNotifier),
-              ),
-            );
-          },
-        ),
-        Consumer(
-          builder: (context, ref, _) {
-            final (
-              bool isCTAVisible,
-              bool isRecording,
-              bool showMinimizedAudioPlayer,
-            ) = ref.watch(
-              suratPageHabitProvider.select(
-                (s) => (
-                  s.isOnReadCTAVisible,
-                  s.isRecording,
-                  s.showMinimizedAudioPlayer,
-                ),
-              ),
-            );
-            if (!isCTAVisible) return const SizedBox.shrink();
-
-            final String visibleSuratName = ref.watch(
-              suratPageNavigationProvider.select((s) => s.visibleSuratName),
-            );
-            final availableAyahTadabburs = ref.watch(
-              suratPageContentProvider.select((s) => s.availableAyahTadabburs),
-            );
-            final int surahNumber =
-                surahNameToSurahNumberMap[visibleSuratName] ?? 0;
-
-            return Positioned(
-              bottom: bottomPadding,
-              width: MediaQuery.of(context).size.width - 16,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        if (availableAyahTadabburs[surahNumber] != null)
-                          ButtonBrandSoft(
-                            leftWidget: const Icon(
-                              Icons.menu_book,
-                              size: 12,
-                              color: QPColors.brandFair,
-                            ),
-                            title: 'Tadabbur $visibleSuratName',
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                RoutePaths.routeReadTadabbur,
-                                arguments: ReadTadabburParam(
-                                  surahName: visibleSuratName,
-                                  surahId: surahNumber,
-                                  isFromSurahPage: true,
-                                ),
-                              );
-                            },
-                          )
-                        else
-                          const SizedBox.shrink(),
-                        if (!isRecording)
-                          ButtonPrimary(
-                            label: 'Start Tracking',
-                            size: ButtonSize.small,
-                            onTap: () async {
-                              if (!habitNotifier.isLoggedIn) {
-                                final dynamic res = await Navigator.pushNamed(
-                                  context,
-                                  RoutePaths.routeLogin,
-                                  arguments: RegistrationAndLoginPageParam(
-                                    shouldNavigateTabToHome: false,
-                                  ),
-                                );
-
-                                if (res is bool && res) {
-                                  setState(() {});
-                                  await _initAllNotifiers();
-                                  Future.delayed(Duration.zero, () {
-                                    if (!context.mounted) return;
-                                    _startTracking(
-                                      context,
-                                      ref.read(suratPageHabitProvider.notifier),
-                                    );
-                                  });
-                                }
-                                return;
-                              }
-
-                              _startTracking(context, habitNotifier);
-                            },
-                          ),
-                      ],
-                    ),
-                    if (showMinimizedAudioPlayer) ...<Widget>[
-                      const SizedBox(height: 20),
-                      AudioMinimizedInfo(
-                        onTapContainer: () {
-                          GeneralBottomSheet.showBaseBottomSheet(
-                            context: context,
-                            widgetChild: const AudioBottomSheetWidget(),
-                          );
-                        },
-                        onClose: () => habitNotifier.stopRecitation(),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            );
-          },
+        Positioned.fill(
+          child: SuratPageOverlay(
+            onTapTrackerBar: () => _buildTrackerSubmissionDialog(habitNotifier),
+            onTapStartTracking: _onTapStartTracking,
+          ),
         ),
       ],
     );
+  }
+
+  Future<void> _onTapStartTracking() async {
+    final habitNotifier = ref.read(suratPageHabitProvider.notifier);
+
+    if (!habitNotifier.isLoggedIn) {
+      final dynamic res = await Navigator.pushNamed(
+        context,
+        RoutePaths.routeLogin,
+        arguments: RegistrationAndLoginPageParam(
+          shouldNavigateTabToHome: false,
+        ),
+      );
+
+      if (res is bool && res) {
+        setState(() {});
+        await _initAllNotifiers();
+        Future.delayed(Duration.zero, () {
+          if (!mounted) return;
+          _startTracking(context, ref.read(suratPageHabitProvider.notifier));
+        });
+      }
+      return;
+    }
+
+    _startTracking(context, habitNotifier);
   }
 
   Future<void> _startTracking(

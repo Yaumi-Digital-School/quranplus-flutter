@@ -1,3 +1,4 @@
+import 'package:adhan_dart/adhan_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -8,15 +9,20 @@ import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/prayer_times_notifier.dart';
 
 class PrayerTimeRow extends ConsumerWidget {
-  const PrayerTimeRow({super.key});
+  const PrayerTimeRow({super.key, this.prayerTimes});
+
+  /// When provided, the row renders these times directly (used for the Tomorrow
+  /// card and the by-date bottom sheet). When null, it watches
+  /// `prayerTimeProvider` for today's times (the original behavior).
+  final PrayerTimes? prayerTimes;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final prayerTimes = ref.watch(
-      prayerTimeProvider.select((s) => s.prayerTimes),
-    );
+    final PrayerTimes? resolvedPrayerTimes =
+        prayerTimes ??
+        ref.watch(prayerTimeProvider.select((s) => s.prayerTimes));
 
-    final formatter = PrayerTimeState(prayerTimes: prayerTimes);
+    final formatter = PrayerTimeState(prayerTimes: resolvedPrayerTimes);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -48,7 +54,7 @@ class PrayerTimeRow extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  prayerTime.name,
+                  prayerTime.label,
                   style: QPTextStyle.baseTextStyle.copyWith(
                     color: context.qpColors.resolve(
                       context.qpColors.brand100,

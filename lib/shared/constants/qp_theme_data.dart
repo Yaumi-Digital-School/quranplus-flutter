@@ -89,4 +89,17 @@ class QPThemeData {
       extensions: const <ThemeExtension<dynamic>>[QPThemedColors.brown],
     );
   }
+
+  /// Compatibility bridge for pre-extension callers: derives the active mode
+  /// from the scaffold background the themes above set.
+  static QPThemeMode getThemeModeBasedContext(BuildContext context) {
+    final Color background = Theme.of(context).scaffoldBackgroundColor;
+    if (background == QPColors.brownModeRoot) {
+      return QPThemeMode.brown;
+    }
+    if (background == QPColors.darkModeMassive) {
+      return QPThemeMode.dark;
+    }
+    return QPThemeMode.light;
+  }
 }

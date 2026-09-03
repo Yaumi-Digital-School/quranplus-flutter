@@ -1,13 +1,13 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter/rendering.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_navigation_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_habit_state.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
 import 'package:qurantafsir_flutter/shared/core/database/db_local.dart';
+import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart';
 import 'package:qurantafsir_flutter/shared/core/models/last_recording_data.dart';
-import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/services/authentication_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/habit_daily_summary_service.dart';
@@ -152,14 +152,17 @@ class SuratPageHabitNotifier extends _$SuratPageHabitNotifier {
   }
 
   void setShowMinimizedAudioPlayer(bool value) {
+    if (state.showMinimizedAudioPlayer == value) return;
     state = state.copyWith(showMinimizedAudioPlayer: value);
   }
 
-  void setOnReadCTAVisible(bool value) {
-    if (state.isOnReadCTAVisible != value) {
-      state = state.copyWith(isOnReadCTAVisible: value);
-    }
+  void setIsOnReadCTAVisible(bool value) {
+    if (state.isOnReadCTAVisible == value) return;
+    state = state.copyWith(isOnReadCTAVisible: value);
   }
+
+  void toggleReadCTAVisible() =>
+      setIsOnReadCTAVisible(!state.isOnReadCTAVisible);
 
   void stopRecitation() {
     _audioNotifier.stopAndResetAudioPlayer();

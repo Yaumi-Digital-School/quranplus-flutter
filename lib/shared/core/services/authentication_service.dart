@@ -121,7 +121,7 @@ class AuthenticationService {
       FirebaseCrashlytics.instance.recordError(
         error,
         stackTrace,
-        reason: 'error on initRepository() method',
+        reason: 'error on signIn() method (type: ${type.name})',
       );
       throw Exception('SignIn error: $error');
     }

@@ -6,3 +6,5 @@ export 'basmalah_widget.dart';
 export 'tadabbur_available_flag.dart';
 export 'ayah_item_widget.dart';
 export 'surat_page_views.dart';
+export 'surat_page_overlay.dart';
+export 'ayah_detail_bottom_sheet.dart';

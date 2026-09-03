@@ -28,6 +28,34 @@ void scheduleAndroidPrayerTimes() {
   );
 }
 
+/// Immediately (re)posts the ongoing "today's prayer times" notification and
+/// registers a 6-hourly Workmanager task that keeps it re-pinned. This covers
+/// the case where the once-per-day launch worker has already run for the day
+/// (so the notification would otherwise never appear) and re-pins it within
+/// ~6h of an Android 14+ swipe-away, while doubling as daily-rollover
+/// redundancy. Android-only; safe to call from the foreground.
+Future<void> setupPersistentPrayerBar({
+  required SharedPreferenceService sharedPreferenceService,
+}) async {
+  if (!Platform.isAndroid) return;
+
+  final NotificationService notificationService = NotificationService();
+  final PrayerTimesService prayerTimesService = PrayerTimesService(
+    notificationService: notificationService,
+    sharedPreferenceService: sharedPreferenceService,
+  );
+  prayerTimesService.init();
+  await prayerTimesService.showPersistentPrayerTimesNotification();
+
+  Workmanager().registerPeriodicTask(
+    'persistentPrayerBar',
+    PrayerTimesWorker.persistentPrayerBar.name,
+    tag: PrayerTimesWorker.persistentPrayerBar.tag,
+    frequency: const Duration(hours: 6),
+    existingWorkPolicy: ExistingPeriodicWorkPolicy.update,
+  );
+}
+
 /// Schedules prayer time notifications for iOS directly from the foreground.
 /// Schedules 7 days ahead using zonedSchedule (native iOS notification center).
 /// No background task needed — iOS delivers notifications at the exact scheduled time.
@@ -88,6 +116,25 @@ Future<bool> handleWorker(String task, Map<String, dynamic>? inputData) async {
       );
       prayerTimesService.init();
       await prayerTimesService.setupPrayerTimesReminder();
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  if (task == PrayerTimesWorker.persistentPrayerBar.name) {
+    try {
+      final NotificationService notificationService = NotificationService();
+      final SharedPreferenceService sharedPreferenceService =
+          SharedPreferenceService();
+      await sharedPreferenceService.init();
+      await notificationService.init();
+      final PrayerTimesService prayerTimesService = PrayerTimesService(
+        notificationService: notificationService,
+        sharedPreferenceService: sharedPreferenceService,
+      );
+      prayerTimesService.init();
+      await prayerTimesService.showPersistentPrayerTimesNotification();
       return true;
     } catch (_) {
       return false;

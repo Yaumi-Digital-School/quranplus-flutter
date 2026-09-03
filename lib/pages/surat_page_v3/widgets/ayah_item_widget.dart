@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_bookmark_notifier.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_content_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_habit_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_navigation_notifier.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_content_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_content_state.dart';
 import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
 import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
-import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_widget.dart';
@@ -42,18 +41,23 @@ class AyahItemWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final navState = ref.watch(suratPageNavigationProvider);
     final contentState = ref.watch(suratPageContentProvider);
     final navNotifier = ref.read(suratPageNavigationProvider.notifier);
     final habitNotifier = ref.read(suratPageHabitProvider.notifier);
     final bookmarkNotifier = ref.read(suratPageBookmarkProvider.notifier);
     final connectivityStatus = ref.watch(internetConnectionStatusProvider);
+    // Narrow signal: rebuild only when the set of favorited ayahs changes, so
+    // the favorite icon stays correct without depending on ancestor rebuilds.
+    ref.watch(suratPageBookmarkProvider.select((s) => s.favoriteAyahsRevision));
 
     String allVerses = '';
     String fontFamilyPage = 'Page$pageNumberInQuran';
 
+    // At-Taubah (surah 9) is the only surah without a basmalah before its first
+    // verse. Decide from the verse's own surah, not from whichever surah name is
+    // currently visible on screen.
     bool useBasmalahBeforeAyah =
-        navState.visibleSuratName != "At-Taubah" && verse.verseNumber == 1;
+        verse.surahNumber != 9 && verse.verseNumber == 1;
 
     String? translation = contentState
         .translations?[verse.surahNumberInIndex][verse.verseNumberInIndex];
@@ -71,54 +75,62 @@ class AyahItemWidget extends ConsumerWidget {
       allVerses += '${word.code} ';
     }
 
-    return AutoScrollTag(
+    final Widget content = VisibilityDetector(
+      onVisibilityChanged: (info) {
+        if (info.visibleFraction == 1) {
+          navNotifier.updateVisibleSurah(verse.surahNumber);
+          navNotifier.updateVisibleJuz(verse.juzNumber);
+        }
+      },
       key: key,
-      controller: pageNumberInQuran - 1 == startPageInIndex
-          ? scrollController
-          : AutoScrollController(),
-      index: verse.id,
-      child: VisibilityDetector(
-        onVisibilityChanged: (info) {
-          if (info.visibleFraction == 1) {
-            navNotifier.updateVisibleSurah(verse.surahNumber);
-            navNotifier.updateVisibleJuz(verse.juzNumber);
-          }
-        },
-        key: key,
-        child: Column(
-          children: <Widget>[
-            if (useBasmalahBeforeAyah) BasmalahWidget(orientation: orientation),
-            _buildAyahContent(
-              context,
-              allVerses,
-              fontFamilyPage,
-              isFavorited,
-              bookmarkNotifier,
-              habitNotifier,
-              connectivityStatus,
+      child: Column(
+        children: <Widget>[
+          if (useBasmalahBeforeAyah) BasmalahWidget(orientation: orientation),
+          _buildAyahContent(
+            context,
+            allVerses,
+            fontFamilyPage,
+            isFavorited,
+            bookmarkNotifier,
+            habitNotifier,
+            connectivityStatus,
+          ),
+          if (isWithLatins) _buildLatinSection(context, latin!, contentState),
+          if (isWithTranslations)
+            _buildTranslationSection(context, translation!, contentState),
+          if (isWithTafsirs)
+            _buildTafsirSection(context, tafsir!, contentState),
+          if (contentState.availableAyahTadabburs[verse.surahNumber] != null &&
+              contentState.availableAyahTadabburs[verse.surahNumber]!.contains(
+                verse.verseNumber,
+              ))
+            const Align(
+              alignment: Alignment.centerRight,
+              child: TadabburAvailableFlag(),
             ),
-            if (isWithLatins) _buildLatinSection(context, latin!, contentState),
-            if (isWithTranslations)
-              _buildTranslationSection(context, translation!, contentState),
-            if (isWithTafsirs)
-              _buildTafsirSection(context, tafsir!, contentState),
-            if (contentState.availableAyahTadabburs[verse.surahNumber] !=
-                    null &&
-                contentState.availableAyahTadabburs[verse.surahNumber]!
-                    .contains(verse.verseNumber))
-              const Align(
-                alignment: Alignment.centerRight,
-                child: TadabburAvailableFlag(),
-              ),
-            if (useDivider)
-              const Padding(
-                padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
-                child: HorizontalDivider(),
-              ),
-          ],
-        ),
+          if (useDivider)
+            const Padding(
+              padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+              child: HorizontalDivider(),
+            ),
+        ],
       ),
     );
+
+    // Only the start page is ever targeted by scrollToIndex, so only that page
+    // needs an AutoScrollTag wired to the real scrollController. Other pages
+    // render the content directly (avoiding a throwaway AutoScrollController per
+    // ayah on every build).
+    if (pageNumberInQuran - 1 == startPageInIndex) {
+      return AutoScrollTag(
+        key: key,
+        controller: scrollController,
+        index: verse.id,
+        child: content,
+      );
+    }
+
+    return content;
   }
 
   Widget _buildAyahContent(
@@ -174,9 +186,11 @@ class AyahItemWidget extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   IconButton(
-                    color: context.qpColors.resolve(
-                      context.qpColors.neutral20,
+                    color: QPColors.getColorBasedTheme(
+                      dark: QPColors.blackFair,
                       light: QPColors.blackFair,
+                      brown: QPColors.brownModeHeavy,
+                      context: context,
                     ),
                     padding: const EdgeInsets.all(0),
                     alignment: Alignment.centerLeft,
@@ -222,10 +236,11 @@ class AyahItemWidget extends ConsumerWidget {
             fontSize: orientation == Orientation.landscape
                 ? contentState.readingSettings!.valueFontSizeLandscape
                 : contentState.readingSettings?.valueFontSize,
-            color: context.qpColors.resolve(
-              context.qpColors.brand100,
-              light: QPColors.neutral600,
+            color: QPColors.getColorBasedTheme(
               dark: QPColors.blackSoft,
+              light: QPColors.neutral600,
+              brown: QPColors.brownModeMassive,
+              context: context,
             ),
           ),
         ),
@@ -261,9 +276,11 @@ class AyahItemWidget extends ConsumerWidget {
     return Container(
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: context.qpColors.resolve(
-          context.qpColors.surface40,
+        color: QPColors.getColorBasedTheme(
+          dark: QPColors.darkModeFair,
+          light: QPColors.whiteSoft,
           brown: QPColors.brownModeHeavy,
+          context: context,
         ),
         borderRadius: const BorderRadius.all(Radius.circular(8)),
       ),
@@ -278,7 +295,12 @@ class AyahItemWidget extends ConsumerWidget {
                 style: QPTextStyle.getDescription1Regular(context).copyWith(
                   height: 1.5,
                   fontSize: contentState.readingSettings?.valueFontSize,
-                  color: context.qpColors.neutral100,
+                  color: QPColors.getColorBasedTheme(
+                    dark: QPColors.whiteFair,
+                    light: QPColors.blackFair,
+                    brown: QPColors.brownModeMassive,
+                    context: context,
+                  ),
                 ),
               ),
             ),
@@ -288,10 +310,11 @@ class AyahItemWidget extends ConsumerWidget {
               child: Text(
                 'Tafsir Ringkasan Kemenag',
                 style: QPTextStyle.getDescription1Regular(context).copyWith(
-                  color: context.qpColors.resolve(
-                    context.qpColors.brand100,
-                    light: Colors.black.withValues(alpha: 0.5),
+                  color: QPColors.getColorBasedTheme(
                     dark: QPColors.blackSoft,
+                    light: Colors.black.withValues(alpha: 0.5),
+                    brown: QPColors.brownModeMassive,
+                    context: context,
                   ),
                 ),
               ),

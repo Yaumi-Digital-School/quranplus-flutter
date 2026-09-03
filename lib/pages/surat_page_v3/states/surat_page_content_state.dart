@@ -6,7 +6,6 @@ class SuratPageContentState {
   SuratPageContentState({
     this.pages,
     this.fullPageSeparators,
-    this.fullPageLineTexts,
     this.separatorsByPage = const {},
     this.translations,
     this.tafsirs,
@@ -18,9 +17,9 @@ class SuratPageContentState {
   final List<QuranPage>? pages;
   final List<FullPageSeparator>? fullPageSeparators;
 
-  /// The 15 mushaf line strings per page ([pageIndex][line]), precomputed once
-  /// on load so PageView item builds don't re-concatenate every word.
-  final List<List<String>>? fullPageLineTexts;
+  /// Full page separators grouped by their `page` number, precomputed once so
+  /// that full-page rendering can look separators up per page without relying on
+  /// a mutable running index that assumes pages build sequentially.
   final Map<int, List<FullPageSeparator>> separatorsByPage;
   final List<List<String>>? translations;
   final List<List<String>>? tafsirs;
@@ -31,7 +30,6 @@ class SuratPageContentState {
   SuratPageContentState copyWith({
     List<QuranPage>? pages,
     List<FullPageSeparator>? fullPageSeparators,
-    List<List<String>>? fullPageLineTexts,
     Map<int, List<FullPageSeparator>>? separatorsByPage,
     List<List<String>>? translations,
     List<List<String>>? tafsirs,
@@ -42,7 +40,6 @@ class SuratPageContentState {
     return SuratPageContentState(
       pages: pages ?? this.pages,
       fullPageSeparators: fullPageSeparators ?? this.fullPageSeparators,
-      fullPageLineTexts: fullPageLineTexts ?? this.fullPageLineTexts,
       separatorsByPage: separatorsByPage ?? this.separatorsByPage,
       translations: translations ?? this.translations,
       tafsirs: tafsirs ?? this.tafsirs,

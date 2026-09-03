@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.9.1 (2026-09-03)
+
+### Bug Fixes
+
+- fix: remove media permission (d6728fa)
+
+## 1.9.0 (2026-09-03)
+
+### Features
+
+- feat: improve and fix some performance issue (4d3b067)
+- feat: implement adhan notification card (#92) (1b8b832)
+- feat: implement automatic location detection for prayer times using geolocator and geocoding services (#93) (d4feca9)
+- feat: enable quran reminder (#90) (e336bda)
+- feat: add manual location selection for prayer times (#73) (5e14140)
+- feat: track active users via device ping on app open (#79) (0d63082)
+
+### Bug Fixes
+
+- fix: fix bump_version script (cc1ce56)
+- fix: minor issues on UI (#91) (8144f3c)
+- fix: adhan functionality for android (#87) (7c777db)
+
 ## [1.8.0](https://github.com/Yaumi-Digital-School/quranplus-flutter/compare/v1.7.0...v1.8.0) (2026-04-25)
 
 

@@ -36,6 +36,8 @@ class SharedPreferenceService {
   final String _autoDetectLocationKey = "autoDetectLocation";
   final String _deviceIdKey = 'device-id';
   final String _adhanEnabledMapKey = 'adhan-enabled-map';
+  final String _persistentPrayerNotifEnabledKey =
+      'persistent-prayer-notif-enabled';
 
   Future<void> init() async {
     _sharedPreferences = await SharedPreferences.getInstance();
@@ -279,5 +281,13 @@ class SharedPreferenceService {
       for (final prayer in PrayerTimesList.values)
         prayer: decoded[prayer.name] as bool? ?? true,
     };
+  }
+
+  Future<void> setPersistentPrayerNotifEnabled(bool value) async {
+    await _sharedPreferences.setBool(_persistentPrayerNotifEnabledKey, value);
+  }
+
+  bool getPersistentPrayerNotifEnabled() {
+    return _sharedPreferences.getBool(_persistentPrayerNotifEnabledKey) ?? true;
   }
 }

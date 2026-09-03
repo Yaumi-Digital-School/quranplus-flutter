@@ -264,29 +264,10 @@ class PrayerTimeNotifier extends _$PrayerTimeNotifier {
     } else {
       await _prayerTimesService.setupPrayerTimesReminder();
     }
-  }
 
-  Future<void> updatePrayerTimes(
-    String calculationMethod,
-    String madhab,
-  ) async {
-    final updatedPrayerTimes = _prayerTimesService.getPrayerTimesByDate(
-      calculationMethod: calculationMethod,
-      madhab: madhab,
-    );
-    state = state.copyWith(prayerTimes: updatedPrayerTimes);
-
-    if (Platform.isIOS) {
-      await _prayerTimesService.setupMultiDayPrayerTimesReminder(
-        calculationMethod: calculationMethod,
-        madhab: madhab,
-      );
-    } else {
-      await _prayerTimesService.setupPrayerTimesReminder(
-        calculationMethod: calculationMethod,
-        madhab: madhab,
-      );
-    }
+    // Post the ongoing prayer-times bar immediately on first-ever location
+    // detection / location change (self-guards to Android; a no-op elsewhere).
+    await _prayerTimesService.showPersistentPrayerTimesNotification();
   }
 
   void refresh() {

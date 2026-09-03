@@ -88,4 +88,23 @@ class QPColors {
   static const Color themeCardBackgroundDark = Color(0xFF1D1D1D);
   static const Color themeCardBackgroundLight = Color(0xFFFFFFFF);
   static const Color themeCardBackgroundBrown = Color(0xFFE4D0A6);
+
+  /// Resolves a color for the active QP theme. Compatibility bridge for code
+  /// that predates the `context.qpColors` ThemeExtension API; detects the mode
+  /// from the scaffold background the themes still set.
+  static Color getColorBasedTheme({
+    required Color dark,
+    required Color light,
+    required Color brown,
+    required BuildContext context,
+  }) {
+    final Color background = Theme.of(context).scaffoldBackgroundColor;
+    if (background == brownModeRoot) {
+      return brown;
+    }
+    if (background == darkModeMassive) {
+      return dark;
+    }
+    return light;
+  }
 }

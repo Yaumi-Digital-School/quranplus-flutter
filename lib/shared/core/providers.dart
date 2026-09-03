@@ -48,23 +48,6 @@ class DioServiceNotifier extends _$DioServiceNotifier {
 }
 
 // ---------------------------------------------------------------------------
-// CalculationMethod & Madhub — replace old StateProvider<String>
-// ---------------------------------------------------------------------------
-@Riverpod(keepAlive: true)
-class CalculationMethod extends _$CalculationMethod {
-  @override
-  String build() => 'singapore';
-  void set(String value) => state = value;
-}
-
-@Riverpod(keepAlive: true)
-class Madhub extends _$Madhub {
-  @override
-  String build() => 'shafi';
-  void set(String value) => state = value;
-}
-
-// ---------------------------------------------------------------------------
 // Static service providers (plain Provider<T> — no state, no code gen needed)
 // ---------------------------------------------------------------------------
 

@@ -51,6 +51,12 @@ class _SplashPageState extends ConsumerState<SplashPage> {
         sharedPref.setLatestPrayerTimeSynced(currentDateTime);
       }
 
+      // Persistent prayer-times bar: post immediately + register the 6-hourly
+      // re-pin task on every launch, independent of the once-per-day gate above
+      // (which otherwise leaves the notification absent when the daily worker
+      // already ran for the day). Android-only; the helper self-guards.
+      await setupPersistentPrayerBar(sharedPreferenceService: sharedPref);
+
       final connectivityStatus = ref.read(internetConnectionStatusProvider);
 
       final notifier = ref.read(splashPageProvider.notifier);

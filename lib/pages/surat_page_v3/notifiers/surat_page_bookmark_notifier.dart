@@ -48,7 +48,9 @@ class SuratPageBookmarkNotifier extends _$SuratPageBookmarkNotifier {
   }
 
   void checkIsBookmarkExists(int page) {
-    state = state.copyWith(visibleIconBookmark: _bookmarkList.contains(page));
+    final bool exists = _bookmarkList.contains(page);
+    if (state.visibleIconBookmark == exists) return;
+    state = state.copyWith(visibleIconBookmark: exists);
   }
 
   bool isAyahFavorited(int ayahID) => _favoriteAyahList.contains(ayahID);
@@ -119,7 +121,10 @@ class SuratPageBookmarkNotifier extends _$SuratPageBookmarkNotifier {
         page: page,
       );
     }
-    state = state.copyWith(isFavoriteAyahChanged: true);
+    state = state.copyWith(
+      isFavoriteAyahChanged: true,
+      favoriteAyahsRevision: state.favoriteAyahsRevision + 1,
+    );
   }
 
   Future<void> _deleteFavoriteAyah(int ayahID) async {

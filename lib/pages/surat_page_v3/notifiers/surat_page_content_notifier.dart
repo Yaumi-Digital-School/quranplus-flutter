@@ -39,12 +39,14 @@ class SuratPageContentNotifier extends _$SuratPageContentNotifier {
     if (settings.isWithTafsirs) await _generateBaseTafsirs();
 
     final separators = await _getFullPageSeparators();
-    final separatorsByPage = _groupSeparatorsByPage(separators);
+    final Map<int, List<FullPageSeparator>> separatorsByPage = {};
+    for (final FullPageSeparator separator in separators) {
+      separatorsByPage.putIfAbsent(separator.page, () => []).add(separator);
+    }
 
     state = SuratPageContentState(
       pages: pages,
       fullPageSeparators: separators,
-      fullPageLineTexts: _buildFullPageLineTexts(pages, separatorsByPage),
       separatorsByPage: separatorsByPage,
       translations: _translations,
       tafsirs: _tafsirs,
@@ -52,48 +54,6 @@ class SuratPageContentNotifier extends _$SuratPageContentNotifier {
       readingSettings: settings,
       availableAyahTadabburs: state.availableAyahTadabburs,
     );
-  }
-
-  Map<int, List<FullPageSeparator>> _groupSeparatorsByPage(
-    List<FullPageSeparator> separators,
-  ) {
-    final Map<int, List<FullPageSeparator>> byPage = {};
-    for (final FullPageSeparator separator in separators) {
-      byPage.putIfAbsent(separator.page, () => []).add(separator);
-    }
-    return byPage;
-  }
-
-  /// Precomputes the 15 mushaf line strings for every page, with surah-header
-  /// separator lines already applied (bismillah lines stay empty so the view
-  /// renders BasmalahWidget), so PageView item builds are a plain list lookup.
-  List<List<String>> _buildFullPageLineTexts(
-    List<QuranPage> pages,
-    Map<int, List<FullPageSeparator>> separatorsByPage,
-  ) {
-    return List<List<String>>.generate(pages.length, (int pageIndex) {
-      final List<StringBuffer> buffers = List<StringBuffer>.generate(
-        15,
-        (_) => StringBuffer(),
-      );
-      for (final Verse verse in pages[pageIndex].verses) {
-        for (final Word word in verse.words) {
-          buffers[word.lineNumber - 1].write(word.code);
-        }
-      }
-
-      final List<String> lines = buffers
-          .map((StringBuffer buffer) => buffer.toString())
-          .toList();
-      for (final FullPageSeparator separator
-          in separatorsByPage[pageIndex + 1] ?? []) {
-        if (!separator.bismillah) {
-          lines[separator.line - 1] = separator.unicode!;
-        }
-      }
-
-      return lines;
-    });
   }
 
   Future<void> _getTadabburAyahAvailable() async {
@@ -157,6 +117,26 @@ class SuratPageContentNotifier extends _$SuratPageContentNotifier {
     _tafsirs = map
         .map((e) => (e as List).map((e) => (e as String)).toList())
         .toList();
+  }
+
+  /// Loads translations and tafsirs on demand (e.g. for the ayah detail sheet)
+  /// WITHOUT touching readingSettings — the sheet must show them regardless of
+  /// whether the reader enabled translation/tafsir in the page view.
+  Future<void> ensureAyahDetailContent() async {
+    bool changed = false;
+
+    if (state.translations == null || state.translations!.isEmpty) {
+      await _generateTranslations();
+      changed = true;
+    }
+    if (state.tafsirs == null || state.tafsirs!.isEmpty) {
+      await _generateBaseTafsirs();
+      changed = true;
+    }
+
+    if (changed) {
+      state = state.copyWith(translations: _translations, tafsirs: _tafsirs);
+    }
   }
 
   Future<void> setIsWithTranslations(bool value) async {

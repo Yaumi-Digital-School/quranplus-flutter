@@ -1,9 +1,9 @@
-import 'package:flutter/widgets.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_bookmark_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_content_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_navigation_state.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
+import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'surat_page_navigation_notifier.g.dart';
@@ -17,7 +17,7 @@ class SuratPageNavigationNotifier extends _$SuratPageNavigationNotifier {
   List<int> get firstPageKeys => _firstPageSurahPointer;
 
   @override
-  SuratPageNavigationState build() => SuratPageNavigationState();
+  SuratPageNavigationState build() => const SuratPageNavigationState();
 
   void init(int startPageInIndex) {
     _startPageInIndex = startPageInIndex;
@@ -74,6 +74,23 @@ class SuratPageNavigationNotifier extends _$SuratPageNavigationNotifier {
         visibleSuratName: surahNumberToSurahNameMap[surahNumber]!,
       );
     }
+  }
+
+  void setHighlightedAyah(int ayahId) {
+    if (state.highlightedAyahId == ayahId) return;
+    state = state.copyWith(highlightedAyahId: ayahId);
+  }
+
+  void clearHighlightedAyah() {
+    if (state.highlightedAyahId == null) return;
+    // copyWith cannot null a field, so rebuild explicitly to clear it.
+    state = SuratPageNavigationState(
+      currentPage: state.currentPage,
+      visibleSuratName: state.visibleSuratName,
+      visibleJuzNumber: state.visibleJuzNumber,
+      pageController: state.pageController,
+      isLoading: state.isLoading,
+    );
   }
 
   void addFirstPagePointer(int value) => _firstPageSurahPointer.add(value);
