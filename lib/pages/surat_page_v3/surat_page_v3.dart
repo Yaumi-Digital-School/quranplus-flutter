@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:qurantafsir_flutter/pages/read_tadabbur/read_tadabbur_page.dart';
 import 'package:qurantafsir_flutter/pages/registration_and_login_page/registration_and_login_page.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_bookmark_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_content_notifier.dart';
@@ -11,14 +10,10 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_nav
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/pre_tracking_animation.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/submission_dialog.dart';
 import 'package:qurantafsir_flutter/shared/constants/connectivity_status_enum.dart';
-import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
 import 'package:qurantafsir_flutter/shared/core/providers/internet_connection_provider.dart';
 import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_bottom_sheet_widget.dart';
-import 'package:qurantafsir_flutter/widgets/audio_bottom_sheet/audio_minimized_info.dart';
-import 'package:qurantafsir_flutter/widgets/button.dart';
 import 'package:qurantafsir_flutter/widgets/general_bottom_sheet.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/widgets/utils/general_dialog.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -27,10 +22,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'widgets/widgets.dart';
 
-enum AyahFontSize {
-  big,
-  regular,
-}
+enum AyahFontSize { big, regular }
 
 class SuratPageV3OnPopParam {
   SuratPageV3OnPopParam({
@@ -59,10 +51,7 @@ class SuratPageV3Param {
 }
 
 class SuratPageV3 extends ConsumerStatefulWidget {
-  const SuratPageV3({
-    super.key,
-    required this.param,
-  });
+  const SuratPageV3({super.key, required this.param});
 
   final SuratPageV3Param param;
 
@@ -79,8 +68,9 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
     super.initState();
     WakelockPlus.enable();
     scrollController = AutoScrollController();
-    VisibilityDetectorController.instance.updateInterval =
-        const Duration(milliseconds: 300);
+    VisibilityDetectorController.instance.updateInterval = const Duration(
+      milliseconds: 300,
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _initAllNotifiers();
     });
@@ -136,19 +126,21 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
 
   @override
   Widget build(BuildContext context) {
-    final navState = ref.watch(suratPageNavigationProvider);
+    final bool isLoading = ref.watch(
+      suratPageNavigationProvider.select((s) => s.isLoading),
+    );
 
-    // Watch all providers to keep them alive during async initialization.
-    // Without these, auto-dispose providers get disposed before child
-    // ConsumerWidgets are built (since we return early during loading).
-    ref.watch(suratPageContentProvider);
-    ref.watch(suratPageBookmarkProvider);
-    ref.watch(suratPageHabitProvider);
+    // Keep these auto-dispose providers alive during async initialization
+    // without rebuilding the whole page when they emit. We return early during
+    // loading and the child ConsumerWidgets do their own narrow watching, so a
+    // no-op listen is enough to hold them (a plain watch would rebuild the whole
+    // tree on every emission).
+    ref.listen(suratPageContentProvider, (_, __) {});
+    ref.listen(suratPageBookmarkProvider, (_, __) {});
+    ref.listen(suratPageHabitProvider, (_, __) {});
 
-    if (navState.isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+    if (isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     final habitNotifier = ref.read(suratPageHabitProvider.notifier);
@@ -164,8 +156,7 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
         appBar: SuratPageAppBar(
           onTapBack: () => _onTapBack(habitNotifier),
           onTapPlayRecitation: () => _onPlayRecitationAppBar(),
-          onTapOpenSettings: () =>
-              _scaffoldKey.currentState?.openEndDrawer(),
+          onTapOpenSettings: () => _scaffoldKey.currentState?.openEndDrawer(),
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -184,13 +175,10 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
 
     if (connectivityStatus == ConnectivityStatus.isDisconnected &&
         context.mounted) {
-      GeneralBottomSheet.showNoInternetBottomSheet(
-        context,
-        () {
-          Navigator.pop(context);
-          _onPlayRecitationAppBar();
-        },
-      );
+      GeneralBottomSheet.showNoInternetBottomSheet(context, () {
+        Navigator.pop(context);
+        _onPlayRecitationAppBar();
+      });
       return;
     }
 
@@ -228,33 +216,27 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
   }
 
   Widget _buildBody(BuildContext context) {
-    final contentState = ref.watch(suratPageContentProvider);
-    final habitState = ref.watch(suratPageHabitProvider);
-    final navState = ref.watch(suratPageNavigationProvider);
+    final bool isInFullPage = ref.watch(
+      suratPageContentProvider.select((s) => s.readingSettings!.isInFullPage),
+    );
     final habitNotifier = ref.read(suratPageHabitProvider.notifier);
     final navNotifier = ref.read(suratPageNavigationProvider.notifier);
     final bookmarkNotifier = ref.read(suratPageBookmarkProvider.notifier);
     final Orientation orientation = MediaQuery.of(context).orientation;
 
-    final Widget pages = contentState.readingSettings!.isInFullPage
+    final Widget pages = isInFullPage
         ? FullPagePagesView(
             orientation: orientation,
             scrollController: scrollController,
             onTapToggleCTA: () {
-              habitNotifier.setShowMinimizedAudioPlayer(
-                !ref.read(suratPageHabitProvider).isOnReadCTAVisible,
-              );
+              habitNotifier.toggleReadCTAVisible();
             },
             onPageChanged: (pageIndex) {
-              navNotifier.updateOnPageChanged(
-                  pageIndex, contentState.pages!);
-              bookmarkNotifier
-                  .checkIsBookmarkExists(navState.currentPage);
-              habitNotifier
-                  .changePageOnRecording(navState.currentPage);
-              habitNotifier.setShowMinimizedAudioPlayer(
-                ref.read(suratPageHabitProvider).isOnReadCTAVisible,
-              );
+              final pages = ref.read(suratPageContentProvider).pages!;
+              navNotifier.updateOnPageChanged(pageIndex, pages);
+              bookmarkNotifier.checkIsBookmarkExists(pageIndex + 1);
+              habitNotifier.changePageOnRecording(pageIndex + 1);
+              habitNotifier.setIsOnReadCTAVisible(true);
             },
           )
         : PerAyahPagesView(
@@ -262,122 +244,54 @@ class _SuratPageV3State extends ConsumerState<SuratPageV3> {
             scrollController: scrollController,
             startPageInIndex: widget.param.startPageInIndex,
             onPageChanged: (pageIndex) {
+              final pages = ref.read(suratPageContentProvider).pages!;
               final int pageValue = pageIndex + 1;
               habitNotifier.changePageOnRecording(pageValue);
               bookmarkNotifier.checkIsBookmarkExists(pageValue);
               navNotifier.updateCurrentPage(pageValue);
               navNotifier.updateVisibleJuz(
-                  contentState.pages![pageIndex].verses[0].juzNumber);
+                pages[pageIndex].verses[0].juzNumber,
+              );
             },
           );
-
-    final double bottomPadding = MediaQuery.of(context).size.height * 0.025;
 
     return Stack(
       children: [
         pages,
-        if (habitState.isRecording)
-          Positioned(
-            child: PageTrackerBar(
-              onTap: () => _buildTrackerSubmissionDialog(habitNotifier),
-            ),
+        Positioned.fill(
+          child: SuratPageOverlay(
+            onTapTrackerBar: () => _buildTrackerSubmissionDialog(habitNotifier),
+            onTapStartTracking: _onTapStartTracking,
           ),
-        if (habitState.isOnReadCTAVisible)
-          Positioned(
-            bottom: bottomPadding,
-            width: MediaQuery.of(context).size.width - 16,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Builder(builder: (context) {
-                        final surahNumber =
-                            surahNameToSurahNumberMap[
-                                    navState.visibleSuratName] ??
-                                0;
-                        if (contentState
-                                .availableAyahTadabburs[surahNumber] !=
-                            null) {
-                          return ButtonBrandSoft(
-                            leftWidget: const Icon(
-                              Icons.menu_book,
-                              size: 12,
-                              color: QPColors.brandFair,
-                            ),
-                            title:
-                                'Tadabbur ${navState.visibleSuratName}',
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                RoutePaths.routeReadTadabbur,
-                                arguments: ReadTadabburParam(
-                                  surahName: navState.visibleSuratName,
-                                  surahId: surahNumber,
-                                  isFromSurahPage: true,
-                                ),
-                              );
-                            },
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      }),
-                      if (!habitState.isRecording)
-                        ButtonPrimary(
-                          label: 'Start Tracking',
-                          size: ButtonSize.small,
-                          onTap: () async {
-                            if (!habitNotifier.isLoggedIn) {
-                              final dynamic res =
-                                  await Navigator.pushNamed(
-                                context,
-                                RoutePaths.routeLogin,
-                                arguments:
-                                    RegistrationAndLoginPageParam(
-                                  shouldNavigateTabToHome: false,
-                                ),
-                              );
-
-                              if (res is bool && res) {
-                                setState(() {});
-                                await _initAllNotifiers();
-                                Future.delayed(Duration.zero, () {
-                                  if (!context.mounted) return;
-                                  _startTracking(
-                                    context,
-                                    ref.read(suratPageHabitProvider
-                                        .notifier),
-                                  );
-                                });
-                              }
-                              return;
-                            }
-
-                            _startTracking(context, habitNotifier);
-                          },
-                        ),
-                    ],
-                  ),
-                  if (habitState.showMinimizedAudioPlayer) ...<Widget>[
-                    const SizedBox(height: 20),
-                    AudioMinimizedInfo(
-                      onTapContainer: () {
-                        GeneralBottomSheet.showBaseBottomSheet(
-                          context: context,
-                          widgetChild: const AudioBottomSheetWidget(),
-                        );
-                      },
-                      onClose: () => habitNotifier.stopRecitation(),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ),
+        ),
       ],
     );
+  }
+
+  Future<void> _onTapStartTracking() async {
+    final habitNotifier = ref.read(suratPageHabitProvider.notifier);
+
+    if (!habitNotifier.isLoggedIn) {
+      final dynamic res = await Navigator.pushNamed(
+        context,
+        RoutePaths.routeLogin,
+        arguments: RegistrationAndLoginPageParam(
+          shouldNavigateTabToHome: false,
+        ),
+      );
+
+      if (res is bool && res) {
+        setState(() {});
+        await _initAllNotifiers();
+        Future.delayed(Duration.zero, () {
+          if (!mounted) return;
+          _startTracking(context, ref.read(suratPageHabitProvider.notifier));
+        });
+      }
+      return;
+    }
+
+    _startTracking(context, habitNotifier);
   }
 
   Future<void> _startTracking(

@@ -133,34 +133,51 @@ class RegistrationView extends ConsumerWidget {
     final AuthenticationService authService = ref.read(authenticationService);
 
     if (connectivityStatus == ConnectivityStatus.isConnected) {
-      final SignInResult res = await authService.signIn(type: type);
-      if (context.mounted) {
-        switch (res) {
-          case SignInResult.failedAccountDeleted:
-            SignInBottomSheet.showAccountDeletedInfo(context: context);
-            break;
-          case SignInResult.failedGeneral:
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                const SnackBar(content: Text('Failed to sign in')),
-              );
-            break;
-          case SignInResult.success:
-            ref.invalidate(dioServiceProvider);
-            await ref
-                .read(habitDailySummaryService)
-                .syncHabit(connectivityStatus: connectivityStatus);
-            await ref.read(bookmarksService).clearBookmarkAndMergeFromServer();
+      try {
+        final SignInResult res = await authService.signIn(type: type);
+        if (context.mounted) {
+          switch (res) {
+            case SignInResult.failedAccountDeleted:
+              SignInBottomSheet.showAccountDeletedInfo(context: context);
+              break;
+            case SignInResult.failedGeneral:
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(content: Text('Failed to sign in')),
+                );
+              break;
+            case SignInResult.success:
+              ref.invalidate(dioServiceProvider);
+              await ref
+                  .read(habitDailySummaryService)
+                  .syncHabit(connectivityStatus: connectivityStatus);
+              await ref
+                  .read(bookmarksService)
+                  .clearBookmarkAndMergeFromServer();
 
-            if (shouldNavigateTabToHome) {
-              final BottomNavigationBar navbar =
-                  mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
-              navbar.onTap!(0);
-            }
+              if (shouldNavigateTabToHome) {
+                final BottomNavigationBar navbar =
+                    mainNavbarGlobalKey.currentWidget as BottomNavigationBar;
+                navbar.onTap!(0);
+              }
 
-            onSuccessLogin?.call();
-            break;
+              onSuccessLogin?.call();
+              break;
+          }
+        }
+      } catch (_) {
+        // signIn() records to Crashlytics then rethrows; without this the
+        // failure (e.g. ApiException 10 / DEVELOPER_ERROR) would escape
+        // uncaught and the user would see no feedback at all.
+        if (context.mounted) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              const SnackBar(
+                content: Text('Failed to sign in. Please try again.'),
+              ),
+            );
         }
       }
     }

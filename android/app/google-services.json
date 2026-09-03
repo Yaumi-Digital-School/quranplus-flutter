@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:531557853716:android:af459645d5da751cd5d501",
         "android_client_info": {
-          "package_name": "com.yaumi.qurantafsir.id"
+          "package_name": "com.example.qurantafsir_flutter"
         }
       },
       "oauth_client": [
@@ -29,6 +29,65 @@
             {
               "client_id": "531557853716-3i49h1i0t1i0te4bc38415bji6mkau9p.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "531557853716-7quh8efgae36hsu9tvqb1rkfoaa43da5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.yaumi.qurantafsir.id"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:531557853716:android:f58f15459f36ff2ad5d501",
+        "android_client_info": {
+          "package_name": "com.yaumi.qurantafsir.id"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "531557853716-5hjhubkmrg43843s9no8hvqrp1mk29lh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.yaumi.qurantafsir.id",
+            "certificate_hash": "b045e86ed1f3eaac59527b4de4efbafe9ecee4c1"
+          }
+        },
+        {
+          "client_id": "531557853716-jonf1g5g27eghfhuc8ooh662uambu1ds.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.yaumi.qurantafsir.id",
+            "certificate_hash": "1b858980af9fe8cb85696ef4a08fc48437b8b9d1"
+          }
+        },
+        {
+          "client_id": "531557853716-3i49h1i0t1i0te4bc38415bji6mkau9p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvdCNd0bEEfSIHBgYBkvv5sWUsg9whuOU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "531557853716-3i49h1i0t1i0te4bc38415bji6mkau9p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "531557853716-7quh8efgae36hsu9tvqb1rkfoaa43da5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.yaumi.qurantafsir.id"
+              }
             }
           ]
         }

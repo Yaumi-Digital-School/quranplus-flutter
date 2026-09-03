@@ -11,15 +11,20 @@ part 'notification_settings_page_state_notifier.g.dart';
 class NotificationSettingsPageState {
   const NotificationSettingsPageState({
     required this.adhanEnabled,
+    required this.persistentPrayerNotifEnabled,
   });
 
   final Map<PrayerTimesList, bool> adhanEnabled;
+  final bool persistentPrayerNotifEnabled;
 
   NotificationSettingsPageState copyWith({
     Map<PrayerTimesList, bool>? adhanEnabled,
+    bool? persistentPrayerNotifEnabled,
   }) {
     return NotificationSettingsPageState(
       adhanEnabled: adhanEnabled ?? this.adhanEnabled,
+      persistentPrayerNotifEnabled:
+          persistentPrayerNotifEnabled ?? this.persistentPrayerNotifEnabled,
     );
   }
 }
@@ -46,7 +51,11 @@ class NotificationSettingsPageNotifier
       _sharedPreferenceService.setAdhanEnabledMap(saved);
     }
 
-    return NotificationSettingsPageState(adhanEnabled: saved);
+    return NotificationSettingsPageState(
+      adhanEnabled: saved,
+      persistentPrayerNotifEnabled: _sharedPreferenceService
+          .getPersistentPrayerNotifEnabled(),
+    );
   }
 
   Future<void> toggleAdhan(PrayerTimesList prayer, bool value) async {
@@ -61,9 +70,20 @@ class NotificationSettingsPageNotifier
         adhanEnabled: updated,
       );
     } else {
-      await _prayerTimesService.setupPrayerTimesReminder(
-        adhanEnabled: updated,
-      );
+      await _prayerTimesService.setupPrayerTimesReminder(adhanEnabled: updated);
+    }
+  }
+
+  Future<void> togglePersistentPrayerNotif(bool value) async {
+    state = state.copyWith(persistentPrayerNotifEnabled: value);
+    await _sharedPreferenceService.setPersistentPrayerNotifEnabled(value);
+
+    if (!Platform.isAndroid) return;
+
+    if (value) {
+      await _prayerTimesService.showPersistentPrayerTimesNotification();
+    } else {
+      await _prayerTimesService.cancelPersistentPrayerTimesNotification();
     }
   }
 }

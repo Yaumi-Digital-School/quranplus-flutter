@@ -41,18 +41,23 @@ class AyahItemWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final navState = ref.watch(suratPageNavigationProvider);
     final contentState = ref.watch(suratPageContentProvider);
     final navNotifier = ref.read(suratPageNavigationProvider.notifier);
     final habitNotifier = ref.read(suratPageHabitProvider.notifier);
     final bookmarkNotifier = ref.read(suratPageBookmarkProvider.notifier);
     final connectivityStatus = ref.watch(internetConnectionStatusProvider);
+    // Narrow signal: rebuild only when the set of favorited ayahs changes, so
+    // the favorite icon stays correct without depending on ancestor rebuilds.
+    ref.watch(suratPageBookmarkProvider.select((s) => s.favoriteAyahsRevision));
 
     String allVerses = '';
     String fontFamilyPage = 'Page$pageNumberInQuran';
 
+    // At-Taubah (surah 9) is the only surah without a basmalah before its first
+    // verse. Decide from the verse's own surah, not from whichever surah name is
+    // currently visible on screen.
     bool useBasmalahBeforeAyah =
-        navState.visibleSuratName != "At-Taubah" && verse.verseNumber == 1;
+        verse.surahNumber != 9 && verse.verseNumber == 1;
 
     String? translation = contentState
         .translations?[verse.surahNumberInIndex][verse.verseNumberInIndex];
@@ -60,8 +65,7 @@ class AyahItemWidget extends ConsumerWidget {
         .latins?[verse.surahNumberInIndex][verse.verseNumberInIndex];
     String? tafsir = contentState
         .tafsirs?[verse.surahNumberInIndex][verse.verseNumberInIndex];
-    bool isWithTranslations =
-        contentState.readingSettings!.isWithTranslations;
+    bool isWithTranslations = contentState.readingSettings!.isWithTranslations;
     bool isWithTafsirs = contentState.readingSettings!.isWithTafsirs;
     bool isWithLatins = contentState.readingSettings!.isWithLatins;
     bool isFavorited = bookmarkNotifier.isAyahFavorited(verse.id);
@@ -71,57 +75,62 @@ class AyahItemWidget extends ConsumerWidget {
       allVerses += '${word.code} ';
     }
 
-    return AutoScrollTag(
+    final Widget content = VisibilityDetector(
+      onVisibilityChanged: (info) {
+        if (info.visibleFraction == 1) {
+          navNotifier.updateVisibleSurah(verse.surahNumber);
+          navNotifier.updateVisibleJuz(verse.juzNumber);
+        }
+      },
       key: key,
-      controller: pageNumberInQuran - 1 == startPageInIndex
-          ? scrollController
-          : AutoScrollController(),
-      index: verse.id,
-      child: VisibilityDetector(
-        onVisibilityChanged: (info) {
-          if (info.visibleFraction == 1) {
-            navNotifier.updateVisibleSurah(verse.surahNumber);
-            navNotifier.updateVisibleJuz(verse.juzNumber);
-          }
-        },
-        key: key,
-        child: Column(
-          children: <Widget>[
-            if (useBasmalahBeforeAyah)
-              BasmalahWidget(orientation: orientation),
-            _buildAyahContent(
-              context,
-              allVerses,
-              fontFamilyPage,
-              isFavorited,
-              bookmarkNotifier,
-              habitNotifier,
-              connectivityStatus,
+      child: Column(
+        children: <Widget>[
+          if (useBasmalahBeforeAyah) BasmalahWidget(orientation: orientation),
+          _buildAyahContent(
+            context,
+            allVerses,
+            fontFamilyPage,
+            isFavorited,
+            bookmarkNotifier,
+            habitNotifier,
+            connectivityStatus,
+          ),
+          if (isWithLatins) _buildLatinSection(context, latin!, contentState),
+          if (isWithTranslations)
+            _buildTranslationSection(context, translation!, contentState),
+          if (isWithTafsirs)
+            _buildTafsirSection(context, tafsir!, contentState),
+          if (contentState.availableAyahTadabburs[verse.surahNumber] != null &&
+              contentState.availableAyahTadabburs[verse.surahNumber]!.contains(
+                verse.verseNumber,
+              ))
+            const Align(
+              alignment: Alignment.centerRight,
+              child: TadabburAvailableFlag(),
             ),
-            if (isWithLatins)
-              _buildLatinSection(context, latin!, contentState),
-            if (isWithTranslations)
-              _buildTranslationSection(context, translation!, contentState),
-            if (isWithTafsirs)
-              _buildTafsirSection(context, tafsir!, contentState),
-            if (contentState.availableAyahTadabburs[verse.surahNumber] !=
-                    null &&
-                contentState.availableAyahTadabburs[verse.surahNumber]!
-                    .contains(verse.verseNumber))
-              const Align(
-                alignment: Alignment.centerRight,
-                child: TadabburAvailableFlag(),
-              ),
-            if (useDivider)
-              const Padding(
-                padding:
-                    EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
-                child: HorizontalDivider(),
-              ),
-          ],
-        ),
+          if (useDivider)
+            const Padding(
+              padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+              child: HorizontalDivider(),
+            ),
+        ],
       ),
     );
+
+    // Only the start page is ever targeted by scrollToIndex, so only that page
+    // needs an AutoScrollTag wired to the real scrollController. Other pages
+    // render the content directly (avoiding a throwaway AutoScrollController per
+    // ayah on every build).
+    if (pageNumberInQuran - 1 == startPageInIndex) {
+      return AutoScrollTag(
+        key: key,
+        controller: scrollController,
+        index: verse.id,
+        child: content,
+      );
+    }
+
+    return content;
   }
 
   Widget _buildAyahContent(
@@ -187,11 +196,8 @@ class AyahItemWidget extends ConsumerWidget {
                     alignment: Alignment.centerLeft,
                     icon: const Icon(Icons.play_circle_outline),
                     iconSize: 20,
-                    onPressed: () => _playOnAyah(
-                      context,
-                      habitNotifier,
-                      connectivityStatus,
-                    ),
+                    onPressed: () =>
+                        _playOnAyah(context, habitNotifier, connectivityStatus),
                   ),
                   Expanded(
                     child: Text(
@@ -326,13 +332,10 @@ class AyahItemWidget extends ConsumerWidget {
   ) async {
     if (connectivityStatus == ConnectivityStatus.isDisconnected &&
         context.mounted) {
-      GeneralBottomSheet.showNoInternetBottomSheet(
-        context,
-        () {
-          Navigator.pop(context);
-          _playOnAyah(context, habitNotifier, connectivityStatus);
-        },
-      );
+      GeneralBottomSheet.showNoInternetBottomSheet(context, () {
+        Navigator.pop(context);
+        _playOnAyah(context, habitNotifier, connectivityStatus);
+      });
       return;
     }
 

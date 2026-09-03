@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:alice_dio/alice_dio_adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:qurantafsir_flutter/shared/core/env.dart';
@@ -20,10 +21,10 @@ class DioService {
   final int _timeOut = 10000;
 
   Dio _makeBaseDio() {
-    return Dio()
+    final Dio dio = Dio()
       ..options.baseUrl = baseUrl
       ..options.connectTimeout = Duration(milliseconds: _timeOut)
-      ..interceptors.addAll([
+      ..interceptors.add(
         PrettyDioLogger(
           request: true,
           requestHeader: true,
@@ -32,8 +33,16 @@ class DioService {
           responseHeader: true,
           responseBody: true,
         ),
-        _aliceService.dioAdapter,
-      ]);
+      );
+
+    // Alice adapter is null in production (inspector disabled) — only wire it in
+    // when it exists.
+    final AliceDioAdapter? aliceAdapter = _aliceService.dioAdapter;
+    if (aliceAdapter != null) {
+      dio.interceptors.add(aliceAdapter);
+    }
+
+    return dio;
   }
 
   dynamic _onDioError(DioException e, ErrorInterceptorHandler h) {
@@ -60,14 +69,12 @@ class DioService {
       })
       ..interceptors.add(
         InterceptorsWrapper(
-          onRequest: (
-            RequestOptions option,
-            RequestInterceptorHandler handler,
-          ) async {
-            option.cancelToken = _cancelToken;
+          onRequest:
+              (RequestOptions option, RequestInterceptorHandler handler) async {
+                option.cancelToken = _cancelToken;
 
-            return handler.next(option);
-          },
+                return handler.next(option);
+              },
           onError: _onDioError,
         ),
       );
@@ -83,14 +90,12 @@ class DioService {
       })
       ..interceptors.add(
         InterceptorsWrapper(
-          onRequest: (
-            RequestOptions option,
-            RequestInterceptorHandler handler,
-          ) async {
-            option.cancelToken = _cancelToken;
+          onRequest:
+              (RequestOptions option, RequestInterceptorHandler handler) async {
+                option.cancelToken = _cancelToken;
 
-            return handler.next(option);
-          },
+                return handler.next(option);
+              },
           onError: _onDioError,
         ),
       );
@@ -106,14 +111,12 @@ class DioService {
       })
       ..interceptors.add(
         InterceptorsWrapper(
-          onRequest: (
-            RequestOptions option,
-            RequestInterceptorHandler handler,
-          ) async {
-            option.cancelToken = _cancelToken;
+          onRequest:
+              (RequestOptions option, RequestInterceptorHandler handler) async {
+                option.cancelToken = _cancelToken;
 
-            return handler.next(option);
-          },
+                return handler.next(option);
+              },
           onError: _onDioError,
         ),
       );

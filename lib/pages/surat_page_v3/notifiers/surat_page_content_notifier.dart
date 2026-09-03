@@ -39,10 +39,15 @@ class SuratPageContentNotifier extends _$SuratPageContentNotifier {
     if (settings.isWithTafsirs) await _generateBaseTafsirs();
 
     final separators = await _getFullPageSeparators();
+    final Map<int, List<FullPageSeparator>> separatorsByPage = {};
+    for (final FullPageSeparator separator in separators) {
+      separatorsByPage.putIfAbsent(separator.page, () => []).add(separator);
+    }
 
     state = SuratPageContentState(
       pages: pages,
       fullPageSeparators: separators,
+      separatorsByPage: separatorsByPage,
       translations: _translations,
       tafsirs: _tafsirs,
       latins: _latins,
@@ -107,22 +112,42 @@ class SuratPageContentNotifier extends _$SuratPageContentNotifier {
 
   Future<void> _generateBaseTafsirs() async {
     List<dynamic> map = await json.decode(
-      await rootBundle
-          .loadString('data/quran_tafsirs/indonesia_kemenag.json'),
+      await rootBundle.loadString('data/quran_tafsirs/indonesia_kemenag.json'),
     );
     _tafsirs = map
         .map((e) => (e as List).map((e) => (e as String)).toList())
         .toList();
   }
 
+  /// Loads translations and tafsirs on demand (e.g. for the ayah detail sheet)
+  /// WITHOUT touching readingSettings — the sheet must show them regardless of
+  /// whether the reader enabled translation/tafsir in the page view.
+  Future<void> ensureAyahDetailContent() async {
+    bool changed = false;
+
+    if (state.translations == null || state.translations!.isEmpty) {
+      await _generateTranslations();
+      changed = true;
+    }
+    if (state.tafsirs == null || state.tafsirs!.isEmpty) {
+      await _generateBaseTafsirs();
+      changed = true;
+    }
+
+    if (changed) {
+      state = state.copyWith(translations: _translations, tafsirs: _tafsirs);
+    }
+  }
+
   Future<void> setIsWithTranslations(bool value) async {
-    final settings =
-        state.readingSettings!.copyWith(isWithTranslations: value);
+    final settings = state.readingSettings!.copyWith(isWithTranslations: value);
     if (state.translations == null || state.translations!.isEmpty) {
       await _generateTranslations();
     }
-    state =
-        state.copyWith(readingSettings: settings, translations: _translations);
+    state = state.copyWith(
+      readingSettings: settings,
+      translations: _translations,
+    );
     _sharedPref.setReadingSettings(settings);
   }
 
@@ -211,11 +236,11 @@ class SuratPageContentNotifier extends _$SuratPageContentNotifier {
   }
 
   void setIsInFullPage(bool isInFullPage) {
-    final settings =
-        state.readingSettings!.copyWith(isInFullPage: isInFullPage);
+    final settings = state.readingSettings!.copyWith(
+      isInFullPage: isInFullPage,
+    );
     state = state.copyWith(readingSettings: settings);
     _sharedPref.setReadingSettings(settings);
     ref.read(suratPageNavigationProvider.notifier).recreatePageController();
   }
-
 }

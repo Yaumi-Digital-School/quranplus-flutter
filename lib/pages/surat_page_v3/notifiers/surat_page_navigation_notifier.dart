@@ -14,13 +14,10 @@ class SuratPageNavigationNotifier extends _$SuratPageNavigationNotifier {
   int _currentSurahNumber = 0;
   final List<int> _firstPageSurahPointer = <int>[];
 
-  // Public mutable field used during full-page rendering build cycle
-  int separatorBuilderIndex = 0;
-
   List<int> get firstPageKeys => _firstPageSurahPointer;
 
   @override
-  SuratPageNavigationState build() => SuratPageNavigationState();
+  SuratPageNavigationState build() => const SuratPageNavigationState();
 
   void init(int startPageInIndex) {
     _startPageInIndex = startPageInIndex;
@@ -35,9 +32,7 @@ class SuratPageNavigationNotifier extends _$SuratPageNavigationNotifier {
       currentPage: _startPageInIndex + 1,
       visibleSuratName: surahNumberToSurahNameMap[firstVerse.surahNumber]!,
       visibleJuzNumber: firstVerse.juzNumber,
-      pageController: PageController(
-        initialPage: _startPageInIndex,
-      ),
+      pageController: PageController(initialPage: _startPageInIndex),
       isLoading: false,
     );
 
@@ -81,8 +76,21 @@ class SuratPageNavigationNotifier extends _$SuratPageNavigationNotifier {
     }
   }
 
-  void resetSeparatorBuilderIndex() {
-    separatorBuilderIndex = 0;
+  void setHighlightedAyah(int ayahId) {
+    if (state.highlightedAyahId == ayahId) return;
+    state = state.copyWith(highlightedAyahId: ayahId);
+  }
+
+  void clearHighlightedAyah() {
+    if (state.highlightedAyahId == null) return;
+    // copyWith cannot null a field, so rebuild explicitly to clear it.
+    state = SuratPageNavigationState(
+      currentPage: state.currentPage,
+      visibleSuratName: state.visibleSuratName,
+      visibleJuzNumber: state.visibleJuzNumber,
+      pageController: state.pageController,
+      isLoading: state.isLoading,
+    );
   }
 
   void addFirstPagePointer(int value) => _firstPageSurahPointer.add(value);

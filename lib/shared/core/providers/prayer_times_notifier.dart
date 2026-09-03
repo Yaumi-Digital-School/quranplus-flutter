@@ -264,6 +264,10 @@ class PrayerTimeNotifier extends _$PrayerTimeNotifier {
     } else {
       await _prayerTimesService.setupPrayerTimesReminder();
     }
+
+    // Post the ongoing prayer-times bar immediately on first-ever location
+    // detection / location change (self-guards to Android; a no-op elsewhere).
+    await _prayerTimesService.showPersistentPrayerTimesNotification();
   }
 
   Future<void> updatePrayerTimes(

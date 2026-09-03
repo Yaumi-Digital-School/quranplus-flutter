@@ -49,21 +49,19 @@ class SuratPageHabitNotifier extends _$SuratPageHabitNotifier {
     _scrollController.addListener(_listenOnScrollChanges);
 
     final audioState = ref.read(audioRecitationProvider);
-    state = state.copyWith(
-      showMinimizedAudioPlayer: !audioState.isStopped,
-    );
+    state = state.copyWith(showMinimizedAudioPlayer: !audioState.isStopped);
   }
 
   void _listenOnScrollChanges() {
     final double currentOffset = _scrollController.offset;
     final bool onScrollUpChecking =
         (_scrollUpOffset - currentOffset >= 150) &&
-            _scrollController.position.userScrollDirection ==
-                ScrollDirection.forward;
+        _scrollController.position.userScrollDirection ==
+            ScrollDirection.forward;
     final bool onScrollDownChecking =
         (currentOffset - _scrollDownOffset >= 150) &&
-            _scrollController.position.userScrollDirection ==
-                ScrollDirection.reverse;
+        _scrollController.position.userScrollDirection ==
+            ScrollDirection.reverse;
 
     if (onScrollUpChecking) {
       if (!state.isOnReadCTAVisible) {
@@ -97,9 +95,7 @@ class SuratPageHabitNotifier extends _$SuratPageHabitNotifier {
     if (recordedPagesList.contains(addedPage)) return;
 
     recordedPagesList.add(addedPage);
-    state = state.copyWith(
-      recordedPagesAsRead: state.recordedPagesAsRead + 1,
-    );
+    state = state.copyWith(recordedPagesAsRead: state.recordedPagesAsRead + 1);
   }
 
   Future<void> startRecording() async {
@@ -156,8 +152,17 @@ class SuratPageHabitNotifier extends _$SuratPageHabitNotifier {
   }
 
   void setShowMinimizedAudioPlayer(bool value) {
+    if (state.showMinimizedAudioPlayer == value) return;
     state = state.copyWith(showMinimizedAudioPlayer: value);
   }
+
+  void setIsOnReadCTAVisible(bool value) {
+    if (state.isOnReadCTAVisible == value) return;
+    state = state.copyWith(isOnReadCTAVisible: value);
+  }
+
+  void toggleReadCTAVisible() =>
+      setIsOnReadCTAVisible(!state.isOnReadCTAVisible);
 
   void stopRecitation() {
     _audioNotifier.stopAndResetAudioPlayer();
@@ -165,8 +170,8 @@ class SuratPageHabitNotifier extends _$SuratPageHabitNotifier {
   }
 
   Future<void> playOnAyah(Verse verse) async {
-    final ReciterItemResponse reciterItemResponse =
-        await _sharedPref.getSelectedReciter();
+    final ReciterItemResponse reciterItemResponse = await _sharedPref
+        .getSelectedReciter();
 
     final AudioRecitationState newState = AudioRecitationState(
       surahName: verse.surahName,

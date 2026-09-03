@@ -11,8 +11,9 @@ class PrayerTimeRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final prayerTimes =
-        ref.watch(prayerTimeProvider.select((s) => s.prayerTimes));
+    final prayerTimes = ref.watch(
+      prayerTimeProvider.select((s) => s.prayerTimes),
+    );
 
     final formatter = PrayerTimeState(prayerTimes: prayerTimes);
 
@@ -48,7 +49,7 @@ class PrayerTimeRow extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  prayerTime.name,
+                  prayerTime.label,
                   style: QPTextStyle.baseTextStyle.copyWith(
                     color: QPColors.getColorBasedTheme(
                       dark: QPColors.whiteRoot,
