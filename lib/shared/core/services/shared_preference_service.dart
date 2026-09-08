@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/constants/prayer_times.dart';
 import 'package:qurantafsir_flutter/shared/core/apis/model/audio.dart';
@@ -14,6 +15,15 @@ import 'package:uuid/uuid.dart';
 
 class SharedPreferenceService {
   late SharedPreferences _sharedPreferences;
+
+  // The auth token lives in the platform keystore/keychain, not plain shared
+  // preferences. Cached in-memory so getApiToken() can stay synchronous.
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage(
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
+  );
+  String _cachedApiToken = '';
+
   static const String isAlreadyOnBoardingTadabbur =
       "is-already-on-boarding-tadabbur";
 
@@ -41,6 +51,22 @@ class SharedPreferenceService {
 
   Future<void> init() async {
     _sharedPreferences = await SharedPreferences.getInstance();
+
+    final String? secureToken = await _secureStorage.read(key: _apiTokenKey);
+    if (secureToken != null && secureToken.isNotEmpty) {
+      _cachedApiToken = secureToken;
+      return;
+    }
+
+    // One-time migration: move an existing plain-text token into secure storage
+    // and drop the insecure copy.
+    final String legacyToken =
+        _sharedPreferences.getString(_apiTokenKey) ?? '';
+    if (legacyToken.isNotEmpty) {
+      await _secureStorage.write(key: _apiTokenKey, value: legacyToken);
+      await _sharedPreferences.remove(_apiTokenKey);
+      _cachedApiToken = legacyToken;
+    }
   }
 
   void setReadingSettings(ReadingSettings readingSettings) {
@@ -67,7 +93,8 @@ class SharedPreferenceService {
   }
 
   Future<void> setApiToken(String? token) async {
-    _sharedPreferences.setString(_apiTokenKey, token ?? '');
+    _cachedApiToken = token ?? '';
+    await _secureStorage.write(key: _apiTokenKey, value: _cachedApiToken);
   }
 
   Future<void> setLastSync(DateTime date) async {
@@ -121,7 +148,7 @@ class SharedPreferenceService {
   }
 
   String getApiToken() {
-    return _sharedPreferences.getString(_apiTokenKey) ?? '';
+    return _cachedApiToken;
   }
 
   bool getIsAlreadyOnBoarding(String key) {
@@ -129,9 +156,10 @@ class SharedPreferenceService {
   }
 
   Future<bool> removeApiToken() async {
-    var isRemoved = await _sharedPreferences.remove(_apiTokenKey);
+    _cachedApiToken = '';
+    await _secureStorage.delete(key: _apiTokenKey);
 
-    return isRemoved;
+    return true;
   }
 
   Future<void> setUsername(String? name) async {
@@ -206,6 +234,10 @@ class SharedPreferenceService {
 
   Future<void> clear() async {
     await _sharedPreferences.clear();
+    // signOut() relies on clear() to drop the session, so the secure-storage
+    // token and its in-memory cache must go too.
+    await _secureStorage.delete(key: _apiTokenKey);
+    _cachedApiToken = '';
   }
 
   Future<void> setSelectedReciter(ReciterItemResponse param) async {

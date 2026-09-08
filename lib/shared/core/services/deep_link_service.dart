@@ -30,25 +30,44 @@ class DeepLinkService {
 
   Future<void> init(GlobalKey<NavigatorState> navigatorKey) async {
     _navigatorKey = navigatorKey;
-    final Uri? initLink = await _appLinks.getInitialLink();
-    if (initLink != null) {
-      await _handleDeepLink(initLink);
+    try {
+      final Uri? initLink = await _appLinks.getInitialLink();
+      if (initLink != null) {
+        await _handleDeepLink(initLink);
+      }
+    } catch (error, stackTrace) {
+      FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'error on DeepLinkService.init() initial link handling',
+      );
     }
     _appLinks.uriLinkStream.listen((Uri uri) async {
-      await _handleDeepLink(uri);
+      try {
+        await _handleDeepLink(uri);
+      } catch (error, stackTrace) {
+        FirebaseCrashlytics.instance.recordError(
+          error,
+          stackTrace,
+          reason: 'error on DeepLinkService uriLinkStream listener',
+        );
+      }
     });
   }
 
   Future<void> _handleDeepLink(Uri link) async {
     if (link.path.contains("RtQw") &&
         (link.queryParameters["id"] ?? '').isNotEmpty) {
-      await _handleJoinGroup(int.parse(link.queryParameters["id"]!));
+      final int? id = int.tryParse(link.queryParameters["id"]!);
+      if (id != null) {
+        await _handleJoinGroup(id);
 
-      return;
+        return;
+      }
     }
 
     mainPageProvider.setShouldInvalidLinkBottomSheet(true);
-    _navigatorKey!.currentState!.pushReplacementNamed(RoutePaths.routeMain);
+    _navigatorKey?.currentState?.pushReplacementNamed(RoutePaths.routeMain);
   }
 
   Future<void> _handleJoinGroup(int id) async {
@@ -62,7 +81,7 @@ class DeepLinkService {
 
       mainPageProvider.setShouldShowSignInBottomSheet(true);
 
-      _navigatorKey!.currentState!.pushReplacementNamed(RoutePaths.routeMain);
+      _navigatorKey?.currentState?.pushReplacementNamed(RoutePaths.routeMain);
 
       return;
     }
@@ -77,12 +96,12 @@ class DeepLinkService {
 
       if (response.response.statusCode == 400) {
         mainPageProvider.setShouldInvalidGroupBottomSheet(true);
-        _navigatorKey!.currentState!.pushReplacementNamed(RoutePaths.routeMain);
+        _navigatorKey?.currentState?.pushReplacementNamed(RoutePaths.routeMain);
 
         return;
       }
 
-      _navigatorKey!.currentState!.pushReplacementNamed(
+      _navigatorKey?.currentState?.pushReplacementNamed(
         RoutePaths.routeHabitGroupDetail,
         arguments: HabitGroupDetailViewParam(
           id: id,

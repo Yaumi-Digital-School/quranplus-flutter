@@ -23,8 +23,12 @@ class DioService {
   Dio _makeBaseDio() {
     final Dio dio = Dio()
       ..options.baseUrl = baseUrl
-      ..options.connectTimeout = Duration(milliseconds: _timeOut)
-      ..interceptors.add(
+      ..options.connectTimeout = Duration(milliseconds: _timeOut);
+
+    // The logger prints x-access-token / x-api-token headers and full bodies to
+    // the device log, so it must never run in production.
+    if (!EnvConstants.isProduction) {
+      dio.interceptors.add(
         PrettyDioLogger(
           request: true,
           requestHeader: true,
@@ -34,6 +38,7 @@ class DioService {
           responseBody: true,
         ),
       );
+    }
 
     // Alice adapter is null in production (inspector disabled) — only wire it in
     // when it exists.

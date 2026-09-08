@@ -7,6 +7,7 @@
 // notification-service wiring through a recording fake NotificationService.
 
 import 'package:adhan_dart/adhan_dart.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qurantafsir_flutter/shared/core/services/notification_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/prayer_times_service.dart';
@@ -142,6 +143,9 @@ void main() {
       Map<String, Object> values,
     ) async {
       SharedPreferences.setMockInitialValues(values);
+      // init() reads the auth token from secure storage; back it with an
+      // in-memory platform so the plugin channel isn't hit in tests.
+      FlutterSecureStorage.setMockInitialValues(<String, String>{});
       final SharedPreferenceService sp = SharedPreferenceService();
       await sp.init();
       return sp;

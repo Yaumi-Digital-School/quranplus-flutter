@@ -575,10 +575,10 @@ class DbLocal {
              ${HabitDailySummaryTable.targetUpdatedTime},
              ${HabitDailySummaryTable.columnID}
              FROM ${HabitDailySummaryTable.tableName}
-             WHERE datetime(${HabitDailySummaryTable.updatedAt}) > datetime('$lastSyncDate')
+             WHERE datetime(${HabitDailySummaryTable.updatedAt}) > datetime(?)
              AND (JULIANDAY('now') - JULIANDAY(${HabitDailySummaryTable.updatedAt})) <= 7
              ORDER BY ${HabitDailySummaryTable.date} ASC;
-       ''');
+       ''', [lastSyncDate]);
       final List<HabitSyncRequestDailySummaryItem> result = [];
 
       for (var element in resultQueryHabitDaily) {
@@ -615,17 +615,17 @@ class DbLocal {
     String lastSyncDate,
   ) async {
     var dbClient = await _db;
-    final resultQueryHabitProgress = await dbClient.rawQuery('''SELECT 
+    final resultQueryHabitProgress = await dbClient.rawQuery('''SELECT
          ${HabitProgressTable.uuid},
          ${HabitProgressTable.pages},
          ${HabitProgressTable.description},
          ${HabitProgressTable.inputTime},
          ${HabitProgressTable.type}
          FROM ${HabitProgressTable.tableName}
-         WHERE datetime(${HabitProgressTable.createdAt}) > datetime('$lastSyncDate')
-         AND ${HabitProgressTable.habitDailySummaryID} = $id
+         WHERE datetime(${HabitProgressTable.createdAt}) > datetime(?)
+         AND ${HabitProgressTable.habitDailySummaryID} = ?
          AND (JULIANDAY('now') - JULIANDAY(${HabitProgressTable.createdAt})) <= 7
-      ''');
+      ''', [lastSyncDate, id]);
 
     final List<HabitSyncRequestProgressItem> result = [];
     for (var element in resultQueryHabitProgress) {
@@ -652,22 +652,29 @@ class DbLocal {
   ) async {
     final Database db = await _db;
 
-    String values = '';
+    final List<String> placeholders = [];
+    final List<Object?> args = [];
 
     listOfKeyValues.forEach((key, value) {
-      values += "($key, '$value'),";
+      placeholders.add('(?, ?)');
+      args.add(key);
+      // Preserve the existing stored format (e.g. "[1, 2, 3]") so existing
+      // readers that json.decode() this column keep working.
+      args.add(value.toString());
     });
-
-    values = values.substring(0, values.length - 1);
 
     await db.transaction((txn) async {
       await txn.delete(TadabburAyahAvailableTable.tableName);
 
+      if (listOfKeyValues.isEmpty) {
+        return;
+      }
+
       await txn.rawInsert('''
-        INSERT INTO ${TadabburAyahAvailableTable.tableName} 
+        INSERT INTO ${TadabburAyahAvailableTable.tableName}
         (${TadabburAyahAvailableTable.surahID}, ${TadabburAyahAvailableTable.listOfAyahInStr})
-        VALUES $values
-      ''');
+        VALUES ${placeholders.join(', ')}
+      ''', args);
     });
   }
 
@@ -693,22 +700,27 @@ class DbLocal {
   ) async {
     final Database db = await _db;
 
-    String values = '';
+    final List<String> placeholders = [];
+    final List<Object?> args = [];
 
     listOfKeyValuesTadabburSurah.forEach((key, value) {
-      values += "($key, '$value'),";
+      placeholders.add('(?, ?)');
+      args.add(key);
+      args.add(value);
     });
-
-    values = values.substring(0, values.length - 1);
 
     await db.transaction((txn) async {
       await txn.delete(TadabburTable.tableName);
 
+      if (listOfKeyValuesTadabburSurah.isEmpty) {
+        return;
+      }
+
       await txn.rawInsert('''
-        INSERT INTO ${TadabburTable.tableName} 
+        INSERT INTO ${TadabburTable.tableName}
         (${TadabburTable.surahID}, ${TadabburTable.totalTadabbur})
-        VALUES $values
-      ''');
+        VALUES ${placeholders.join(', ')}
+      ''', args);
     });
   }
 
@@ -721,7 +733,8 @@ class DbLocal {
     final List<Map<String, dynamic>> result = await dbClient.query(
       TadabburReadingContentInfoTable.tableName,
       columns: [TadabburReadingContentInfoTable.lastReadingIndex],
-      where: '${TadabburReadingContentInfoTable.tadabburID} = $tadabburID',
+      where: '${TadabburReadingContentInfoTable.tadabburID} = ?',
+      whereArgs: [tadabburID],
       limit: 1,
     );
 
@@ -741,15 +754,15 @@ class DbLocal {
     int res = await dbClient.rawInsert('''
         INSERT OR IGNORE INTO ${TadabburReadingContentInfoTable.tableName}
         (${TadabburReadingContentInfoTable.tadabburID}, ${TadabburReadingContentInfoTable.lastReadingIndex})
-        VALUES ($tadabburID, $lastReadingIndex)
-      ''');
+        VALUES (?, ?)
+      ''', [tadabburID, lastReadingIndex]);
 
     if (res == 0) {
       res = await dbClient.rawUpdate('''
         UPDATE ${TadabburReadingContentInfoTable.tableName}
-        SET ${TadabburReadingContentInfoTable.lastReadingIndex} = $lastReadingIndex
-        WHERE ${TadabburReadingContentInfoTable.tadabburID} = $tadabburID
-      ''');
+        SET ${TadabburReadingContentInfoTable.lastReadingIndex} = ?
+        WHERE ${TadabburReadingContentInfoTable.tadabburID} = ?
+      ''', [lastReadingIndex, tadabburID]);
     }
 
     return res;

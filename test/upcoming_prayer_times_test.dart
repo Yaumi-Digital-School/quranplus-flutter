@@ -10,6 +10,7 @@
 import 'package:adhan_dart/adhan_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/pages/prayer_time_page/widgets/prayer_time_row.dart';
@@ -40,6 +41,9 @@ class Seed {
 
 Future<Seed> makeSeed({required bool withLocation}) async {
   SharedPreferences.setMockInitialValues(<String, Object>{});
+  // init() reads the auth token from secure storage; back it with an in-memory
+  // platform so the plugin channel isn't hit in tests.
+  FlutterSecureStorage.setMockInitialValues(<String, String>{});
   final SharedPreferenceService sp = SharedPreferenceService();
   await sp.init();
   if (withLocation) {
