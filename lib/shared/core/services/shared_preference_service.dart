@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:qurantafsir_flutter/shared/constants/prayer_times.dart';
@@ -14,14 +15,24 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 class SharedPreferenceService {
+  /// [secureStorage] is a test seam: it defaults to the production keystore-
+  /// backed instance, but tests inject a throwing fake to prove init() never
+  /// breaks notification scheduling when the keystore misbehaves in background
+  /// isolates. Never pass it in production.
+  SharedPreferenceService({
+    @visibleForTesting FlutterSecureStorage? secureStorage,
+  }) : _secureStorage = secureStorage ?? _defaultSecureStorage;
+
   late SharedPreferences _sharedPreferences;
 
   // The auth token lives in the platform keystore/keychain, not plain shared
   // preferences. Cached in-memory so getApiToken() can stay synchronous.
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-    iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
-  );
+  static const FlutterSecureStorage _defaultSecureStorage =
+      FlutterSecureStorage(
+        aOptions: AndroidOptions(encryptedSharedPreferences: true),
+        iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
+      );
+  final FlutterSecureStorage _secureStorage;
   String _cachedApiToken = '';
 
   static const String isAlreadyOnBoardingTadabbur =
@@ -48,25 +59,70 @@ class SharedPreferenceService {
   final String _adhanEnabledMapKey = 'adhan-enabled-map';
   final String _persistentPrayerNotifEnabledKey =
       'persistent-prayer-notif-enabled';
+  static const String _adhanAllOffMigrationKey =
+      'adhan-all-off-migration-done';
 
   Future<void> init() async {
     _sharedPreferences = await SharedPreferences.getInstance();
 
-    final String? secureToken = await _secureStorage.read(key: _apiTokenKey);
-    if (secureToken != null && secureToken.isNotEmpty) {
-      _cachedApiToken = secureToken;
+    // One-time heal: build 107 auto-persisted an all-false adhan-enabled map
+    // whenever the notification-settings page was opened before a location
+    // was set (via setAdhanEnabledMap). That was harmless while the scheduler
+    // ignored the saved map, but the scheduler has since been fixed to
+    // respect it — so devices carrying that stale all-false map would go
+    // silent on every adzan forever. Storage can't distinguish "auto-
+    // persisted bug" from "user deliberately turned everything off", so we
+    // heal once per device: drop an all-false map so the all-on default
+    // applies again. Anything a user sets after this flag is recorded stays
+    // untouched, including a deliberate all-off.
+    _healAutoPersistedAllOffAdhanMap();
+
+    // init() runs in the Workmanager background isolate before adzan and Quran
+    // reminders are scheduled. Reading/writing the platform keystore from a
+    // background isolate can intermittently throw (Android Keystore /
+    // EncryptedSharedPreferences quirks). init() must NEVER throw because of the
+    // token, otherwise the whole scheduling worker dies and the user gets no
+    // notifications that day. Degrade gracefully instead.
+    try {
+      final String? secureToken = await _secureStorage.read(key: _apiTokenKey);
+      if (secureToken != null && secureToken.isNotEmpty) {
+        _cachedApiToken = secureToken;
+        return;
+      }
+
+      // One-time migration: move an existing plain-text token into secure
+      // storage and drop the insecure copy. Write BEFORE removing so a failed
+      // write can never lose the token.
+      final String legacyToken =
+          _sharedPreferences.getString(_apiTokenKey) ?? '';
+      if (legacyToken.isNotEmpty) {
+        await _secureStorage.write(key: _apiTokenKey, value: legacyToken);
+        await _sharedPreferences.remove(_apiTokenKey);
+        _cachedApiToken = legacyToken;
+      }
+    } catch (_) {
+      // Fall back to any legacy plaintext token still present (else empty).
+      _cachedApiToken = _sharedPreferences.getString(_apiTokenKey) ?? '';
+    }
+  }
+
+  /// See the doc comment on the call site in [init] for the WHY. Runs once
+  /// per device: if an all-false adhan-enabled map was already healed (or the
+  /// user deliberately set one after that point), the flag short-circuits
+  /// this on every later launch.
+  void _healAutoPersistedAllOffAdhanMap() {
+    if (_sharedPreferences.getBool(_adhanAllOffMigrationKey) == true) {
       return;
     }
 
-    // One-time migration: move an existing plain-text token into secure storage
-    // and drop the insecure copy.
-    final String legacyToken =
-        _sharedPreferences.getString(_apiTokenKey) ?? '';
-    if (legacyToken.isNotEmpty) {
-      await _secureStorage.write(key: _apiTokenKey, value: legacyToken);
-      await _sharedPreferences.remove(_apiTokenKey);
-      _cachedApiToken = legacyToken;
+    final Map<PrayerTimesList, bool>? storedMap = getAdhanEnabledMap();
+    if (storedMap != null &&
+        storedMap.isNotEmpty &&
+        storedMap.values.every((bool enabled) => !enabled)) {
+      _sharedPreferences.remove(_adhanEnabledMapKey);
     }
+
+    _sharedPreferences.setBool(_adhanAllOffMigrationKey, true);
   }
 
   void setReadingSettings(ReadingSettings readingSettings) {

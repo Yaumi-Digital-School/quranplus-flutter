@@ -168,6 +168,12 @@ class PrayerTimesService {
     String madhab = 'shafi',
     Map<PrayerTimesList, bool>? adhanEnabled,
   }) async {
+    // Background paths (launch/daily worker) pass null; honor the user's saved
+    // per-prayer toggles instead of resurrecting adzan they disabled. A null map
+    // (settings never opened) still falls back to all-on via the per-prayer
+    // `?? true` below.
+    adhanEnabled ??= sharedPreferenceService.getAdhanEnabledMap();
+
     final PrayerTimes? prayerTimes = getPrayerTimesByDate(
       calculationMethod: calculationMethod,
       madhab: madhab,
@@ -263,6 +269,10 @@ class PrayerTimesService {
     String madhab = 'shafi',
     Map<PrayerTimesList, bool>? adhanEnabled,
   }) async {
+    // iOS daily resync passes null; honor the user's saved per-prayer toggles
+    // (a null map still falls back to all-on via the per-prayer `?? true`).
+    adhanEnabled ??= sharedPreferenceService.getAdhanEnabledMap();
+
     await notificationService.cancelAllNotifications();
 
     final DateTime now = DateTime.now();
@@ -307,7 +317,11 @@ class PrayerTimesService {
       }
     }
 
+    // Cap Quran reminders at 5 days (IDs 100–124) so the combined pending count
+    // (35 prayer + 25 reminder = 60) stays under iOS's 64-notification limit,
+    // matching the ID budget documented above.
     await setupMultiDayQuranReminders(
+      days: 5,
       calculationMethod: calculationMethod,
       madhab: madhab,
       adhanEnabled: adhanEnabled,

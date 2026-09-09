@@ -3,10 +3,21 @@
 //  - the AyahDetailBottomSheet (content + sticky prev/next footer);
 //  - the tap / 1s-hold interaction on FullPagePagesView.
 
+import 'dart:async';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+// ignore: depend_on_referenced_packages
+import 'package:http/http.dart' as http;
+// google_fonts exposes its http client only from src; overriding it keeps the
+// sheet's font fetches from failing the share test under runAsync (see below).
+// ignore: implementation_imports
+import 'package:google_fonts/src/google_fonts_base.dart' show httpClient;
+import 'package:qurantafsir_flutter/pages/surat_page_v3/ayah_share_image.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/full_page_ayah_utils.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_content_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_navigation_notifier.dart';
@@ -45,6 +56,16 @@ List<List<String>> _table(String prefix) => List<List<String>>.generate(
   114,
   (int s) => List<String>.generate(300, (int a) => '$prefix$s-$a'),
 );
+
+/// An http client whose requests never complete. Installed as google_fonts'
+/// [httpClient] in the share test so the sheet's font fetches stay pending
+/// (instead of rejecting and failing the test) while the real event loop runs
+/// under runAsync for PNG encoding.
+class _NeverRespondingClient extends http.BaseClient {
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) =>
+      Completer<http.StreamedResponse>().future;
+}
 
 // ---------------------------------------------------------------------------
 // Fake notifiers
@@ -317,6 +338,417 @@ void main() {
             .onPressed,
         isNull,
       );
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // AyahDetailBottomSheet — double chevron, page slide, scroll reset, share
+  // -------------------------------------------------------------------------
+  group('AyahDetailBottomSheet — chevrons / page slide / scroll / share', () {
+    // 3-page shape (same as §6): ids 1-3 on page 0, 4-5 on page 1, 6 on page 2.
+    List<QuranPage> buildPages() => <QuranPage>[
+      QuranPage(
+        verses: <Verse>[
+          _v(id: 1, key: '1:1', words: <Word>[_w('x', 1)]),
+          _v(id: 2, key: '1:2', words: <Word>[_w('x', 2)]),
+          _v(id: 3, key: '1:3', words: <Word>[_w('x', 3)]),
+        ],
+      ),
+      QuranPage(
+        verses: <Verse>[
+          _v(id: 4, key: '1:4', words: <Word>[_w('x', 1)]),
+          _v(id: 5, key: '2:1', words: <Word>[_w('x', 2)]),
+        ],
+      ),
+      QuranPage(
+        verses: <Verse>[
+          _v(id: 6, key: '2:2', words: <Word>[_w('x', 1)]),
+        ],
+      ),
+    ];
+
+    SuratPageContentState buildContent({
+      List<QuranPage>? pages,
+      List<List<String>>? translations,
+      List<List<String>>? tafsirs,
+    }) => SuratPageContentState(
+      pages: pages ?? buildPages(),
+      translations: translations ?? _table('T'),
+      tafsirs: tafsirs ?? _table('X'),
+      readingSettings: ReadingSettings(),
+    );
+
+    Future<ProviderContainer> pumpSheet(
+      WidgetTester tester, {
+      required int initialAyahId,
+      required SuratPageContentState content,
+      PageController? pageController,
+      bool withPageView = false,
+    }) async {
+      final Widget sheet = AyahDetailBottomSheet(
+        key: ValueKey<int>(initialAyahId),
+        initialAyahId: initialAyahId,
+      );
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            suratPageContentProvider.overrideWith(
+              () => _FakeContentNotifier(content),
+            ),
+            suratPageNavigationProvider.overrideWith(
+              () => _FakeNavNotifier(
+                SuratPageNavigationState(
+                  pageController: pageController,
+                  isLoading: false,
+                ),
+              ),
+            ),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: withPageView
+                  // A real PageView bound to the same controller so the sheet's
+                  // animateToPage has something attached to drive.
+                  ? Column(
+                      children: <Widget>[
+                        SizedBox(
+                          height: 150,
+                          child: PageView(
+                            controller: pageController,
+                            children: const <Widget>[
+                              Center(child: Text('p0')),
+                              Center(child: Text('p1')),
+                              Center(child: Text('p2')),
+                            ],
+                          ),
+                        ),
+                        Expanded(child: sheet),
+                      ],
+                    )
+                  : sheet,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final ProviderContainer container = ProviderScope.containerOf(
+        tester.element(find.byType(AyahDetailBottomSheet)),
+        listen: false,
+      );
+      container.listen(suratPageNavigationProvider, (_, _) {});
+      return container;
+    }
+
+    IconData iconOf(WidgetTester tester, String key) =>
+        (tester.widget<IconButton>(find.byKey(Key(key))).icon as Icon).icon!;
+
+    testWidgets('double chevron when the adjacent ayah crosses a page', (
+      WidgetTester tester,
+    ) async {
+      // Verse 3 is the last ayah on page 0; next (verse 4) lives on page 1.
+      await pumpSheet(tester, initialAyahId: 3, content: buildContent());
+
+      expect(
+        iconOf(tester, 'ayah_detail_next'),
+        Icons.keyboard_double_arrow_right,
+      );
+      // Prev (verse 2) is on the same page -> single chevron.
+      expect(iconOf(tester, 'ayah_detail_prev'), Icons.chevron_left);
+    });
+
+    testWidgets('single chevrons for a mid-page ayah', (
+      WidgetTester tester,
+    ) async {
+      // Verse 2: prev (1) and next (3) are both on page 0.
+      await pumpSheet(tester, initialAyahId: 2, content: buildContent());
+
+      expect(iconOf(tester, 'ayah_detail_next'), Icons.chevron_right);
+      expect(iconOf(tester, 'ayah_detail_prev'), Icons.chevron_left);
+    });
+
+    testWidgets('absolute first ayah keeps a single, disabled prev chevron', (
+      WidgetTester tester,
+    ) async {
+      await pumpSheet(tester, initialAyahId: 1, content: buildContent());
+
+      expect(iconOf(tester, 'ayah_detail_prev'), Icons.chevron_left);
+      expect(
+        tester
+            .widget<IconButton>(find.byKey(const Key('ayah_detail_prev')))
+            .onPressed,
+        isNull,
+      );
+    });
+
+    testWidgets('stepping across a page boundary slides the mushaf PageView', (
+      WidgetTester tester,
+    ) async {
+      final PageController controller = PageController(initialPage: 0);
+      addTearDown(controller.dispose);
+
+      final ProviderContainer container = await pumpSheet(
+        tester,
+        initialAyahId: 3,
+        content: buildContent(),
+        pageController: controller,
+        withPageView: true,
+      );
+
+      await tester.tap(find.byKey(const Key('ayah_detail_next')));
+      await tester.pumpAndSettle();
+
+      expect(controller.page, 1.0);
+      expect(
+        container.read(suratPageNavigationProvider).highlightedAyahId,
+        4,
+      );
+    });
+
+    testWidgets('crossing a page boundary is a no-op when controller is null', (
+      WidgetTester tester,
+    ) async {
+      // Same page-boundary step but no pageController in nav state.
+      final ProviderContainer container = await pumpSheet(
+        tester,
+        initialAyahId: 3,
+        content: buildContent(),
+      );
+
+      await tester.tap(find.byKey(const Key('ayah_detail_next')));
+      await tester.pumpAndSettle(); // would throw if animateToPage NPE'd
+
+      expect(
+        container.read(suratPageNavigationProvider).highlightedAyahId,
+        4,
+      );
+    });
+
+    testWidgets('stepping to another ayah resets the scroll position', (
+      WidgetTester tester,
+    ) async {
+      final List<QuranPage> pages = <QuranPage>[
+        QuranPage(
+          verses: <Verse>[
+            _v(id: 100, key: '4:14', words: <Word>[_w('bismi', 1)]),
+            _v(id: 101, key: '4:15', words: <Word>[_w('alif', 1)]),
+            _v(id: 102, key: '4:16', words: <Word>[_w('mim', 1)]),
+          ],
+        ),
+      ];
+      final List<List<String>> translations = _table('T');
+      final List<List<String>> tafsirs = _table('X');
+      final String long = List<String>.filled(
+        80,
+        'Lorem ipsum dolor sit amet. ',
+      ).join();
+      // Verse 101 -> surahNumberInIndex 3, verseNumberInIndex 14.
+      translations[3][14] = long;
+      tafsirs[3][14] = long;
+
+      await pumpSheet(
+        tester,
+        initialAyahId: 101,
+        content: buildContent(
+          pages: pages,
+          translations: translations,
+          tafsirs: tafsirs,
+        ),
+      );
+
+      final ScrollableState scrollable = tester.state<ScrollableState>(
+        find.byType(Scrollable),
+      );
+      scrollable.position.jumpTo(200);
+      await tester.pump();
+      expect(scrollable.position.pixels, 200);
+
+      await tester.tap(find.byKey(const Key('ayah_detail_next')));
+      await tester.pumpAndSettle();
+
+      expect(
+        tester.state<ScrollableState>(find.byType(Scrollable)).position.pixels,
+        0,
+      );
+    });
+
+    testWidgets('share button builds an image and invokes the onShare seam', (
+      WidgetTester tester,
+    ) async {
+      Uint8List? sharedBytes;
+      String? sharedText;
+
+      // Keep the sheet's google_fonts font fetches pending (rather than failing
+      // the test) once the real event loop runs under runAsync for encoding.
+      final http.Client originalClient = httpClient;
+      httpClient = _NeverRespondingClient();
+      addTearDown(() => httpClient = originalClient);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            suratPageContentProvider.overrideWith(
+              () => _FakeContentNotifier(buildContent()),
+            ),
+            suratPageNavigationProvider.overrideWith(
+              () => _FakeNavNotifier(const SuratPageNavigationState()),
+            ),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: AyahDetailBottomSheet(
+                initialAyahId: 5, // 2:1 -> reference "QS. Al-Baqarah: 1"
+                onShare: (Uint8List bytes, String text) async {
+                  sharedBytes = bytes;
+                  sharedText = text;
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final IconButton shareButton = tester.widget<IconButton>(
+        find.byKey(const Key('ayah_detail_share')),
+      );
+      expect(shareButton.onPressed, isNotNull);
+
+      // PNG encoding only completes on the real event loop, and the tapped
+      // handler runs in a different zone than this body, so poll the plain
+      // result field while yielding to the real loop under runAsync.
+      await tester.runAsync(() async {
+        await tester.tap(find.byKey(const Key('ayah_detail_share')));
+        for (int i = 0; i < 200 && sharedBytes == null; i++) {
+          await Future<void>.delayed(const Duration(milliseconds: 20));
+        }
+      });
+
+      expect(sharedBytes, isNotNull);
+      expect(sharedBytes!, isNotEmpty);
+      expect(sharedText, contains('Al-Baqarah'));
+    });
+
+    testWidgets('share button is disabled while a share is in flight', (
+      WidgetTester tester,
+    ) async {
+      // Keep the sheet's google_fonts font fetches pending (rather than failing
+      // the test) once the real event loop runs under runAsync for encoding.
+      final http.Client originalClient = httpClient;
+      httpClient = _NeverRespondingClient();
+      addTearDown(() => httpClient = originalClient);
+
+      bool shareStarted = false;
+      bool shareFinished = false;
+      bool release = false;
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            suratPageContentProvider.overrideWith(
+              () => _FakeContentNotifier(buildContent()),
+            ),
+            suratPageNavigationProvider.overrideWith(
+              () => _FakeNavNotifier(const SuratPageNavigationState()),
+            ),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: AyahDetailBottomSheet(
+                initialAyahId: 5,
+                // Holds the share in flight until the test flips [release], so
+                // the button's disabled state can be observed mid-share. Polls a
+                // plain flag rather than awaiting a Completer, which is not seen
+                // across the fake-async / runAsync zone boundary.
+                onShare: (Uint8List bytes, String text) async {
+                  shareStarted = true;
+                  while (!release) {
+                    await Future<void>.delayed(const Duration(milliseconds: 10));
+                  }
+                  shareFinished = true;
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      IconButton shareButton() => tester.widget<IconButton>(
+        find.byKey(const Key('ayah_detail_share')),
+      );
+
+      expect(shareButton().onPressed, isNotNull);
+
+      // Tap, then wait until the seam is entered (image built, share in flight).
+      await tester.runAsync(() async {
+        await tester.tap(find.byKey(const Key('ayah_detail_share')));
+        for (int i = 0; i < 200 && !shareStarted; i++) {
+          await Future<void>.delayed(const Duration(milliseconds: 20));
+        }
+      });
+      await tester.pump(); // flush the setState(_isSharing = true) rebuild
+
+      expect(shareStarted, isTrue);
+      expect(shareButton().onPressed, isNull);
+
+      // Release the in-flight share; the finally re-enables the button.
+      release = true;
+      await tester.runAsync(() async {
+        for (int i = 0; i < 200 && !shareFinished; i++) {
+          await Future<void>.delayed(const Duration(milliseconds: 20));
+        }
+        // Drain the microtasks after the seam returns (the finally's setState).
+        await Future<void>.delayed(const Duration(milliseconds: 20));
+      });
+      await tester.pump(); // flush the setState(_isSharing = false) rebuild
+
+      expect(shareFinished, isTrue);
+      expect(shareButton().onPressed, isNotNull);
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // buildAyahShareImage
+  // -------------------------------------------------------------------------
+  group('buildAyahShareImage', () {
+    testWidgets('produces a non-empty PNG at the fixed width', (
+      WidgetTester tester,
+    ) async {
+      await tester.runAsync(() async {
+        final Uint8List bytes = await buildAyahShareImage(
+          arabicText: 'alif lam mim',
+          arabicFontFamily: 'Page1',
+          translation: 'Alif Lam Mim.',
+          reference: 'QS. Al-Baqarah: 1',
+        );
+
+        expect(bytes, isNotEmpty);
+        // PNG magic header.
+        expect(bytes.sublist(0, 4), <int>[0x89, 0x50, 0x4E, 0x47]);
+
+        final ui.Codec codec = await ui.instantiateImageCodec(bytes);
+        final ui.FrameInfo frame = await codec.getNextFrame();
+        expect(frame.image.width, 1080);
+        frame.image.dispose();
+        codec.dispose();
+      });
+    });
+
+    testWidgets('renders even without a translation', (
+      WidgetTester tester,
+    ) async {
+      await tester.runAsync(() async {
+        final Uint8List bytes = await buildAyahShareImage(
+          arabicText: 'alif',
+          arabicFontFamily: 'Page1',
+          translation: null,
+          reference: 'QS. Al-Baqarah: 1',
+        );
+
+        expect(bytes, isNotEmpty);
+        expect(bytes.sublist(0, 4), <int>[0x89, 0x50, 0x4E, 0x47]);
+      });
     });
   });
 

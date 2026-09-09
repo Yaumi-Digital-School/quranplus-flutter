@@ -40,16 +40,13 @@ class NotificationSettingsPageNotifier
     _sharedPreferenceService = ref.watch(sharedPreferenceServiceProvider);
     _prayerTimesService = ref.watch(prayerTimesService);
 
-    final bool hasLocation =
-        (_sharedPreferenceService.getCityName() ?? '').isNotEmpty;
-
+    // Default to all-on (scheduling self-guards when there is no location — see
+    // getPrayerTimesByDate). Do NOT persist the derived default here: writing it
+    // before a location exists used to lock in an all-off map that silenced adzan
+    // forever. Only explicit toggleAdhan writes to prefs.
     final Map<PrayerTimesList, bool> saved =
         _sharedPreferenceService.getAdhanEnabledMap() ??
-        {for (final p in PrayerTimesList.values) p: hasLocation};
-
-    if (_sharedPreferenceService.getAdhanEnabledMap() == null) {
-      _sharedPreferenceService.setAdhanEnabledMap(saved);
-    }
+        {for (final p in PrayerTimesList.values) p: true};
 
     return NotificationSettingsPageState(
       adhanEnabled: saved,
