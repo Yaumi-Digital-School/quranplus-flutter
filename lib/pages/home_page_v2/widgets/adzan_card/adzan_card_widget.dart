@@ -6,6 +6,7 @@ import 'package:qurantafsir_flutter/shared/constants/icon.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_themed_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/route_paths.dart';
+import 'package:qurantafsir_flutter/shared/utils/number_util.dart';
 
 class AdzanCardWidget extends ConsumerWidget {
   const AdzanCardWidget({super.key});
@@ -61,7 +62,7 @@ class AdzanCardWidget extends ConsumerWidget {
                     adzanState.prayerTimesList == null ||
                             adzanState.date == null
                         ? ""
-                        : "${adzanState.date!.hour}:${adzanState.date!.minute}",
+                        : "${formatTwoDigits(adzanState.date!.hour)}:${formatTwoDigits(adzanState.date!.minute)}",
                     style: QPTextStyle.getDescription1Regular(
                       context,
                     ).copyWith(color: context.qpColors.brand100),

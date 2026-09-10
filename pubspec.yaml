@@ -125,6 +125,7 @@ flutter:
     - data/quran_fonts/
     - data/quran_pages/
     - data/quran_translations/
+    - data/quran_arabic/
     - data/quran_latins/
     - data/quran_tafsirs/
     - data/full_page_separator/

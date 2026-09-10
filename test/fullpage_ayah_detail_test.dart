@@ -25,8 +25,11 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_conten
 import 'package:qurantafsir_flutter/pages/surat_page_v3/states/surat_page_navigation_state.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/ayah_detail_bottom_sheet.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/widgets/surat_page_views.dart';
+import 'package:qurantafsir_flutter/shared/constants/qp_theme_data.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
 import 'package:qurantafsir_flutter/shared/core/models/reading_settings.dart';
+import 'package:qurantafsir_flutter/shared/core/services/quran_arabic_text_service.dart';
+import 'package:qurantafsir_flutter/shared/core/state_notifiers/theme_state_notifier.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // ---------------------------------------------------------------------------
@@ -85,6 +88,14 @@ class _FakeNavNotifier extends SuratPageNavigationNotifier {
 
   @override
   SuratPageNavigationState build() => _seed;
+}
+
+/// The share chooser opens a BaseWidgetBottomSheet, which watches themeProvider
+/// (whose real build() reads SharedPreferences). This fake returns a fixed mode
+/// so the chooser can render without a seeded prefs store.
+class _FakeThemeNotifier extends ThemeNotifier {
+  @override
+  QPThemeMode build() => QPThemeMode.light;
 }
 
 void main() {
@@ -593,6 +604,7 @@ void main() {
             suratPageNavigationProvider.overrideWith(
               () => _FakeNavNotifier(const SuratPageNavigationState()),
             ),
+            themeProvider.overrideWith(() => _FakeThemeNotifier()),
           ],
           child: MaterialApp(
             home: Scaffold(
@@ -614,11 +626,17 @@ void main() {
       );
       expect(shareButton.onPressed, isNotNull);
 
+      // Tapping share now opens the image/text chooser first.
+      await tester.tap(find.byKey(const Key('ayah_detail_share')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('ayah_share_image_option')), findsOneWidget);
+      expect(find.byKey(const Key('ayah_share_text_option')), findsOneWidget);
+
       // PNG encoding only completes on the real event loop, and the tapped
       // handler runs in a different zone than this body, so poll the plain
       // result field while yielding to the real loop under runAsync.
       await tester.runAsync(() async {
-        await tester.tap(find.byKey(const Key('ayah_detail_share')));
+        await tester.tap(find.byKey(const Key('ayah_share_image_option')));
         for (int i = 0; i < 200 && sharedBytes == null; i++) {
           await Future<void>.delayed(const Duration(milliseconds: 20));
         }
@@ -627,6 +645,14 @@ void main() {
       expect(sharedBytes, isNotNull);
       expect(sharedBytes!, isNotEmpty);
       expect(sharedText, contains('Al-Baqarah'));
+      expect(
+        sharedText,
+        endsWith(
+          '\n\nShared via Quran Plus\n'
+          'Android : https://play.google.com/store/apps/details?id=com.yaumi.qurantafsir.id\n'
+          'iOS : https://apps.apple.com/no/app/quranplus-tafsir-tadabbur/id6444388439',
+        ),
+      );
     });
 
     testWidgets('share button is disabled while a share is in flight', (
@@ -651,6 +677,7 @@ void main() {
             suratPageNavigationProvider.overrideWith(
               () => _FakeNavNotifier(const SuratPageNavigationState()),
             ),
+            themeProvider.overrideWith(() => _FakeThemeNotifier()),
           ],
           child: MaterialApp(
             home: Scaffold(
@@ -680,9 +707,14 @@ void main() {
 
       expect(shareButton().onPressed, isNotNull);
 
-      // Tap, then wait until the seam is entered (image built, share in flight).
+      // Open the chooser, then pick "Share as Image".
+      await tester.tap(find.byKey(const Key('ayah_detail_share')));
+      await tester.pumpAndSettle();
+
+      // Tap image, then wait until the seam is entered (image built, share in
+      // flight).
       await tester.runAsync(() async {
-        await tester.tap(find.byKey(const Key('ayah_detail_share')));
+        await tester.tap(find.byKey(const Key('ayah_share_image_option')));
         for (int i = 0; i < 200 && !shareStarted; i++) {
           await Future<void>.delayed(const Duration(milliseconds: 20));
         }
@@ -705,6 +737,83 @@ void main() {
 
       expect(shareFinished, isTrue);
       expect(shareButton().onPressed, isNotNull);
+    });
+
+    testWidgets('text share composes arabic, translation and reference in order', (
+      WidgetTester tester,
+    ) async {
+      String? sharedText;
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            suratPageContentProvider.overrideWith(
+              () => _FakeContentNotifier(buildContent()),
+            ),
+            suratPageNavigationProvider.overrideWith(
+              () => _FakeNavNotifier(const SuratPageNavigationState()),
+            ),
+            themeProvider.overrideWith(() => _FakeThemeNotifier()),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: AyahDetailBottomSheet(
+                initialAyahId: 5, // 2:1 -> "QS. Al-Baqarah: 1"
+                onShareText: (String text) async {
+                  sharedText = text;
+                },
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Open the chooser and pick "Share as Text".
+      await tester.tap(find.byKey(const Key('ayah_detail_share')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('ayah_share_image_option')), findsOneWidget);
+      expect(find.byKey(const Key('ayah_share_text_option')), findsOneWidget);
+
+      // The Arabic must come from the bundled Tanzil asset, so resolve the
+      // expected value from the real asset and drive the text flow under the
+      // real event loop (rootBundle.loadString needs it).
+      String? expectedArabic;
+      await tester.runAsync(() async {
+        expectedArabic = await QuranArabicTextService().getArabicByVerseKey(
+          '2:1',
+        );
+        await tester.tap(find.byKey(const Key('ayah_share_text_option')));
+        for (int i = 0; i < 200 && sharedText == null; i++) {
+          await Future<void>.delayed(const Duration(milliseconds: 20));
+        }
+      });
+
+      expect(expectedArabic, isNotNull);
+      expect(sharedText, isNotNull);
+      final String text = sharedText!;
+      final String arabic = expectedArabic!;
+
+      expect(text, contains(arabic));
+      expect(text, contains('T1-0')); // translation for 2:1
+      expect(text, contains('QS. Al-Baqarah: 1'));
+      expect(
+        text,
+        endsWith(
+          'QS. Al-Baqarah: 1\n\n'
+          'Shared via Quran Plus\n'
+          'Android : https://play.google.com/store/apps/details?id=com.yaumi.qurantafsir.id\n'
+          'iOS : https://apps.apple.com/no/app/quranplus-tafsir-tadabbur/id6444388439',
+        ),
+      );
+
+      // Top-to-bottom ordering: arabic, translation, reference/tagline.
+      expect(text.indexOf(arabic), lessThan(text.indexOf('T1-0')));
+      expect(text.indexOf('T1-0'), lessThan(text.indexOf('QS.')));
+      expect(
+        text.indexOf('QS.'),
+        lessThan(text.indexOf('Shared via Quran Plus')),
+      );
     });
   });
 
@@ -748,6 +857,40 @@ void main() {
 
         expect(bytes, isNotEmpty);
         expect(bytes.sublist(0, 4), <int>[0x89, 0x50, 0x4E, 0x47]);
+      });
+    });
+
+    testWidgets('renders the brand logo and still emits a 1080-wide PNG', (
+      WidgetTester tester,
+    ) async {
+      await tester.runAsync(() async {
+        // A tiny programmatic logo stands in for images/logogram.png.
+        final ui.PictureRecorder recorder = ui.PictureRecorder();
+        final ui.Canvas canvas = ui.Canvas(recorder);
+        canvas.drawRect(
+          const ui.Rect.fromLTWH(0, 0, 12, 12),
+          ui.Paint()..color = const ui.Color(0xFF00A651),
+        );
+        final ui.Image logo = await recorder.endRecording().toImage(12, 12);
+
+        final Uint8List bytes = await buildAyahShareImage(
+          arabicText: 'alif lam mim',
+          arabicFontFamily: 'Page1',
+          translation: 'Alif Lam Mim.',
+          reference: 'QS. Al-Baqarah: 1',
+          logo: logo,
+        );
+        logo.dispose();
+
+        expect(bytes, isNotEmpty);
+        // PNG magic header.
+        expect(bytes.sublist(0, 4), <int>[0x89, 0x50, 0x4E, 0x47]);
+
+        final ui.Codec codec = await ui.instantiateImageCodec(bytes);
+        final ui.FrameInfo frame = await codec.getNextFrame();
+        expect(frame.image.width, 1080);
+        frame.image.dispose();
+        codec.dispose();
       });
     });
   });

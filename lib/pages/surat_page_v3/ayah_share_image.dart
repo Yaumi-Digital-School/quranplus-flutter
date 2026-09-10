@@ -3,9 +3,10 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/painting.dart';
 
-/// Renders a shareable PNG for a single ayah: the Arabic glyphs (page font) on
-/// top, the Indonesian translation below, and a "QS. <surah>: <verse>"
-/// reference line at the bottom.
+/// Renders a shareable PNG for a single ayah: an optional "Quran Plus" brand
+/// header at the top-left, the Arabic glyphs (page font) below it, the
+/// Indonesian translation next, and a "QS. <surah>: <verse>" reference line at
+/// the bottom.
 ///
 /// Headless (no widget tree): each block is laid out with a [TextPainter] and
 /// painted onto a [ui.PictureRecorder] canvas, so it can run straight from a
@@ -16,22 +17,53 @@ import 'package:flutter/painting.dart';
 /// [arabicText] are the page glyph codes (joined `word.code`s) and
 /// [arabicFontFamily] must be the matching `'Page<n>'` family — the app ships
 /// no Unicode Arabic, so the glyphs are meaningless in any other font.
+///
+/// [logo] is the pre-decoded brand mark (e.g. `images/logogram.png`). The
+/// caller loads it so this function stays headless; when null the header falls
+/// back to just the "Quran Plus" wordmark, and the caller must dispose the
+/// image after this returns.
 Future<Uint8List> buildAyahShareImage({
   required String arabicText,
   required String arabicFontFamily,
   String? translation,
   required String reference,
+  ui.Image? logo,
 }) async {
   const double width = 1080;
   const double padding = 72;
   const double contentWidth = width - padding * 2;
+  const double gapAfterHeader = 44;
   const double gapAfterArabic = 40;
   const double gapBeforeReference = 48;
 
+  const double logoSize = 64;
+  const double logoTextGap = 20;
+
   const ui.Color background = ui.Color(0xFFFFFFFF);
+  const ui.Color brandColor = ui.Color(0xFF1A1A1A);
   const ui.Color arabicColor = ui.Color(0xFF1A1A1A);
   const ui.Color translationColor = ui.Color(0xFF3D3D3D);
   const ui.Color referenceColor = ui.Color(0xFF8A8A8A);
+
+  // Brand wordmark, drawn beside the logo at the card's top-left.
+  final TextPainter brandPainter = TextPainter(
+    text: const TextSpan(
+      text: 'Quran Plus',
+      style: TextStyle(
+        color: brandColor,
+        fontSize: 36,
+        height: 1.2,
+        fontWeight: FontWeight.w600,
+      ),
+    ),
+    textDirection: TextDirection.ltr,
+    textAlign: TextAlign.left,
+  )..layout(maxWidth: contentWidth - logoSize - logoTextGap);
+
+  // The header row is as tall as the taller of the logo and the wordmark.
+  final double headerHeight = logo != null
+      ? (logoSize > brandPainter.height ? logoSize : brandPainter.height)
+      : brandPainter.height;
 
   // minWidth == maxWidth pins each block to the full content box so the Arabic
   // block right-aligns against the right edge (not just within its own run).
@@ -80,7 +112,7 @@ Future<Uint8List> buildAyahShareImage({
     textAlign: TextAlign.left,
   )..layout(minWidth: contentWidth, maxWidth: contentWidth);
 
-  double height = padding + arabicPainter.height;
+  double height = padding + headerHeight + gapAfterHeader + arabicPainter.height;
   if (translationPainter != null) {
     height += gapAfterArabic + translationPainter.height;
   }
@@ -97,6 +129,32 @@ Future<Uint8List> buildAyahShareImage({
   );
 
   double dy = padding;
+
+  // Header row: logo (aspect-preserved) then the "Quran Plus" wordmark, both
+  // vertically centered within the header height.
+  double brandLeft = padding;
+  if (logo != null) {
+    final double srcW = logo.width.toDouble();
+    final double srcH = logo.height.toDouble();
+    // Fit the source into a logoSize box, preserving aspect ratio.
+    final double scale = logoSize / (srcW > srcH ? srcW : srcH);
+    final double drawW = srcW * scale;
+    final double drawH = srcH * scale;
+    final double logoTop = dy + (headerHeight - drawH) / 2;
+    canvas.drawImageRect(
+      logo,
+      ui.Rect.fromLTWH(0, 0, srcW, srcH),
+      ui.Rect.fromLTWH(padding, logoTop, drawW, drawH),
+      ui.Paint()..filterQuality = ui.FilterQuality.high,
+    );
+    brandLeft = padding + drawW + logoTextGap;
+  }
+  brandPainter.paint(
+    canvas,
+    ui.Offset(brandLeft, dy + (headerHeight - brandPainter.height) / 2),
+  );
+  dy += headerHeight + gapAfterHeader;
+
   arabicPainter.paint(canvas, ui.Offset(padding, dy));
   dy += arabicPainter.height;
 

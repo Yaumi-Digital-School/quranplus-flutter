@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
+import 'package:qurantafsir_flutter/shared/utils/number_util.dart';
 
 part 'bookmarks.g.dart';
 
@@ -116,7 +117,7 @@ class Bookmarks {
     ).difference(DateUtils.dateOnly(convertedStr));
 
     if (timeDiffInDay < const Duration(days: 1)) {
-      return '${convertedStr.hour}:${convertedStr.minute.toString().padLeft(2, "0")}';
+      return '${formatTwoDigits(convertedStr.hour)}:${formatTwoDigits(convertedStr.minute)}';
     }
 
     if (timeDiffInDay <= const Duration(days: 7)) {

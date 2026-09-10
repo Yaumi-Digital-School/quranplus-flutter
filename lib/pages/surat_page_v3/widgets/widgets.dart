@@ -1,4 +1,5 @@
 export 'favorite_ayah_cta.dart';
+export 'share_ayah_cta.dart';
 export 'surat_page_settings_drawer.dart';
 export 'surat_page_app_bar.dart';
 export 'page_tracker_bar.dart';

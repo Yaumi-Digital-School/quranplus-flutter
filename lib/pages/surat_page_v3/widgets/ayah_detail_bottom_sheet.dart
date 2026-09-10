@@ -1,10 +1,8 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:qurantafsir_flutter/pages/surat_page_v3/ayah_share_image.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/ayah_share.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/full_page_ayah_utils.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_content_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_navigation_notifier.dart';
@@ -13,7 +11,6 @@ import 'package:qurantafsir_flutter/pages/surat_page_v3/utils.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_colors.dart';
 import 'package:qurantafsir_flutter/shared/constants/qp_text_style.dart';
 import 'package:qurantafsir_flutter/shared/core/models/quran_page.dart';
-import 'package:share_plus/share_plus.dart';
 
 /// Bottom sheet showing a single ayah's Arabic (page glyph font, centered),
 /// translation and tafsir, with a share button and a sticky footer stepping to
@@ -26,14 +23,20 @@ class AyahDetailBottomSheet extends ConsumerStatefulWidget {
     super.key,
     required this.initialAyahId,
     this.onShare,
+    this.onShareText,
   });
 
   final int initialAyahId;
 
-  /// Test seam: invoked with the rendered PNG [bytes] and the share text
-  /// instead of writing a temp file and opening the OS share sheet. Null in
-  /// production (the real share path runs).
+  /// Test seam for the image flow: invoked with the rendered PNG [bytes] and the
+  /// share text instead of writing a temp file and opening the OS share sheet.
+  /// Null in production (the real share path runs).
   final Future<void> Function(Uint8List bytes, String shareText)? onShare;
+
+  /// Test seam for the text flow: invoked with the composed plain-text share
+  /// body instead of opening the OS share sheet. Null in production (the real
+  /// share path runs).
+  final Future<void> Function(String text)? onShareText;
 
   @override
   ConsumerState<AyahDetailBottomSheet> createState() =>
@@ -107,61 +110,48 @@ class _AyahDetailBottomSheetState extends ConsumerState<AyahDetailBottomSheet> {
     }
   }
 
-  Future<void> _onShare(BuildContext buttonContext) async {
+  /// Tapping the share button: resolve the current verse, capture the iPad
+  /// popover anchor (the button context may unmount while the chooser is open),
+  /// then delegate to the shared chooser + image/text share flow. The chooser's
+  /// execution phase is wired back to [_isSharing] so the button stays disabled
+  /// while a share is in flight.
+  void _onShare(BuildContext buttonContext) {
     // Re-entrancy guard: ignore taps while a share is already in flight so a
-    // fast double-tap cannot build the image or open the share sheet twice.
+    // fast double-tap cannot open a second chooser or share twice.
     if (_isSharing) return;
 
-    final SuratPageContentState content = ref.read(suratPageContentProvider);
-    final List<QuranPage> pages = content.pages ?? const <QuranPage>[];
+    final List<QuranPage> pages =
+        ref.read(suratPageContentProvider).pages ?? const <QuranPage>[];
     final ({Verse verse, int pageIdx})? resolved = findVerseById(
       pages,
       _currentAyahId,
     );
     if (resolved == null) return;
 
-    final Verse verse = resolved.verse;
-    final String arabic = verse.words.map((Word w) => w.code).join(' ');
-    final String surahName = surahNumberToSurahNameMap[verse.surahNumber] ?? '';
-    final String reference = 'QS. $surahName: ${verse.verseNumber}';
-
-    // Capture the popover anchor before any await: iPad needs it, and the
-    // context may unmount while the image renders.
+    // Capture the popover anchor before any navigation/await: iPad needs it,
+    // and the button context can unmount while the chooser/image renders.
     final RenderBox? box = buttonContext.findRenderObject() as RenderBox?;
     final Rect? sharePositionOrigin = box != null && box.hasSize
         ? box.localToGlobal(Offset.zero) & box.size
         : null;
 
-    setState(() => _isSharing = true);
-    try {
-      final Uint8List bytes = await buildAyahShareImage(
-        arabicText: arabic,
-        arabicFontFamily: 'Page${resolved.pageIdx + 1}',
-        translation: _translationFor(content, verse),
-        reference: reference,
-      );
-      if (!mounted) return;
-
-      final Future<void> Function(Uint8List bytes, String shareText)? seam =
-          widget.onShare;
-      if (seam != null) {
-        await seam(bytes, reference);
-        return;
-      }
-
-      final Directory dir = await getTemporaryDirectory();
-      final File file = await File(
-        '${dir.path}/ayah_${verse.id}.png',
-      ).writeAsBytes(bytes);
-
-      await Share.shareXFiles(
-        <XFile>[XFile(file.path)],
-        text: reference,
-        sharePositionOrigin: sharePositionOrigin,
-      );
-    } finally {
-      if (mounted) setState(() => _isSharing = false);
-    }
+    showAyahShareChooser(
+      context: context,
+      ref: ref,
+      verse: resolved.verse,
+      pageNumberInQuran: resolved.pageIdx + 1,
+      sharePositionOrigin: sharePositionOrigin,
+      seams: AyahShareSeams(
+        onShareImage: widget.onShare,
+        onShareText: widget.onShareText,
+      ),
+      onFlowStart: () {
+        if (mounted) setState(() => _isSharing = true);
+      },
+      onFlowEnd: () {
+        if (mounted) setState(() => _isSharing = false);
+      },
+    );
   }
 
   String? _translationFor(SuratPageContentState content, Verse verse) =>

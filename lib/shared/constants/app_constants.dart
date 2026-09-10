@@ -2,6 +2,7 @@ class AppConstants {
   static const String jsonSurat = 'data/quran.json';
   static const String jsonJuz = 'data/juz.json';
   static const String ayahPageJson = 'data/verse-to-page.json';
+  static const String quranArabicSimpleTxt = 'data/quran_arabic/quran-simple.txt';
   static const String appName = 'Quran Tafsir';
 }
 

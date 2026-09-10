@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qurantafsir_flutter/pages/surat_page_v3/ayah_share.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_bookmark_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_habit_notifier.dart';
 import 'package:qurantafsir_flutter/pages/surat_page_v3/notifiers/surat_page_navigation_notifier.dart';
@@ -88,6 +89,7 @@ class AyahItemWidget extends ConsumerWidget {
           if (useBasmalahBeforeAyah) BasmalahWidget(orientation: orientation),
           _buildAyahContent(
             context,
+            ref,
             allVerses,
             fontFamilyPage,
             isFavorited,
@@ -135,6 +137,7 @@ class AyahItemWidget extends ConsumerWidget {
 
   Widget _buildAyahContent(
     BuildContext context,
+    WidgetRef ref,
     String allVerses,
     String fontFamilyPage,
     bool isFavorited,
@@ -147,16 +150,39 @@ class AyahItemWidget extends ConsumerWidget {
         GeneralBottomSheet().showGeneralBottomSheet(
           context,
           verse.surahNameAndAyatKey,
-          FavoriteAyahCTA(
-            onTap: () async {
-              await bookmarkNotifier.toggleFavoriteAyah(
-                surahNumber: verse.surahNumber,
-                ayahNumber: verse.verseNumber,
-                ayahID: verse.id,
-                page: pageNumberInQuran,
-              );
-            },
-            isFavorited: bookmarkNotifier.isAyahFavorited(verse.id),
+          // Builder captures the sheet's own context so tapping Share can pop
+          // this sheet, while the chooser is opened with the OUTER widget
+          // context (still mounted after the pop).
+          Builder(
+            builder: (BuildContext sheetContext) => Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                FavoriteAyahCTA(
+                  onTap: () async {
+                    await bookmarkNotifier.toggleFavoriteAyah(
+                      surahNumber: verse.surahNumber,
+                      ayahNumber: verse.verseNumber,
+                      ayahID: verse.id,
+                      page: pageNumberInQuran,
+                    );
+                  },
+                  isFavorited: bookmarkNotifier.isAyahFavorited(verse.id),
+                ),
+                ShareAyahCTA(
+                  onTap: (Rect? sharePositionOrigin) {
+                    Navigator.of(sheetContext).pop();
+                    showAyahShareChooser(
+                      context: context,
+                      ref: ref,
+                      verse: verse,
+                      pageNumberInQuran: pageNumberInQuran,
+                      sharePositionOrigin: sharePositionOrigin,
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         );
       },
