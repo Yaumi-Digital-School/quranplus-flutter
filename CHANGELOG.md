@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.10.0 (2026-09-10)
+
+### Features
+
+- feat: add download link info (66c846d)
+- feat: add more date options for prayer times (7a41d9a)
+
+### Bug Fixes
+
+- fix: missing notification (c212741)
+- fix: add permission for alarm (0259c0b)
+
 ## 1.9.1 (2026-09-03)
 
 ### Bug Fixes
