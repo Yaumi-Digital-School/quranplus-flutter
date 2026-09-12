@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_prayer_times_label">Prayer Times</string>
+    <string name="widget_prayer_times_description">Today\'s prayer times at a glance, refreshed daily.</string>
+    <string name="widget_prayer_times_empty">Open Qur\'an Plus and set your location to see prayer times here.</string>
+</resources>

@@ -65,6 +65,20 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
+        <!-- Home-screen prayer times widget (fed by the home_widget plugin;
+             data pushed from the Flutter side + Workmanager background tasks). -->
+        <receiver
+            android:name=".PrayerTimesWidgetProvider"
+            android:exported="true"
+            android:label="@string/widget_prayer_times_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/prayer_times_widget_info" />
+        </receiver>
+
         <!-- NOTIFICATION -->
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver" />
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />

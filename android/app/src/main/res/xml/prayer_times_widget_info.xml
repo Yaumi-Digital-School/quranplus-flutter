@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- updatePeriodMillis is a daily best-effort re-render from cached data; the
+     actual recomputation of times happens in the Flutter Workmanager tasks
+     (daily + 6-hourly), which push fresh data and trigger an update. -->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="250dp"
+    android:minHeight="110dp"
+    android:minResizeWidth="180dp"
+    android:minResizeHeight="60dp"
+    android:targetCellWidth="4"
+    android:targetCellHeight="2"
+    android:updatePeriodMillis="86400000"
+    android:initialLayout="@layout/widget_prayer_times"
+    android:previewLayout="@layout/widget_prayer_times"
+    android:description="@string/widget_prayer_times_description"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen" />
