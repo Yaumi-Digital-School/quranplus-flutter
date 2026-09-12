@@ -7,6 +7,7 @@ import 'package:qurantafsir_flutter/shared/core/models/habit_daily_summary.dart'
 import 'package:qurantafsir_flutter/shared/core/services/notification_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/prayer_times_service.dart';
 import 'package:qurantafsir_flutter/shared/core/services/shared_preference_service.dart';
+import 'package:qurantafsir_flutter/shared/utils/prayer_times_widget.dart';
 import 'package:workmanager/workmanager.dart';
 
 void scheduleAndroidPrayerTimes() {
@@ -46,6 +47,10 @@ Future<void> setupPersistentPrayerBar({
   );
   prayerTimesService.init();
   await prayerTimesService.showPersistentPrayerTimesNotification();
+
+  // Refresh the home-screen widget on every launch, so it never lags behind
+  // by more than one app-open even if the background workers were throttled.
+  await updatePrayerTimesHomeWidget(prayerTimesService: prayerTimesService);
 
   Workmanager().registerPeriodicTask(
     'persistentPrayerBar',
@@ -116,6 +121,8 @@ Future<bool> handleWorker(String task, Map<String, dynamic>? inputData) async {
       );
       prayerTimesService.init();
       await prayerTimesService.setupPrayerTimesReminder();
+      // Daily rollover for the home-screen widget rides on this worker.
+      await updatePrayerTimesHomeWidget(prayerTimesService: prayerTimesService);
       return true;
     } catch (_) {
       return false;
@@ -135,6 +142,9 @@ Future<bool> handleWorker(String task, Map<String, dynamic>? inputData) async {
       );
       prayerTimesService.init();
       await prayerTimesService.showPersistentPrayerTimesNotification();
+      // 6-hourly redundancy: bounds widget staleness after midnight to ~6h
+      // even when the daily worker is delayed by Doze.
+      await updatePrayerTimesHomeWidget(prayerTimesService: prayerTimesService);
       return true;
     } catch (_) {
       return false;

@@ -8,6 +8,7 @@ import 'package:qurantafsir_flutter/shared/constants/prayer_times.dart';
 import 'package:qurantafsir_flutter/shared/core/providers.dart';
 import 'package:qurantafsir_flutter/shared/core/services/prayer_times_service.dart';
 import 'package:qurantafsir_flutter/shared/utils/number_util.dart';
+import 'package:qurantafsir_flutter/shared/utils/prayer_times_widget.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'prayer_times_notifier.g.dart';
@@ -268,6 +269,12 @@ class PrayerTimeNotifier extends _$PrayerTimeNotifier {
     // Post the ongoing prayer-times bar immediately on first-ever location
     // detection / location change (self-guards to Android; a no-op elsewhere).
     await _prayerTimesService.showPersistentPrayerTimesNotification();
+
+    // Reflect the new location on the home-screen widget right away
+    // (self-guards to Android; a no-op elsewhere).
+    await updatePrayerTimesHomeWidget(
+      prayerTimesService: _prayerTimesService,
+    );
   }
 
   void refresh() {
