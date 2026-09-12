@@ -96,6 +96,12 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      # Generated sources (*.g.dart from riverpod_generator, retrofit_generator
+      # and json_serializable) are gitignored, so CI must regenerate them before
+      # tests and the build. --delete-conflicting-outputs clears any stale outputs.
+      - name: Generate code (build_runner)
+        run: dart run build_runner build --delete-conflicting-outputs
+
       - name: Run tests
         run: flutter test
 
