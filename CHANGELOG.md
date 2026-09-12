@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.11.0 (2026-09-12)
+
+### Features
+
+- feat: prayer times widget (#95) (59f151f)
+
 ## 1.10.0 (2026-09-10)
 
 ### Features
