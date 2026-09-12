@@ -79,6 +79,9 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
         run: |
+          # assets/cfg/ holds only the gitignored env.json, so the directory
+          # itself doesn't exist in a fresh checkout — create it first.
+          mkdir -p assets/cfg
           printf '%s' "$ENV_JSON" > assets/cfg/env.json
           printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
           {
