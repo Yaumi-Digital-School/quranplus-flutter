@@ -1,0 +1,116 @@
+name: release_playstore
+
+# Deploys the app to Google Play when a version tag is pushed:
+#
+#   1. bump pubspec.yaml (./bump_version.sh) and commit
+#   2. git tag v1.12.0 && git push origin v1.12.0
+#
+# The tag must match pubspec.yaml's version name — the job fails fast on a
+# mismatch so the Play release can never disagree with the repo. The build
+# number is taken from pubspec (the +N suffix).
+#
+# Uploads to the PRODUCTION track (rollout still subject to Play review).
+# Switch `track:` to internal/beta below if you ever want a staging step.
+#
+# Required repository secrets (run scripts/setup_play_deploy.sh to set them):
+#   ENV_JSON                   contents of the production assets/cfg/env.json
+#   ANDROID_KEYSTORE_BASE64    base64 of upload-keystore.jks
+#   ANDROID_KEYSTORE_PASSWORD  storePassword from android/key.properties
+#   ANDROID_KEY_PASSWORD       keyPassword from android/key.properties
+#   ANDROID_KEY_ALIAS          keyAlias from android/key.properties ("upload")
+#   PLAY_SERVICE_ACCOUNT_JSON  Google Play API service-account key JSON
+
+on:
+  push:
+    tags:
+      - 'v[0-9]*' # v1.12.0 — deliberately excludes the legacy vbuildNNN tags
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify tag matches pubspec version
+        id: version
+        run: |
+          PUBSPEC_VERSION=$(grep -E '^version:' pubspec.yaml | sed 's/version:[[:space:]]*//' | tr -d '[:space:]')
+          VERSION_NAME=${PUBSPEC_VERSION%%+*}
+          BUILD_NUMBER=${PUBSPEC_VERSION##*+}
+          TAG_VERSION=${GITHUB_REF_NAME#v}
+          if [ "$TAG_VERSION" != "$VERSION_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match pubspec version $VERSION_NAME (build $BUILD_NUMBER). Bump pubspec.yaml first, then re-tag."
+            exit 1
+          fi
+          echo "version_name=$VERSION_NAME" >> "$GITHUB_OUTPUT"
+          echo "build_number=$BUILD_NUMBER" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      # Single source of truth for the Flutter version is .fvmrc (same pin
+      # used locally via fvm).
+      - name: Read Flutter version from .fvmrc
+        id: fvm
+        run: echo "version=$(jq -r .flutter .fvmrc)" >> "$GITHUB_OUTPUT"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.fvm.outputs.version }}
+          channel: stable
+          cache: true
+
+      # env.json and the signing config are gitignored; CI recreates them
+      # from secrets. Values flow through env vars (not inline expansion) so
+      # special characters survive and nothing lands in process arguments.
+      - name: Materialize env config and signing files
+        env:
+          ENV_JSON: ${{ secrets.ENV_JSON }}
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          printf '%s' "$ENV_JSON" > assets/cfg/env.json
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
+          {
+            printf 'storePassword=%s\n' "$ANDROID_KEYSTORE_PASSWORD"
+            printf 'keyPassword=%s\n' "$ANDROID_KEY_PASSWORD"
+            printf 'keyAlias=%s\n' "$ANDROID_KEY_ALIAS"
+            # build.gradle resolves this relative to android/app/, where the
+            # keystore was just written.
+            printf 'storeFile=upload-keystore.jks\n'
+          } > android/key.properties
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Build app bundle
+        run: flutter build appbundle --release
+
+      # Keep the exact uploaded bundle downloadable from the run page.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-release-${{ steps.version.outputs.version_name }}-${{ steps.version.outputs.build_number }}
+          path: build/app/outputs/bundle/release/app-release.aab
+          retention-days: 30
+
+      - name: Upload to Google Play (production track)
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.yaumi.qurantafsir.id
+          releaseFiles: build/app/outputs/bundle/release/app-release.aab
+          track: production
+          status: completed
+          releaseName: '${{ steps.version.outputs.version_name }} (${{ steps.version.outputs.build_number }})'
