@@ -23,7 +23,7 @@ name: release_playstore
 on:
   push:
     tags:
-      - 'v[0-9]*' # v1.12.0 — deliberately excludes the legacy vbuildNNN tags
+      - "v[0-9]*" # v1.12.0 — deliberately excludes the legacy vbuildNNN tags
 
 permissions:
   contents: read
@@ -31,6 +31,7 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: production
     timeout-minutes: 45
 
     steps:
@@ -53,7 +54,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: "17"
 
       # Single source of truth for the Flutter version is .fvmrc (same pin
       # used locally via fvm).
@@ -113,4 +114,4 @@ jobs:
           releaseFiles: build/app/outputs/bundle/release/app-release.aab
           track: production
           status: completed
-          releaseName: '${{ steps.version.outputs.version_name }} (${{ steps.version.outputs.build_number }})'
+          releaseName: "${{ steps.version.outputs.version_name }} (${{ steps.version.outputs.build_number }})"
