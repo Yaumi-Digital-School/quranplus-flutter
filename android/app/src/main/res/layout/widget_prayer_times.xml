@@ -1,179 +1,203 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- RemoteViews layout for the prayer-times home-screen widget.
-     RemoteViews only supports basic views (LinearLayout/TextView/...), so no
-     ConstraintLayout or custom views here. Times are bound from
-     PrayerTimesWidgetProvider; labels are fixed and match the in-app names. -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     RemoteViews only supports basic views (FrameLayout/LinearLayout/TextView/
+     ImageView...), so no ConstraintLayout or custom views here.
+
+     Design: Qur'an Plus brown card (bg drawable, brownModeRoot #ECE1CB) with
+     the logogram as a soft tinted emblem behind the content on the left.
+     Text uses the brown-mode palette: #5B4A30 (brownModeMassive) for
+     secondary text, #212121 (blackMassive) for the times. Times are bound
+     from PrayerTimesWidgetProvider; labels are fixed and match the in-app
+     names. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_widget_prayer_times"
-    android:orientation="vertical"
-    android:gravity="center_vertical"
-    android:padding="14dp">
+    android:background="@drawable/bg_widget_prayer_times">
+
+    <!-- Background emblem: logogram pinned to the left, tinted brand brown,
+         faded so the content stays readable on top of it. -->
+    <ImageView
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_gravity="start|center_vertical"
+        android:layout_marginStart="6dp"
+        android:alpha="0.16"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/widget_logogram"
+        android:tint="#5B4A30" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:padding="14dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/widget_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="#5B4A30"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/widget_city"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="#5B4A30"
+                android:textSize="12sp" />
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/widget_date"
-            android:layout_width="0dp"
+            android:id="@+id/widget_empty"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:textColor="#E9F2DA"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/widget_city"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:textColor="#E9F2DA"
-            android:textSize="12sp" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/widget_empty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/widget_prayer_times_empty"
-        android:textColor="#F8F7F3"
-        android:textSize="13sp"
-        android:visibility="gone" />
-
-    <LinearLayout
-        android:id="@+id/widget_times_row"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:orientation="horizontal">
+            android:layout_marginTop="10dp"
+            android:text="@string/widget_prayer_times_empty"
+            android:textColor="#5B4A30"
+            android:textSize="13sp"
+            android:visibility="gone" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/widget_times_row"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Fajr"
-                android:textColor="#E9F2DA"
-                android:textSize="11sp" />
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/widget_time_fajr"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fajr"
+                    android:textColor="#5B4A30"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:id="@+id/widget_time_fajr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:textColor="#F8F7F3"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dzuhur"
+                    android:textColor="#5B4A30"
+                    android:textSize="11sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/widget_time_dhuhr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Dzuhur"
-                android:textColor="#E9F2DA"
-                android:textSize="11sp" />
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/widget_time_dhuhr"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ashr"
+                    android:textColor="#5B4A30"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:id="@+id/widget_time_ashr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:textColor="#F8F7F3"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Magrib"
+                    android:textColor="#5B4A30"
+                    android:textSize="11sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/widget_time_magrib"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Ashr"
-                android:textColor="#E9F2DA"
-                android:textSize="11sp" />
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/widget_time_ashr"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:textColor="#F8F7F3"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Isya"
+                    android:textColor="#5B4A30"
+                    android:textSize="11sp" />
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Magrib"
-                android:textColor="#E9F2DA"
-                android:textSize="11sp" />
-
-            <TextView
-                android:id="@+id/widget_time_magrib"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:textColor="#F8F7F3"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Isya"
-                android:textColor="#E9F2DA"
-                android:textSize="11sp" />
-
-            <TextView
-                android:id="@+id/widget_time_isya"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:textColor="#F8F7F3"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/widget_time_isya"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</FrameLayout>
